@@ -26,3 +26,10 @@ last two commands let you review the changes made to the file(S) found in the
 staging area. 
 
 ***
+What are some situations when branches would be helpful in keeping your history organized? How would branches help?
+***
+
+branches would allow changes that are ideas to be worked on. that way the main file 
+and program stays the same but the ideas can be further developed. ANd the 
+development would not negatively affect the main program. Later these programs can 
+merge if an idea comes to flurition. 
