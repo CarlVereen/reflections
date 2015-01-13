@@ -33,3 +33,11 @@ branches would allow changes that are ideas to be worked on. that way the main f
 and program stays the same but the ideas can be further developed. ANd the 
 development would not negatively affect the main program. Later these programs can 
 merge if an idea comes to flurition. 
+
+***
+How do the diagrams help you visualize the branch structure?
+***
+
+diagrams help me to see the path and history of the program. This helps me to know 
+which commit is the parent of the commit that i was working. Its basically makes it 
+easier to follow the history of all my ideas :)
