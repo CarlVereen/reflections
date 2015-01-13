@@ -17,3 +17,12 @@ Additionally with multi-files it provides a way to not have to save each file
 seperately.
 
 ***
+How can you use the staging area to make sure you have one commit per logical change?
+***
+
+You can review what is in the staging area. This can be done throught the git status 
+command, or for greater review either the git diff or the git diff --staging. These 
+last two commands let you review the changes made to the file(S) found in the 
+staging area. 
+
+***
