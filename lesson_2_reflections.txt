@@ -41,3 +41,12 @@ How do the diagrams help you visualize the branch structure?
 diagrams help me to see the path and history of the program. This helps me to know 
 which commit is the parent of the commit that i was working. Its basically makes it 
 easier to follow the history of all my ideas :)
+
+***
+What is the result of merging two branches together? Why do we represent it in the diagram the way we do?
+***
+
+merging two branches together makes a unified program from two branches. It makes a 
+new branch from the two while remaining connected to the parents of both. We 
+represent the branches joining as this shows exactly what is happening to the two 
+branches and their parents.
