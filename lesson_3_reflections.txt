@@ -8,3 +8,11 @@ Also for my professional portfolio. There may be other reasons but these are the
 first that come to mind
 
 ***
+Why might you want to always pull changes manually rather than having Git automatically stay up-to-date with your remote repository?
+***
+
+manually pulling allows me the ability to review the changes and only pull when I 
+am ready to have the repository match. automatic pulls may override changes that I 
+have made locally when that is not something I want to happen.
+
+***
