@@ -50,3 +50,11 @@ merging two branches together makes a unified program from two branches. It make
 new branch from the two while remaining connected to the parents of both. We 
 represent the branches joining as this shows exactly what is happening to the two 
 branches and their parents.
+
+***
+What are the pros and cons of Git’s automatic merging vs. always doing merges manually?
+***
+
+pros: easy, fast and relatively simple.
+
+cons: may merge things you don't want. may fail because of to many conflicts. 
