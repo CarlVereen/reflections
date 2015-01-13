@@ -1,0 +1,57 @@
+How did viewing a diff between two versions of a file help you see the bug that was introduced?
+***
+Viewing the files and where they changed saved the time of going line by line.
+
+Additionally it allows you to view the changes that happened between the last time
+the file worked and the current time when the file does not work.
+
+Lastly reviewing the file keeps you from shotgun troubleshooting by providing an
+additionl option or step for researching issues that arise. 
+***
+How could having easy access to the entire history of a file make you a more efficient programmer in the long term?
+***
+you can see the creation of the file. Being able to see the changes overtime will 
+help you identify where there are ways to do something better. Like edititng a 
+document allows you to improve your sentences and thoughts. Such so that the next 
+time you write you will have the skills gained from writing and editing. Slowly but 
+surely you will be come better at writing (this is true for coding as well)
+***
+What do you think are the pros and cons of manually choosing when to create a commit, like you do in Git, vs having versions automatically saved, like Google docs does?
+***
+Pros: Specific save points, forced to generate concepts for the save, clear changes,
+smaller quantity of save points. 
+
+Cons: forgetting to save, so changes are lost or the quantity of change is to large 
+to review. Not enough save versions. 
+***
+Why do you think some version control systems, like Git, allow saving multiple files in one commit, while others, like Google Docs, treat each file separately?
+***
+Git allows multiple files to make it easier for revision review on all parts of
+ the program. Google docs was made for single file items and as such you do not 
+ need to have multiple files for a single essay or presentation.
+***
+How can you use the commands git log and git diff to view the history of files?
+***
+git log allows you to view all the different commits for the history of the files,
+including comments on the commit. This view also provides the id tag for the commit
+
+using git diff is simple with the log as using the log provides the id's needed to
+initiate a difference review. This difference review will highlight the changes 
+between the 1st commit and the second commit.
+
+***
+How might using version control make you more confident to make changes that could break something?
+***
+
+With the ability to easily locate code changes and revert code I would be more
+ willing to risk solutions that could break the program. Basically version control
+ allows me the ability to program without concern of losing all my work.
+ 
+***
+Now that you have your workspace set up, what do you want to try using Git for?
+***
+
+well to be honest all programing coding that I do. This may be crazy but this tool
+seems very useful and a stress relief for making and fixing issues.
+
+
