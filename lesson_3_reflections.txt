@@ -16,3 +16,12 @@ am ready to have the repository match. automatic pulls may override changes that
 have made locally when that is not something I want to happen.
 
 ***
+Describe the differences between forks, clones, and branches. When would you use one instead of another?
+***
+
+forks are copies of repositories on gitHub that point back to the parent repository
+. Much like a version branch of a git repository. Clones are copies of a 
+repository that are stored locally on your system. and branches are different a 
+way to save and review files that are similar but not the same as the master file 
+without replacing the master fully. It allows you to work on both the master and 
+the branch file without affecting eachother.
