@@ -25,3 +25,11 @@ repository that are stored locally on your system. and branches are different a
 way to save and review files that are similar but not the same as the master file 
 without replacing the master fully. It allows you to work on both the master and 
 the branch file without affecting eachother.
+
+***
+What is the benefit of having a copy of the last known state of the remote stored locally?
+***
+
+being able to work offline (with the lastest files or to resolve merge conflicts) or maintain a branch that you may not be ready to share on the repository.
+
+***
