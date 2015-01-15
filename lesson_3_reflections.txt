@@ -33,3 +33,9 @@ What is the benefit of having a copy of the last known state of the remote store
 being able to work offline (with the lastest files or to resolve merge conflicts) or maintain a branch that you may not be ready to share on the repository.
 
 ***
+How would you collaborate without using Git or GitHub? What would be easier, and what would be harder?
+***
+
+A shared file system or something like that. There would have to be a readme log or something to share the updates on. It would be harder much harder. Another version control system could be used, which will have its own learning curve and abilities. 
+
+***
