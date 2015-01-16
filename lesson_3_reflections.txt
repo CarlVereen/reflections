@@ -39,3 +39,9 @@ How would you collaborate without using Git or GitHub? What would be easier, and
 A shared file system or something like that. There would have to be a readme log or something to share the updates on. It would be harder much harder. Another version control system could be used, which will have its own learning curve and abilities. 
 
 ***
+When would you want to make changes in a separate branch rather than directly in master? What benefits does each approach have?
+***
+
+I want to make changes in a second branch when I am not sure about the changes. And if I want someone to review the potential changes before they are made. It is all about keeping the master clean and fluid.
+
+***
