@@ -2,7 +2,16 @@
 
 Python scripts for deterministic execution within the WAT framework.
 
-Each tool handles a specific task: API calls, data transformations, file operations, database queries, etc.
+## Available Tools
+
+| Tool | Purpose |
+|------|---------|
+| `google_auth.py` | Shared Google OAuth2 helper (Gmail + Sheets) |
+| `research_topic.py` | Research a topic via Perplexity API |
+| `generate_infographic.py` | Generate an infographic via Nano Banana API |
+| `fetch_subscribers.py` | Fetch active subscribers from Google Sheets |
+| `format_newsletter.py` | Format research + infographic into HTML email |
+| `send_email.py` | Send the newsletter to subscribers via Gmail API |
 
 ## Conventions
 
