@@ -2,7 +2,7 @@
 
 Python scripts for deterministic execution within the WAT framework.
 
-## Available Tools
+## Newsletter Pipeline
 
 | Tool | Purpose |
 |------|---------|
@@ -12,6 +12,14 @@ Python scripts for deterministic execution within the WAT framework.
 | `fetch_subscribers.py` | Fetch active subscribers from Google Sheets |
 | `format_newsletter.py` | Format research + infographic into HTML email |
 | `send_email.py` | Send the newsletter to subscribers via Gmail API |
+
+## Agent Framework
+
+| Tool | Purpose |
+|------|---------|
+| `claude_client.py` | Thin wrapper around the Anthropic Claude API |
+| `agent_orchestrator.py` | Loads a team, runs agents, handles delegation recursively |
+| `run_team.py` | CLI entry point — assign a task to a team |
 
 ## Conventions
 

@@ -1,0 +1,39 @@
+# Team Configuration Template
+# Copy this file to teams/<your_team_id>.yaml and customize.
+
+# Unique team identifier (snake_case)
+team: example_team
+
+# Human-readable team name
+name: Example Team
+
+# One-sentence description of what this team produces
+description: A concise description of the team's purpose and output.
+
+# The agent that receives the task first. Usually the most senior role.
+entry_agent: manager
+
+# Should free-form task briefs be run through the translator agent first?
+# When true, string inputs are converted to structured briefs automatically.
+use_translator: true
+
+# Claude model to use for agent calls (can be overridden per-agent in the 'agents' list)
+default_model: claude-sonnet-4-6
+
+# The roster. Each entry defines an agent on the team AND its place in the hierarchy.
+agents:
+
+  - id: manager
+    file: agents/manager.md          # Path relative to repo root
+    manages:                          # Subordinates this agent can delegate to
+      - researcher
+      - writer
+    # model: claude-opus-4-6          # Optional per-agent override
+
+  - id: researcher
+    file: agents/researcher.md
+    manages: []                       # Empty list = cannot delegate (leaf agent)
+
+  - id: writer
+    file: agents/writer.md
+    manages: []
