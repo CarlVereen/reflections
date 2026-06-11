@@ -4,9 +4,30 @@
 > spins up a **complete website with a built-in organic-traffic engine**, and
 > **monetizes** it. Run a portfolio of these as income-producing assets.
 
-Status: **Draft v1 — strategy/architecture only, no code yet.**
+Status: **Draft v2 — strategy/architecture only, no code yet.**
 Owner: Carl
 Framework: WAT (Workflows / Agents / Tools) — see `/CLAUDE.md`
+
+## 0. What we are actually building (scope lock)
+
+**The deliverable is the TEMPLATE** — a self-optimizing, programmatic-SEO website
+system that generates organic traffic and makes money, then improves itself. The
+test of success is the *machine*, not any one site.
+
+- **Instance #1 = MedMasters.** The first site off the line is built to win
+  organic traffic that brings **MedMasters** new clients (chiropractic practices).
+  It validates the template against a real, revenue-bearing use case.
+- **Fulfillment is OUT of scope.** MedMasters already delivers the chiropractic
+  marketing service (ads, content, SMS/email, reactivation). We are **not**
+  building those funnels. We build the site that *attracts the practices* to
+  MedMasters.
+- **Monetization is a PLUGGABLE layer**, chosen per niche/opportunity — ads,
+  affiliate, or lead-gen (for MedMasters, the "money" is qualified chiropractor
+  leads/booked calls; ads/affiliate optional on top). The template must not
+  hard-code one monetization method.
+- **Self-optimization is the whole point.** A site that just publishes once is a
+  brochure. The template's defining feature is the **measure → improve loop**
+  (Layer 6) that makes rankings climb over time without a human babysitting it.
 
 ---
 
@@ -215,8 +236,20 @@ site-template/             # the Astro site cloned per niche
 
 **Phase 0 — Strategy (this doc).** ✅
 
-**Phase 1 — One site, end-to-end, by hand-ish.** Prove the flywheel on a *single* niche:
-L2→L7 manually orchestrated, ~20–50 real pages, deployed, Search Console connected. Goal: validate that pages get indexed and the unit economics make sense. **Do not build the factory yet.**
+**Phase 1 — The MedMasters instance, end-to-end.** Build the minimal *template*
+and prove it on one real site. Concretely:
+- **Topic:** chiropractic practice growth / patient acquisition (content that
+  chiropractors search for) → captures them as MedMasters leads.
+- **Programmatic angle (examples):** `chiropractic marketing in {city}`,
+  `how to get more patients for a {sub-niche} chiropractic clinic`,
+  `{competitor/tactic} vs {tactic} for chiropractors`, patient-reactivation guides.
+- **Build:** L2→L7 wired with reusable tools (not throwaway), ~20–50 **real-data**
+  pages, deployed to a live URL, Search Console + GA4 connected, a lead-capture
+  CTA to MedMasters, and a **pluggable monetization config** (lead-gen on by
+  default; ad/affiliate slots stubbed).
+- **Goal:** pages get indexed, the loop's data pipeline works, and the per-site
+  build cost is known. This *is* the template's v1 — built to be cloned, not
+  thrown away.
 
 **Phase 2 — Automate the loop (L6).** Connect Search Console → rank analyzer → auto-generate cluster expansions on winners. This is the part that "improves SEO automatically."
 
@@ -230,9 +263,15 @@ L2→L7 manually orchestrated, ~20–50 real pages, deployed, Search Console con
 
 ---
 
-## 9. Open decisions for next session
+## 9. Open decisions
 
-1. **Niche path:** let the L0 agent find one, or supply a seed? (Phase 1 goes faster with a supplied niche.)
-2. **Primary monetization** for the first site: affiliate, ads, or lead-gen? (Shapes content + page templates.)
-3. **Domain/brand:** real domain now, or build on a free subdomain to validate first?
-4. **Budget ceiling** for Phase 1 (caps LLM + data spend and forces the tiered-model design).
+**Resolved:**
+- ~~Niche~~ → **MedMasters** (chiropractic practice growth; attracts chiro practices as agency leads).
+- ~~Monetization~~ → **Pluggable layer**; default = lead-gen for MedMasters, ad/affiliate optional on top.
+- ~~Fulfillment~~ → **Out of scope** (MedMasters handles delivery).
+
+**Still open for the Phase 1 build:**
+1. **Stack confirm:** Astro + Markdown-in-git + Cloudflare Pages + Search Console + Claude. (Recommended default — proceed unless objected.)
+2. **Domain/brand:** point a real MedMasters domain/subdomain now, or build on a free preview URL to validate indexing first?
+3. **Budget ceiling** for Phase 1 (caps LLM + keyword-data spend; forces the tiered-model design — Haiku bulk / Sonnet flagship).
+4. **Keyword data source:** paid API (DataForSEO) vs. start with free Search Console + manual seed keywords for the first ~50 pages.
