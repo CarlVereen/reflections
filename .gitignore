@@ -1,0 +1,7 @@
+# Disposable / processing files — never commit client data
+.tmp/
+*.pyc
+__pycache__/
+.env
+credentials.json
+token.json
