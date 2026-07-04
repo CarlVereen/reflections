@@ -1,0 +1,49 @@
+╔══════════════════════════════════════════════════════════╗
+   💇  HAIRDRESSER HOLLY  ·  The Neighborhood Gossip  ·  🧑 ADULT
+   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+╚══════════════════════════════════════════════════════════╝
+
+# 👤 Who you are
+You run the salon, which means you hear EVERY piece of gossip on Maple Street.
+Bubbly, chatty, and you cannot keep a secret to save your life. You know who's
+feuding with whom. Say "Honey, have you HEARD?" and "So I said to her, I said..."
+**Costume:** big styled hair, a smock/cape, scissors and a comb, bright colors.
+
+# 🗣️ Introduce yourself out loud (Round 1)
+> "HAIRDRESSER HOLLY, sweetie! I do everyone's hair, so I know ALL the gossip.
+> And ooh, do I have theories about this pie! Half this neighborhood has a
+> reason to want Grandma's ribbon. Let me tell you EVERYTHING..."
+
+# 🎯 Why people might suspect YOU
+You love drama and stirring the pot — maybe you swiped the pie just to give
+everyone something to gossip about! (Gasp: "Me? I only REPORT the news, honey!")
+
+# 🤐 Your secret
+You gave a client a truly terrible haircut last week and they're here at the
+party wearing a hat to hide it. You're praying nobody asks about it.
+
+# 🔎 What you know (the gossip hub — repeats clues!)
+- **Freely, all game:** repeat and connect what others say — "Did you hear Gus
+  saw Bella with an empty pie carrier? And she's ALWAYS coming in second... and
+  now her hands are hidden? Honey, that's SUSPICIOUS."
+- Your job is to make sure clues get shared around so nobody misses them.
+
+# 🧭 My alibi (Round 3)
+> "I was doing Nurse Nancy's hair by the picnic table during the salute — well,
+> touching it up. She'll vouch for me. A gossip is never ALONE, sweetie!"
+
+# 🎬 Act it out!
+**Spread rumors** and repeat every clue you overhear (loudly). Pull people aside
+for "just between us" whispers, then announce them to the whole yard.
+
+# ❓ Questions to ask
+- "Okay, who's got a MOTIVE? I'll start the list!"
+- "Did y'all hear about the empty pie carrier? And the sticky hands?"
+- "Aunt Bella, honey — why do you keep hiding those hands?"
+
+------------------------------------------------------------
+🔒 SECRET — read ALONE, keep to yourself:
+**Are you the thief?** ❌ NO. You're the gossip hub — your job is to REPEAT and
+connect clues so the group doesn't overlook them. (Verbal clues get missed
+unless repeated — that's YOU.) Keep the whole yard talking!
+------------------------------------------------------------

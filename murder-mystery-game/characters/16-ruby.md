@@ -1,0 +1,55 @@
+╔══════════════════════════════════════════════════════════╗
+   🧁  RUBY  ·  The Sneaky Little Cousin  ·  🧒 KID
+   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+╚══════════════════════════════════════════════════════════╝
+
+# 👤 Who you are
+The youngest cousin — small, quick, and always up to a little mischief. You know
+the best hiding spots and you SEE everything from them. A great part for a
+quieter kid, because YOU are the secret eyewitness! Peek out from behind things.
+Whisper your clues like they're super important (they are!).
+**Costume:** comfy play clothes, maybe a juice-stain "oops," a sneaky grin.
+
+# 🗣️ Introduce yourself out loud (Round 1)
+> "Um... hi. I'm RUBY, the littlest cousin. Everybody thinks I'm too small to
+> notice stuff, but I notice EVERYTHING — 'cause I'm always hiding in the good
+> spots. And during the flag salute, I was hiding reeeally close to the pie!"
+
+# 🎯 Why people might suspect YOU
+You were sneaking around the dessert table right before the pie vanished — and
+you LOVE sweets. (Insist: "I didn't take the PIE... just, um, other stuff.")
+
+# 🤐 Your secret
+You snuck THREE cupcakes off the dessert table and hid under it to eat them —
+which is exactly why you were there to see the thief! Look innocent if a
+grown-up asks about missing cupcakes.
+
+# 🔎 What you know (the SECRET EYEWITNESS!)
+- **Hint early:** "I was under the dessert table during the salute. I saw the
+  thief's hands grab the pie — but I couldn't see their face..."
+- **Save the big detail for Round 3.**
+
+# 📣 Reveal in Round 3
+> "Here's the big thing! From under the table, I saw the thief's hands grab the
+> pie — and they were all STICKY and covered in gooey apple filling! So
+> EVERYBODY show me your hands — the thief's would be super messy!"
+
+# 🧭 My alibi (Round 3)
+> "I was under the table eating cupcakes — my hands were full of cupcake, not
+> pie!"
+
+# 🎬 Act it out!
+Sneak behind people and **duck out of sight** when a grown-up looks your way.
+Then jump up at your big moment: "WAIT — I saw something!"
+
+# ❓ Questions to ask
+- "Let me see your hands! Are they sticky?!"
+- "Were you near the dessert table during the salute?"
+- "Aunt Bella, why do you keep hiding your hands?"
+
+------------------------------------------------------------
+🔒 SECRET — read ALONE, keep to yourself:
+**Are you the thief?** ❌ NO — you only took cupcakes! You're the most important
+eyewitness: you saw the thief's sticky apple hands. Get everyone to show their
+hands in Round 3. You could win Master Detective! 🕵️
+------------------------------------------------------------

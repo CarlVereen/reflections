@@ -4,44 +4,59 @@ Print this page, then cut out what you need. Everything here is spoiler-free.
 
 ---
 
-## 🏷️ NAME TAGS
+## 🏷️ NAME TAGS (all 18 characters)
 
-Cut these out and pin/tape them on, or write the names on sticker tags. Each
-has the character's name and a tiny reminder of who they are.
+Cut these out and pin/tape them on, or write the names on sticker tags.
 
 ```
-┌─────────────────────────┐   ┌─────────────────────────┐
-│  🥧 GRANDMA ROSE         │   │  🏆 AUNT BELLA           │
-│  Blue-Ribbon Pie Baker   │   │  Always 2nd at the Contest│
-└─────────────────────────┘   └─────────────────────────┘
-
-┌─────────────────────────┐   ┌─────────────────────────┐
-│  🍔 GRILL MASTER GUS     │   │  🥇 COACH DIEGO          │
-│  King of the Grill       │   │  Pie Contest Judge       │
-└─────────────────────────┘   └─────────────────────────┘
-
-┌─────────────────────────┐   ┌─────────────────────────┐
-│  🧁 RUBY                 │   │  🍋 LILY                 │
-│  The Littlest Cousin     │   │  Lemonade-Stand Kid      │
-└─────────────────────────┘   └─────────────────────────┘
-
-┌─────────────────────────┐   ┌─────────────────────────┐
-│  😴 UNCLE MARTY          │   │  🎸 UNCLE SUNNY          │
-│  Grumpy Pie Lover        │   │  Sing-Along Song Leader  │
-└─────────────────────────┘   └─────────────────────────┘
-
-┌─────────────────────────┐   ┌─────────────────────────┐
-│  🕵️ JUNIOR DETECTIVE     │   │  🕵️ JUNIOR DETECTIVE     │
-│  Case Investigator       │   │  Case Investigator       │
-└─────────────────────────┘   └─────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 🥧 GRANDMA ROSE          │  │ 🏆 AUNT BELLA            │
+│ Blue-Ribbon Pie Baker    │  │ Always 2nd at the Contest │
+└──────────────────────────┘  └──────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 🍔 GRILL MASTER GUS      │  │ 🥇 COACH DIEGO           │
+│ King of the Grill        │  │ Pie Contest Judge         │
+└──────────────────────────┘  └──────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 😴 UNCLE MARTY           │  │ 🎸 UNCLE SUNNY           │
+│ Grumpy Pie Lover         │  │ Sing-Along Song Leader    │
+└──────────────────────────┘  └──────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 🎀 MAYOR MAPLE           │  │ 🩹 NURSE NANCY           │
+│ Ribbon Presenter         │  │ Neighborhood Nurse        │
+└──────────────────────────┘  └──────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 🍎 FARMER FRAN           │  │ 📬 MAILMAN MIKE          │
+│ Apple Orchard Grower     │  │ Nosy Mail Carrier         │
+└──────────────────────────┘  └──────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 👨‍🍳 BAKER BENNY           │  │ 🏡 REALTOR RITA          │
+│ Professional Baker       │  │ Competitive Deal-Closer   │
+└──────────────────────────┘  └──────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 🚒 FIREMAN FRANK         │  │ 📚 LIBRARIAN LOU         │
+│ Fireworks Guard          │  │ Detail-Noticer            │
+└──────────────────────────┘  └──────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 💇 HAIRDRESSER HOLLY     │  │ 🧁 RUBY                  │
+│ Neighborhood Gossip      │  │ The Littlest Cousin       │
+└──────────────────────────┘  └──────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 🍋 LILY                  │  │ 🛴 MAX                   │
+│ Lemonade-Stand Kid       │  │ The Scooter Kid           │
+└──────────────────────────┘  └──────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 🕵️ JUNIOR DETECTIVE      │  │ 🕵️ JUNIOR DETECTIVE      │
+│ Case Investigator        │  │ Case Investigator         │
+└──────────────────────────┘  └──────────────────────────┘
 ```
 
 ---
 
 ## 🗳️ DETECTIVE BALLOTS
 
-Print **one ballot per player**. Hand them out in Round 5. Detectives check ONE
-box, then fill in the "why" and "proof."
+Print **one ballot per player** (18+). Hand them out in Round 5. Each detective
+checks ONE box, then fills in the "why" and "proof."
 
 ```
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,11 +68,15 @@ box, then fill in the "why" and "proof."
 
    WHO stole Grandma Rose's blue-ribbon pie? (Check ONE)
 
-     ☐  Grandma Rose        ☐  Coach Diego
-     ☐  Aunt Bella          ☐  Ruby
-     ☐  Grill Master Gus    ☐  Lily
-     ☐  Uncle Marty         ☐  Uncle Sunny
-     ☐  Someone else: ____________________________
+     ☐ Grandma Rose       ☐ Mailman Mike
+     ☐ Aunt Bella         ☐ Baker Benny
+     ☐ Grill Master Gus   ☐ Realtor Rita
+     ☐ Coach Diego        ☐ Fireman Frank
+     ☐ Uncle Marty        ☐ Librarian Lou
+     ☐ Uncle Sunny        ☐ Hairdresser Holly
+     ☐ Mayor Maple        ☐ Ruby
+     ☐ Nurse Nancy        ☐ Lily
+     ☐ Farmer Fran        ☐ Max
 
    WHY did they do it? ______________________________
    _________________________________________________
@@ -72,8 +91,8 @@ box, then fill in the "why" and "proof."
 
 ## 🏅 AWARD CERTIFICATES
 
-Print a few, fill in names at the end, and hand them out. Everybody wins
-something!
+Print a few, fill in names at the end, and hand them out. With a big group,
+invent extra awards so **everybody wins something!**
 
 ```
 ╔═══════════════════════════════════════════════════╗
@@ -95,7 +114,6 @@ something!
 ║                                                     ║
 ║   For the most dramatic, hilarious, and             ║
 ║   convincing performance at the cookout.            ║
-║   The stage is calling!                             ║
 ║                                                     ║
 ║   Awarded on: ________________  🎬                  ║
 ╚═══════════════════════════════════════════════════╝
@@ -123,5 +141,6 @@ something!
 ╚═══════════════════════════════════════════════════╝
 ```
 
-> 💡 Feel free to invent more awards so everyone gets one — "Sneakiest Suspect,"
-> "Best Grumpy Face," "Loudest Accusation," "Future FBI Agent," etc.
+> 💡 With 18 players, invent more awards so everyone gets one — "Sneakiest
+> Suspect," "Best Grumpy Face" (Uncle Marty!), "Loudest Accusation," "Best
+> Gossip," "Junior Detective of the Year," "Future FBI Agent," etc.

@@ -1,5 +1,6 @@
 # 🥧 The Case of the Missing Blue-Ribbon Pie
-### A Print-and-Play 4th of July Backyard Mystery for Kids (ages ~8–11)
+### A Print-and-Play 4th of July Backyard Mystery — Family Cookout Edition
+### Built for 18 players: 15 adults + 3 kids (everyone gets a character!)
 
 It's the big **Independence Day cookout** on Maple Street! Burgers are
 sizzling, the flag is flying, and the highlight of the day is the **pie
@@ -63,7 +64,7 @@ party, class party, or any backyard get-together.
 | `03-MASTER-SCRIPT.md` | The read-aloud script that runs the party | Read aloud by players |
 | `04-PARTY-MENU.md` | Optional silly 4th-of-July cookout menu | The organizer |
 | `characters/00-CHARACTER-GUIDE.md` | Cast list + who to give each kid (spoiler-free) | The organizer |
-| `characters/01…08-*.md` | The 8 character booklets | One each, **players read only their own** |
+| `characters/01…18-*.md` | The 18 character booklets (15 adults + 3 kids) | One each, **players read only their own** |
 | `clues/clue-envelope-1…3.md` | The three timed clue envelopes | Opened during play |
 | `clues/name-tags-and-ballots.md` | Name tags, detective ballots, award certificates | Printed for everyone |
 | `99-SOLUTION-DO-NOT-OPEN.md` | 🔒 The answer | **Nobody — until the very end!** |
@@ -72,17 +73,20 @@ party, class party, or any backyard get-together.
 
 ## 👥 How many players?
 
-- **6 players (minimum):** use the **Core 6** characters (marked in the guide).
-  The mystery is fully solvable with just these six.
-- **7–8 players:** add the two **Bonus** characters for extra fun and red
-  herrings.
-- **More than 8, or shy kids:** extra kids can be **Junior Detectives** — they
-  don't play a suspect, they just investigate, take notes, and help crack the
-  case.
-- **Fewer than 6:** a grown-up or older sibling can play one of the extra
-  characters, or one kid can play two.
+This edition is built for **18 players — 15 adults + 3 kids — and everyone gets
+their own suspect character.** The whole cast is family-friendly, so grown-ups
+and kids play the same game together.
 
-> Want a different theme or age range? See "Make it your own" at the bottom of
-> `01-HOST-SETUP-GUIDE.md`.
+- **15 adult roles** (`characters/01–15`) — a whole neighborhood of quirky
+  suspects, each with a secret and a motive.
+- **3 kid roles** (`characters/16–18`) — easy, fun parts, and each kid holds a
+  **real, important clue** that helps crack the case.
+- **A few extra guests?** They join as **Junior Detectives** — no booklet, they
+  investigate and vote. (Or two people can share a chatty role as "partners.")
+- **A few fewer?** You can drop some of the pure red-herring adults without
+  breaking the mystery — see the Character Guide for which roles to keep.
+
+> Different group size, theme, or age range? See "Make it your own" at the
+> bottom of `01-HOST-SETUP-GUIDE.md`, or just ask.
 
 **Start here → open `01-HOST-SETUP-GUIDE.md`.** Happy 4th! 🇺🇸🥧

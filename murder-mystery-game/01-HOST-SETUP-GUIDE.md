@@ -59,16 +59,19 @@ a flag T-shirt, star sunglasses, a bandana — is perfect. See
 
 ## 🖨️ Step-by-step setup (about 30–40 minutes)
 
-### Step 1 — Decide your cast (5 min)
-Open `characters/00-CHARACTER-GUIDE.md`. Match each kid to a character. The
-guide tells you the **Core 6** (use these for 6 players) and the **2 Bonus**
-characters (add for 7–8 players). Assign characters to personalities:
-outgoing kids love the big talkers; shy kids do great as the quiet witnesses.
+### Step 1 — Decide your cast (10 min)
+Open `characters/00-CHARACTER-GUIDE.md`. This edition has **18 roles — 15 adults
+(`01–15`) and 3 kids (`16–18`)** — so match each guest to a character. Assign by
+personality: outgoing folks love the big talkers (Gus, Mayor Maple, Holly); the
+quieter guests do great as the observant witnesses (Librarian Lou, Ruby). Give
+the 3 kids roles 16–18 — they're easy and each kid holds a real clue.
 
-### Step 2 — Print the booklets (10 min)
+### Step 2 — Print the booklets (15 min)
 Print one copy of each character booklet you're using
-(`characters/01-*.md` through `08-*.md`). Fold each in half so the name shows
-on the outside. **You don't need to read them.**
+(`characters/01-*.md` through `18-*.md` — that's 18 booklets for a full group).
+Fold each in half so the name shows on the outside. **You don't need to read
+them.** (Tip: with 18 to print, a stapler and a big table help — collate them by
+name so handout is quick.)
 
 ### Step 3 — Print the shared materials (10 min)
 - `03-MASTER-SCRIPT.md` — 1 copy (this is the script you'll read from)
@@ -119,10 +122,27 @@ There are **no rulings to make**. Every character booklet tells that kid
 exactly what they know and what to say. Nobody can "break" the game.
 
 > 🎬 **Tip for extra fun:** Each booklet has an **"Act it out!"** bit — a little
-> piece of drama the kid can perform (a swoon, a friendly argument, a grumpy
-> nap, a burst of song). Encourage kids to *do* these during the Investigation
-> Time breaks. A murder mystery is way more fun when people are hamming it up
-> and acting suspicious, instead of just sitting and reading. Ham it up!
+> piece of drama the player can perform (a swoon, a friendly argument, a grumpy
+> nap, a burst of song). Encourage everyone to *do* these during the
+> Investigation Time breaks. A murder mystery is way more fun when people are
+> hamming it up and acting suspicious, instead of just sitting and reading. Ham
+> it up!
+
+### 🎪 Big-group tips (for 18 players)
+With a full cast of 18, a little crowd control keeps it smooth and fun:
+- **Give people room to roam.** A backyard or two open rooms works great — the
+  investigation is basically everyone mingling and questioning each other.
+- **Use a bell or a whistle** to pause the mingling and re-gather the group for
+  each round. (Coach Diego even has a whistle — recruit that player to help!)
+- **Keep the action moving around the space** so everyone can see and hear the
+  drama. When two characters "argue," they should do it out loud where others
+  notice.
+- **Rotate the reader.** With a big group, pick a few strong, loud readers to
+  take turns on the Master Script so everyone can hear.
+- **Let the gossips do their job.** Hairdresser Holly and Nurse Nancy are built
+  to repeat clues around the yard — that keeps 18 people on the same page.
+- **Give it a little more time.** Intros and mingling take longer with 18, so
+  budget closer to **75–90 minutes** total.
 
 ---
 
@@ -144,18 +164,20 @@ exactly what they know and what to say. Nobody can "break" the game.
 
 ## 🎨 Make it your own (themes & ages)
 
-This kit is a 4th of July backyard theme for roughly ages 8–11, but the
-*structure* works for any theme. To reskin it:
-- **Keep the skeleton:** 8 suspects, 1 fixed culprit, 3 timed clues (a
-  "how-it-was-done" clue, a "why" clue, and a "physical trail" clue), plus a
-  broken alibi and an eyewitness.
+This kit is a family-friendly 4th of July backyard theme built for 18 players,
+but the *structure* works for any theme and group size. To adapt it:
+- **Keep the skeleton:** 1 fixed culprit, 3 timed clues (a "how-it-was-done"
+  clue, a "why" clue, and a "physical trail" clue), plus a broken alibi and an
+  eyewitness. The other suspects are red herrings with motives.
 - **Swap the wrapper:** Pirates (a stolen treasure), magic school (a mischief
   spell), space station (a stolen crystal), carnival, detective agency, etc.
-- **Younger kids (6–8):** Use fewer characters (the Core 6), shorten booklets to
-  the "Who you are / Your secret / What you saw" lines, and have adults help
-  read. Make the crime extra silly.
-- **Older kids (11–13):** Add the Bonus characters, let the questioning run
-  longer, and lean into the bluffing and cross-examination.
+- **Smaller group:** Drop pure red-herring adults (Mayor Maple, Realtor Rita,
+  Baker Benny, Fireman Frank, Farmer Fran) — see the Character Guide for the
+  roles you must keep. A 6-person version needs only the core clue-holders.
+- **All adults / all kids / different ages:** The roles are written
+  family-friendly, but you can dial the humor up or down. For very young kids,
+  shorten booklets to the "Who you are / Your secret / What you saw" lines and
+  have grown-ups help read.
 
 If you want, ask me to generate a reskinned version in a different theme or for
 a different age — the mystery logic stays the same.

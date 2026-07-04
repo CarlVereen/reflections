@@ -39,11 +39,13 @@
 > **📢 READ ALOUD:**
 > "Nobody's going home until we crack this case. Let's meet everyone at the
 > cookout. When it's your turn, stand up, say your character's name, and read
-> the **'Introduce yourself'** part from your booklet. Make it fun! We'll go
-> around the circle."
+> the **'Introduce yourself'** part from your booklet. Keep it quick and fun —
+> one turn each. We'll go around!"
 
-_[Go around the circle. Each player reads the **"Introduce yourself out loud"**
-section from their own booklet. Encourage big personalities!]_
+_[Go around the group. Each player reads the **"Introduce yourself out loud"**
+section from their own booklet. Encourage big personalities! **Big group of 18?**
+Keep intros snappy — one turn each, no extra chatter, or it runs long. Doing the
+adults first and then the 3 kids is a fine way to keep it organized.]_
 
 > **📢 READ ALOUD:**
 > "Quite a crowd! And every single one of you was here when that pie
