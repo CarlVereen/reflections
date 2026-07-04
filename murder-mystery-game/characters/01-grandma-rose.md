@@ -42,6 +42,11 @@ learns your store-crust secret! (Act very offended.)
 Every time your pie is mentioned, **swoon into a chair** and fan yourself, then
 point dramatically at Coach Diego and demand answers.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You're certain it was **COACH DIEGO**. Your reason: "That judge had every pie
+in his hands today — who else could've slipped mine away? I don't trust him one
+bit, sweetie!" Say it often and loudly.
+
 # ❓ Questions to ask
 - "Where were you during the flag salute, sweetie?"
 - "Coach Diego, you handle all the pies — explain yourself!"
@@ -49,6 +54,12 @@ point dramatically at Coach Diego and demand answers.
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. It's your pie — you want it back! Play up your
 store-crust nerves to keep detectives guessing, then help crack the case.
 ------------------------------------------------------------

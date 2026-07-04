@@ -36,6 +36,11 @@ garage. If she asks about it... start playing a loud song to drown her out!
 Whenever someone asks about Grandma's broken platter, **burst into a loud song**
 and strum: "🎶 Ohhh say can you seee... 🎶" Randomly lead little sing-alongs.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You suspect **UNCLE MARTY**. Your reason: "I led the whole crowd in song, and I
+never once saw Marty singing along — he was skulking off by the lawn chairs the
+whole time! Awfully suspicious for a fella who loves that pie so much."
+
 # ❓ Questions to ask
 - "Who DIDN'T I see in the crowd during my song?"
 - "Who slipped away while we were all singing?"
@@ -43,6 +48,12 @@ and strum: "🎶 Ohhh say can you seee... 🎶" Randomly lead little sing-alongs
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You were on stage the whole time. Your clue — the
 theft happened DURING your anthem, when all were distracted — helps pin down
 WHEN it happened. Help them find who slipped away!

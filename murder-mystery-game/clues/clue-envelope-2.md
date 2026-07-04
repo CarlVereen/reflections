@@ -9,7 +9,8 @@
 > **CLUE #2: A crumpled note — and a reason.**
 >
 > "A plan needs a *reason*, detectives. And someone was careless enough to leave
-> theirs behind. This note was found crushed into a ball in the trash can by the
+> theirs behind. This looks like a half-written note — the kind you scribble to
+> work up your nerve — crushed into a ball in the trash can by the
 > grill — written this morning, before the party even started. Listen:
 >
 > _______________________________________________________

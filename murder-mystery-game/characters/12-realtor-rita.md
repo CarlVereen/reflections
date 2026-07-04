@@ -37,6 +37,10 @@ successful than you are. Business isn't as booming as you pretend.
 Take fake **phone calls** at dramatic moments. Try to "sell" detectives a house
 mid-investigation and hand out business cards.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You suspect **BAKER BENNY**. Your reason: "He's stewed over losing to an amateur
+for years. Wounded professional pride is the oldest motive in the book, honey."
+
 # ❓ Questions to ask
 - "Who wanted that blue ribbon badly enough to CHEAT for it?"
 - "Aunt Bella — twelve years of second place must sting, hmm?"
@@ -44,6 +48,12 @@ mid-investigation and hand out business cards.
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You're competitive (red herring!) but you were on a
 loud phone call with witnesses. Your hint about a "desperate rival" points the
 detectives the right way.

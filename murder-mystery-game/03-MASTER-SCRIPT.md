@@ -38,6 +38,14 @@
 > one of us had our eyes on the flag. Somebody at this cookout STOLE Grandma's
 > champion pie — and that somebody is standing right here among us!"
 
+> **📢 READ ALOUD — THE TWO RULES (important!):**
+> "Two quick rules before we start, detectives. **RULE ONE:** no matter what
+> your character card says, NEVER tell anyone whether you're innocent or guilty.
+> Saying 'my card says I'm innocent' spoils the whole mystery — so everyone
+> stays a little suspicious! **RULE TWO:** your card names ONE person you
+> already suspect, and tells you why. Accuse them, argue about it, defend your
+> hunch! The thief is hiding among us, and only the clues will catch them."
+
 > **📢 READ ALOUD:**
 > "Nobody's going home until we crack this case. Let's meet everyone at the
 > cookout. When it's your turn, stand up, say your character's name, and read
@@ -58,10 +66,10 @@ adults first and then the 3 kids is a fine way to keep it organized.]_
 > **📢 READ ALOUD:**
 > "**INVESTIGATION TIME!** For the next few minutes, get up and question each
 > other. Ask: *Where were you when the pie vanished? What did you see? What are
-> you hiding?* Check the **'Questions to ask'** list in your booklet if you get
-> stuck — and don't forget your **'Act it out!'** bit, where you get to be
-> dramatic and act suspicious! Don't spill ALL your secrets at once — a good
-> detective keeps a little mystery! Ready... GO!"
+> you hiding?* Track down the person your **'Who YOU suspect'** card names and
+> ACCUSE them! Check your **'Questions to ask'** list if you get stuck, and don't
+> forget your **'Act it out!'** bit. Don't spill ALL your secrets at once — a
+> good detective keeps a little mystery! Ready... GO!"
 
 _[Let players mingle and question each other for ~5 minutes. A timer or bell
 helps. Then everyone returns to the circle.]_

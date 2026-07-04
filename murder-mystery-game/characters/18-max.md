@@ -43,6 +43,11 @@ rules!) — that's how you crashed. You don't want to get in trouble for it.
 **Zoom around** the party (carefully!) and screech to a stop to report clues.
 Show off your "scraped knee" bandage to anyone who'll look.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You suspect **UNCLE SUNNY**. Your reason: "He made everybody stare at the flag
+with all that loud singing — the perfect way to make us miss the thief. Maybe
+TOO perfect!"
+
 # ❓ Questions to ask
 - "Whose lawn chair has something hidden under it?"
 - "Who snuck over to the lawn chairs during the salute?"
@@ -50,6 +55,12 @@ Show off your "scraped knee" bandage to anyone who'll look.
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO — you were getting your knee bandaged! You're a KEY
 witness: you saw the thief hide the pie UNDER a lawn chair. In Round 3, lead
 everyone to check the lawn chairs — that's where the pie is hidden! 🕵️

@@ -40,6 +40,11 @@ plans and secrets — and you can't help mentioning things you "shouldn't" know.
 Randomly "deliver mail" to guests and use it to snoop: "Letter for you! Say, is
 that apple filling on your sleeve?"
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You suspect **AUNT BELLA**. Your reason: "She showed up this morning with TWO
+pie carriers. Who needs a spare — unless you're planning to carry home a pie
+that isn't yours?"
+
 # ❓ Questions to ask
 - "Who brought TWO pie carriers to a one-pie contest?"
 - "Aunt Bella — what was that empty spare carrier for?"
@@ -47,6 +52,12 @@ that apple filling on your sleeve?"
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You're a nosy witness: you saw Aunt Bella arrive
 with a spare, empty pie carrier — the perfect thing to smuggle a stolen pie in.
 Share it!

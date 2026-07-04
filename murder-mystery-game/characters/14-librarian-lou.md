@@ -40,6 +40,12 @@ for a librarian! You've been quietly hiding it for years.
 **Examine "clues"** with great seriousness (a magnifying glass is perfect).
 Shush loud guests and announce small observations dramatically.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You suspect **BAKER BENNY**. Your reason: "The evidence points to a contest
+regular with a bruised ego, and a professional who can't bear to lose fits that
+profile precisely." _(You may well be wrong — but your handwriting clue is the
+real key.)_
+
 # ❓ Questions to ask
 - "Whose handwriting is loopy, with hearts over the i's?"
 - "Who signed up for the pie contest this year?"
@@ -47,6 +53,12 @@ Shush loud guests and announce small observations dramatically.
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You're the sharp-eyed helper. Your Round 2 reveal —
 the note's handwriting matches a CONTEST ENTRANT — narrows the suspects toward
 the real culprit. A great clue; deliver it with flair.

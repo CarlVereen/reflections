@@ -28,11 +28,16 @@ fake. You were going to give the ribbon to whoever Coach Diego told you to.
 
 # 🧭 My alibi (Round 3)
 > "During the salute I was standing beside the flag, leading the ceremony with
-> Uncle Sunny. Everyone saw me! A mayor is NEVER out of the public eye."
+> Uncle Sunny. MICROPHONE in both hands, in front of the whole crowd — you can't carry off a pie with your hands full of microphone! A mayor is NEVER out of the public eye."
 
 # 🎬 Act it out!
 Try to give a grand **speech** at the worst moments. Demand to be "kept
 informed" and appoint yourself "Official Overseer of the Investigation."
+
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You suspect **FARMER FRAN**. Your reason: "That grumpy orchard-keeper has a
+bitter grudge against Grandma for never crediting her apples — I've heard her
+complain about it for YEARS. Motive, plain as day!"
 
 # ❓ Questions to ask
 - "Who would DARE ruin the mayor's ceremony?"
@@ -41,6 +46,12 @@ informed" and appoint yourself "Official Overseer of the Investigation."
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You're all talk and no action — and you were up
 front the whole time. You're a loud, funny red herring. Ham it up, then help.
 ------------------------------------------------------------

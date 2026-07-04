@@ -37,6 +37,11 @@ out, your fancy bakery would be ruined!
 Loudly **insult everyone's baking** and brag about your pastry training. Offer
 snooty tarts to detectives while criticizing their "technique."
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You point at **REALTOR RITA**. Your reason: "That woman cheats at everything —
+cards, deals, all of it. She'd swipe a pie without blinking if it meant winning
+something."
+
 # ❓ Questions to ask
 - "Who else can't stand losing to Grandma? Besides me, I mean."
 - "Did anyone SWAP in a fake pie? That's what a pro would do."
@@ -44,6 +49,12 @@ snooty tarts to detectives while criticizing their "technique."
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You've got motive (pro pride!) but you were at your
 sample booth with witnesses. A strong red herring — play up the rivalry, then
 help solve it.

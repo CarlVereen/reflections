@@ -45,6 +45,11 @@ away.
 Let someone "catch" you shoving something (burnt burgers!) into the bushes and
 act super cagey — "Nothing to see here!"
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You've got your eye on **AUNT BELLA**. Your reason: "She borrowed my oven mitts
+this morning — and those very mitts turned up at the crime scene! Explain THAT,
+Bella." Don't let her wriggle out of it.
+
 # ❓ Questions to ask
 - "Aunt Bella — I lent YOU those oven mitts this morning. Care to explain?"
 - "Who borrowed oven mitts today?"
@@ -52,6 +57,12 @@ act super cagey — "Nothing to see here!"
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You're a key witness — you lent Aunt Bella the very
 oven mitts found at the scene, and you can clear Coach Diego. Share it!
 ------------------------------------------------------------

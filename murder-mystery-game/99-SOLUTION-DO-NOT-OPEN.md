@@ -70,7 +70,9 @@
 >   • 🛴 Max saw someone hide a covered dish **under a lawn chair**, and Uncle
 >     Marty saw someone hurry that way.
 >   • 👐 Ruby, under the dessert table, saw the thief's hands were **coated in
->     apple filling** — and Bella's hands were a sticky mess.
+>     apple filling** — and Bella's hands were a sticky mess. (And here's the
+>     clincher: Bella's own contest entry is a *peach* cobbler. That **apple**
+>     filling could only have come from Grandma's stolen pie!)
 >   • 🍋 She swore she was 'in the kitchen,' but Lily stood by the kitchen door
 >     the whole salute and saw **no one** go in. Her alibi was a lie."
 

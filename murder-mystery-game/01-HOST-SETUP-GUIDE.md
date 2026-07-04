@@ -126,6 +126,19 @@ The Master Script does the heavy lifting. Your only "jobs" as the group:
 There are **no rulings to make**. Every character booklet tells that kid
 exactly what they know and what to say. Nobody can "break" the game.
 
+> ⚠️ **The ONE rule that keeps the mystery alive:** No player may ever reveal
+> whether their card says they're innocent or guilty. If people start announcing
+> "my card says I'm innocent," the thief gets found by simple elimination and the
+> whole game deflates. Everyone acts a little guilty! (The Master Script reads
+> this rule aloud to the group at the start — but remind folks as they arrive.)
+
+> 🕵️ **Everyone is an accuser.** Each booklet names one *other* guest that the
+> character already suspects, with a personal reason — so accusations fly in
+> every direction from the first minute. That's by design: most of those hunches
+> are dead wrong (loud false leads land on Uncle Marty and Baker Benny), and the
+> real clues quietly point somewhere else. It keeps 18 people loud, busy, and
+> pointing fingers.
+
 > 🎬 **Tip for extra fun:** Each booklet has an **"Act it out!"** bit — a little
 > piece of drama the player can perform (a swoon, a friendly argument, a grumpy
 > nap, a burst of song). Encourage everyone to *do* these during the

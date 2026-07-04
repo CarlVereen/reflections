@@ -36,6 +36,11 @@ to eat healthy. Total hypocrite about your diet!
 **Fuss over people** — check their pulse, offer bandages nobody needs, and
 whisper juicy "health gossip" about other guests.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You suspect **UNCLE MARTY**. Your reason: "That man loves Grandma's pie more
+than anything alive, and he was 'napping' at awfully the right moment, wasn't
+he? Convenient, if you ask me."
+
 # ❓ Questions to ask
 - "Max, dear, tell everyone what you saw by the lawn chairs!"
 - "Has anyone got a stomachache from too much... pie?"
@@ -43,6 +48,12 @@ whisper juicy "health gossip" about other guests.
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You were tending Max's knee (and sneaking cookies).
 You can back up where Max was and nudge everyone to hear his lawn-chair clue.
 ------------------------------------------------------------

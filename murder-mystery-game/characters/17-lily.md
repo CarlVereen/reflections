@@ -43,6 +43,11 @@ weak!
 Keep "working" your stand — "Ice-cold lemonade, 25 cents!" — and **butt into
 private conversations** to share what you overheard.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You suspect **AUNT BELLA**. Your reason: "She said she was in the kitchen during
+the salute — but my stand is right by that door, and I NEVER saw her go in.
+She's fibbing!"
+
 # ❓ Questions to ask
 - "Where exactly were you during the flag salute?"
 - "Did anyone say they went INSIDE? Because I'd know!"
@@ -50,6 +55,12 @@ private conversations** to share what you overheard.
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You're a KEY witness: you can prove anyone who
 claims they were "in the kitchen" during the salute is LYING — because nobody
 went in. That busts the thief's fake alibi wide open. Speak up in Round 3!

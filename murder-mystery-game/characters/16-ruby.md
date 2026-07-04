@@ -42,6 +42,10 @@ grown-up asks about missing cupcakes.
 Sneak behind people and **duck out of sight** when a grown-up looks your way.
 Then jump up at your big moment: "WAIT — I saw something!"
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You blame **UNCLE MARTY**. Your reason: "He's always so grumpy and he REALLY
+wanted that pie. I bet HE took it and is hiding it to eat later!"
+
 # ❓ Questions to ask
 - "Let me see your hands! Are they sticky?!"
 - "Were you near the dessert table during the salute?"
@@ -49,6 +53,12 @@ Then jump up at your big moment: "WAIT — I saw something!"
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO — you only took cupcakes! You're the most important
 eyewitness: you saw the thief's sticky apple hands. Get everyone to show their
 hands in Round 3. You could win Master Detective! 🕵️

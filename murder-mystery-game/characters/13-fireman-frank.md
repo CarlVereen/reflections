@@ -24,8 +24,8 @@ You've been dreading tonight's show all week. Don't let anyone find out!
 
 # 🔎 What you know (a helpful witness clue!)
 - **Freely:** "From my post by the fireworks I could see the whole backyard. I
-  can tell you NObody went near the fireworks — but I did notice movement over
-  by the lawn chairs during the salute."
+  can tell you this for certain: NOTHING was carried out to the cars or off the
+  property during the salute. Whatever was taken is still HERE — hidden at this party."
 - **If asked:** "The dessert table? I was too far to reach it — a good forty
   feet away, guarding my post."
 
@@ -37,6 +37,11 @@ You've been dreading tonight's show all week. Don't let anyone find out!
 **Patrol** the party self-importantly, "inspecting for hazards." Flinch
 dramatically whenever anyone mentions the fireworks tonight.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You've got your eye on **UNCLE MARTY**. Your reason: "He was parked in that
+hammock right by the lawn chairs — exactly where the trail leads — and the man is
+pie-crazy. I'm watching him."
+
 # ❓ Questions to ask
 - "Did anyone see movement by the lawn chairs? I did!"
 - "Who left their post — I mean, their spot — during the salute?"
@@ -44,6 +49,12 @@ dramatically whenever anyone mentions the fireworks tonight.
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You were guarding the fireworks, far from the
-dessert table. You back up the clue that something happened by the LAWN CHAIRS.
+dessert table. Your clue proves the stolen pie never left the property — it's hidden right here.
 ------------------------------------------------------------

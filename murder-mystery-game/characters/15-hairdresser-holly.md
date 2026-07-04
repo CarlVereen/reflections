@@ -37,6 +37,11 @@ party wearing a hat to hide it. You're praying nobody asks about it.
 **Spread rumors** and repeat every clue you overhear (loudly). Pull people aside
 for "just between us" whispers, then announce them to the whole yard.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You suspect **REALTOR RITA**. Your reason: "Oh honey, that woman cheated at
+bunco night last spring — I saw it with my own eyes! A person like that would
+take a pie and smile about it."
+
 # ❓ Questions to ask
 - "Okay, who's got a MOTIVE? I'll start the list!"
 - "Did y'all hear about the borrowed oven mitts and the spare carrier?"
@@ -44,6 +49,12 @@ for "just between us" whispers, then announce them to the whole yard.
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You're the gossip hub — your job is to REPEAT and
 connect clues so the group doesn't overlook them. (Verbal clues get missed
 unless repeated — that's YOU.) Keep the whole yard talking!

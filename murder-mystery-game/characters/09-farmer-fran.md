@@ -27,6 +27,9 @@ out!
 # 🔎 What you know
 - **If asked:** "I was over at my produce stand the whole salute, selling
   apples and corn. Lots of folks bought from me — ask around!"
+- **Helpful:** "My stand sits right by the grill — I'll vouch that Grill Master
+  Gus and Coach Diego never left it during the salute, flipping burgers the whole
+  time, the pair of them."
 - **Flavor:** "That pie's filling? Cinnamon and MY apples. You could smell it
   from a mile off." _(Reminds everyone the pie leaves an apple-cinnamon scent
   and trail.)_
@@ -39,6 +42,11 @@ out!
 Grumble loudly that nobody credits your apples. Try to **sell produce** to the
 detectives mid-investigation: "Apple while you sleuth? Two for a dollar!"
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You blame **BAKER BENNY**. Your reason: "That fancy baker uses a boxed MIX and
+STILL loses to Grandma every year. A man that proud would absolutely cheat to
+win."
+
 # ❓ Questions to ask
 - "Anybody smell apple-cinnamon? That's the pie's trail!"
 - "Where'd that sticky trail lead, anyhow?"
@@ -46,6 +54,12 @@ detectives mid-investigation: "Apple while you sleuth? Two for a dollar!"
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You've got a grudge (red herring!) but you were at
 your produce stand with customers. Your apple-cinnamon comment reminds folks the
 pie left a scented trail — a nudge toward Clue 3.

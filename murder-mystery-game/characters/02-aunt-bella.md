@@ -35,6 +35,11 @@ Early on, have a loud but SWEET "friendly" argument with Grandma about who
 deserves the ribbon, then instantly switch to being super nice. Any time someone
 eyes your hands, hide them behind your back.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You point the finger at **COACH DIEGO**. Your reason (say it with confidence):
+"He's the JUDGE — he had every pie in his hands all afternoon. If anyone could
+make one disappear, it's him!" Push this theory hard; it keeps eyes off you.
+
 # ❓ Questions to ask
 - "Coach Diego, weren't YOU holding all the pies?"
 - "Did anyone actually SEE the thief? No? Well then!"
@@ -42,6 +47,10 @@ eyes your hands, hide them behind your back.
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE. Biggest secret in the game. Don't let anyone see this!
+
+**🚫 GOLDEN RULE:** Never let on that your card says you're the thief — and never
+admit it until the grand reveal. Act as innocent (and as helpful) as everyone
+else. The whole game is you keeping this secret!
 
 **Are you the thief?** ✅ YES. IT WAS YOU! 🤫
 - **Why:** Twelve years of second place. You're done losing. With Grandma's
@@ -64,9 +73,21 @@ eyes your hands, hide them behind your back.
      and saw **no one** go in.
   5. 📝 You dropped that **note** — in your own loopy, hearts-over-the-i
      handwriting that Librarian Lou can recognize.
-- **Bluff:** Stay sweet and helpful. Hide or wipe your hands. Keep steering
-  suspicion to Coach Diego (he handled all the pies!) or anyone else. If
-  accused: "What a thing to say! You've no proof, and I've a ribbon to win."
+- **Bluff:** Stay sweet and helpful. Hide or wipe your hands. If accused: "What a
+  thing to say! You've no proof, and I've a ribbon to win."
+- **🎯 Who to BLAME (deflect, deflect, deflect!):** When suspicion swings your
+  way, throw it at someone else. Pick and mix:
+  - **Coach Diego** — "He's the JUDGE! He had every single pie in his hands
+    today. Who had better access than him?"
+  - **Baker Benny** — "A professional who loses to a grandma every year? That's
+    humiliating enough to make a man snap."
+  - **Realtor Rita** — "She cheats at everything and can't stand to lose. Look
+    at HER."
+  - **Uncle Marty** — "He's pie-obsessed and was lurking right by the lawn
+    chairs. Very suspicious."
+  - **Little Ruby** — "That child was sneaking around the dessert table! Who's
+    to say she didn't take it?"
+  Keep the heat on THEM, and off you.
 
 **⭐ At the reveal:** big dramatic CONFESSION — *"FINE! Twelve years of second
 place — I just wanted ONE blue ribbon!"* Take a bow. Best Actor, probably. 🎭

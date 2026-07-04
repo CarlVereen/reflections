@@ -36,6 +36,11 @@ Marvelous") and always lose. Mortifying.
 exciting happens: "Wha—? Did somebody find my pie?!" Grumpily accuse random
 people.
 
+# 🕵️ Who YOU suspect (say it loud — accuse them!)
+You blame **RUBY**, that sneaky little cousin. Your reason: "That kid's always
+swiping sweets. I'll bet she grabbed my pie and hid it somewhere — go check her
+sticky little hands!" Grumble it to anyone who'll listen.
+
 # ❓ Questions to ask
 - "Who was rushing toward the lawn chairs during the salute?"
 - "Whatcha hiding under YOUR lawn chair?"
@@ -43,6 +48,12 @@ people.
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
+
+**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
+guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
+thief would be the only one left). Keep everyone guessing — act a little
+suspicious no matter what!
+
 **Are you the thief?** ❌ NO. You look guilty (you love that pie!) but you were
 napping. Your clue — someone hurried to the LAWN CHAIRS with a covered dish — is
 useful. Help the detectives, ya grump.
