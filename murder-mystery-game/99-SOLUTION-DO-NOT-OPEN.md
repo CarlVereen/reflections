@@ -110,20 +110,42 @@
 
 ---
 
-## 🎬 What happens next
+## ⚖️ Now decide who WON — Detectives vs. the Thief!
 
-> **Aunt Bella (the player) now gives a big, dramatic CONFESSION!** Their
-> booklet told them to expect this moment. Let them ham it up: *"FINE! It was
-> me! Twelve years of second place — I just wanted ONE blue ribbon!"*
+> Count how many players voted for **Aunt Bella** on their ballots (the reader
+> tallied this just before opening the solution):
 >
-> Then **go retrieve the pie from under the lawn chair** (or wherever you hid
-> your prop pie) — the blue ribbon is SAVED, and everyone can have a slice! 🥧
+> - 🏅 **MORE THAN HALF named Bella → the DETECTIVES WIN.** The thief is caught,
+>   the pie is saved, justice is served on Maple Street!
+> - 🏆 **HALF or FEWER named Bella → THE THIEF WINS and escapes clean!** With
+>   suspicion scattered across the whole neighborhood, Bella slipped right
+>   through the net — the perfect crime.
+>
+> _(Example: with 18 players, the thief is caught only if **10 or more** voted
+> for Bella. **9 or fewer**, and she gets away with it!)_
 
 ---
 
-## 🏅 Scoring
-- Every detective who wrote **Aunt Bella** AND a correct reason (tired of losing
-  / to win the blue ribbon) on their ballot is a **MASTER DETECTIVE**! 🎉
+## 🎬 What happens next
+
+> **Aunt Bella (the player) now takes her big moment!** Her booklet tells her how
+> to play it:
+> - If she was **CAUGHT**, a caught confession: *"FINE! It was me! Twelve years
+>   of second place — I just wanted ONE blue ribbon!"*
+> - If she **ESCAPED**, a gloating victory lap: *"You'll never catch me — oh, you
+>   know now, but I already WON!"*
+>
+> Then **go retrieve the pie from under the lawn chair** (or wherever you hid
+> your prop pie) — recovered at last, so everyone can have a slice! 🥧
+
+---
+
+## 🏅 Scoring & honors
+- **The team result** is decided by the vote above — Detectives win, or the Thief
+  escapes.
+- **Individual honor:** every detective who wrote **Aunt Bella** AND a correct
+  reason (tired of losing / to win the blue ribbon) on their ballot earns
+  **MASTER DETECTIVE** — even if the thief got away!
 - Now hand out the award certificates from `clues/name-tags-and-ballots.md`.
 
 > **Happy 4th of July, detectives — case closed!** 🎆🇺🇸

@@ -56,7 +56,14 @@ Cut these out and pin/tape them on, or write the names on sticker tags.
 ## 🗳️ DETECTIVE BALLOTS
 
 Print **one ballot per player** (18+). Hand them out in Round 5. Each detective
-checks ONE box, then fills in the "why" and "proof."
+(the thief votes too!) checks ONE box, then fills in the "why" and "proof."
+
+> 🏆 **How winning works:** After everyone votes, count the ballots. It's
+> **Detectives vs. the Thief** — the detectives win only if **more than half**
+> the players named the *real* culprit. If the votes are split, **the thief
+> escapes and wins!** Tally the votes *before* opening the sealed solution, then
+> compare. (With 18 players: 10+ votes on the culprit = caught; 9 or fewer =
+> the thief gets away.)
 
 ```
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

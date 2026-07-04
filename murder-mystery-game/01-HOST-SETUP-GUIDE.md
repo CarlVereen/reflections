@@ -139,6 +139,13 @@ exactly what they know and what to say. Nobody can "break" the game.
 > real clues quietly point somewhere else. It keeps 18 people loud, busy, and
 > pointing fingers.
 
+> 🏆 **It's a contest — Detectives vs. the Thief.** In the final round everyone
+> votes. The detectives win only if **more than half** name the real culprit; if
+> the votes stay scattered, **the thief escapes and wins.** So the thief is
+> genuinely playing to get away with it, and the detectives have to actually
+> agree — not just each hold a private hunch. The Master Script walks the group
+> through the vote tally and both outcomes.
+
 > 🎬 **Tip for extra fun:** Each booklet has an **"Act it out!"** bit — a little
 > piece of drama the player can perform (a swoon, a friendly argument, a grumpy
 > nap, a burst of song). Encourage everyone to *do* these during the

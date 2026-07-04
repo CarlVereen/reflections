@@ -48,8 +48,10 @@ solution while prepping.
    the new evidence aloud.
 4. Players **mingle, question each other, and swap what they know.** Everyone
    has a secret, so everyone acts a little suspicious!
-5. In the final round, everyone **writes down their guess** on a ballot — then
-   you open the sealed solution and the thief is revealed. 🎉
+5. In the final round, everyone **votes** on a ballot — then you open the sealed
+   solution. It's **Detectives vs. the Thief**: the thief is only caught if
+   *more than half* the players vote for the right person. If suspicion stays
+   split, **the thief escapes and wins!** 🎉
 
 Plays in about **45–75 minutes**. Perfect for a 4th of July cookout, birthday
 party, class party, or any backyard get-together.

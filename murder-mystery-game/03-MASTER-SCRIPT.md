@@ -154,39 +154,61 @@ everyone returns to the circle and gets a **detective ballot** and a pencil.]_
 
 ---
 
-## 🏆 ROUND 5 — The Accusation & The Reveal
+## 🏆 ROUND 5 — The Vote & The Reveal
+
+> **📢 READ ALOUD — HOW SOMEONE WINS:**
+> "Moment of truth, and this is a real contest: it's the **DETECTIVES vs. the
+> THIEF!** On your **ballot**, write down (1) WHO stole Grandma's pie, (2) WHY,
+> and (3) one CLUE that proves it. This is your official VOTE. Here's the rule
+> that decides it all: **the thief is only caught if MORE THAN HALF of us name
+> the same, correct person.** If our votes are split, the thief gets away
+> CLEAN — and wins! Vote carefully, detectives. No peeking!"
+
+_[Everyone fills out their ballot secretly — all players vote, and yes, the
+thief votes too (for someone else, to blend in!).]_
 
 > **📢 READ ALOUD:**
-> "The moment of truth, detectives! On your **ballot**, write down: (1) WHO you
-> think stole Grandma's pie, (2) WHY they did it, and (3) one CLUE that proves
-> it. No peeking at your neighbor's! When everyone's done, we reveal the
-> answer."
+> "Let's hear those accusations! Going around, each of you stand and announce:
+> *'I accuse... [name]... because [reason]!'* Point dramatically — this is your
+> big detective moment!"
 
-_[Everyone fills out their ballot secretly. Collect them, or have each player
-hold theirs.]_
+_[Go around the group. Each player accuses aloud. Build the suspense!]_
 
 > **📢 READ ALOUD:**
-> "Before we open the truth... let's hear your guesses! Going around the circle,
-> each detective, stand up and announce: *'I accuse... [character's name]...
-> because [reason]!'* Point dramatically. This is your big detective moment!"
+> "Now we TALLY. Hand in your ballots. I'll read each suspect's name and count
+> the votes — let's see where the neighborhood landed."
 
-_[Go around the circle. Each player makes their accusation out loud. Build the
-suspense!]_
+_[Collect the ballots and count the votes for each suspect. Read the totals out
+loud, e.g. "Uncle Marty: 4... Baker Benny: 3... Aunt Bella: 6..." Note the
+suspect with the MOST votes, and **whether any suspect was named by MORE THAN
+HALF the players.** Remember that number, then open the solution.]_
 
 > **📢 READ ALOUD:**
-> "The accusations are in. The detectives have spoken. Now... the truth shall be
-> revealed. If a pie thief is among us, they must CONFESS! _[dramatic pause]_
-> Let us open... **THE SEALED SOLUTION!**"
+> "The votes are in. Now... the truth. If the thief is among us, they must
+> reveal themselves! _[dramatic pause]_ Let us open... **THE SEALED SOLUTION!**"
 
-**➡️ NOW open the sealed `99-SOLUTION-DO-NOT-OPEN.md` envelope and read it aloud.**
-_(The thief's own booklet tells them what to do when they're revealed — a big
-dramatic confession! Let them ham it up.)_
+**➡️ NOW open the sealed `99-SOLUTION-DO-NOT-OPEN.md` and read it aloud.** It
+names the real thief — then compare that name to your tally:
 
-> **📢 READ ALOUD (after the reveal):**
-> "There it is, detectives — the thief is caught, and Grandma's blue-ribbon pie
-> is SAVED! _[cheer!]_ Let's count up who solved it. Any detective who named the
-> right thief AND the right reason is a **Master Detective!** Time for
-> awards..."
+- 🏅 **If MORE THAN HALF the players voted for the real thief → THE DETECTIVES
+  WIN — the thief is caught!**
+- 🏆 **If the real thief got HALF the votes or fewer → THE THIEF WINS and escapes
+  clean!** (Those scattered suspicions did their job.)
+
+_(Either way, the thief now gives a big dramatic CONFESSION — a caught "you got
+me!" or a gloating "you'll never catch me... oh, you know now, but I still WON!"
+Their booklet tells them how.)_
+
+> **📢 READ ALOUD — if the DETECTIVES won:**
+> "Justice on Maple Street! You caught the thief and saved Grandma's pie! Take a
+> bow, detectives! Any of you who named the right thief AND the right reason is a
+> **Master Detective!**"
+
+> **📢 READ ALOUD — if the THIEF won:**
+> "The thief got away with it! Our votes were too split to convict — the perfect
+> crime! Tip your hat to a master criminal, folks. (Detectives who named the
+> right thief anyway still earn **Master Detective** honors!) Better luck next
+> cookout..."
 
 ---
 
