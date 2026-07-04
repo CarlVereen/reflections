@@ -24,11 +24,13 @@ You read the postcards before you deliver them. You know everyone's vacation
 plans and secrets — and you can't help mentioning things you "shouldn't" know.
 
 # 🔎 What you know (a helpful witness clue!)
-- **Big clue:** "This morning I saw Aunt Bella carrying a great big covered dish
-  to her spot — a heavy one, like it already had something in it. Thought it
-  was odd, since the pies weren't judged yet!"
+- **Big clue:** "This morning I watched Aunt Bella carry in her cobbler in one
+  pie carrier — and a SECOND pie carrier, empty, tucked under her arm. Now who
+  brings a *spare* pie carrier to a contest? Unless they're planning to carry
+  home more than one pie..."
 - **If asked:** "During the salute I was finishing my route out front — didn't
-  see the grab myself, but I saw who was carrying WHAT earlier."
+  see the grab myself. But I saw who came to this cookout carrying TWO carriers,
+  and that's stuck with me."
 
 # 🧭 My alibi (Round 3)
 > "I was out front delivering mail during the salute — Mrs. Patterson signed for
@@ -39,12 +41,13 @@ Randomly "deliver mail" to guests and use it to snoop: "Letter for you! Say, is
 that apple filling on your sleeve?"
 
 # ❓ Questions to ask
-- "Who was carrying a big covered dish before the contest?"
-- "Aunt Bella — what was in that heavy dish this morning?"
+- "Who brought TWO pie carriers to a one-pie contest?"
+- "Aunt Bella — what was that empty spare carrier for?"
 - "Anybody's hands or clothes got apple on 'em?"
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
-**Are you the thief?** ❌ NO. You're a nosy witness: you saw Aunt Bella lugging a
-heavy covered dish early — before any pie should've been moved. Share it!
+**Are you the thief?** ❌ NO. You're a nosy witness: you saw Aunt Bella arrive
+with a spare, empty pie carrier — the perfect thing to smuggle a stolen pie in.
+Share it!
 ------------------------------------------------------------

@@ -24,8 +24,9 @@ party wearing a hat to hide it. You're praying nobody asks about it.
 
 # 🔎 What you know (the gossip hub — repeats clues!)
 - **Freely, all game:** repeat and connect what others say — "Did you hear Gus
-  saw Bella with an empty pie carrier? And she's ALWAYS coming in second... and
-  now her hands are hidden? Honey, that's SUSPICIOUS."
+  lent Bella his oven mitts, and Mike saw her bring a SPARE pie carrier? And
+  she's always coming in second... and now she's hiding her hands? Honey, that's
+  SUSPICIOUS."
 - Your job is to make sure clues get shared around so nobody misses them.
 
 # 🧭 My alibi (Round 3)
@@ -38,7 +39,7 @@ for "just between us" whispers, then announce them to the whole yard.
 
 # ❓ Questions to ask
 - "Okay, who's got a MOTIVE? I'll start the list!"
-- "Did y'all hear about the empty pie carrier? And the sticky hands?"
+- "Did y'all hear about the borrowed oven mitts and the spare carrier?"
 - "Aunt Bella, honey — why do you keep hiding those hands?"
 
 ------------------------------------------------------------

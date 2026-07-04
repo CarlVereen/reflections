@@ -44,20 +44,29 @@ eyes your hands, hide them behind your back.
 🔒 SECRET — read ALONE. Biggest secret in the game. Don't let anyone see this!
 
 **Are you the thief?** ✅ YES. IT WAS YOU! 🤫
-- **Why:** You're sick of second place. With Grandma's pie gone, YOURS wins!
-- **How:** You brought your own **pie carrier** as a decoy and borrowed Grill
-  Master Gus's **oven mitts**. During the flag salute, you slipped to the
-  dessert table, grabbed the warm pie, hid it in your carrier, and stashed it
-  under your **lawn chair**.
-- **Your mistakes (how you get caught):**
-  1. 🍎 Sticky apple-cinnamon drips lead to your lawn chair — with a fork of
-     fresh pie beside it!
-  2. 👐 You got apple filling all over your hands.
-  3. 🍋 You said you were "in the kitchen," but the lemonade kid (Lily) was by
-     the kitchen door the whole time and never saw you.
-  4. 📝 You dropped a note about being "tired of second place."
-- **Bluff:** Act sweet and helpful. Hide/wipe your hands. Keep pointing at Coach
-  Diego or anyone else. If accused: "What a thing to say! You have no proof!"
+- **Why:** Twelve years of second place. You're done losing. With Grandma's
+  champion pie gone, YOUR cobbler finally wins the blue ribbon.
+- **How (you planned this for a year):** You brought **two pie carriers** — one
+  for your cobbler, one empty and hidden in your tote — and this morning you
+  borrowed Grill Master Gus's **oven mitts**, telling him your dish was "too hot
+  to carry." During the flag salute, while every head was turned to the flag,
+  you lifted Grandma's hot pie with the mitts, slid it into your spare carrier,
+  stashed it under your **lawn chair**, and strolled back to the crowd, sweet as
+  sugar.
+- **Your mistakes (how a sharp detective catches you):**
+  1. 🧤 In your rush you **dropped Gus's oven mitts** at the dessert table — and
+     Gus knows he lent them to you.
+  2. 🍎 The hot pie **dripped**: a sticky trail leads to your lawn chair, and
+     you left a **fork with a bite of pie** there (you couldn't resist!).
+  3. 👐 You got **apple filling on your hands** (little Ruby saw the thief's
+     sticky hands).
+  4. 🍋 You claimed you were "in the kitchen," but Lily was at the kitchen door
+     and saw **no one** go in.
+  5. 📝 You dropped that **note** — in your own loopy, hearts-over-the-i
+     handwriting that Librarian Lou can recognize.
+- **Bluff:** Stay sweet and helpful. Hide or wipe your hands. Keep steering
+  suspicion to Coach Diego (he handled all the pies!) or anyone else. If
+  accused: "What a thing to say! You've no proof, and I've a ribbon to win."
 
 **⭐ At the reveal:** big dramatic CONFESSION — *"FINE! Twelve years of second
 place — I just wanted ONE blue ribbon!"* Take a bow. Best Actor, probably. 🎭

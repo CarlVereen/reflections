@@ -2,13 +2,15 @@
 ### A Print-and-Play 4th of July Backyard Mystery — Family Cookout Edition
 ### Built for 18 players: 15 adults + 3 kids (everyone gets a character!)
 
-It's the big **Independence Day cookout** on Maple Street! Burgers are
-sizzling, the flag is flying, and the highlight of the day is the **pie
-contest** — which Grandma Rose's famous **blue-ribbon apple pie** wins EVERY
-year. But right in the middle of the flag salute, someone snatched the pie
-right off the dessert table! Now the contest can't happen, and every guest at
-the barbecue is a suspect. Can your crew of young detectives follow the clues
-and catch the pie thief before the fireworks start? 🎆
+It's the biggest day of the year on Maple Street: the **Independence Day
+cookout** — and the crown jewel of the afternoon is the **pie contest**. For
+**twelve years running**, Grandma Rose's blue-ribbon apple pie has taken first
+place and the title of Maple Street Champion. This year, someone finally had
+enough. During the flag salute — every hand over every heart, every eye on the
+flag — a thief slipped to the dessert table and **stole the champion pie right
+out from under the whole neighborhood.** No pie, no contest, no champion...
+unless your detectives can follow the clues, break the alibis, and unmask the
+culprit before the fireworks light up the sky. 🎆
 
 Nobody gets hurt in this mystery — it's a **stolen pie**, not a "murder" — so
 it stays fun, silly, and worry-free for kids. All the fun of a whodunit, none

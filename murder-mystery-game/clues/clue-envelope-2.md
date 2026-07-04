@@ -6,39 +6,40 @@
 
 # 📣 Read this aloud to everyone:
 
-> **CLUE #2: A mysterious note — and a MOTIVE!**
+> **CLUE #2: A crumpled note — and a reason.**
 >
-> "Detectives, someone found a crumpled-up note in the trash can by the grill.
-> It looks like it was written this morning, before the party. Listen closely —
-> this tells us WHY the pie was taken:
->
-> _______________________________________________________
->
->   *'This is finally MY year. That blue ribbon is coming home*
->   *with ME this time — no matter what it takes. I am SO tired*
->   *of always, always coming in second place.'*
+> "A plan needs a *reason*, detectives. And someone was careless enough to leave
+> theirs behind. This note was found crushed into a ball in the trash can by the
+> grill — written this morning, before the party even started. Listen:
 >
 > _______________________________________________________
 >
-> There's no name signed on it. But the handwriting is fancy and loopy, with
-> little hearts over the letter 'i'. 💗
+>   *'Twelve years. Twelve years of coming in second while everyone*
+>   *fawns over her pie. Not this time. That blue ribbon is coming*
+>   *home with ME — whatever it takes.'*
 >
-> So... our thief is someone who enters the pie contest, keeps LOSING, and is
-> desperate to finally win first place. Someone who is tired of second place.
+> _______________________________________________________
 >
-> Now, detectives — WHO always comes in second at the pie contest? Who would
-> win the blue ribbon if Grandma's pie disappeared? Put those two ideas
-> together..."
+> No signature. But the handwriting tells its own story: neat, fancy, looping
+> letters — with a tiny **heart dotted over every letter 'i'.** 💗
+>
+> So now we know the *why*. Our thief isn't a stranger and isn't a dog. Our
+> thief is **someone in this contest who is sick and tired of losing** — someone
+> who has placed second, year after year, and finally decided that this was
+> their year to win, no matter the cost.
+>
+> Detectives — who at this cookout has spent twelve years finishing *second*?
+> And whose blue ribbon would it be if the champion's pie simply... disappeared?"
 
 ---
 
 ### 🧩 What this clue tells the detectives:
-- **MOTIVE:** The thief is a **pie-contest entrant** who is sick of **losing**.
-- With Grandma's champion pie gone, whoever **usually comes in second** would
-  finally **win the blue ribbon**.
-- Ask the pie judge (Coach Diego) or Grandma: *who always comes in second?*
-
-_(Whose handwriting is fancy and loopy? Who's been grumbling about losing? Keep
-digging!)_
+- **MOTIVE:** The thief is a **pie-contest regular** who is **tired of losing** —
+  a perennial runner-up.
+- With the champion pie gone, whoever **usually comes in second** would finally
+  take **first**.
+- The handwriting — fancy, looping, **hearts over the i's** — is a signature all
+  its own. Who writes like that? (Ask the sharp-eyed folks; someone may have
+  seen that handwriting before...)
 
 **➡️ Now return to the Master Script for Investigation Time.**

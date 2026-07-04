@@ -21,14 +21,18 @@
 
 # 📣 THE GRAND REVEAL — read this aloud in Round 5
 
-> **Detectives... the thief who stole Grandma Rose's blue-ribbon pie is...**
+> **"Detectives, every clue you needed was right in front of you all afternoon.
+> A pair of borrowed oven mitts. A spare pie carrier. A note about twelve years
+> of losing. A sticky trail to a lawn chair, and a fork with one guilty bite.
+> Put them together, and they point to just one person...**
 >
 > 🥁 _(drumroll — have everyone pat their knees!)_ 🥁
 >
 > # 🏆 AUNT BELLA! 🏆
 >
-> "That's right — it was **Aunt Bella**, the neighbor who comes in SECOND place
-> at the pie contest every single year!"
+> "That's right — it was **Aunt Bella**, the neighbor who has finished SECOND at
+> the pie contest twelve years running... and finally decided she was done
+> losing."
 
 ---
 
@@ -36,33 +40,39 @@
 
 > "Here's how the whole thing fits together, detectives:
 >
-> **WHY she did it (the motive):** Aunt Bella has lost to Grandma Rose TWELVE
-> years in a row. She was desperate to finally win the blue ribbon. With
-> Grandma's champion pie gone, Bella's pie would win first place! That crumpled
-> note — *'This is finally MY year... I'm so tired of second place'* — was
-> written by Bella. (That's why the handwriting was fancy and loopy!)
+> **WHY she did it (the motive):** For twelve years, Aunt Bella has baked her
+> heart out and finished *second* to Grandma Rose — every single time. This year
+> she decided she was done losing. With the champion pie gone, there'd be no
+> contest to lose, and her cobbler would take the blue ribbon by default. That
+> crumpled note — *'Twelve years of coming in second... that blue ribbon is
+> coming home with ME'* — was hers, right down to the little hearts she dots over
+> her i's.
 >
-> **HOW she did it (the plan):** Bella brought her own empty **pie carrier** to
-> the cookout on purpose — Grill Master Gus saw her tuck it behind the cooler,
-> Mailman Mike saw her lugging a heavy covered dish that morning, and she
-> borrowed Gus's **oven mitts**. During the **flag salute**, when everyone faced
-> the flag and Uncle Sunny led the anthem, Bella slipped to the dessert table,
-> grabbed the warm pie with the mitts, hid it in her carrier, and stashed it
-> under her **lawn chair**.
+> **HOW she did it (the plan):** Bella planned this for a whole year. She arrived
+> with **two pie carriers** — one for her cobbler, one empty and hidden in her
+> tote (Mailman Mike noticed the spare) — and that morning she borrowed Grill
+> Master Gus's **oven mitts**, claiming her dish was 'too hot to carry.' During
+> the **flag salute**, while Uncle Sunny led the anthem and every head turned to
+> the flag, Bella lifted Grandma's hot pie with the mitts, slid it into her
+> spare carrier, stashed it under her **lawn chair**, and strolled back to the
+> crowd, sweet as ever.
 >
-> **How she got CAUGHT (the evidence):**
->   • 🍎 The pie dripped a sticky apple-cinnamon trail leading right to her lawn
->     chair — with a fork of fresh pie beside it (Clue 3).
->   • 👐 Ruby, hiding under the dessert table, saw the thief's hands were
->     covered in gooey apple filling — Bella's hands were a sticky mess!
->   • 🛴 Max, getting his knee bandaged, saw someone hide a covered dish UNDER a
->     lawn chair — and Uncle Marty saw someone hurry that way too.
->   • 🍋 Bella claimed she was 'in the kitchen getting lemonade,' but Lily was
->     at her lemonade stand by the kitchen door the whole time and saw NOBODY go
->     in. Bella's alibi was a fib!
->   • 📚 Librarian Lou matched the loopy, hearts-over-the-i handwriting on the
->     note to the pie-contest sign-up sheet — the thief was a contest entrant.
->   • 🕵️ And she came prepared with a pie carrier and oven mitts (Clue 1)."
+> **How she got CAUGHT (the evidence — every piece was in plain sight):**
+>   • 🧤 She **dropped Gus's oven mitts** at the dessert table in her hurry —
+>     and Gus knew he'd lent them to her that very morning (Clue 1).
+>   • 📬 Mailman Mike saw her arrive with a **spare, empty pie carrier** — the
+>     perfect thing to smuggle a stolen pie.
+>   • 📝 The **note** ('twelve years of second place... whatever it takes') was
+>     in her own loopy, hearts-over-the-i handwriting — which Librarian Lou
+>     matched to the contest sign-up sheet (Clue 2).
+>   • 🍎 The pie dripped a sticky trail straight to **her lawn chair**, with a
+>     **fork of fresh pie** beside it — she'd snuck a taste (Clue 3).
+>   • 🛴 Max saw someone hide a covered dish **under a lawn chair**, and Uncle
+>     Marty saw someone hurry that way.
+>   • 👐 Ruby, under the dessert table, saw the thief's hands were **coated in
+>     apple filling** — and Bella's hands were a sticky mess.
+>   • 🍋 She swore she was 'in the kitchen,' but Lily stood by the kitchen door
+>     the whole salute and saw **no one** go in. Her alibi was a lie."
 
 ---
 
@@ -70,7 +80,8 @@
 
 > **The kids & key witnesses:**
 > - **Grandma Rose** — It's her own pie; she wanted it back! Up front singing.
-> - **Grill Master Gus** — At the grill the whole time; saw Bella's pie carrier.
+> - **Grill Master Gus** — At the grill the whole time; he's the one who lent
+>   Bella the oven mitts found at the scene.
 > - **Coach Diego** — Handles all the pies (looks suspicious!), but was flipping
 >   burgers with Gus during the salute. Cleared!
 > - **Ruby** — Under the table eating cupcakes — that's how she became our

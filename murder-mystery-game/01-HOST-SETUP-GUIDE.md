@@ -39,8 +39,10 @@ That's it. Everything else in this kit is safe for your eyes.
 **Nice-to-haves (make it pop, all optional):**
 - A **stand-in "blue-ribbon pie"** — an empty pie tin, a play-food pie, or a
   real pie you'll "rescue" and eat at the end! 🥧 Tie a blue ribbon on it.
-- A **pie carrier / covered dish** and a pair of **red-white-and-blue oven
-  mitts** (props for Clue 1 — leave them near the dessert table)
+- A pair of **red-white-and-blue oven mitts** — the thief dropped these at the
+  scene, so leave them right by the empty dessert-table spot (prop for Clue 1)
+- A **pie carrier or covered dish** to hide the "stolen pie" in — tuck it under
+  one of the lawn chairs so it can be "found" at the reveal
 - **Apple-cinnamon "drips"** for the trail clue: a few cinnamon sprinkles, or
   small paper apple/crumb cut-outs, leading from the dessert table toward the
   lawn chairs
@@ -84,9 +86,12 @@ name so handout is quick.)
   in order.
 - Print `99-SOLUTION-DO-NOT-OPEN.md` **without reading it** (or have your helper
   do it), fold it answer-side-in, and seal it in the "DO NOT OPEN" envelope.
-- Set up a **dessert table** with an empty spot where the pie "was." Leave the
-  oven mitts and (empty) pie carrier nearby, and sprinkle a little cinnamon or
-  a few paper "crumbs" leading toward the lawn chairs.
+- Set up a **dessert table** with an empty spot where the pie "was," and leave
+  the **oven mitts** dropped right beside it. Sprinkle a little cinnamon or a few
+  paper "crumbs" in a trail leading toward the **lawn chairs**, and (if you're
+  using a prop pie) tuck it under one of those chairs to be discovered at the
+  reveal. _(Hide it under a chair generally — you don't need to know whose it
+  is, so this stays spoiler-safe.)_
 
 ### Step 5 — Pick your own character (2 min)
 Choose the leftover character, read **only** that booklet, put on something

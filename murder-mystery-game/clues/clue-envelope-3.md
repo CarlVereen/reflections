@@ -6,39 +6,42 @@
 
 # 📣 Read this aloud to everyone:
 
-> **CLUE #3: The pie left a trail!**
+> **CLUE #3: The pie left a trail.**
 >
-> "Detectives, the warm pie was so gooey it DRIPPED as the thief carried it
-> away — and those drips left a trail! Follow along:
+> "A hot apple pie is a leaky thing, detectives — and this one betrayed the
+> thief with every step. As they carried it away, it **dripped.**
 >
-> A line of sticky **apple-cinnamon drips and crumbs** leads AWAY from the
-> dessert table... across the patio... and straight toward the row of
-> **LAWN CHAIRS** where guests were sitting. 🍎
+> Follow the evidence: a line of sticky **apple-cinnamon drips** leads away from
+> the dessert table... across the patio... and straight to the row of **lawn
+> chairs** where guests were sitting. The trail doesn't leave the yard. It
+> doesn't head for a car or the street. It **stops at the lawn chairs** — which
+> means the pie never left the party at all. It's *hidden here, among us.*
 >
-> And right there, by one of the lawn chairs, someone found a **FORK with a
-> bite of fresh apple pie still on it!** 🍴
+> And one more thing. Tucked beside one of those lawn chairs, someone found a
+> **fork — with a fresh bite of apple pie still on it.** 🍴 Our thief couldn't
+> resist a taste of their prize.
 >
-> So the pie didn't leave the backyard at all. The thief hid it right here —
-> under a lawn chair — during the flag salute.
+> Now put it all together, detectives. You have everything you need:
+>   • The thief **planned it** — hot pie, oven mitts (Clue 1).
+>   • The thief is **tired of finishing second** (the note, Clue 2).
+>   • The pie is **hidden by the lawn chairs**, and someone sat down for a bite
+>     (this clue).
+>   • Your **eyewitness** saw the thief's hands. Your **lookout** knows who
+>     lied. Ask them!
 >
-> Put it together with everything else, detectives:
->   • The thief PLANNED it (oven mitts + pie carrier — Clue 1).
->   • The thief is tired of coming in SECOND place (the note — Clue 2).
->   • The thief has STICKY APPLE HANDS (ask your eyewitness!).
->   • The thief LIED about where they were (ask your lookout!).
->   • And the pie is hidden by the LAWN CHAIRS (this clue).
->
-> Detectives — you have everything you need. WHO is the pie thief?!"
+> Whose chair? Whose sticky hands? Whose story doesn't hold up? Name your thief."
 
 ---
 
 ### 🧩 What this clue tells the detectives:
-- The pie is hidden near the **lawn chairs** (not carried off the property).
-- There's a **fork with fresh pie** at one of the chairs — whose chair?
-- Combine with: sticky hands (eyewitness Ruby), the busted "kitchen" alibi
-  (lookout Lily), the motive note (Clue 2), and the planning (Clue 1).
+- The pie is **hidden by the lawn chairs** — still on the property, not carried
+  off.
+- A **fork with fresh pie** sits beside one chair — *whose* chair?
+- Combine with: the **sticky apple hands** (your eyewitness), the **busted
+  "kitchen" alibi** (your lookout), the **motive note** (Clue 2), and the
+  **planning** (Clue 1). They all point to one person.
 
-_(It's time to figure out whose lawn chair, whose sticky hands, and whose alibi
-doesn't add up. Get ready to make your accusation!)_
+_(Time to figure out whose lawn chair, whose sticky hands, and whose story falls
+apart. Get ready to make your accusation!)_
 
 **➡️ Now return to the Master Script for the final round.**

@@ -25,8 +25,9 @@ out, your fancy bakery would be ruined!
 # 🔎 What you know
 - **If asked:** "I was at my sample booth handing out tarts during the salute —
   a whole line of people can vouch for me. I never left my pastries!"
-- **Flavor:** "A stolen pie? Amateur hour. A PROFESSIONAL thief would've swapped
-  in a decoy." _(Ironically hints the thief used a carrier/decoy — Clue 1.)_
+- **Flavor:** "A stolen pie? Amateur hour. Though I'll say this — whoever did it
+  came PREPARED. Oven mitts, a spare carrier... that's premeditation, darling."
+  _(Ironically points right at the planning — Clues 1 and the witnesses.)_
 
 # 🧭 My alibi (Round 3)
 > "My sample booth, the entire salute, serving a line of hungry guests. Ask any

@@ -16,8 +16,9 @@
 
 - Everyone has their **name tag** on and has read **only their own** character
   booklet.
-- The **dessert table** is set up with an EMPTY spot where the pie was, plus
-  the oven mitts and empty pie carrier nearby.
+- The **dessert table** is set up with an EMPTY spot where the pie was, plus the
+  **oven mitts** dropped beside it. (If you're using a prop pie, it's hidden
+  under one of the lawn chairs, ready to be "found" at the reveal.)
 - **Clue Envelopes 1, 2, 3** are stacked in order, unopened.
 - The sealed **Solution** envelope is set aside — nobody opens it until Round 5.
 - Everyone gathers in a circle. Pick a first reader (a confident reader is
@@ -30,11 +31,12 @@
 > **📢 READ ALOUD:**
 > "Happy 4th of July, everybody, and welcome to the Maple Street Cookout! The
 > burgers are grilling, the flag is flying, and it's almost time for the big
-> event: the PIE CONTEST! Every year, Grandma Rose's blue-ribbon apple pie wins
-> first place. But when the judge went to get it for judging... _[point at the
-> empty dessert table]_ **THE PIE WAS GONE!** Somebody at this barbecue STOLE
-> Grandma's famous pie — and that somebody is standing right here in this
-> circle!"
+> event: the PIE CONTEST! For TWELVE years, Grandma Rose's apple pie has won the
+> blue ribbon and the title of Maple Street Champion. But just now, when the
+> judge went to fetch that famous pie... _[point at the empty dessert table]_
+> **it was GONE.** Vanished. Right in the middle of the flag salute, while every
+> one of us had our eyes on the flag. Somebody at this cookout STOLE Grandma's
+> champion pie — and that somebody is standing right here among us!"
 
 > **📢 READ ALOUD:**
 > "Nobody's going home until we crack this case. Let's meet everyone at the

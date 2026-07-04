@@ -25,12 +25,14 @@ the bushes. If anyone asks about burnt burgers in the hedge... whistle and look
 away.
 
 # 🔎 What you know (a KEY witness!)
-- **Big clue:** "Earlier today I saw Aunt Bella tuck an EMPTY pie carrier behind
-  the cooler — why bring an empty one? And she borrowed my oven mitts!"
-- **On the mitts:** "Those oven mitts by the dessert table? Whoever grabbed that
-  hot pie used mitts so they wouldn't get burned. This was PLANNED."
+- **Big clue:** "Those oven mitts left by the dessert table? They're MINE. I lent
+  them to Aunt Bella this morning — she said her cobbler dish was 'too hot to
+  carry.' Funny how they turned up right where the pie was stolen, isn't it?"
+- **On the theft:** "Whoever grabbed that hot pie used mitts so they wouldn't get
+  burned — MY mitts. Nobody brings oven mitts to a barbecue by accident. That's
+  PLANNING, folks."
 - **If asked:** "During the salute I was at the grill the whole time — with
-  Coach Diego. Neither of us moved."
+  Coach Diego. Neither of us moved an inch."
 
 # 📣 Reveal in Round 3
 > "Everyone's blaming Coach Diego 'cause he's the judge. But Diego was at the
@@ -44,12 +46,12 @@ Let someone "catch" you shoving something (burnt burgers!) into the bushes and
 act super cagey — "Nothing to see here!"
 
 # ❓ Questions to ask
-- "Aunt Bella — why'd you bring an EMPTY pie carrier?"
+- "Aunt Bella — I lent YOU those oven mitts this morning. Care to explain?"
 - "Who borrowed oven mitts today?"
 - "Let's see everybody's hands — any apple filling?"
 
 ------------------------------------------------------------
 🔒 SECRET — read ALONE, keep to yourself:
-**Are you the thief?** ❌ NO. You're a key witness — you saw the empty pie
-carrier and the borrowed mitts, and you can clear Coach Diego. Share it!
+**Are you the thief?** ❌ NO. You're a key witness — you lent Aunt Bella the very
+oven mitts found at the scene, and you can clear Coach Diego. Share it!
 ------------------------------------------------------------
