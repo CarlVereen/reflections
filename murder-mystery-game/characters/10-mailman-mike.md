@@ -1,64 +1,50 @@
 ╔══════════════════════════════════════════════════════════╗
    📬  MAILMAN MIKE  ·  The Nosy Mail Carrier  ·  🧑 ADULT
-   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+   🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
-# 👤 Who you are
+# 👤 WHO YOU ARE  (all true — you can't lie about this)
 The neighborhood mail carrier — you know every house, every yard, and everyone's
-comings and goings. You notice EVERYTHING on your route. Friendly and a bit
-nosy. Say "Special delivery!" and "I see all, I know all."
-**Costume:** a mail bag, a postal cap, shorts with tall socks, a stack of
-letters.
+comings and goings. Friendly and a bit nosy. Say "Special delivery!"
+**Costume:** a mail bag, a postal cap, shorts with tall socks, a stack of letters.
 
-# 🗣️ Introduce yourself out loud (Round 1)
-> "MAILMAN MIKE, at your service! I know this whole neighborhood like the back
-> of my hand. And let me tell you — I noticed something FISHY when I dropped off
-> the mail this morning. Somebody was up to something!"
+# 🎈 WHY YOU'RE AT THE PARTY  (true)
+You finished your holiday route on Maple Street and stayed for the cookout — you
+never miss a neighborhood party (or a chance to catch up on the gossip).
 
-# 🎯 Why people might suspect YOU
-You're always lurking around everyone's yards — the perfect person to snoop and
-snatch. (Protest: "I deliver mail, I don't take pies!")
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
+- This morning you saw **Aunt Bella arrive carrying TWO pie carriers** — one with
+  her cobbler, and a second one, empty, tucked under her arm. (Who needs a spare
+  carrier at a one-pie contest?)
+- During the flag salute you were **out front finishing your route** — Mrs.
+  Patterson signed for a package and can vouch for you.
 
-# 🤐 Your secret
-You read the postcards before you deliver them. You know everyone's vacation
-plans and secrets — and you can't help mentioning things you "shouldn't" know.
+# 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
+You suspect **AUNT BELLA**: *"She showed up with TWO pie carriers this morning.
+Who brings a spare — unless you're planning to carry home a pie that isn't
+yours?"*
 
-# 🔎 What you know (your winning EDGE — guard it!)
-- **Your secret lead (keep it close!):** This morning you saw **Aunt Bella** carry
-  in her cobbler in one pie carrier — and a SECOND, empty carrier tucked under her
-  arm. Who brings a *spare* carrier to a one-pie contest? A great lead pointing at
-  Bella. Don't broadcast it; share only if someone asks what you saw this morning.
-- **If asked:** "During the salute I was finishing my route out front — didn't
-  see the grab myself. But I saw who came to this cookout carrying TWO carriers,
-  and that's stuck with me."
+# 🎭 HOW TO PLAY IT
+"Deliver" imaginary mail to guests as an excuse to snoop. Drop hints that you
+know more than you should.
+**Your embarrassing secret (dodge it if you can):** you read the postcards before
+you deliver them, so you know everyone's business. Don't let on how you know.
 
-# 🧭 My alibi (Round 3)
-> "I was out front delivering mail during the salute — Mrs. Patterson signed for
-> a package, she'll tell you. My whole route is my alibi!"
-
-# 🎬 Act it out!
-Randomly "deliver mail" to guests and use it to snoop: "Letter for you! Say, is
-that apple filling on your sleeve?"
-
-# 🕵️ Who YOU suspect (say it loud — accuse them!)
-You suspect **AUNT BELLA**. Your reason: "She showed up this morning with TWO
-pie carriers. Who needs a spare — unless you're planning to carry home a pie
-that isn't yours?"
-
-# ❓ Questions to ask
+# ❓ QUESTIONS TO ASK OTHERS
 - "Who brought TWO pie carriers to a one-pie contest?"
 - "Aunt Bella — what was that empty spare carrier for?"
 - "Anybody's hands or clothes got apple on 'em?"
 
 ------------------------------------------------------------
-🔒 SECRET — read ALONE, keep to yourself:
+🔒 SECRET — read this ALONE, then keep it to yourself.
 
-**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
-guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
-thief would be the only one left). Keep everyone guessing — act a little
-suspicious no matter what!
+**THE TWO RULES:**
+1. Never tell anyone whether your card makes you innocent or guilty.
+2. You may NOT lie about a FACT on this card — who you are, why you're here, what
+   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
+   thing you may invent is a REASON.
 
-**Are you the thief?** ❌ NO. You're a nosy witness: you saw Aunt Bella arrive
-with a spare, empty pie carrier — perfect for smuggling a stolen pie. Keep it
-close and crack the case first!
+**Are you the thief?** ❌ NO. You're an honest witness — you saw Aunt Bella arrive
+with a spare, empty carrier. If asked, tell the truth; and try to be the one who
+cracks the whole case first.
 ------------------------------------------------------------

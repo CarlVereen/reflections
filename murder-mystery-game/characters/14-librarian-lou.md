@@ -1,67 +1,51 @@
 ╔══════════════════════════════════════════════════════════╗
    📚  LIBRARIAN LOU  ·  The Observant Detail-Noticer  ·  🧑 ADULT
-   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+   🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
-# 👤 Who you are
-The quiet, sharp-eyed town librarian who notices every little detail and reads
-everyone like a book. Calm, precise, a bit of a know-it-all. You "shush" loud
-people out of habit. Say "Actually, if you look closely..."
+# 👤 WHO YOU ARE  (all true — you can't lie about this)
+The quiet, sharp-eyed town librarian who notices every detail and reads everyone
+like a book. Calm, precise, a bit of a know-it-all. You "shush" loud people out
+of habit. Say "Actually, if you look closely..."
 **Costume:** cardigan, glasses on a chain, a stack of books, a "SHHH" button.
 
-# 🗣️ Introduce yourself out loud (Round 1)
-> "I'm LIBRARIAN LOU. I notice things other people miss — it's a professional
-> habit. And I've already spotted a very interesting detail about that note the
-> thief left behind. Shall we examine the EVIDENCE?"
+# 🎈 WHY YOU'RE AT THE PARTY  (true)
+You set up a little book-and-reading table at the cookout — a quiet corner away
+from the noise, where you can watch everyone (a favorite hobby of yours).
 
-# 🎯 Why people might suspect YOU
-The quiet ones are always suspicious, aren't they? And you're clever enough to
-plan the perfect crime. (Adjust glasses: "Clever, yes. Guilty, no.")
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
+- You got a close look at **the note the thief dropped.** Its fancy, loopy
+  handwriting — with hearts over the i's — **matches the pie-contest SIGN-UP
+  SHEET.** So the thief is someone who **ENTERED the contest.**
+- During the salute you were **at your book table (next to Baker Benny's sample
+  booth)** — Benny never left his booth, and you never left your chair.
 
-# 🤐 Your secret
-You have over $500 in unpaid library late fees on your OWN account — a scandal
-for a librarian! You've been quietly hiding it for years.
+# 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
+You suspect **BAKER BENNY**: *"The evidence points to a contest regular with a
+bruised ego — and a professional who can't bear to lose fits that profile
+precisely."* (You may well be wrong — but the handwriting clue is the real key.)
 
-# 🔎 What you know (a KEY clue about the note!)
-- **Save for Round 2 reveal (below).**
-- **General:** "The best clues are the ones people overlook. Watch the details —
-  handwriting, sticky fingers, who's hiding what."
+# 🎭 HOW TO PLAY IT
+Examine "clues" with great seriousness (a magnifying glass is perfect). Shush
+loud guests and announce small observations dramatically.
+**Your embarrassing secret (dodge it if you can):** you owe over $500 in unpaid
+library late fees on your OWN account — a scandal for a librarian!
 
-# 🤫 A clue only YOU spotted — your winning EDGE!
-You quietly noticed the note's fancy, loopy handwriting (little hearts over the
-i's) matches the **pie-contest sign-up sheet** — so the thief ENTERED the
-contest. That's a massive lead. **Guard it!** Announcing it hands rivals the
-answer. Use it to narrow your own list; only admit it if asked point-blank about
-the handwriting.
-
-# 🧭 My alibi (Round 3)
-> "I was reading in the shade by the book table the whole salute — quietly, as I
-> do. Several people saw me turn exactly forty pages. I notice; I don't steal."
-
-# 🎬 Act it out!
-**Examine "clues"** with great seriousness (a magnifying glass is perfect).
-Shush loud guests and announce small observations dramatically.
-
-# 🕵️ Who YOU suspect (say it loud — accuse them!)
-You suspect **BAKER BENNY**. Your reason: "The evidence points to a contest
-regular with a bruised ego, and a professional who can't bear to lose fits that
-profile precisely." _(You may well be wrong — but your handwriting clue is the
-real key.)_
-
-# ❓ Questions to ask
-- "Whose handwriting is loopy, with hearts over the i's?"
-- "Who signed up for the pie contest this year?"
-- "Has anyone checked whose hands are sticky? Do look closely."
+# ❓ QUESTIONS TO ASK OTHERS
+- "Who ENTERED the pie contest this year?" (Cross it with the handwriting!)
+- "Whose handwriting is loopy, with little hearts over the i's?"
+- "Where exactly was everyone standing during the salute?"
 
 ------------------------------------------------------------
-🔒 SECRET — read ALONE, keep to yourself:
+🔒 SECRET — read this ALONE, then keep it to yourself.
 
-**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
-guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
-thief would be the only one left). Keep everyone guessing — act a little
-suspicious no matter what!
+**THE TWO RULES:**
+1. Never tell anyone whether your card makes you innocent or guilty.
+2. You may NOT lie about a FACT on this card — who you are, why you're here, what
+   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
+   thing you may invent is a REASON.
 
-**Are you the thief?** ❌ NO. You're the sharp-eyed helper. Your Round 2 reveal —
-the note's handwriting matches a CONTEST ENTRANT — narrows the suspects toward
-the real culprit. A great clue; deliver it with flair.
+**Are you the thief?** ❌ NO. Your handwriting clue narrows the thief to a contest
+entrant — a huge lead. Tell the truth if asked, but be sharp: use it to be the
+one who solves the whole case first.
 ------------------------------------------------------------

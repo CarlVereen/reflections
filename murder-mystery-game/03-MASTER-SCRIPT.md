@@ -45,24 +45,30 @@
 > "Here's the deal, folks: there are NO teams and NO detectives. You're all
 > guests at this cookout, and every one of you secretly wants the same thing — to
 > be the ONE clever guest who figures out who took the pie. **It's
-> every-guest-for-themselves.** Whoever privately cracks the case wins, so you do
-> NOT want to help anyone else. Mingle, ask nosy questions, poke at the evidence
-> — but GUARD what you know: the moment you blab your clue, you've handed a rival
-> the answer. Feel free to send people chasing the wrong suspect! And remember —
-> ONE of us is the thief, trying not to get caught. **If nobody figures it out,
-> the thief wins.** Two ground rules: (1) NEVER say whether your card makes you
-> innocent or guilty; and (2) if someone asks you a straight question, answer
-> honestly — UNLESS you're the thief, who's allowed to fib. Good luck... and
-> trust no one!"
+> every-guest-for-themselves.** So mingle, ask LOTS of nosy questions, and poke
+> at the evidence — but don't go blabbing your own clues, because whoever cracks
+> it first WINS. And remember: ONE of us is the thief, trying to get away with
+> it. **If nobody figures it out, the THIEF wins.**
+> Now — the THREE RULES that make it all work:
+> **RULE 1.** Never tell anyone whether your card makes you innocent or guilty.
+> **RULE 2.** You may NOT lie about a FACT on your card — who you are, why you're
+> here, what you saw, or who you suspect. If someone asks you a straight question,
+> you MUST tell the truth. *(Yes — even the thief! Otherwise we'd never solve it
+> in time.)*
+> **RULE 3.** The ONE thing you CAN make up is a REASON. 'Yes, I was in the
+> kitchen — but only to grab silverware for the grill.' The facts are always
+> true; the *excuses* are where the bluffing happens. So ask sharp questions,
+> catch the reasons that don't add up... and trust no one!"
 
 > **📢 READ ALOUD:**
 > "Let's meet the neighborhood. When it's your turn, stand up, say your name, and
-> read the **'Introduce yourself'** part from your booklet. Keep it quick and
-> fun — one turn each!"
+> tell us **WHO YOU ARE** and **WHY YOU'RE AT THE PARTY** (both are on your card).
+> Keep it quick and fun — one turn each!"
 
-_[Go around the group. Each player reads their **"Introduce yourself out loud"**
-section. Encourage big personalities! **Big group of 18?** Keep intros snappy, or
-it runs long. Adults first, then the 3 kids, is a fine way to stay organized.]_
+_[Go around the group. Each player reads their **"Who You Are"** and **"Why
+You're at the Party"** lines. Encourage big personalities! **Big group of 18?**
+Keep intros snappy, or it runs long. Adults first, then the 3 kids, is a fine way
+to stay organized.]_
 
 > **📢 READ ALOUD:**
 > "Quite a crowd — and every one of you was here when that pie vanished. Let's
@@ -110,19 +116,21 @@ _[Mingle and question for ~5 minutes. Gather back.]_
 ## 🧭 ROUND 3 — Alibis on Trial
 
 > **📢 READ ALOUD:**
-> "Time to put everyone on the spot! We'll go around and each person states their
-> **ALIBI** — where you were when the pie vanished during the flag salute. Read
-> the **'My alibi'** part from your booklet out loud. (Everyone hears the alibis
-> — but whether each one is TRUE is for you to work out privately.)"
+> "Time to put everyone on the spot! We'll go around and each person says WHERE
+> they were during the flag salute — pull it from the **'What you know'** part of
+> your card. Remember: your location is a FACT, so it has to be TRUE — but you can
+> add a reason. Everyone hears the alibis; whether each one holds up is for YOU to
+> test with your questions."
 
-_[Go around the group. Each player reads their **"My alibi"** section. Others may
-challenge — "Can anyone back that up?" Some alibis are shaky... but nobody will
-hand you the proof.]_
+_[Go around the group. Each player states where they were during the salute.
+Others may challenge — "Who can back that up?" Because facts must be answered
+truthfully, a sharp question to the right person will confirm an alibi... or bust
+it wide open.]_
 
 > **📢 READ ALOUD:**
-> "Some of those stories have holes. But the person who can prove an alibi is a
-> lie knows that's their winning edge — so they won't blurt it out. If you want
-> it, you'll have to pry it loose one-on-one. Here's the last piece of evidence!"
+> "Some of those stories have holes. If someone's *reason* sounds fishy, dig in —
+> ask the folks who were nearby, because they HAVE to tell you the truth. Here's
+> the last piece of evidence!"
 
 **➡️ OPEN CLUE ENVELOPE 3 and read it aloud.** _(Shared evidence.)_
 

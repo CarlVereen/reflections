@@ -57,24 +57,25 @@
 > spare carrier, stashed it under her **lawn chair**, and strolled back to the
 > crowd, sweet as ever.
 >
-> **How she got CAUGHT (the evidence — every piece was in plain sight):**
->   • 🧤 She **dropped Gus's oven mitts** at the dessert table in her hurry —
->     and Gus knew he'd lent them to her that very morning (Clue 1).
->   • 📬 Mailman Mike saw her arrive with a **spare, empty pie carrier** — the
->     perfect thing to smuggle a stolen pie.
->   • 📝 The **note** ('twelve years of second place... whatever it takes') was
->     in her own loopy, hearts-over-the-i handwriting — which Librarian Lou
->     matched to the contest sign-up sheet (Clue 2).
->   • 🍎 The pie dripped a sticky trail straight to **her lawn chair**, with a
->     **fork of fresh pie** beside it — she'd snuck a taste (Clue 3).
->   • 🛴 Max saw someone hide a covered dish **under a lawn chair**, and Uncle
->     Marty saw someone hurry that way.
->   • 👐 Ruby, under the dessert table, saw the thief's hands were **coated in
->     apple filling** — and Bella's hands were a sticky mess. (And here's the
->     clincher: Bella's own contest entry is a *peach* cobbler. That **apple**
->     filling could only have come from Grandma's stolen pie!)
->   • 🍋 She swore she was 'in the kitchen,' but Lily stood by the kitchen door
->     the whole salute and saw **no one** go in. Her alibi was a lie."
+> **How she got CAUGHT — five true facts she couldn't deny (only spin):**
+> Each of these is a FACT another guest also held, so Bella had to admit every one
+> when asked — all she could do was give an innocent 'reason.' Lay them in a row
+> and only one story fits:
+>   • 🧤 She **borrowed Gus's oven mitts** that morning (Gus knows). Reason she
+>     gave: 'my dish was hot' — but those mitts turned up at the crime scene.
+>   • 📬 She **brought a spare, empty pie carrier** (Mailman Mike saw). Reason:
+>     'just a spare' — perfect for smuggling a stolen pie.
+>   • 🎸 She **slipped away from the crowd** during the anthem (Uncle Sunny saw).
+>   • 🍋 She **went into the kitchen** during the salute (Lily saw) — the ONLY one
+>     who did. Reason: 'grabbing silverware.'
+>   • 😴 She **carried a covered dish to the lawn chairs** (Uncle Marty saw) —
+>     right where Max watched a covered dish get shoved under the striped chair,
+>     and where the pie was found. Reason: 'just leftovers.'
+> Add the motive (that note is in her handwriting — a contest entrant, per
+> Librarian Lou) and Ruby's sticky APPLE hands (Bella's own entry is a *peach*
+> cobbler, so that apple filling could only be Grandma's pie), and Bella is the
+> ONLY guest whose true facts line up with the whole crime. Her reasons sounded
+> fine one at a time — but nobody's excuses can cover all five."
 
 ---
 
@@ -93,7 +94,8 @@
 > - **Uncle Sunny** — Leading the anthem in front of everyone — great alibi.
 >
 > **The red-herring neighbors (motive, but no means/opportunity):**
-> - **Uncle Marty** — Loves the pie, but was napping (and saw someone hurry off).
+> - **Uncle Marty** — Loves the pie, but never left the hammock — and he's the one
+>   who saw Bella carry a covered dish to the lawn chairs.
 > - **Baker Benny** — Pro-baker pride, but at his sample booth with a line of
 >   witnesses.
 > - **Realtor Rita** — Super competitive, but on a loud phone call by the porch.
@@ -103,10 +105,10 @@
 > - **Fireman Frank** — Roaming "on patrol," but guarding the fireworks far off.
 > - **Librarian Lou** — The quiet type, but reading by the book table — and the
 >   one who cracked the handwriting clue.
-> - **Mailman Mike** — Always snooping, but out finishing his mail route (and he
->   spotted Bella's heavy dish).
-> - **Hairdresser Holly** — Loves drama, but doing Nancy's hair — and she kept
->   the whole yard's clues flowing.
+> - **Mailman Mike** — Always snooping, but out finishing his route (and he
+>   spotted Bella's spare carrier that morning).
+> - **Hairdresser Holly** — Loves drama, but on the porch with Rita the whole
+>   salute.
 
 ---
 

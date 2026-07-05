@@ -1,60 +1,48 @@
 ╔══════════════════════════════════════════════════════════╗
    🩹  NURSE NANCY  ·  The Caring Neighborhood Nurse  ·  🧑 ADULT
-   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+   🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
-# 👤 Who you are
+# 👤 WHO YOU ARE  (all true — you can't lie about this)
 The kind neighborhood nurse who fusses over everyone — always with a bandage and
-some advice. You also happen to know EVERYONE'S business (for their health, of
-course!). Warm, chatty, a bit of a gossip. Say "Now hold still, dear."
+some advice. You also know EVERYONE'S business (for their health, of course!).
+Warm, chatty, a bit of a gossip. Say "Now hold still, dear."
 **Costume:** a little first-aid kit, comfy scrubs or a red cross pin.
 
-# 🗣️ Introduce yourself out loud (Round 1)
-> "I'm NURSE NANCY! I take care of the whole neighborhood. During the salute I
-> was bandaging up little Max's scraped knee — poor thing took a tumble on his
-> scooter! So I had a front-row seat to some interesting goings-on..."
+# 🎈 WHY YOU'RE AT THE PARTY  (true)
+You're the neighborhood nurse — you come to every gathering "just in case," and
+to catch up on everyone's news.
 
-# 🎯 Why people might suspect YOU
-You're on a strict diet and everyone knows you've been DESPERATE for a slice of
-that pie. Craving it enough to snatch the whole thing? (Gasp: "I would never...
-well, maybe one bite.")
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
+- During the salute you were **at the side gate bandaging Max's scraped knee** the
+  whole time. Max was with you, and you with him — you can each vouch for the
+  other.
 
-# 🤐 Your secret
-You've been sneaking cookies behind everyone's back all day while telling THEM
-to eat healthy. Total hypocrite about your diet!
+# 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
+You suspect **UNCLE MARTY**: *"That man loves Grandma's pie more than anything
+alive, and he was 'napping' at awfully the right moment. Convenient, isn't it?"*
 
-# 🔎 What you know (a lead of your own — keep it close!)
-- **Your secret:** While you bandaged Max's knee by the side gate during the
-  salute, that boy kept muttering he'd seen something over by the lawn chairs. A
-  juicy lead! Don't just announce it — chase it down yourself, or trade it for a
-  clue you're missing.
+# 🎭 HOW TO PLAY IT
+Fuss over people — check their pulse, offer bandages nobody needs, whisper juicy
+"health gossip" about the other guests.
+**Your embarrassing secret (dodge it if you can):** you're on a strict diet but
+you've been sneaking cookies all day while telling everyone ELSE to eat healthy.
 
-# 🧭 My alibi (Round 3)
-> "I was patching up Max's knee the whole salute — he'll tell you! A nurse
-> doesn't abandon a patient to go steal pie."
-
-# 🎬 Act it out!
-**Fuss over people** — check their pulse, offer bandages nobody needs, and
-whisper juicy "health gossip" about other guests.
-
-# 🕵️ Who YOU suspect (say it loud — accuse them!)
-You suspect **UNCLE MARTY**. Your reason: "That man loves Grandma's pie more
-than anything alive, and he was 'napping' at awfully the right moment, wasn't
-he? Convenient, if you ask me."
-
-# ❓ Questions to ask
+# ❓ QUESTIONS TO ASK OTHERS
 - "Max, dear, tell everyone what you saw by the lawn chairs!"
-- "Has anyone got a stomachache from too much... pie?"
 - "Whose hands need washing? They look awfully sticky."
+- "Where were you when the pie went missing?"
 
 ------------------------------------------------------------
-🔒 SECRET — read ALONE, keep to yourself:
+🔒 SECRET — read this ALONE, then keep it to yourself.
 
-**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
-guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
-thief would be the only one left). Keep everyone guessing — act a little
-suspicious no matter what!
+**THE TWO RULES:**
+1. Never tell anyone whether your card makes you innocent or guilty.
+2. You may NOT lie about a FACT on this card — who you are, why you're here, what
+   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
+   thing you may invent is a REASON.
 
-**Are you the thief?** ❌ NO. You were tending Max's knee (and sneaking cookies) —
-and you overheard his lawn-chair lead. Chase it down yourself to crack the case!
+**Are you the thief?** ❌ NO. You were bandaging Max's knee (and sneaking cookies).
+You can vouch for Max — and he saw where the pie was hidden. Try to crack it
+first.
 ------------------------------------------------------------

@@ -1,68 +1,51 @@
 ╔══════════════════════════════════════════════════════════╗
    🛴  MAX  ·  The Zooming Scooter Kid  ·  🧒 KID
-   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+   🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
-# 👤 Who you are
-The kid who zooms around the whole party on a scooter (or bike), seeing
-everything at high speed. Energetic, a little clumsy, always in motion. You
-crashed and scraped your knee, which is how you ended up watching the lawn-chair
-area. You're a KEY witness! Zoom around. Say "Vrrooom! Outta my way!"
+# 👤 WHO YOU ARE  (all true — you can't lie about this)
+The kid who zooms around the party on a scooter, seeing everything at high speed.
+Energetic, a little clumsy, always in motion. You crashed and scraped your knee,
+which is how you ended up watching the lawn chairs. Say "Vrrooom! Outta my way!"
 **Costume:** a helmet, kneepads (one with a "bandage"), sporty clothes; bring a
 scooter or bike if you can.
 
-# 🗣️ Introduce yourself out loud (Round 1)
-> "I'm MAX! I was zooming around on my scooter all day — I see EVERYTHING when I
-> go fast! Then I crashed and scraped my knee, so Nurse Nancy patched me up by
-> the gate. And from RIGHT there... I saw something super sneaky!"
+# 🎈 WHY YOU'RE AT THE PARTY  (true)
+It's the neighborhood cookout — the best place to ride your scooter and grab free
+hot dogs. You never sit still.
 
-# 🎯 Why people might suspect YOU
-You zoom everywhere and get into everything — maybe you swiped the pie during one
-of your laps! (Protest: "I was too busy CRASHING to steal a pie!")
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
+- During the salute you were at the **side gate getting your knee bandaged by
+  Nurse Nancy** — she'll vouch for you, and you for her.
+- From there you saw someone **shove a covered dish UNDER a lawn chair** — the
+  **striped one** — during the salute. You did NOT see who.
 
-# 🤐 Your secret
-You were scootering in the "no-scooter zone" by the dessert table (against the
-rules!) — that's how you crashed. You don't want to get in trouble for it.
+# 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
+You suspect **UNCLE SUNNY**: *"He made everybody stare at the flag with all that
+loud singing — the perfect way to make us miss the thief. Maybe TOO perfect!"*
 
-# 🔎 What you know (a KEY witness clue!)
-- **Hint early:** "While Nurse Nancy fixed my knee by the gate, I watched the
-  lawn chairs — and I saw somebody hide something under one of them!"
-- **Save the big detail for Round 3.**
+# 🎭 HOW TO PLAY IT
+Zoom around (carefully!) and screech to a stop to ask questions. Show off your
+"scraped knee" bandage. Try to find out whose chair the striped one is.
+**Your embarrassing secret (dodge it if you can):** you were scootering in the
+"no-scooter zone" by the dessert table (against the rules!) — that's how you
+crashed. You don't want to get in trouble.
 
-# 🤫 A clue only YOU know — it could win YOU the game!
-During the salute you saw somebody sneak to the lawn chairs with a big covered
-dish and shove it UNDER a chair — you know EXACTLY which chair (but not the
-face). That's where the pie is hidden! Don't announce it. Sneak over and see
-WHOSE chair it is yourself — that's your ticket to solving it first. Only tell if
-asked straight out.
-
-# 🧭 My alibi (Round 3)
-> "Nurse Nancy was bandaging my knee by the gate the whole salute — she'll tell
-> you! I couldn't have done it; I could barely walk!"
-
-# 🎬 Act it out!
-**Zoom around** the party (carefully!) and screech to a stop to report clues.
-Show off your "scraped knee" bandage to anyone who'll look.
-
-# 🕵️ Who YOU suspect (say it loud — accuse them!)
-You suspect **UNCLE SUNNY**. Your reason: "He made everybody stare at the flag
-with all that loud singing — the perfect way to make us miss the thief. Maybe
-TOO perfect!"
-
-# ❓ Questions to ask
-- "Whose lawn chair has something hidden under it?"
+# ❓ QUESTIONS TO ASK OTHERS
+- "Whose lawn chair is the STRIPED one?"
 - "Who snuck over to the lawn chairs during the salute?"
-- "Did anybody see me crash? 'Cause I saw THEM!"
+- "Who was carrying a covered dish around?"
 
 ------------------------------------------------------------
-🔒 SECRET — read ALONE, keep to yourself:
+🔒 SECRET — read this ALONE, then keep it to yourself.
 
-**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
-guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
-thief would be the only one left). Keep everyone guessing — act a little
-suspicious no matter what!
+**THE TWO RULES:**
+1. Never tell anyone whether your card makes you innocent or guilty.
+2. You may NOT lie about a FACT on this card — who you are, why you're here, what
+   you saw, or who you suspect. If someone asks, you MUST tell the truth. The
+   ONLY thing you may make up is a REASON.
 
-**Are you the thief?** ❌ NO — you were getting your knee bandaged! You're a KEY
-witness: you saw the thief hide the pie UNDER a lawn chair. Go check the
-chairs yourself and crack it first — don't hand the win to anyone else! 🕵️
+**Are you the thief?** ❌ NO — you were getting your knee bandaged! You saw the pie
+hidden under the striped lawn chair. If asked, tell the truth — but find out
+whose chair it is yourself and crack it first! 🕵️
 ------------------------------------------------------------

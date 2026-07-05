@@ -1,62 +1,48 @@
 ╔══════════════════════════════════════════════════════════╗
    💇  HAIRDRESSER HOLLY  ·  The Neighborhood Gossip  ·  🧑 ADULT
-   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+   🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
-# 👤 Who you are
-You run the salon, which means you hear EVERY piece of gossip on Maple Street.
-Bubbly, chatty, and you cannot keep a secret to save your life. You know who's
-feuding with whom. Say "Honey, have you HEARD?" and "So I said to her, I said..."
+# 👤 WHO YOU ARE  (all true — you can't lie about this)
+You run the salon, so you hear EVERY piece of gossip on Maple Street. Bubbly,
+chatty, and you cannot keep a secret. You know who's feuding with whom. Say
+"Honey, have you HEARD?"
 **Costume:** big styled hair, a smock/cape, scissors and a comb, bright colors.
 
-# 🗣️ Introduce yourself out loud (Round 1)
-> "HAIRDRESSER HOLLY, sweetie! I do everyone's hair, so I know ALL the gossip.
-> And ooh, do I have theories about this pie! Half this neighborhood has a
-> reason to want Grandma's ribbon. Let me tell you EVERYTHING..."
+# 🎈 WHY YOU'RE AT THE PARTY  (true)
+You never miss a neighborhood party — it's the richest gossip of the whole year,
+and you love being in the middle of the drama.
 
-# 🎯 Why people might suspect YOU
-You love drama and stirring the pot — maybe you swiped the pie just to give
-everyone something to gossip about! (Gasp: "Me? I only REPORT the news, honey!")
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
+- During the salute you were **on the porch with Realtor Rita** while she made her
+  loud phone call — the two of you were together the entire time.
 
-# 🤐 Your secret
-You gave a client a truly terrible haircut last week and they're here at the
-party wearing a hat to hide it. You're praying nobody asks about it.
+# 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
+You suspect **BAKER BENNY**: *"Oh honey, a professional losing to a grandma every
+year? That's the kind of thing that makes a proud man do something rash. Mark my
+words."*
 
-# 🔎 What you know (gossip is your weapon — use it to WIN!)
-- **All game:** you love prying secrets out of people and trading juicy rumors —
-  but you're competing, so twist your gossip to MISLEAD your rivals. Float a
-  theory about the wrong person, swap a small clue to get a bigger one, and pump
-  everyone for what they know while giving up as little as you can.
-- Whoever you can get talking, you can get clues from — that's YOUR edge.
+# 🎭 HOW TO PLAY IT
+Gossip is your weapon! Pry secrets out of people, trade rumors, and float a juicy
+(maybe totally false!) theory to send others chasing the wrong suspect.
+**Your embarrassing secret (dodge it if you can):** you gave a client a terrible
+haircut last week and they're here wearing a hat to hide it. Pray nobody asks.
 
-# 🧭 My alibi (Round 3)
-> "I was doing Nurse Nancy's hair by the picnic table during the salute — well,
-> touching it up. She'll vouch for me. A gossip is never ALONE, sweetie!"
-
-# 🎬 Act it out!
-**Spread rumors** to stir the pot. Pull people aside for "just between us"
-whispers, then plant a juicy (maybe totally false!) theory to send rivals
-chasing the wrong suspect.
-
-# 🕵️ Who YOU suspect (say it loud — accuse them!)
-You suspect **REALTOR RITA**. Your reason: "Oh honey, that woman cheated at
-bunco night last spring — I saw it with my own eyes! A person like that would
-take a pie and smile about it."
-
-# ❓ Questions to ask
-- "Okay, who's got a MOTIVE? I'll start the list!"
-- "Did y'all hear about the borrowed oven mitts and the spare carrier?"
-- "Aunt Bella, honey — why do you keep hiding those hands?"
+# ❓ QUESTIONS TO ASK OTHERS
+- "Okay, who's got a MOTIVE? Let's make a list, honey!"
+- "Where were you during the salute? And who saw you there?"
+- "Who's acting the MOST suspicious, would you say?"
 
 ------------------------------------------------------------
-🔒 SECRET — read ALONE, keep to yourself:
+🔒 SECRET — read this ALONE, then keep it to yourself.
 
-**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
-guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
-thief would be the only one left). Keep everyone guessing — act a little
-suspicious no matter what!
+**THE TWO RULES:**
+1. Never tell anyone whether your card makes you innocent or guilty.
+2. You may NOT lie about a FACT on this card — who you are, why you're here, what
+   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
+   thing you may invent is a REASON.
 
 **Are you the thief?** ❌ NO. Gossip is your superpower — you can pry loose more
-clues than anyone. Trade cleverly, spread a few false rumors, and piece the truth
-together before your rivals do!
+facts than anyone. You were with Rita the whole time. Trade cleverly and try to
+piece the truth together first.
 ------------------------------------------------------------

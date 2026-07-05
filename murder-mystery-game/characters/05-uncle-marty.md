@@ -1,60 +1,49 @@
 ╔══════════════════════════════════════════════════════════╗
    😴  UNCLE MARTY  ·  The Grumpy Pie-Lover  ·  🧑 ADULT
-   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+   🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
-# 👤 Who you are
-The grumpy uncle who just wants to nap in the hammock and eat pie. You complain
-about everything, but deep down you're a softie who LOVES Grandma's apple pie.
-Grumble. Cross your arms. "Back in MY day..."
-**Costume:** sunglasses, flip-flops, big frown, napkin tucked in collar.
+# 👤 WHO YOU ARE  (all true — you can't lie about this)
+The grumpy uncle who wants to nap in the hammock and eat pie in peace. You
+complain about everything, but deep down you LOVE Grandma's apple pie. Grumble.
+Cross your arms. "Back in MY day..."
+**Costume:** sunglasses, flip-flops, a big frown, a napkin tucked in your collar.
 
-# 🗣️ Introduce yourself out loud (Round 1)
-> "Ugh, fine. UNCLE MARTY. I came to nap and eat a big slice of Grandma's pie.
-> Now it's GONE and everyone's hollering. Worst 4th of July ever. Somebody find
-> that pie so I can EAT it!"
+# 🎈 WHY YOU'RE AT THE PARTY  (true)
+You came for two things: a nap in the hammock and a big slice of Grandma's
+blue-ribbon pie. Now the pie's gone and you are NOT happy about it.
 
-# 🎯 Why people might suspect YOU
-Everyone knows you love Grandma's pie more than any human alive — you once ate a
-whole one solo. (Grumble: "If I took it, I'd have EATEN it by now!")
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
+- You spent the whole salute lying in the hammock **right by the lawn chairs** —
+  you never moved (bad knee, can't hurry).
+- From there you saw **Aunt Bella carry a covered dish over to the lawn chairs**
+  during the salute.
 
-# 🤐 Your secret
-You secretly enter the pie contest every year under a fake name ("Marv the
-Marvelous") and always lose. Mortifying.
+# 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
+You blame **RUBY**, the sneaky little cousin: *"That kid's always swiping sweets.
+Bet she grabbed my pie and hid it somewhere — check her sticky little hands!"*
 
-# 🔎 What you know (a clue from the hammock!)
-- **When it fits:** "During the salute I was half-asleep in my hammock, but I
-  cracked one eye and saw somebody hurry past carrying a big covered dish —
-  headed toward the lawn chairs. Didn't see who."
+# 🎭 HOW TO PLAY IT
+Pretend to snooze, then "wake up" with a snort whenever something exciting
+happens: "Wha—? Did somebody find my pie?!" Grumble at everyone.
+**Your embarrassing secret (dodge it if you can):** you secretly enter the pie
+contest every year under a fake name ("Marv the Marvelous") and always lose.
 
-# 🧭 My alibi (Round 3)
-> "I was flat on my back in that hammock the whole time — hadn't moved in an
-> hour. My knee's too creaky to chase pies. Wasn't me. Now, is there pie left?"
-
-# 🎬 Act it out!
-**Pretend to snooze**, then "wake up" with a loud snort whenever something
-exciting happens: "Wha—? Did somebody find my pie?!" Grumpily accuse random
-people.
-
-# 🕵️ Who YOU suspect (say it loud — accuse them!)
-You blame **RUBY**, that sneaky little cousin. Your reason: "That kid's always
-swiping sweets. I'll bet she grabbed my pie and hid it somewhere — go check her
-sticky little hands!" Grumble it to anyone who'll listen.
-
-# ❓ Questions to ask
-- "Who was rushing toward the lawn chairs during the salute?"
-- "Whatcha hiding under YOUR lawn chair?"
+# ❓ QUESTIONS TO ASK OTHERS
+- "Who else was hanging around the lawn chairs during the salute?"
+- "Aunt Bella — what was in that covered dish you carried over?"
 - "Who's got pie on their breath? Come here!"
 
 ------------------------------------------------------------
-🔒 SECRET — read ALONE, keep to yourself:
+🔒 SECRET — read this ALONE, then keep it to yourself.
 
-**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
-guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
-thief would be the only one left). Keep everyone guessing — act a little
-suspicious no matter what!
+**THE TWO RULES:**
+1. Never tell anyone whether your card makes you innocent or guilty.
+2. You may NOT lie about a FACT on this card — who you are, why you're here, what
+   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
+   thing you may invent is a REASON.
 
-**Are you the thief?** ❌ NO. You look guilty (you love that pie!) but you were
-napping. Your clue — someone hurried to the LAWN CHAIRS with a covered dish — is
-useful. Help the sleuths, ya grump.
+**Are you the thief?** ❌ NO. You look guilty (you love that pie!) but you never
+left the hammock — and you saw Aunt Bella carry a covered dish to the lawn
+chairs. Tell the truth if asked, ya grump, and try to crack it first.
 ------------------------------------------------------------

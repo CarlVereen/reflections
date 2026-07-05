@@ -1,60 +1,51 @@
 ╔══════════════════════════════════════════════════════════╗
    🎸  UNCLE SUNNY  ·  The Sing-Along Song Leader  ·  🧑 ADULT
-   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+   🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
-# 👤 Who you are
-The fun uncle with the guitar who leads every sing-along. You led the flag
-salute and anthem today — so everyone was looking at YOU (and the flag) when the
-pie vanished! Cheerful, goofy, loves attention. Strum an air-guitar.
-**Costume:** bright Hawaiian shirt, toy guitar or ukulele, huge smile.
+# 👤 WHO YOU ARE  (all true — you can't lie about this)
+The fun uncle with the guitar who leads every sing-along. You led the flag salute
+and the anthem today — so everyone was facing the flag (and you) when the pie
+vanished. Cheerful, goofy, loves attention. Strum an air-guitar.
+**Costume:** a bright Hawaiian shirt, a toy guitar or ukulele, a huge smile.
 
-# 🗣️ Introduce yourself out loud (Round 1)
-> "Helloooo, Maple Street! I'm UNCLE SUNNY, and I led the flag salute today —
-> everybody singing, hands on hearts, eyes on the flag. Which means NOBODY was
-> watching that pie table. Whoops — I gave the thief perfect cover! 🎸"
+# 🎈 WHY YOU'RE AT THE PARTY  (true)
+You're the neighborhood's unofficial entertainment — you bring the guitar and
+lead the crowd in the flag salute and patriotic songs every 4th of July.
 
-# 🎯 Why people might suspect YOU
-You made all that noise and got everyone to look away — the perfect distraction!
-Maybe you planned it? (Laugh: "I lead songs, not heists!")
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
+- You led the anthem up front the whole time — everyone was facing you and the
+  flag. (Twenty people can vouch that you never left the "stage.")
+- From up front, you noticed **Aunt Bella slip away from the crowd** partway
+  through your song.
 
-# 🤐 Your secret
-Last week you broke Grandma's favorite serving platter and hid the pieces in the
-garage. If she asks about it... start playing a loud song to drown her out!
+# 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
+You suspect **UNCLE MARTY**: *"I led the whole crowd in song and never once saw
+Marty singing along — he was off by the lawn chairs the whole time. Suspicious
+for a fella who loves that pie so much!"*
 
-# 🔎 What you know (a timing clue!)
-- **Freely:** "While I led the anthem, EVERY person had eyes on me and the flag.
-  That's EXACTLY when the pie got snatched — so the thief slipped away during my
-  song while we were all distracted."
+# 🎭 HOW TO PLAY IT
+Burst into song at random. Strum dramatically. Lead little sing-alongs to keep
+the party loud.
+**Your embarrassing secret (dodge it if you can):** last week you broke Grandma's
+favorite serving platter and hid the pieces in the garage. Play a loud song if
+she asks!
 
-# 🧭 My alibi (Round 3)
-> "Best alibi at the party — I was up front leading the anthem the whole time.
-> Twenty people watched me! Can't sneak off to steal a pie when you're the one
-> on stage."
-
-# 🎬 Act it out!
-Whenever someone asks about Grandma's broken platter, **burst into a loud song**
-and strum: "🎶 Ohhh say can you seee... 🎶" Randomly lead little sing-alongs.
-
-# 🕵️ Who YOU suspect (say it loud — accuse them!)
-You suspect **UNCLE MARTY**. Your reason: "I led the whole crowd in song, and I
-never once saw Marty singing along — he was skulking off by the lawn chairs the
-whole time! Awfully suspicious for a fella who loves that pie so much."
-
-# ❓ Questions to ask
-- "Who DIDN'T I see in the crowd during my song?"
-- "Who slipped away while we were all singing?"
-- "Where'd you sneak off to during the anthem?"
+# ❓ QUESTIONS TO ASK OTHERS
+- "Who slipped away from the crowd during my song?"
+- "Aunt Bella — I saw you leave partway through the anthem. Where'd you go?"
+- "Who DIDN'T I see singing along?"
 
 ------------------------------------------------------------
-🔒 SECRET — read ALONE, keep to yourself:
+🔒 SECRET — read this ALONE, then keep it to yourself.
 
-**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
-guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
-thief would be the only one left). Keep everyone guessing — act a little
-suspicious no matter what!
+**THE TWO RULES:**
+1. Never tell anyone whether your card makes you innocent or guilty.
+2. You may NOT lie about a FACT on this card — who you are, why you're here, what
+   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
+   thing you may invent is a REASON.
 
-**Are you the thief?** ❌ NO. You were on stage the whole time. Your clue — the
-theft happened DURING your anthem, when all were distracted — helps pin down
-WHEN it happened. Help them find who slipped away!
+**Are you the thief?** ❌ NO. You have the best alibi at the party (on stage the
+whole time) — and you saw Aunt Bella slip away during your song. Tell the truth
+if asked, and try to crack it first.
 ------------------------------------------------------------

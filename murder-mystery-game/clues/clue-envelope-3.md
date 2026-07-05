@@ -26,8 +26,9 @@
 >   • The thief is **tired of finishing second** (the note, Clue 2).
 >   • The pie is **hidden by the lawn chairs**, and someone sat down for a bite
 >     (this clue).
->   • Somebody saw the thief's sticky hands, and somebody knows whose alibi is
->     a lie — but they won't give it up for free. Can you get them talking?
+>   • Somebody saw the thief's sticky hands. Somebody saw who ducked into the
+>     kitchen. Ask the right people the right questions — remember, they HAVE to
+>     tell you the truth (they can only make up a reason).
 >
 > Whose chair? Whose sticky hands? Whose story doesn't hold up? Name your thief."
 
@@ -37,9 +38,10 @@
 - The pie is **hidden by the lawn chairs** — still on the property, not carried
   off.
 - A **fork with fresh pie** sits beside one chair — *whose* chair?
-- Combine with: the **sticky apple hands** (from whoever saw them), the **busted
-  "kitchen" alibi** (from whoever watched the door), the **motive note** (Clue 2), and the
-  **planning** (Clue 1). They all point to one person.
+- Combine with: the **sticky apple hands** (ask whoever hid under the table), the
+  **person seen going into the kitchen** (ask whoever runs the lemonade stand),
+  the **motive note** (Clue 2), and the **planning** (Clue 1). They all point to
+  one person.
 
 _(Time to figure out whose lawn chair, whose sticky hands, and whose story falls
 apart. Get ready to make your accusation!)_

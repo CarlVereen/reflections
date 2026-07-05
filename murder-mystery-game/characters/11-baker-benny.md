@@ -1,61 +1,50 @@
 ╔══════════════════════════════════════════════════════════╗
    👨‍🍳  BAKER BENNY  ·  The Professional Bakery Owner  ·  🧑 ADULT
-   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+   🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
-# 👤 Who you are
+# 👤 WHO YOU ARE  (all true — you can't lie about this)
 You own the fancy bakery in town and you CANNOT believe you lose the pie contest
 to an amateur grandma every year. It wounds your professional pride! Dramatic,
-snooty about baking, secretly insecure. Say "I am a TRAINED pastry artist!"
+snooty, secretly insecure. Say "I am a TRAINED pastry artist!"
 **Costume:** a white chef's coat/hat, a rolling pin, a smug expression.
 
-# 🗣️ Introduce yourself out loud (Round 1)
-> "I am BAKER BENNY, owner of Benny's Bakery — a PROFESSIONAL! And every year I
-> lose this little contest to Grandma Rose's homemade pie. The indignity! But
-> would I steal it? A true artist lets his BAKING do the talking!"
+# 🎈 WHY YOU'RE AT THE PARTY  (true)
+To finally win the pie contest and show the neighborhood what a PROFESSIONAL can
+do. You also set up a sample booth to hand out your tarts.
 
-# 🎯 Why people might suspect YOU
-You're a pro who keeps losing to an amateur — humiliating! Getting the champion
-pie out of the way would finally let YOU win. (Sniff: "I have my dignity!")
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
+- During the salute you were **at your sample booth serving a line of guests** —
+  **Librarian Lou at the next table** saw you the whole time; you never left your
+  tarts.
+- Yes, you **entered the contest** this year (and lost to a grandma, again —
+  humiliating).
 
-# 🤐 Your secret
-Your "world-famous" bakery pies are actually made from a boxed mix. If word got
-out, your fancy bakery would be ruined!
+# 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
+You point at **REALTOR RITA**: *"That woman cheats at everything — cards, deals,
+all of it. She'd swipe a pie without blinking if it meant winning something."*
 
-# 🔎 What you know
-- **If asked:** "I was at my sample booth handing out tarts during the salute —
-  a whole line of people can vouch for me. I never left my pastries!"
-- **Flavor:** "A stolen pie? Amateur hour. Though I'll say this — whoever did it
-  came PREPARED. Oven mitts, a spare carrier... that's premeditation, darling."
-  _(Ironically points right at the planning — Clues 1 and the witnesses.)_
+# 🎭 HOW TO PLAY IT
+Loudly insult everyone's baking and brag about your pastry training. Offer snooty
+tarts while criticizing people's "technique."
+**Your embarrassing secret (dodge it if you can):** your "world-famous" bakery
+pies are actually made from a boxed mix. If word got out, you'd be ruined.
 
-# 🧭 My alibi (Round 3)
-> "My sample booth, the entire salute, serving a line of hungry guests. Ask any
-> of them — I was never more than a foot from my tarts!"
-
-# 🎬 Act it out!
-Loudly **insult everyone's baking** and brag about your pastry training. Offer
-snooty tarts to sleuths while criticizing their "technique."
-
-# 🕵️ Who YOU suspect (say it loud — accuse them!)
-You point at **REALTOR RITA**. Your reason: "That woman cheats at everything —
-cards, deals, all of it. She'd swipe a pie without blinking if it meant winning
-something."
-
-# ❓ Questions to ask
+# ❓ QUESTIONS TO ASK OTHERS
 - "Who else can't stand losing to Grandma? Besides me, I mean."
-- "Did anyone SWAP in a fake pie? That's what a pro would do."
-- "Aunt Bella, how's your cobbler doing this year? Still second?"
+- "Who ENTERED the contest this year?"
+- "Realtor Rita — where were you when the pie vanished?"
 
 ------------------------------------------------------------
-🔒 SECRET — read ALONE, keep to yourself:
+🔒 SECRET — read this ALONE, then keep it to yourself.
 
-**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
-guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
-thief would be the only one left). Keep everyone guessing — act a little
-suspicious no matter what!
+**THE TWO RULES:**
+1. Never tell anyone whether your card makes you innocent or guilty.
+2. You may NOT lie about a FACT on this card — who you are, why you're here, what
+   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
+   thing you may invent is a REASON.
 
-**Are you the thief?** ❌ NO. You've got motive (pro pride!) but you were at your
-sample booth with witnesses. A strong red herring — play up the rivalry, then
-help solve it.
+**Are you the thief?** ❌ NO. You've got motive (pro pride!) and you DID enter the
+contest — so you'll draw suspicion — but you were at your booth with Lou as your
+witness. A strong red herring; play up the rivalry, then try to solve it.
 ------------------------------------------------------------

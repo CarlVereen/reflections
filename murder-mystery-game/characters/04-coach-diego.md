@@ -1,61 +1,52 @@
 ╔══════════════════════════════════════════════════════════╗
    🥇  COACH DIEGO  ·  The Pie Contest Judge  ·  🧑 ADULT
-   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+   🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
-# 👤 Who you are
+# 👤 WHO YOU ARE  (all true — you can't lie about this)
 The neighborhood coach — you run the kids' games AND you're the official pie
 judge this year. Fair, friendly, and you take judging like it's the Olympics.
 You have a whistle and you use it. Say "Alright, team, hustle!"
 **Costume:** whistle, ball cap, clipboard, sporty clothes.
 
-# 🗣️ Introduce yourself out loud (Round 1)
-> "COACH DIEGO here — I run the games AND I'm the pie judge this year. I had all
-> the pies lined up perfect, and then Grandma's just vanished on my watch. I
-> feel terrible! Let's find it, team!"
+# 🎈 WHY YOU'RE AT THE PARTY  (true)
+To run the kids' games and serve as the official judge of the pie contest — a job
+you take very, very seriously.
 
-# 🎯 Why people might suspect YOU
-You're the judge — you had ALL the pies in your hands today. Nobody had better
-access! (Defend yourself: "A judge would NEVER!")
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
+- During the salute you were **at the grill flipping burgers with Grill Master
+  Gus** — neither of you left. Ask Gus; he'll back you up.
+- As the judge, you can say **Grandma's pie was the clear winner** — so someone
+  wanted it GONE. The contest **entrants** this year were **Grandma, Aunt Bella,
+  and Baker Benny.**
 
-# 🤐 Your secret
-You'd already secretly decided to give Grandma's pie first place before the
-contest even started — because she's your favorite. Not very fair for a judge!
-Get defensive if asked about favorites.
+# 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
+You suspect **BAKER BENNY**: *"A professional pastry chef who loses to a grandma
+every single year? That's humiliating enough to make a man do something
+desperate."*
 
-# 🔎 What you know
-- **Freely:** "As the judge, I can tell you Grandma's pie was going to win by a
-  MILE. So whoever took it didn't want it judged — they wanted it GONE."
-- **If asked:** "Second place this year would've been Aunt Bella's cobbler —
-  same as always, twelve years straight."
+# 🎭 HOW TO PLAY IT
+Blow your whistle and try to take charge — "Everyone LINE UP for questioning!"
+Get flustered and defensive when someone points at the judge.
+**Your embarrassing secret (dodge it if you can):** you'd already secretly decided
+to give Grandma first place before the contest even started (she's your
+favorite). Not very fair for a judge!
 
-# 🧭 My alibi (Round 3)
-> "Rock solid: I was at the grill flipping burgers with Grill Master Gus the
-> whole salute. Ask Gus — we never left each other's side!"
-
-# 🎬 Act it out!
-**Blow your whistle** and try to take charge — "Everyone LINE UP for
-questioning!" Get very flustered when someone points at the judge.
-
-# 🕵️ Who YOU suspect (say it loud — accuse them!)
-You suspect **BAKER BENNY**. Your reason: "A professional pastry chef who loses
-to a grandma every single year? That's humiliating enough to make a man do
-something desperate. My money's on Benny." (It keeps the heat off you, too.)
-
-# ❓ Questions to ask
-- "Who would WANT Grandma's pie out of the contest?"
+# ❓ QUESTIONS TO ASK OTHERS
+- "Who would WANT Grandma's winning pie out of the contest?"
+- "Who ENTERED the contest this year? (Ask around — it matters.)"
 - "Aunt Bella — if Grandma's pie is gone, doesn't YOURS win?"
-- "Ruby, what were you doing under that dessert table?"
 
 ------------------------------------------------------------
-🔒 SECRET — read ALONE, keep to yourself:
+🔒 SECRET — read this ALONE, then keep it to yourself.
 
-**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
-guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
-thief would be the only one left). Keep everyone guessing — act a little
-suspicious no matter what!
+**THE TWO RULES:**
+1. Never tell anyone whether your card makes you innocent or guilty.
+2. You may NOT lie about a FACT on this card — who you are, why you're here, what
+   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
+   thing you may invent is a REASON.
 
 **Are you the thief?** ❌ NO. You look guilty (you handled the pies) but you were
-at the grill with Gus, who'll back you up. Your clue about WHY the pie was taken
-is important — use it!
+at the grill with Gus the whole time. Your list of contest entrants is a real
+clue — use it, and try to solve it first.
 ------------------------------------------------------------

@@ -54,11 +54,14 @@ character. **Players read only their own booklet.**
   (Mayor Maple, Realtor Rita, Baker Benny, Fireman Frank, Farmer Fran) without
   breaking the mystery. Keep the ones marked below.
 
-> 🧩 **Do NOT drop these — the case needs them.** Between them they hold the
-> "how," the "why," the eyewitnesses, and the alibi that cracks the case:
-> **Grandma Rose, Aunt Bella, Grill Master Gus, Coach Diego, Ruby, Lily, Max**,
-> plus **Librarian Lou** (the handwriting clue) and **Mailman Mike** (saw the
-> carrier). Everyone else adds fun, motive, and misdirection. *(No spoilers —
-> just trust that these roles each carry a piece of the puzzle.)*
+> 🧩 **Do NOT drop these — the case needs them.** Each holds a TRUE fact that,
+> combined, points to the culprit: **Aunt Bella** (the culprit), **Grill Master
+> Gus** (lent her the mitts), **Mailman Mike** (saw her spare carrier), **Lily**
+> (saw her enter the kitchen), **Uncle Sunny** (saw her slip away), **Uncle
+> Marty** (saw her carry a dish to the lawn chairs), **Librarian Lou** (the
+> handwriting → a contest entrant), **Coach Diego** (the list of entrants), and
+> **Grandma Rose** (when & where the pie was taken). **Ruby** and **Max** add the
+> physical clues (sticky hands; the hiding spot). Everyone else adds motive and
+> misdirection. *(No spoilers — just trust each carries a piece of the puzzle.)*
 
 **Next:** hand out booklets, then start `03-MASTER-SCRIPT.md`.

@@ -126,32 +126,38 @@ The Master Script does the heavy lifting. Your only "jobs" as the group:
 There are **no rulings to make**. Every character booklet tells that kid
 exactly what they know and what to say. Nobody can "break" the game.
 
-> ⚠️ **The ONE rule that keeps the mystery alive:** No player may ever reveal
-> whether their card says they're innocent or guilty. If people start announcing
-> "my card says I'm innocent," the thief gets found by simple elimination and the
-> whole game deflates. Everyone acts a little guilty! (The Master Script reads
-> this rule aloud to the group at the start — but remind folks as they arrive.)
+> ⚠️ **The THREE RULES that make the mystery work** (the Master Script reads these
+> aloud, but remind folks as they arrive):
+> 1. **Never reveal whether your card makes you innocent or guilty.** If people
+>    announce "my card says I'm innocent," the thief gets found by elimination and
+>    the game deflates. Everyone acts a little guilty!
+> 2. **You can't lie about the FACTS on your card** — who you are, why you're
+>    here, what you saw, who you suspect. If someone asks a straight question, you
+>    must tell the truth (yes, even the thief). This is what makes it solvable — a
+>    party has no time to untangle a web of lies.
+> 3. **You CAN make up a reason.** "Yes, I was in the kitchen — just grabbing
+>    silverware." The facts are fixed; the excuses are the bluff. The whole game
+>    is asking the right people the right questions and catching the reasons that
+>    don't add up.
 
-> 🕵️ **Everyone is an accuser.** Each booklet names one *other* guest that the
-> character already suspects, with a personal reason — so accusations fly in
-> every direction from the first minute. That's by design: most of those hunches
-> are dead wrong (loud false leads land on Uncle Marty and Baker Benny), and the
-> real clues quietly point somewhere else. It keeps 18 people loud, busy, and
-> pointing fingers.
+> 🕵️ **Everyone is an accuser.** Each card names one *other* guest that character
+> truthfully suspects, with a reason — so accusations fly from the first minute.
+> Most hunches are dead wrong (the loud false leads land on Uncle Marty and Baker
+> Benny); the true trail is quieter. It keeps 18 people loud and questioning each
+> other.
 
-> 🏆 **It's every-guest-for-themselves — no teams, no sleuths.** Each guest is
-> secretly racing to be the ONE who cracks the case, so nobody shares clues —
-> helping someone else just hands them the win. In the final round everyone
-> writes their own private solution. **Anyone who nails it wins as a Master
-> Sleuth; if nobody does, the thief gets away with the perfect crime.** The
-> Master Script walks the group through it.
+> 🏆 **It's every-guest-for-themselves — no teams.** Each guest races to be the ONE
+> who cracks the case, so you don't volunteer your own clues (though you must
+> answer honestly if asked). In the final round everyone writes their own private
+> solution. **Anyone who nails it wins as a Master Sleuth; if nobody does, the
+> thief gets away with the perfect crime.**
 
-> 🎬 **Tip for extra fun:** Each booklet has an **"Act it out!"** bit — a little
-> piece of drama the player can perform (a swoon, a friendly argument, a grumpy
-> nap, a burst of song). Encourage everyone to *do* these during the
-> Investigation Time breaks. A murder mystery is way more fun when people are
-> hamming it up and acting suspicious, instead of just sitting and reading. Ham
-> it up!
+> 🎬 **Tip for extra fun:** Each card has a **"How to play it"** section — a bit of
+> drama and personality to perform (a swoon, a grumpy nap, a burst of song), plus
+> each character's embarrassing little secret to hide. Encourage everyone to *act*
+> during the Investigation Time breaks. A murder mystery is way more fun when
+> people are hamming it up and acting suspicious than when they're sitting and
+> reading. Ham it up!
 
 ### 🎪 Big-group tips (for 18 players)
 With a full cast of 18, a little crowd control keeps it smooth and fun:

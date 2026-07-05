@@ -1,60 +1,51 @@
 ╔══════════════════════════════════════════════════════════╗
    🚒  FIREMAN FRANK  ·  The Fireworks Guard  ·  🧑 ADULT
-   🤫 FOR YOUR EYES ONLY — read only your own booklet!
+   🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
-# 👤 Who you are
+# 👤 WHO YOU ARE  (all true — you can't lie about this)
 The brave neighborhood firefighter, in charge of tonight's big fireworks show.
-Earnest, safety-obsessed, a bit of a hero type — you take "protect and serve"
-very seriously. Say "Safety first, folks!" and salute a lot.
+Earnest, safety-obsessed, a bit of a hero type. Say "Safety first, folks!" and
+salute a lot.
 **Costume:** a red fire helmet or shirt, suspenders, a whistle or toy hose.
 
-# 🗣️ Introduce yourself out loud (Round 1)
-> "FIREMAN FRANK, reporting for duty! I'm guarding the fireworks for tonight's
-> big show — keeping everyone SAFE. I was posted way over by the fireworks table
-> when the pie went missing, but I had a clear view of the whole yard!"
+# 🎈 WHY YOU'RE AT THE PARTY  (true)
+You're running (and guarding) the big fireworks show for tonight — you've been
+posted by the fireworks table all afternoon keeping everyone safe.
 
-# 🎯 Why people might suspect YOU
-You were roaming the yard "on patrol" — you could've swung by the dessert table.
-(Salute: "An officer of safety would NEVER!")
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
+- During the salute you guarded the fireworks in the **far corner**, forty feet
+  from the dessert table — half the party could see you standing there.
+- From that spot you had a clear view of the gate and street: **NOTHING was
+  carried out to the cars or off the property.** Whatever was taken is **still
+  HERE.**
 
-# 🤐 Your secret
-For a firefighter, you have an embarrassing secret: loud fireworks TERRIFY you.
-You've been dreading tonight's show all week. Don't let anyone find out!
+# 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
+You suspect **UNCLE MARTY**: *"He was parked in that hammock right by the lawn
+chairs — exactly where the trail leads — and the man is pie-crazy. I'm watching
+him."*
 
-# 🔎 What you know (a helpful witness clue!)
-- **Freely:** "From my post by the fireworks I could see the whole backyard. I
-  can tell you this for certain: NOTHING was carried out to the cars or off the
-  property during the salute. Whatever was taken is still HERE — hidden at this party."
-- **If asked:** "The dessert table? I was too far to reach it — a good forty
-  feet away, guarding my post."
+# 🎭 HOW TO PLAY IT
+Patrol the party self-importantly, "inspecting for hazards." Flinch dramatically
+whenever anyone mentions the fireworks tonight.
+**Your embarrassing secret (dodge it if you can):** for a firefighter, loud
+fireworks TERRIFY you — you've been dreading tonight's show all week.
 
-# 🧭 My alibi (Round 3)
-> "I never left my post by the fireworks table — safety regulations! Half the
-> party could see me standing guard the whole time."
-
-# 🎬 Act it out!
-**Patrol** the party self-importantly, "inspecting for hazards." Flinch
-dramatically whenever anyone mentions the fireworks tonight.
-
-# 🕵️ Who YOU suspect (say it loud — accuse them!)
-You've got your eye on **UNCLE MARTY**. Your reason: "He was parked in that
-hammock right by the lawn chairs — exactly where the trail leads — and the man is
-pie-crazy. I'm watching him."
-
-# ❓ Questions to ask
-- "Did anyone see movement by the lawn chairs? I did!"
-- "Who left their post — I mean, their spot — during the salute?"
-- "Is everyone being SAFE? And also, not a thief?"
+# ❓ QUESTIONS TO ASK OTHERS
+- "The pie never left the property — so who's got it HIDDEN here?"
+- "Who was hanging around the lawn chairs during the salute?"
+- "Who left their spot when everyone was watching the flag?"
 
 ------------------------------------------------------------
-🔒 SECRET — read ALONE, keep to yourself:
+🔒 SECRET — read this ALONE, then keep it to yourself.
 
-**🚫 GOLDEN RULE:** Never tell anyone whether your card says you are innocent or
-guilty. Saying “my card says I’m innocent” instantly spoils the mystery (the
-thief would be the only one left). Keep everyone guessing — act a little
-suspicious no matter what!
+**THE TWO RULES:**
+1. Never tell anyone whether your card makes you innocent or guilty.
+2. You may NOT lie about a FACT on this card — who you are, why you're here, what
+   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
+   thing you may invent is a REASON.
 
-**Are you the thief?** ❌ NO. You were guarding the fireworks, far from the
-dessert table. Your clue proves the stolen pie never left the property — it's hidden right here.
+**Are you the thief?** ❌ NO. You were guarding the fireworks, far from the dessert
+table — and your fact proves the pie is still hidden on the property. Try to
+crack it first.
 ------------------------------------------------------------
