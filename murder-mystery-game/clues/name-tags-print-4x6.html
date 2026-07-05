@@ -1,0 +1,195 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>The Pie That Wasn't — Name Tags (4×6 labels, 2 per label)</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  /* Each physical label is 4in wide x 6in tall; two name tags stacked, each 4x3in */
+  @page { size: 4in 6in; margin: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .label {
+    width: 4in; height: 6in;
+    display: flex; flex-direction: column;
+    page-break-after: always;
+  }
+  .tag {
+    width: 4in; height: 3in;
+    border: 3px solid #b22234;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 0.15in;
+    position: relative;
+    background: #ffffff;
+  }
+  .tag:first-child { border-bottom: 2px dashed #999; }   /* cut line between the two */
+  .flag { position: absolute; top: 0.12in; font-size: 20px; }
+  .emoji { font-size: 46px; line-height: 1; margin-bottom: 0.06in; }
+  .name  { font-size: 30px; font-weight: 800; color: #10233f; letter-spacing: .5px; line-height: 1.05; }
+  .role  { font-size: 16px; color: #b22234; margin-top: 0.05in; font-weight: 600; }
+  .foot  { position: absolute; bottom: 0.12in; font-size: 9px; color: #888; }
+  /* On-screen: show a soft page background so labels are visible while editing */
+  @media screen {
+    body { background: #eee; padding: 24px; }
+    .label { margin: 0 auto 24px; box-shadow: 0 2px 10px rgba(0,0,0,.25); background:#fff; }
+  }
+</style></head><body>
+  <div class="label">
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🥧</div>
+        <div class="name">GRANDMA ROSE</div>
+        <div class="role">Blue-Ribbon Pie Baker</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🚜</div>
+        <div class="name">UNCLE PETE</div>
+        <div class="role">The Farm-Keeper</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+  </div>
+  <div class="label">
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">☀️</div>
+        <div class="name">AUNT SUNNY</div>
+        <div class="role">Farm Co-Heir</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🏆</div>
+        <div class="name">AUNT BELLA</div>
+        <div class="role">Always 2nd at the Contest</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+  </div>
+  <div class="label">
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">😤</div>
+        <div class="name">UNCLE MARTY</div>
+        <div class="role">Grumpy Pie Lover</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">💸</div>
+        <div class="name">COUSIN CHARLIE</div>
+        <div class="role">The Broke Cousin</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+  </div>
+  <div class="label">
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🏅</div>
+        <div class="name">COACH DIEGO</div>
+        <div class="role">Pie Contest Judge</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🔥</div>
+        <div class="name">GRILL MASTER GUS</div>
+        <div class="role">King of the Grill</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+  </div>
+  <div class="label">
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🏦</div>
+        <div class="name">BANKER BILL</div>
+        <div class="role">The Loan Officer</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">💍</div>
+        <div class="name">PAWNSHOP PEARL</div>
+        <div class="role">The Pawnbroker</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+  </div>
+  <div class="label">
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🩹</div>
+        <div class="name">NURSE NANCY</div>
+        <div class="role">Neighborhood Nurse</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">📬</div>
+        <div class="name">MAILMAN MIKE</div>
+        <div class="role">Nosy Mail Carrier</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+  </div>
+  <div class="label">
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🏡</div>
+        <div class="name">REALTOR RITA</div>
+        <div class="role">Competitive Deal-Closer</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">📚</div>
+        <div class="name">LIBRARIAN LOU</div>
+        <div class="role">The Quiet Observer</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+  </div>
+  <div class="label">
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🌽</div>
+        <div class="name">FARMER FRAN</div>
+        <div class="role">Neighbor Farmer</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🧁</div>
+        <div class="name">RUBY</div>
+        <div class="role">The Littlest Cousin</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+  </div>
+  <div class="label">
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🤕</div>
+        <div class="name">MAX</div>
+        <div class="role">Scraped-Knee Adventurer</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🍋</div>
+        <div class="name">LILY</div>
+        <div class="role">Lemonade-Stand Boss</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+  </div>
+  <div class="label">
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🕵️</div>
+        <div class="name">NEIGHBOR</div>
+        <div class="role">Case Investigator</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+      <div class="tag">
+        <div class="flag">🇺🇸</div>
+        <div class="emoji">🕵️</div>
+        <div class="name">NEIGHBOR</div>
+        <div class="role">Case Investigator</div>
+        <div class="foot">The Pie That Wasn't · Maple Farm 4th of July</div>
+      </div>
+  </div>
+</body></html>

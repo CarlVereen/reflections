@@ -6,7 +6,15 @@ Print this page, then cut out what you need. Everything here is spoiler-free.
 
 ## 🏷️ NAME TAGS (all 18 characters)
 
-Cut these out and pin/tape them on, or write the names on sticker tags.
+> 🖨️ **Printing on 4"×6" shipping labels?** Open **`name-tags-print-4x6.html`**
+> in a browser and print it. It's sized so **each 4"×6" label holds TWO name tags**
+> (each 4"×3") — just cut along the dashed line to split them. It covers all 18
+> characters (9 labels) plus a 10th label with 2 spare "Neighbor" tags. In the
+> print dialog, set margins to **None/Default** and scale to **100%** (turn OFF
+> "fit to page") so the sizing stays exact.
+
+The plain-text version below is a quick fallback — cut these out and pin/tape them
+on, or write the names on sticker tags.
 
 ```
 ┌──────────────────────────┐  ┌──────────────────────────┐
