@@ -40,7 +40,7 @@ out!
 
 # 🎬 Act it out!
 Grumble loudly that nobody credits your apples. Try to **sell produce** to the
-detectives mid-investigation: "Apple while you sleuth? Two for a dollar!"
+sleuths mid-investigation: "Apple while you sleuth? Two for a dollar!"
 
 # 🕵️ Who YOU suspect (say it loud — accuse them!)
 You blame **BAKER BENNY**. Your reason: "That fancy baker uses a boxed MIX and

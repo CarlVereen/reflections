@@ -23,10 +23,11 @@ well, maybe one bite.")
 You've been sneaking cookies behind everyone's back all day while telling THEM
 to eat healthy. Total hypocrite about your diet!
 
-# 🔎 What you know (a helpful witness clue!)
-- **Freely:** "I was tending Max's knee by the side gate during the salute, so
-  Max was with me part of the time — but that boy kept pointing at the lawn
-  chairs, saying he saw something over there!"
+# 🔎 What you know (a lead of your own — keep it close!)
+- **Your secret:** While you bandaged Max's knee by the side gate during the
+  salute, that boy kept muttering he'd seen something over by the lawn chairs. A
+  juicy lead! Don't just announce it — chase it down yourself, or trade it for a
+  clue you're missing.
 
 # 🧭 My alibi (Round 3)
 > "I was patching up Max's knee the whole salute — he'll tell you! A nurse
@@ -54,6 +55,6 @@ guilty. Saying “my card says I’m innocent” instantly spoils the mystery (t
 thief would be the only one left). Keep everyone guessing — act a little
 suspicious no matter what!
 
-**Are you the thief?** ❌ NO. You were tending Max's knee (and sneaking cookies).
-You can back up where Max was and nudge everyone to hear his lawn-chair clue.
+**Are you the thief?** ❌ NO. You were tending Max's knee (and sneaking cookies) —
+and you overheard his lawn-chair lead. Chase it down yourself to crack the case!
 ------------------------------------------------------------

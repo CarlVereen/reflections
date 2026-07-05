@@ -29,11 +29,12 @@ rules!) — that's how you crashed. You don't want to get in trouble for it.
   lawn chairs — and I saw somebody hide something under one of them!"
 - **Save the big detail for Round 3.**
 
-# 📣 Reveal in Round 3
-> "Okay, here's what I saw! During the salute, somebody snuck over to the lawn
-> chairs carrying a big covered dish — and shoved it UNDER a chair! I couldn't
-> see their face, but I know EXACTLY which chair. Somebody go look — the pie's
-> under there!"
+# 🤫 A clue only YOU know — it could win YOU the game!
+During the salute you saw somebody sneak to the lawn chairs with a big covered
+dish and shove it UNDER a chair — you know EXACTLY which chair (but not the
+face). That's where the pie is hidden! Don't announce it. Sneak over and see
+WHOSE chair it is yourself — that's your ticket to solving it first. Only tell if
+asked straight out.
 
 # 🧭 My alibi (Round 3)
 > "Nurse Nancy was bandaging my knee by the gate the whole salute — she'll tell
@@ -62,6 +63,6 @@ thief would be the only one left). Keep everyone guessing — act a little
 suspicious no matter what!
 
 **Are you the thief?** ❌ NO — you were getting your knee bandaged! You're a KEY
-witness: you saw the thief hide the pie UNDER a lawn chair. In Round 3, lead
-everyone to check the lawn chairs — that's where the pie is hidden! 🕵️
+witness: you saw the thief hide the pie UNDER a lawn chair. Go check the
+chairs yourself and crack it first — don't hand the win to anyone else! 🕵️
 ------------------------------------------------------------

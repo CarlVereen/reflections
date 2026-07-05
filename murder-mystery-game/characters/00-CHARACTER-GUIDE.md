@@ -46,8 +46,8 @@ character. **Players read only their own booklet.**
 ## 🎚️ Adjusting the group size
 
 - **Exactly 18 (15 adults + 3 kids):** Use everyone above — the perfect fit. ✅
-- **A few more guests show up:** Extra folks join as **Junior Detectives** — no
-  booklet, they just investigate, take notes, and vote. (Or print a second copy
+- **A few more guests show up:** Extra folks join as **extra guests** — no
+  booklet, they just mingle, snoop, and race to solve it too. (Or print a second copy
   of a chatty role like Mailman Mike or Hairdresser Holly and let two people
   play "partners.")
 - **A few fewer:** You can safely drop some of the pure **red-herring adults**

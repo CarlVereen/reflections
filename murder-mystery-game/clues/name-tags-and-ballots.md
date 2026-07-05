@@ -1,4 +1,4 @@
-# 🖨️ Name Tags, Ballots & Awards (Print These!)
+# 🖨️ Name Tags, Solution Slips & Awards (Print These!)
 
 Print this page, then cut out what you need. Everything here is spoiler-free.
 
@@ -46,32 +46,32 @@ Cut these out and pin/tape them on, or write the names on sticker tags.
 │ Lemonade-Stand Kid       │  │ The Scooter Kid           │
 └──────────────────────────┘  └──────────────────────────┘
 ┌──────────────────────────┐  ┌──────────────────────────┐
-│ 🕵️ JUNIOR DETECTIVE      │  │ 🕵️ JUNIOR DETECTIVE      │
+│ 🕵️ EXTRA GUEST      │  │ 🕵️ EXTRA GUEST      │
 │ Case Investigator        │  │ Case Investigator         │
 └──────────────────────────┘  └──────────────────────────┘
 ```
 
 ---
 
-## 🗳️ DETECTIVE BALLOTS
+## 🗳️ SECRET SOLUTION SLIPS
 
-Print **one ballot per player** (18+). Hand them out in Round 5. Each detective
-(the thief votes too!) checks ONE box, then fills in the "why" and "proof."
+Print **one slip per player** (18+). Hand them out in Round 5. Everyone privately
+fills in their own answer — **no sharing, no teaming up!**
 
-> 🏆 **How winning works:** After everyone votes, count the ballots. It's
-> **Detectives vs. the Thief** — the detectives win only if **more than half**
-> the players named the *real* culprit. If the votes are split, **the thief
-> escapes and wins!** Tally the votes *before* opening the sealed solution, then
-> compare. (With 18 players: 10+ votes on the culprit = caught; 9 or fewer =
-> the thief gets away.)
+> 🏆 **How winning works:** This is every-guest-for-themselves. Each player
+> secretly writes down who they think did it. When the sealed solution opens,
+> **anyone who correctly named the real culprit cracked the case and wins as a
+> Master Sleuth** — best of all if you're the *only* one who got it. **If nobody
+> named the real thief, the thief pulls off the perfect crime and wins!** Keep
+> your slip hidden — the whole point is to be the one clever guest who solves it.
 
 ```
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        🕵️  OFFICIAL DETECTIVE BALLOT  🕵️
+        🕵️  MY SECRET SOLUTION  🕵️
         The Case of the Missing Blue-Ribbon Pie
 
-   Detective's name: ______________________________
+   Your name: ______________________________
 
    WHO stole Grandma Rose's blue-ribbon pie? (Check ONE)
 
@@ -103,13 +103,13 @@ invent extra awards so **everybody wins something!**
 
 ```
 ╔═══════════════════════════════════════════════════╗
-║   🏅  MASTER DETECTIVE AWARD  🏅                   ║
+║   🏅  MASTER SLEUTH AWARD  🏅                   ║
 ║                                                     ║
 ║   Presented to: ______________________________     ║
 ║                                                     ║
 ║   For cracking The Case of the Missing              ║
 ║   Blue-Ribbon Pie — naming the right thief          ║
-║   AND the right reason! Sharp work, detective.      ║
+║   AND the right reason! Sharp work, sleuth.      ║
 ║                                                     ║
 ║   Awarded on: ________________  🥧🇺🇸               ║
 ╚═══════════════════════════════════════════════════╝
@@ -137,7 +137,7 @@ invent extra awards so **everybody wins something!**
 ╚═══════════════════════════════════════════════════╝
 
 ╔═══════════════════════════════════════════════════╗
-║   🍋  MOST CURIOUS DETECTIVE AWARD  🍋              ║
+║   🍋  MOST CURIOUS SLEUTH AWARD  🍋              ║
 ║                                                     ║
 ║   Presented to: ______________________________     ║
 ║                                                     ║
@@ -150,4 +150,4 @@ invent extra awards so **everybody wins something!**
 
 > 💡 With 18 players, invent more awards so everyone gets one — "Sneakiest
 > Suspect," "Best Grumpy Face" (Uncle Marty!), "Loudest Accusation," "Best
-> Gossip," "Junior Detective of the Year," "Future FBI Agent," etc.
+> Gossip," "Junior Sleuth of the Year," "Future FBI Agent," etc.

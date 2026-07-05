@@ -29,11 +29,12 @@ weak!
   the salute, NObody went into that kitchen. Not one person."
 - **Save the big line for Round 3.**
 
-# 📣 Reveal in Round 3
-> "Here's what I KNOW: I was at my stand by the kitchen door the WHOLE party. And
-> during the flag salute, NOBODY went into that kitchen — nobody! So if someone
-> says they were 'inside getting lemonade' during the salute... that's a big
-> fat FIB!"
+# 🤫 A clue only YOU know — your winning EDGE!
+You were at your stand by the kitchen door the WHOLE party, and during the flag
+salute NOBODY went into that kitchen. So anyone who claims they were "inside
+getting lemonade" is FIBBING — a huge lead! Don't blurt it to the crowd. Quietly
+ask people where they were; when someone's "kitchen" story pops up, you've
+caught your fibber. Tell only if asked directly.
 
 # 🧭 My alibi (Round 3)
 > "I was at my lemonade stand the whole time, where everyone could see me — I
@@ -63,5 +64,5 @@ suspicious no matter what!
 
 **Are you the thief?** ❌ NO. You're a KEY witness: you can prove anyone who
 claims they were "in the kitchen" during the salute is LYING — because nobody
-went in. That busts the thief's fake alibi wide open. Speak up in Round 3!
+went in. That's your edge — use it to quietly catch the fibber and solve it first!
 ------------------------------------------------------------

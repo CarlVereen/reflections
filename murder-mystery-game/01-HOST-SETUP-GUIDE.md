@@ -33,7 +33,7 @@ That's it. Everything else in this kit is safe for your eyes.
 - 3 envelopes for the Clue Envelopes (label them **1**, **2**, **3**), OR just
   3 folded pages you set out clue-side-down
 - 1 envelope for the sealed Solution (label it **DO NOT OPEN TIL THE END**)
-- Pens/pencils for the detective ballots
+- Pens/pencils for the solution slips
 - Tape and string or a lanyard for name tags (or just safety pins)
 
 **Nice-to-haves (make it pop, all optional):**
@@ -79,7 +79,7 @@ name so handout is quick.)
 - `03-MASTER-SCRIPT.md` — 1 copy (this is the script you'll read from)
 - `clues/clue-envelope-1.md`, `-2.md`, `-3.md` — 1 copy of each
 - `clues/name-tags-and-ballots.md` — print name tags for your cast, plus 1
-  ballot per player and a few award certificates
+  solution slip per player and a few award certificates
 
 ### Step 4 — Set the scene & stuff the envelopes (5 min)
 - Put each **Clue** page into its numbered envelope (1, 2, 3). Set them aside
@@ -106,7 +106,7 @@ red-white-and-blue, and you're a player now. 🎇
 | As guests arrive | Hand out name tags + character booklets. Kids read their **own** booklet privately and get into costume. Snacks + music. |
 | ~10 min in | Everyone's here → gather in a circle. The most confident reader starts the **Master Script**. |
 | Rounds 1–4 (~10 min each) | Follow the script. Open a Clue Envelope each round. Mingle and question between readings. |
-| Round 5 (~10 min) | Everyone fills out a **detective ballot**. Open the sealed Solution. Reveal! |
+| Round 5 (~10 min) | Everyone fills out a **solution slip**. Open the sealed Solution. Reveal! |
 | Wrap-up | Hand out awards, then eat the "rescued" pie. Sparklers/fireworks after dark (grown-up supervised). |
 
 **Total: about 45–75 minutes.** Younger or wigglier crews: keep rounds short.
@@ -139,12 +139,12 @@ exactly what they know and what to say. Nobody can "break" the game.
 > real clues quietly point somewhere else. It keeps 18 people loud, busy, and
 > pointing fingers.
 
-> 🏆 **It's a contest — Detectives vs. the Thief.** In the final round everyone
-> votes. The detectives win only if **more than half** name the real culprit; if
-> the votes stay scattered, **the thief escapes and wins.** So the thief is
-> genuinely playing to get away with it, and the detectives have to actually
-> agree — not just each hold a private hunch. The Master Script walks the group
-> through the vote tally and both outcomes.
+> 🏆 **It's every-guest-for-themselves — no teams, no sleuths.** Each guest is
+> secretly racing to be the ONE who cracks the case, so nobody shares clues —
+> helping someone else just hands them the win. In the final round everyone
+> writes their own private solution. **Anyone who nails it wins as a Master
+> Sleuth; if nobody does, the thief gets away with the perfect crime.** The
+> Master Script walks the group through it.
 
 > 🎬 **Tip for extra fun:** Each booklet has an **"Act it out!"** bit — a little
 > piece of drama the player can perform (a swoon, a friendly argument, a grumpy
@@ -174,7 +174,7 @@ With a full cast of 18, a little crowd control keeps it smooth and fun:
 ## 🆘 Quick troubleshooting
 
 - **A kid is stuck / shy:** Their booklet has a "Things to say" list and
-  "Questions to ask others." Point them to it. Junior Detectives can buddy up
+  "Questions to ask others." Point them to it. Extra Guests can buddy up
   with them.
 - **Someone guesses the thief early:** Great! They still have to *prove* it
   with clues in the final accusation. Keep it moving — the reveal is still fun.

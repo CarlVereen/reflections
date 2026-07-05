@@ -8,7 +8,7 @@
 
 > **CLUE #2: A crumpled note — and a reason.**
 >
-> "A plan needs a *reason*, detectives. And someone was careless enough to leave
+> "A plan needs a *reason*, sleuths. And someone was careless enough to leave
 > theirs behind. This looks like a half-written note — the kind you scribble to
 > work up your nerve — crushed into a ball in the trash can by the
 > grill — written this morning, before the party even started. Listen:
@@ -29,12 +29,12 @@
 > who has placed second, year after year, and finally decided that this was
 > their year to win, no matter the cost.
 >
-> Detectives — who at this cookout has spent twelve years finishing *second*?
+> Sleuths — who at this cookout has spent twelve years finishing *second*?
 > And whose blue ribbon would it be if the champion's pie simply... disappeared?"
 
 ---
 
-### 🧩 What this clue tells the detectives:
+### 🧩 What this clue tells the sleuths:
 - **MOTIVE:** The thief is a **pie-contest regular** who is **tired of losing** —
   a perennial runner-up.
 - With the champion pie gone, whoever **usually comes in second** would finally

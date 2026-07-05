@@ -23,11 +23,11 @@ snatch. (Protest: "I deliver mail, I don't take pies!")
 You read the postcards before you deliver them. You know everyone's vacation
 plans and secrets — and you can't help mentioning things you "shouldn't" know.
 
-# 🔎 What you know (a helpful witness clue!)
-- **Big clue:** "This morning I watched Aunt Bella carry in her cobbler in one
-  pie carrier — and a SECOND pie carrier, empty, tucked under her arm. Now who
-  brings a *spare* pie carrier to a contest? Unless they're planning to carry
-  home more than one pie..."
+# 🔎 What you know (your winning EDGE — guard it!)
+- **Your secret lead (keep it close!):** This morning you saw **Aunt Bella** carry
+  in her cobbler in one pie carrier — and a SECOND, empty carrier tucked under her
+  arm. Who brings a *spare* carrier to a one-pie contest? A great lead pointing at
+  Bella. Don't broadcast it; share only if someone asks what you saw this morning.
 - **If asked:** "During the salute I was finishing my route out front — didn't
   see the grab myself. But I saw who came to this cookout carrying TWO carriers,
   and that's stuck with me."
@@ -59,6 +59,6 @@ thief would be the only one left). Keep everyone guessing — act a little
 suspicious no matter what!
 
 **Are you the thief?** ❌ NO. You're a nosy witness: you saw Aunt Bella arrive
-with a spare, empty pie carrier — the perfect thing to smuggle a stolen pie in.
-Share it!
+with a spare, empty pie carrier — perfect for smuggling a stolen pie. Keep it
+close and crack the case first!
 ------------------------------------------------------------

@@ -35,7 +35,7 @@ out, your fancy bakery would be ruined!
 
 # 🎬 Act it out!
 Loudly **insult everyone's baking** and brag about your pastry training. Offer
-snooty tarts to detectives while criticizing their "technique."
+snooty tarts to sleuths while criticizing their "technique."
 
 # 🕵️ Who YOU suspect (say it loud — accuse them!)
 You point at **REALTOR RITA**. Your reason: "That woman cheats at everything —

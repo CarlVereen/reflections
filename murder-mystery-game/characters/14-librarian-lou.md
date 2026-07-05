@@ -27,10 +27,12 @@ for a librarian! You've been quietly hiding it for years.
 - **General:** "The best clues are the ones people overlook. Watch the details —
   handwriting, sticky fingers, who's hiding what."
 
-# 📣 Reveal in Round 2
-> "I examined that note closely. That fancy, loopy handwriting — with little
-> hearts over the letter 'i'? I've seen it before: on the PIE CONTEST sign-up
-> sheet! Our thief is someone who ENTERED the contest. Narrow your suspects!"
+# 🤫 A clue only YOU spotted — your winning EDGE!
+You quietly noticed the note's fancy, loopy handwriting (little hearts over the
+i's) matches the **pie-contest sign-up sheet** — so the thief ENTERED the
+contest. That's a massive lead. **Guard it!** Announcing it hands rivals the
+answer. Use it to narrow your own list; only admit it if asked point-blank about
+the handwriting.
 
 # 🧭 My alibi (Round 3)
 > "I was reading in the shade by the book table the whole salute — quietly, as I

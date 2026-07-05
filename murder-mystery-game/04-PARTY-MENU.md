@@ -1,7 +1,7 @@
 # 🍔 The Suspicious Cookout Menu (Optional & Fun!)
 
 Food is half the fun of a mystery dinner party! Here's a kid-friendly 4th of
-July spread with silly "detective" names. None of it is required — serve as much
+July spread with silly "sleuth" names. None of it is required — serve as much
 or as little as you like. Mix in whatever your crew loves.
 
 > ⚠️ Grown-up note: check for **allergies** (nuts, dairy, gluten) before
@@ -31,12 +31,12 @@ or as little as you like. Mix in whatever your crew loves.
 
 ## 🥤 Sip-and-Sleuth Drinks
 - **Lily's Lemonade** — lemonade, of course! (Ask Lily if it's watered down 😉)
-- **Detective's Blue Punch** — blue sports drink or blue lemonade.
+- **Sleuth's Blue Punch** — blue sports drink or blue lemonade.
 - **Red Berry Fizz** — cranberry or fruit punch with a splash of sparkling water.
 
 ## 🥧 The Star of the Show: DESSERT
 - **The Rescued Blue-Ribbon Apple Pie** 🥧 — serve the "stolen" pie AFTER the
-  big reveal, once the detectives have saved it! Tie a blue ribbon around the
+  big reveal, once the sleuths have saved it! Tie a blue ribbon around the
   dish. Ice cream on the side makes it a champion.
 - **Berry "Case Closed" Shortcakes** — biscuits + strawberries + whipped cream.
 

@@ -9,7 +9,7 @@ place and the title of Maple Street Champion. This year, someone finally had
 enough. During the flag salute — every hand over every heart, every eye on the
 flag — a thief slipped to the dessert table and **stole the champion pie right
 out from under the whole neighborhood.** No pie, no contest, no champion...
-unless your detectives can follow the clues, break the alibis, and unmask the
+unless someone can follow the clues, break the alibis, and unmask the
 culprit before the fireworks light up the sky. 🎆
 
 Nobody gets hurt in this mystery — it's a **stolen pie**, not a "murder" — so
@@ -40,18 +40,19 @@ solution while prepping.
 
 ## 🧭 How the game works (2-minute version)
 
-1. Each kid gets a **character** (a fun cookout guest with a costume, a secret,
-   and clues to share).
+1. Each player gets a **character** (a fun cookout guest with a costume, a
+   secret, and clues of their own).
 2. The party runs in **5 short rounds**, guided by the read-aloud **Master
    Script**.
 3. At the start of each round you **open a numbered Clue Envelope** and read
    the new evidence aloud.
-4. Players **mingle, question each other, and swap what they know.** Everyone
-   has a secret, so everyone acts a little suspicious!
-5. In the final round, everyone **votes** on a ballot — then you open the sealed
-   solution. It's **Detectives vs. the Thief**: the thief is only caught if
-   *more than half* the players vote for the right person. If suspicion stays
-   split, **the thief escapes and wins!** 🎉
+4. Players **mingle and question each other — but guard their own clues** (you're
+   all racing to solve it first). Everyone has a secret, so everyone acts a
+   little suspicious!
+5. In the final round, everyone **secretly writes their own solution** — no
+   teaming up, because you want to be the one who cracks it! Then the sealed
+   solution opens. **Anyone who privately solved it wins as a Master Sleuth; if
+   nobody figures it out, the thief pulls off the perfect crime and wins!** 🎉
 
 Plays in about **45–75 minutes**. Perfect for a 4th of July cookout, birthday
 party, class party, or any backyard get-together.
@@ -70,7 +71,7 @@ party, class party, or any backyard get-together.
 | `characters/00-CHARACTER-GUIDE.md` | Cast list + who to give each kid (spoiler-free) | The organizer |
 | `characters/01…18-*.md` | The 18 character booklets (15 adults + 3 kids) | One each, **players read only their own** |
 | `clues/clue-envelope-1…3.md` | The three timed clue envelopes | Opened during play |
-| `clues/name-tags-and-ballots.md` | Name tags, detective ballots, award certificates | Printed for everyone |
+| `clues/name-tags-and-ballots.md` | Name tags, solution slips, award certificates | Printed for everyone |
 | `99-SOLUTION-DO-NOT-OPEN.md` | 🔒 The answer | **Nobody — until the very end!** |
 
 ---
@@ -85,8 +86,9 @@ and kids play the same game together.
   suspects, each with a secret and a motive.
 - **3 kid roles** (`characters/16–18`) — easy, fun parts, and each kid holds a
   **real, important clue** that helps crack the case.
-- **A few extra guests?** They join as **Junior Detectives** — no booklet, they
-  investigate and vote. (Or two people can share a chatty role as "partners.")
+- **A few extra guests?** They join as **extra guests** with no booklet — they
+  mingle, snoop, and race to solve it too. (Or two people can share a chatty
+  role as "partners.")
 - **A few fewer?** You can drop some of the pure red-herring adults without
   breaking the mystery — see the Character Guide for which roles to keep.
 

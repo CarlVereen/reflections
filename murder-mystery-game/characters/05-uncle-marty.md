@@ -56,5 +56,5 @@ suspicious no matter what!
 
 **Are you the thief?** ❌ NO. You look guilty (you love that pie!) but you were
 napping. Your clue — someone hurried to the LAWN CHAIRS with a covered dish — is
-useful. Help the detectives, ya grump.
+useful. Help the sleuths, ya grump.
 ------------------------------------------------------------

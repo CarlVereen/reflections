@@ -21,7 +21,7 @@
 
 # 📣 THE GRAND REVEAL — read this aloud in Round 5
 
-> **"Detectives, every clue you needed was right in front of you all afternoon.
+> **"Sleuths, every clue you needed was right in front of you all afternoon.
 > A pair of borrowed oven mitts. A spare pie carrier. A note about twelve years
 > of losing. A sticky trail to a lawn chair, and a fork with one guilty bite.
 > Put them together, and they point to just one person...**
@@ -38,7 +38,7 @@
 
 ## 🔎 How the clues pointed to her (read this too!)
 
-> "Here's how the whole thing fits together, detectives:
+> "Here's how the whole thing fits together, sleuths:
 >
 > **WHY she did it (the motive):** For twelve years, Aunt Bella has baked her
 > heart out and finished *second* to Grandma Rose — every single time. This year
@@ -110,19 +110,17 @@
 
 ---
 
-## ⚖️ Now decide who WON — Detectives vs. the Thief!
+## ⚖️ Now decide who WON
 
-> Count how many players voted for **Aunt Bella** on their ballots (the reader
-> tallied this just before opening the solution):
+> Everyone wrote a private solution slip. Go around and have each player reveal
+> whether their own slip correctly named **Aunt Bella** (with a real reason).
+> Remember — nobody was working together, so this is personal:
 >
-> - 🏅 **MORE THAN HALF named Bella → the DETECTIVES WIN.** The thief is caught,
->   the pie is saved, justice is served on Maple Street!
-> - 🏆 **HALF or FEWER named Bella → THE THIEF WINS and escapes clean!** With
->   suspicion scattered across the whole neighborhood, Bella slipped right
->   through the net — the perfect crime.
->
-> _(Example: with 18 players, the thief is caught only if **10 or more** voted
-> for Bella. **9 or fewer**, and she gets away with it!)_
+> - 🕵️ **Every guest who nailed it is a MASTER SLEUTH — they cracked the case and
+>   win!** The rarer, the better: being the *only* one to solve it is the ultimate
+>   Maple Street bragging right.
+> - 🏆 **If NOBODY correctly named Bella, the THIEF wins — the perfect crime!**
+>   With no one pooling clues, she slipped right through.
 
 ---
 
@@ -141,11 +139,10 @@
 ---
 
 ## 🏅 Scoring & honors
-- **The team result** is decided by the vote above — Detectives win, or the Thief
-  escapes.
-- **Individual honor:** every detective who wrote **Aunt Bella** AND a correct
-  reason (tired of losing / to win the blue ribbon) on their ballot earns
-  **MASTER DETECTIVE** — even if the thief got away!
+- **The result:** every guest who privately named **Aunt Bella** AND a correct
+  reason (tired of losing / to win the blue ribbon) on their slip cracked the
+  case and earns **MASTER SLEUTH**. If *nobody* did, the **thief wins** the
+  perfect crime.
 - Now hand out the award certificates from `clues/name-tags-and-ballots.md`.
 
-> **Happy 4th of July, detectives — case closed!** 🎆🇺🇸
+> **Happy 4th of July, sleuths — case closed!** 🎆🇺🇸

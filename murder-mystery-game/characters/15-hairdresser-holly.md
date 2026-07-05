@@ -22,20 +22,21 @@ everyone something to gossip about! (Gasp: "Me? I only REPORT the news, honey!")
 You gave a client a truly terrible haircut last week and they're here at the
 party wearing a hat to hide it. You're praying nobody asks about it.
 
-# 🔎 What you know (the gossip hub — repeats clues!)
-- **Freely, all game:** repeat and connect what others say — "Did you hear Gus
-  lent Bella his oven mitts, and Mike saw her bring a SPARE pie carrier? And
-  she's always coming in second... and now she's hiding her hands? Honey, that's
-  SUSPICIOUS."
-- Your job is to make sure clues get shared around so nobody misses them.
+# 🔎 What you know (gossip is your weapon — use it to WIN!)
+- **All game:** you love prying secrets out of people and trading juicy rumors —
+  but you're competing, so twist your gossip to MISLEAD your rivals. Float a
+  theory about the wrong person, swap a small clue to get a bigger one, and pump
+  everyone for what they know while giving up as little as you can.
+- Whoever you can get talking, you can get clues from — that's YOUR edge.
 
 # 🧭 My alibi (Round 3)
 > "I was doing Nurse Nancy's hair by the picnic table during the salute — well,
 > touching it up. She'll vouch for me. A gossip is never ALONE, sweetie!"
 
 # 🎬 Act it out!
-**Spread rumors** and repeat every clue you overhear (loudly). Pull people aside
-for "just between us" whispers, then announce them to the whole yard.
+**Spread rumors** to stir the pot. Pull people aside for "just between us"
+whispers, then plant a juicy (maybe totally false!) theory to send rivals
+chasing the wrong suspect.
 
 # 🕵️ Who YOU suspect (say it loud — accuse them!)
 You suspect **REALTOR RITA**. Your reason: "Oh honey, that woman cheated at
@@ -55,7 +56,7 @@ guilty. Saying “my card says I’m innocent” instantly spoils the mystery (t
 thief would be the only one left). Keep everyone guessing — act a little
 suspicious no matter what!
 
-**Are you the thief?** ❌ NO. You're the gossip hub — your job is to REPEAT and
-connect clues so the group doesn't overlook them. (Verbal clues get missed
-unless repeated — that's YOU.) Keep the whole yard talking!
+**Are you the thief?** ❌ NO. Gossip is your superpower — you can pry loose more
+clues than anyone. Trade cleverly, spread a few false rumors, and piece the truth
+together before your rivals do!
 ------------------------------------------------------------

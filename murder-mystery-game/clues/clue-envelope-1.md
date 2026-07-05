@@ -8,7 +8,7 @@
 
 > **CLUE #1: This was no accident — and no hungry dog.**
 >
-> "Detectives, look closely at the scene. The whole pie is gone — and so is the
+> "Sleuths, look closely at the scene. The whole pie is gone — and so is the
 > pie dish. A dog or a clumsy elbow would have left a splat on the ground, a
 > mess to clean up. There's no splat. There's no mess. That means the pie didn't
 > *fall* — it was **lifted, clean and quick, and carried away on purpose.**
@@ -27,7 +27,7 @@
 
 ---
 
-### 🧩 What this clue tells the detectives:
+### 🧩 What this clue tells the sleuths:
 - The pie was **lifted and carried off deliberately** — not knocked over.
 - The pie was **still hot**, so the thief used **oven mitts** — meaning they
   **planned ahead**. (Who would need oven mitts at a cookout? Who borrowed a

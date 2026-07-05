@@ -29,10 +29,11 @@ grown-up asks about missing cupcakes.
   thief's hands grab the pie — but I couldn't see their face..."
 - **Save the big detail for Round 3.**
 
-# 📣 Reveal in Round 3
-> "Here's the big thing! From under the table, I saw the thief's hands grab the
-> pie — and they were all STICKY and covered in gooey apple filling! So
-> EVERYBODY show me your hands — the thief's would be super messy!"
+# 🤫 A clue only YOU know — it could win YOU the game!
+From under the table, you saw the thief's hands were STICKY with gooey apple
+filling! HUGE clue — but if you shout it, everyone can catch the thief too. Be
+sneaky: quietly peek at people's hands YOURSELF to find the messy ones. Only
+tell someone if they ask you straight out what you saw.
 
 # 🧭 My alibi (Round 3)
 > "I was under the table eating cupcakes — my hands were full of cupcake, not
@@ -60,6 +61,6 @@ thief would be the only one left). Keep everyone guessing — act a little
 suspicious no matter what!
 
 **Are you the thief?** ❌ NO — you only took cupcakes! You're the most important
-eyewitness: you saw the thief's sticky apple hands. Get everyone to show their
-hands in Round 3. You could win Master Detective! 🕵️
+eyewitness: you saw the thief's sticky apple hands. Quietly peek at everyone's
+hands yourself and catch the messy-handed thief — crack it first and you're the Master Sleuth! 🕵️
 ------------------------------------------------------------

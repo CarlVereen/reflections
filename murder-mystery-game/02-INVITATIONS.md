@@ -72,8 +72,8 @@ sparkly star stickers. 🇺🇸
 
 > 🎆 **You're invited to a 4th of July Mystery Party!**
 > Come to our Independence Day cookout — but watch out, because Grandma Rose's
-> famous blue-ribbon apple pie has been STOLEN, and we need your detective
-> skills to catch the thief! You'll play your very own cookout character (I'll
+> famous blue-ribbon apple pie has been STOLEN — can YOU be the sharpest sleuth
+> and crack it before anyone else? You'll play your very own cookout character (I'll
 > tell you who!). Wear red, white & blue if you can. There'll be snacks, games,
 > and a mystery to solve — and fireworks after dark! 🥧🕵️
 >

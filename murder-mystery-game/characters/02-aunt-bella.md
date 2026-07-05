@@ -54,12 +54,13 @@ else. The whole game is you keeping this secret!
 
 **Are you the thief?** ✅ YES. IT WAS YOU! 🤫
 
-**🏆 HOW YOU WIN (this is a contest — Detectives vs. YOU!):** At the end, everyone
-votes for who they think did it. **You WIN and escape clean if HALF the players
-or fewer name you. You only LOSE if MORE THAN HALF vote for you.** So your whole
-mission is to spread doubt, pin it on someone else, and blend in — every finger
-you point elsewhere is a vote away from you. With everyone already suspecting
-different people, escape is absolutely doable. Play to WIN!
+**🏆 HOW YOU WIN (it's every-guest-for-themselves — including YOU):** At the end,
+each guest secretly writes down who they think did it — nobody's allowed to team
+up or pool clues. **You WIN if NOBODY correctly names you as the thief. You only
+LOSE if even one guest nails it.** Since no one is sharing what they know, plenty
+of people will be chasing the wrong suspect — so your whole mission is to spread
+doubt, pin it on someone else, and make sure no single guest ever fits all the
+pieces together. Play to WIN!
 
 - **Why:** Twelve years of second place. You're done losing. With Grandma's
   champion pie gone, YOUR cobbler finally wins the blue ribbon.
@@ -70,7 +71,7 @@ different people, escape is absolutely doable. Play to WIN!
   you lifted Grandma's hot pie with the mitts, slid it into your spare carrier,
   stashed it under your **lawn chair**, and strolled back to the crowd, sweet as
   sugar.
-- **Your mistakes (how a sharp detective catches you):**
+- **Your mistakes (how a sharp guest catches you):**
   1. 🧤 In your rush you **dropped Gus's oven mitts** at the dessert table — and
      Gus knows he lent them to you.
   2. 🍎 The hot pie **dripped**: a sticky trail leads to your lawn chair, and
@@ -97,10 +98,10 @@ different people, escape is absolutely doable. Play to WIN!
     to say she didn't take it?"
   Keep the heat on THEM, and off you.
 
-**⭐ At the reveal:** Once the votes are tallied, the solution reveals it was you.
-- If you **ESCAPED** (half the players or fewer named you), GLOAT: *"You'll never
-  catch me — oh, you know NOW, but I already got away with it. I WIN!"* 🏆
-- If you were **CAUGHT** (more than half named you), confess big: *"FINE! Twelve
-  years of second place — I just wanted ONE blue ribbon!"*
+**⭐ At the reveal:** The solution reveals it was you.
+- If you **ESCAPED** (nobody correctly named you), GLOAT: *"You'll never catch me
+  — oh, you know NOW, but not one of you figured it out. I WIN!"* 🏆
+- If you were **CAUGHT** (someone nailed it), confess big: *"FINE! Twelve years of
+  second place — I just wanted ONE blue ribbon!"*
 Either way, take a bow — you'll probably win Best Actor. 🎭
 ------------------------------------------------------------

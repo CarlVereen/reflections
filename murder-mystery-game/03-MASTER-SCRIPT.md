@@ -2,10 +2,11 @@
 
 > **This script runs the whole party. No game master needed!**
 > Players take turns reading the **bold script boxes** out loud. When you see
-> **➡️ PASS THE SCRIPT**, hand this page to the next person in the circle.
+> **➡️ PASS THE SCRIPT**, hand this page to the next person.
 >
-> This file does **NOT** reveal the thief — it's safe for everyone, including
-> the organizer, to read.
+> The reader is NOT a detective or a boss — just whoever's turn it is to read
+> aloud. This file does **NOT** reveal the thief — it's safe for everyone,
+> including the organizer, to read.
 >
 > Anything in _[italic brackets]_ is a stage direction — do it, don't read it
 > out loud.
@@ -19,10 +20,12 @@
 - The **dessert table** is set up with an EMPTY spot where the pie was, plus the
   **oven mitts** dropped beside it. (If you're using a prop pie, it's hidden
   under one of the lawn chairs, ready to be "found" at the reveal.)
-- **Clue Envelopes 1, 2, 3** are stacked in order, unopened.
+- **Clue Envelopes 1, 2, 3** are stacked in order, unopened — these are the
+  shared crime-scene evidence everyone can examine.
 - The sealed **Solution** envelope is set aside — nobody opens it until Round 5.
-- Everyone gathers in a circle. Pick a first reader (a confident reader is
-  great for Round 1).
+- A **secret solution slip** and a pencil are ready for each player for the end.
+- Everyone gathers around. Pick a first reader (a confident reader is great for
+  Round 1).
 
 ---
 
@@ -38,41 +41,45 @@
 > one of us had our eyes on the flag. Somebody at this cookout STOLE Grandma's
 > champion pie — and that somebody is standing right here among us!"
 
-> **📢 READ ALOUD — THE TWO RULES (important!):**
-> "Two quick rules before we start, detectives. **RULE ONE:** no matter what
-> your character card says, NEVER tell anyone whether you're innocent or guilty.
-> Saying 'my card says I'm innocent' spoils the whole mystery — so everyone
-> stays a little suspicious! **RULE TWO:** your card names ONE person you
-> already suspect, and tells you why. Accuse them, argue about it, defend your
-> hunch! The thief is hiding among us, and only the clues will catch them."
+> **📢 READ ALOUD — HOW THIS GAME WORKS (important!):**
+> "Here's the deal, folks: there are NO teams and NO detectives. You're all
+> guests at this cookout, and every one of you secretly wants the same thing — to
+> be the ONE clever guest who figures out who took the pie. **It's
+> every-guest-for-themselves.** Whoever privately cracks the case wins, so you do
+> NOT want to help anyone else. Mingle, ask nosy questions, poke at the evidence
+> — but GUARD what you know: the moment you blab your clue, you've handed a rival
+> the answer. Feel free to send people chasing the wrong suspect! And remember —
+> ONE of us is the thief, trying not to get caught. **If nobody figures it out,
+> the thief wins.** Two ground rules: (1) NEVER say whether your card makes you
+> innocent or guilty; and (2) if someone asks you a straight question, answer
+> honestly — UNLESS you're the thief, who's allowed to fib. Good luck... and
+> trust no one!"
 
 > **📢 READ ALOUD:**
-> "Nobody's going home until we crack this case. Let's meet everyone at the
-> cookout. When it's your turn, stand up, say your character's name, and read
-> the **'Introduce yourself'** part from your booklet. Keep it quick and fun —
-> one turn each. We'll go around!"
+> "Let's meet the neighborhood. When it's your turn, stand up, say your name, and
+> read the **'Introduce yourself'** part from your booklet. Keep it quick and
+> fun — one turn each!"
 
-_[Go around the group. Each player reads the **"Introduce yourself out loud"**
-section from their own booklet. Encourage big personalities! **Big group of 18?**
-Keep intros snappy — one turn each, no extra chatter, or it runs long. Doing the
-adults first and then the 3 kids is a fine way to keep it organized.]_
+_[Go around the group. Each player reads their **"Introduce yourself out loud"**
+section. Encourage big personalities! **Big group of 18?** Keep intros snappy, or
+it runs long. Adults first, then the 3 kids, is a fine way to stay organized.]_
 
 > **📢 READ ALOUD:**
-> "Quite a crowd! And every single one of you was here when that pie
-> disappeared. Time to investigate. Somebody grab the first clue!"
+> "Quite a crowd — and every one of you was here when that pie vanished. Let's
+> look at the scene of the crime. Somebody grab the first clue!"
 
-**➡️ OPEN CLUE ENVELOPE 1 and read it aloud.** _(It's in `clues/clue-envelope-1.md`.)_
+**➡️ OPEN CLUE ENVELOPE 1 and read it aloud.** _(In `clues/clue-envelope-1.md`.
+This is shared evidence — everyone hears it.)_
 
 > **📢 READ ALOUD:**
-> "**INVESTIGATION TIME!** For the next few minutes, get up and question each
-> other. Ask: *Where were you when the pie vanished? What did you see? What are
-> you hiding?* Track down the person your **'Who YOU suspect'** card names and
-> ACCUSE them! Check your **'Questions to ask'** list if you get stuck, and don't
-> forget your **'Act it out!'** bit. Don't spill ALL your secrets at once — a
-> good detective keeps a little mystery! Ready... GO!"
+> "**INVESTIGATION TIME!** Get up and work the crowd. Ask everyone: *Where were
+> you? What did you see? What are you hiding?* Your booklet has a **'Questions to
+> ask'** list and one person you already suspect — go accuse them (whether you
+> really mean it or not!). But play it cagey: pump others for what THEY know, and
+> give away as little of your own as you can. Ready... GO!"
 
 _[Let players mingle and question each other for ~5 minutes. A timer or bell
-helps. Then everyone returns to the circle.]_
+helps. Then everyone gathers back.]_
 
 **➡️ PASS THE SCRIPT** to the next person for Round 2.
 
@@ -81,30 +88,20 @@ helps. Then everyone returns to the circle.]_
 ## 🔍 ROUND 2 — Digging Deeper
 
 > **📢 READ ALOUD:**
-> "Back to the circle, everyone! The plot is getting thicker than Grandma's pie
-> filling. Did anyone learn something juicy? Let's each share one thing we
-> found out."
+> "Back together, everyone — and no, we are NOT going to go around sharing what
+> we found. You're rivals, remember! Let's just add another piece of evidence to
+> the pile and keep digging on our own."
 
-_[Go around the circle. Each player says **one** thing they learned or one of
-their own clues they're willing to reveal. Quick — one sentence each.]_
-
-> **📢 READ ALOUD:**
-> "Interesting! But some of you are dodging the questions. Let's shake loose
-> another clue. Everyone, check your booklet: if it says **'Reveal in Round
-> 2,'** now's the time to announce it!"
-
-_[Any player whose booklet has a **"Reveal in Round 2"** note reads it aloud
-now.]_
-
-**➡️ OPEN CLUE ENVELOPE 2 and read it aloud.**
+**➡️ OPEN CLUE ENVELOPE 2 and read it aloud.** _(Shared evidence.)_
 
 > **📢 READ ALOUD:**
-> "Aha — a motive! Someone wanted that blue ribbon BADLY. **INVESTIGATION TIME
-> again!** Now ask the hard questions: *Whose story doesn't add up? Who has a
-> reason to steal the pie? Where were YOU really?* Point some fingers if you
-> dare. GO!"
+> "A motive! Someone wanted that blue ribbon BADLY. **INVESTIGATION TIME again!**
+> Now press harder: whose story wobbles? Who had a reason? The folks who actually
+> *saw* something won't just hand it over — you'll have to ask the RIGHT person
+> the RIGHT question to shake it loose. And keep your own discoveries to
+> yourself. GO!"
 
-_[Mingle and question for ~5 minutes. Return to the circle.]_
+_[Mingle and question for ~5 minutes. Gather back.]_
 
 **➡️ PASS THE SCRIPT** to the next person for Round 3.
 
@@ -113,27 +110,21 @@ _[Mingle and question for ~5 minutes. Return to the circle.]_
 ## 🧭 ROUND 3 — Alibis on Trial
 
 > **📢 READ ALOUD:**
-> "Okay, detectives — time to test everyone's story! We'll go around and each
-> person tells us their **ALIBI**: where you were when the pie vanished during
-> the flag salute. Read the **'My alibi'** part from your booklet. Then the
-> rest of us get to ask: *Can anyone PROVE it?*"
+> "Time to put everyone on the spot! We'll go around and each person states their
+> **ALIBI** — where you were when the pie vanished during the flag salute. Read
+> the **'My alibi'** part from your booklet out loud. (Everyone hears the alibis
+> — but whether each one is TRUE is for you to work out privately.)"
 
-_[Go around the circle. Each player reads their **"My alibi"** section. After
-each one, the group may ask, "Can anyone back that up?" Some alibis will match
-up... and some won't. This is where the case cracks open!]_
-
-> **📢 READ ALOUD:**
-> "Some of these stories don't add up! If your booklet says **'Reveal in Round
-> 3,'** speak up now — the truth is coming out!"
-
-_[Any player whose booklet has a **"Reveal in Round 3"** note reads it aloud
-now. These are the big alibi-breakers — pay attention!]_
+_[Go around the group. Each player reads their **"My alibi"** section. Others may
+challenge — "Can anyone back that up?" Some alibis are shaky... but nobody will
+hand you the proof.]_
 
 > **📢 READ ALOUD:**
-> "We're closing in on our pie thief. One last clue should do it. Somebody grab
-> the final envelope!"
+> "Some of those stories have holes. But the person who can prove an alibi is a
+> lie knows that's their winning edge — so they won't blurt it out. If you want
+> it, you'll have to pry it loose one-on-one. Here's the last piece of evidence!"
 
-**➡️ OPEN CLUE ENVELOPE 3 and read it aloud.**
+**➡️ OPEN CLUE ENVELOPE 3 and read it aloud.** _(Shared evidence.)_
 
 **➡️ PASS THE SCRIPT** to the next person for Round 4.
 
@@ -142,90 +133,81 @@ now. These are the big alibi-breakers — pay attention!]_
 ## 🎯 ROUND 4 — The Last Investigation
 
 > **📢 READ ALOUD:**
-> "This is your **final chance** to investigate, detectives! You've got a
-> motive, a busted alibi, and a sticky trail of clues. Put it all together! One
-> last round of questions — corner your suspects and get your story straight.
-> When the bell rings, everyone must be ready to name the thief. GO!"
+> "Final chance, everyone! You've seen the crime-scene evidence — now it's all
+> about the testimony you managed to pry loose. Put your own theory together, and
+> DON'T tip your hand. Ask your last questions, plant a false lead or two, and
+> decide who YOU think did it. When the bell rings, it's time to solve it —
+> alone."
 
-_[Final mingle, ~5 minutes. Players should be forming their accusation. Then
-everyone returns to the circle and gets a **detective ballot** and a pencil.]_
+_[Final mingle, ~5 minutes. Then hand each player a **secret solution slip** and
+a pencil.]_
 
 **➡️ PASS THE SCRIPT** to the next person for the grand finale.
 
 ---
 
-## 🏆 ROUND 5 — The Vote & The Reveal
+## 🏆 ROUND 5 — Solve It & The Reveal
 
-> **📢 READ ALOUD — HOW SOMEONE WINS:**
-> "Moment of truth, and this is a real contest: it's the **DETECTIVES vs. the
-> THIEF!** On your **ballot**, write down (1) WHO stole Grandma's pie, (2) WHY,
-> and (3) one CLUE that proves it. This is your official VOTE. Here's the rule
-> that decides it all: **the thief is only caught if MORE THAN HALF of us name
-> the same, correct person.** If our votes are split, the thief gets away
-> CLEAN — and wins! Vote carefully, detectives. No peeking!"
+> **📢 READ ALOUD — HOW YOU WIN:**
+> "This is it. On your **secret solution slip**, privately write (1) WHO stole the
+> pie, (2) HOW, and (3) WHY. Do NOT show anyone — this is your own private answer.
+> Here's what's at stake: **anyone who correctly names the thief cracks the case
+> and wins the title of Master Sleuth — and it's sweetest if you're the ONLY one!
+> But if NOBODY gets it right, the THIEF pulls off the perfect crime and wins it
+> all.** Fold your slip when you're done. No peeking at your neighbor's!"
 
-_[Everyone fills out their ballot secretly — all players vote, and yes, the
-thief votes too (for someone else, to blend in!).]_
-
-> **📢 READ ALOUD:**
-> "Let's hear those accusations! Going around, each of you stand and announce:
-> *'I accuse... [name]... because [reason]!'* Point dramatically — this is your
-> big detective moment!"
-
-_[Go around the group. Each player accuses aloud. Build the suspense!]_
+_[Everyone secretly writes and folds their solution slip.]_
 
 > **📢 READ ALOUD:**
-> "Now we TALLY. Hand in your ballots. I'll read each suspect's name and count
-> the votes — let's see where the neighborhood landed."
+> "Anyone brave enough to make a bold accusation out loud before the truth comes
+> out? (Careful — if you're RIGHT, you just gave everyone the answer for free!)
+> Go on, if you dare."
 
-_[Collect the ballots and count the votes for each suspect. Read the totals out
-loud, e.g. "Uncle Marty: 4... Baker Benny: 3... Aunt Bella: 6..." Note the
-suspect with the MOST votes, and **whether any suspect was named by MORE THAN
-HALF the players.** Remember that number, then open the solution.]_
+_[Optional: let a few players make dramatic out-loud accusations. Then...]_
 
 > **📢 READ ALOUD:**
-> "The votes are in. Now... the truth. If the thief is among us, they must
-> reveal themselves! _[dramatic pause]_ Let us open... **THE SEALED SOLUTION!**"
+> "Now... the truth. If the thief is among us, they must reveal themselves!
+> _[dramatic pause]_ Let us open... **THE SEALED SOLUTION!**"
 
-**➡️ NOW open the sealed `99-SOLUTION-DO-NOT-OPEN.md` and read it aloud.** It
-names the real thief — then compare that name to your tally:
+**➡️ NOW open the sealed `99-SOLUTION-DO-NOT-OPEN.md` and read it aloud.**
 
-- 🏅 **If MORE THAN HALF the players voted for the real thief → THE DETECTIVES
-  WIN — the thief is caught!**
-- 🏆 **If the real thief got HALF the votes or fewer → THE THIEF WINS and escapes
-  clean!** (Those scattered suspicions did their job.)
+_[The solution names the real thief. Everyone unfolds their own slip and checks
+it against the answer:]_
 
-_(Either way, the thief now gives a big dramatic CONFESSION — a caught "you got
-me!" or a gloating "you'll never catch me... oh, you know now, but I still WON!"
-Their booklet tells them how.)_
+- 🕵️ **Anyone whose slip correctly named the thief is a MASTER SLEUTH — they
+  cracked the case and win!** (Best of all if you're the only one who got it.)
+- 🏆 **If NOBODY named the real thief, the THIEF wins — the perfect crime!**
 
-> **📢 READ ALOUD — if the DETECTIVES won:**
-> "Justice on Maple Street! You caught the thief and saved Grandma's pie! Take a
-> bow, detectives! Any of you who named the right thief AND the right reason is a
-> **Master Detective!**"
+_(The thief now gives a big dramatic CONFESSION — a caught "you got me!" if
+someone solved it, or a gloating "you'll never catch me — I already WON!" if they
+escaped. Their booklet tells them how.)_
 
-> **📢 READ ALOUD — if the THIEF won:**
-> "The thief got away with it! Our votes were too split to convict — the perfect
-> crime! Tip your hat to a master criminal, folks. (Detectives who named the
-> right thief anyway still earn **Master Detective** honors!) Better luck next
-> cookout..."
+> **📢 READ ALOUD — if someone SOLVED it:**
+> "We've got a Master Sleuth (maybe more than one)! The thief is unmasked and
+> Grandma's pie is found! Take a bow, clever one — you outsmarted the whole
+> neighborhood!"
+
+> **📢 READ ALOUD — if the THIEF escaped:**
+> "Nobody cracked it — the thief got away clean! Tip your hat to a master
+> criminal. The perfect Maple Street crime!"
 
 ---
 
 ## 🎖️ Awards (hand out the certificates!)
 
-- **🏅 Master Detective** — everyone who guessed the right thief *and* reason.
-- **🎭 Best Actor** — the guest who played their part with the most flair
-  (great for the thief if they bluffed well, or any big personality!).
+- **🕵️ Master Sleuth** — each player who privately named the right thief *and*
+  the right reason on their slip.
+- **🦹 The Perfect Criminal** — for the thief, if they escaped everyone.
+- **🎭 Best Actor** — most flair (perfect for a thief who bluffed the room!).
 - **🇺🇸 Best Red-White-&-Blue** — the most patriotic outfit.
-- **🍋 Most Curious** — the detective who asked the best questions.
+- **🍋 Nosiest Guest** — asked the sharpest questions.
 
-_(Award certificates are in `clues/name-tags-and-ballots.md`. Make up more if
-you like — everyone should win something!)_
+_(Award certificates are in `clues/name-tags-and-ballots.md`. Invent more so
+everyone wins something!)_
 
 > **📢 READ ALOUD:**
-> "Three cheers for the detectives of Maple Street! The case is CLOSED — and
-> now, who wants a slice of that rescued blue-ribbon pie?! Happy 4th of July,
-> everybody! 🎆🥧"
+> "Three cheers for the guests of Maple Street! The case is closed — or perfectly
+> gotten away with! Now, who wants a slice of that recovered blue-ribbon pie?!
+> Happy 4th of July, everybody! 🎆🥧"
 
 **THE END. 🎉**

@@ -34,7 +34,7 @@ successful than you are. Business isn't as booming as you pretend.
 > loudly! A dozen people heard me. That's my alibi, signed and sealed."
 
 # 🎬 Act it out!
-Take fake **phone calls** at dramatic moments. Try to "sell" detectives a house
+Take fake **phone calls** at dramatic moments. Try to "sell" sleuths a house
 mid-investigation and hand out business cards.
 
 # 🕵️ Who YOU suspect (say it loud — accuse them!)
@@ -56,5 +56,5 @@ suspicious no matter what!
 
 **Are you the thief?** ❌ NO. You're competitive (red herring!) but you were on a
 loud phone call with witnesses. Your hint about a "desperate rival" points the
-detectives the right way.
+sleuths the right way.
 ------------------------------------------------------------

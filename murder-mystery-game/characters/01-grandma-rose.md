@@ -30,7 +30,8 @@ learns your store-crust secret! (Act very offended.)
 - **If asked:** "My biggest rival? Aunt Bella. Enters every year, comes in
   second to me every year. Bless her heart."
 
-# 📣 Reveal in Round 2
+# 🗣️ What you tell everyone (you're the victim — complain loudly!)
+You WANT people talking, so say this openly to anyone who'll listen:
 > "I set my pie out RIGHT before the flag salute, pretty as a picture. So it was
 > snatched DURING the salute — while we all had our hands on our hearts!"
 
@@ -61,5 +62,5 @@ thief would be the only one left). Keep everyone guessing — act a little
 suspicious no matter what!
 
 **Are you the thief?** ❌ NO. It's your pie — you want it back! Play up your
-store-crust nerves to keep detectives guessing, then help crack the case.
+store-crust nerves to keep sleuths guessing, then help crack the case.
 ------------------------------------------------------------
