@@ -25,7 +25,7 @@ that person already knows the answer and can't play. **This one is different.**
 
 - **One character is always the thief**, and the answer lives in a sealed file
   (`99-SOLUTION-DO-NOT-OPEN.md`) that nobody opens until the end.
-- **Every player only reads their own character booklet.** So even the person
+- **Every player only reads their own character card.** So even the person
   who prints and sets everything up doesn't know whodunit — you only know your
   own character's secrets, just like everyone else.
 - **A read-aloud "Backyard Announcer" script runs the party for you.** Players
@@ -69,7 +69,7 @@ party, class party, or any backyard get-together.
 | `03-MASTER-SCRIPT.md` | The read-aloud script that runs the party | Read aloud by players |
 | `04-PARTY-MENU.md` | Optional silly 4th-of-July cookout menu | The organizer |
 | `characters/00-CHARACTER-GUIDE.md` | Cast list + who to give each kid (spoiler-free) | The organizer |
-| `characters/01…18-*.md` | The 18 character booklets (15 adults + 3 kids) | One each, **players read only their own** |
+| `characters/01…18-*.md` | The 18 character cards (15 adults + 3 kids) | One each, **players read only their own** |
 | `clues/clue-envelope-1…3.md` | The three timed clue envelopes | Opened during play |
 | `clues/name-tags-and-ballots.md` | Name tags, solution slips, award certificates | Printed for everyone |
 | `99-SOLUTION-DO-NOT-OPEN.md` | 🔒 The answer | **Nobody — until the very end!** |
@@ -86,7 +86,7 @@ and kids play the same game together.
   suspects, each with a secret and a motive.
 - **3 kid roles** (`characters/16–18`) — easy, fun parts, and each kid holds a
   **real, important clue** that helps crack the case.
-- **A few extra guests?** They join as **extra guests** with no booklet — they
+- **A few extra guests?** They join as **extra guests** with no card — they
   mingle, snoop, and race to solve it too. (Or two people can share a chatty
   role as "partners.")
 - **A few fewer?** You can drop some of the pure red-herring adults without

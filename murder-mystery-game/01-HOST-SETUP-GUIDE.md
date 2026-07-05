@@ -11,9 +11,9 @@
 While you print and prep, follow these three "no-peek" rules:
 
 1. **Don't open `99-SOLUTION-DO-NOT-OPEN.md`.** Ever. (Until the grand reveal.)
-2. **Don't read the inside of the character booklets.** Print them, fold them,
+2. **Don't read the inside of the character cards.** Print them, fold them,
    done. If you like, print them and have an adult who *isn't* playing stuff
-   the envelopes — but it's not required. The booklets are written so a quick
+   the envelopes — but it's not required. The cards are written so a quick
    glance while folding won't obviously give away the thief. Just don't sit and
    read all eight.
 3. **Pick your own character last, and read only that one.**
@@ -68,9 +68,9 @@ personality: outgoing folks love the big talkers (Gus, Mayor Maple, Holly); the
 quieter guests do great as the observant witnesses (Librarian Lou, Ruby). Give
 the 3 kids roles 16–18 — they're easy and each kid holds a real clue.
 
-### Step 2 — Print the booklets (15 min)
-Print one copy of each character booklet you're using
-(`characters/01-*.md` through `18-*.md` — that's 18 booklets for a full group).
+### Step 2 — Print the cards (15 min)
+Print one copy of each character card you're using
+(`characters/01-*.md` through `18-*.md` — that's 18 cards for a full group).
 Fold each in half so the name shows on the outside. **You don't need to read
 them.** (Tip: with 18 to print, a stapler and a big table help — collate them by
 name so handout is quick.)
@@ -94,7 +94,7 @@ name so handout is quick.)
   is, so this stays spoiler-safe.)_
 
 ### Step 5 — Pick your own character (2 min)
-Choose the leftover character, read **only** that booklet, put on something
+Choose the leftover character, read **only** that card, put on something
 red-white-and-blue, and you're a player now. 🎇
 
 ---
@@ -103,7 +103,7 @@ red-white-and-blue, and you're a player now. 🎇
 
 | Time | What happens |
 |------|--------------|
-| As guests arrive | Hand out name tags + character booklets. Kids read their **own** booklet privately and get into costume. Snacks + music. |
+| As guests arrive | Hand out name tags + character cards. Kids read their **own** card privately and get into costume. Snacks + music. |
 | ~10 min in | Everyone's here → gather in a circle. The most confident reader starts the **Master Script**. |
 | Rounds 1–4 (~10 min each) | Follow the script. Open a Clue Envelope each round. Mingle and question between readings. |
 | Round 5 (~10 min) | Everyone fills out a **solution slip**. Open the sealed Solution. Reveal! |
@@ -123,7 +123,7 @@ The Master Script does the heavy lifting. Your only "jobs" as the group:
 3. **Let kids mingle and question each other** during the "Investigation Time"
    breaks. The script gives them starter questions.
 
-There are **no rulings to make**. Every character booklet tells that kid
+There are **no rulings to make**. Every character card tells that kid
 exactly what they know and what to say. Nobody can "break" the game.
 
 > ⚠️ **The THREE RULES that make the mystery work** (the Master Script reads these
@@ -179,13 +179,13 @@ With a full cast of 18, a little crowd control keeps it smooth and fun:
 
 ## 🆘 Quick troubleshooting
 
-- **A kid is stuck / shy:** Their booklet has a "Things to say" list and
+- **A kid is stuck / shy:** Their card has a "Things to say" list and
   "Questions to ask others." Point them to it. Extra Guests can buddy up
   with them.
 - **Someone guesses the thief early:** Great! They still have to *prove* it
   with clues in the final accusation. Keep it moving — the reveal is still fun.
 - **The thief gets nervous about fibbing:** Remind them it's just pretend and
-  bluffing is the fun part. Their booklet gives them cover stories.
+  bluffing is the fun part. Their card gives them cover stories.
 - **Too rowdy:** Ring a "dinner bell" (any bell/timer) to pause and pass the
   script to the next reader.
 - **Reading level:** An adult or strong reader can be the main narrator while
@@ -207,7 +207,7 @@ but the *structure* works for any theme and group size. To adapt it:
   roles you must keep. A 6-person version needs only the core clue-holders.
 - **All adults / all kids / different ages:** The roles are written
   family-friendly, but you can dial the humor up or down. For very young kids,
-  shorten booklets to the "Who you are / Your secret / What you saw" lines and
+  shorten cards to the "Who you are / Your secret / What you saw" lines and
   have grown-ups help read.
 
 If you want, ask me to generate a reskinned version in a different theme or for

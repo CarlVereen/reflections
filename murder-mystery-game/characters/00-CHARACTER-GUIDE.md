@@ -5,8 +5,8 @@
 > whom.
 
 **This version is built for 18 players — 15 adults + 3 kids — and EVERYONE gets
-their own suspect character.** Give each person the booklet that matches their
-character. **Players read only their own booklet.**
+their own suspect character.** Give each person the card that matches their
+character. **Players read only their own card.**
 
 ---
 
@@ -47,7 +47,7 @@ character. **Players read only their own booklet.**
 
 - **Exactly 18 (15 adults + 3 kids):** Use everyone above — the perfect fit. ✅
 - **A few more guests show up:** Extra folks join as **extra guests** — no
-  booklet, they just mingle, snoop, and race to solve it too. (Or print a second copy
+  card, they just mingle, snoop, and race to solve it too. (Or print a second copy
   of a chatty role like Mailman Mike or Hairdresser Holly and let two people
   play "partners.")
 - **A few fewer:** You can safely drop some of the pure **red-herring adults**
@@ -64,4 +64,4 @@ character. **Players read only their own booklet.**
 > physical clues (sticky hands; the hiding spot). Everyone else adds motive and
 > misdirection. *(No spoilers — just trust each carries a piece of the puzzle.)*
 
-**Next:** hand out booklets, then start `03-MASTER-SCRIPT.md`.
+**Next:** hand out cards, then start `03-MASTER-SCRIPT.md`.

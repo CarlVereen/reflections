@@ -128,7 +128,7 @@
 
 ## 🎬 What happens next
 
-> **Aunt Bella (the player) now takes her big moment!** Her booklet tells her how
+> **Aunt Bella (the player) now takes her big moment!** Her card tells her how
 > to play it:
 > - If she was **CAUGHT**, a caught confession: *"FINE! It was me! Twelve years
 >   of second place — I just wanted ONE blue ribbon!"*

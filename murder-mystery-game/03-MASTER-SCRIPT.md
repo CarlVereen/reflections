@@ -16,7 +16,7 @@
 ## 🔔 Before you begin
 
 - Everyone has their **name tag** on and has read **only their own** character
-  booklet.
+  card.
 - The **dessert table** is set up with an EMPTY spot where the pie was, plus the
   **oven mitts** dropped beside it. (If you're using a prop pie, it's hidden
   under one of the lawn chairs, ready to be "found" at the reveal.)
@@ -79,7 +79,7 @@ This is shared evidence — everyone hears it.)_
 
 > **📢 READ ALOUD:**
 > "**INVESTIGATION TIME!** Get up and work the crowd. Ask everyone: *Where were
-> you? What did you see? What are you hiding?* Your booklet has a **'Questions to
+> you? What did you see? What are you hiding?* Your card has a **'Questions to
 > ask'** list and one person you already suspect — go accuse them (whether you
 > really mean it or not!). But play it cagey: pump others for what THEY know, and
 > give away as little of your own as you can. Ready... GO!"
@@ -188,7 +188,7 @@ it against the answer:]_
 
 _(The thief now gives a big dramatic CONFESSION — a caught "you got me!" if
 someone solved it, or a gloating "you'll never catch me — I already WON!" if they
-escaped. Their booklet tells them how.)_
+escaped. Their card tells them how.)_
 
 > **📢 READ ALOUD — if someone SOLVED it:**
 > "We've got a Master Sleuth (maybe more than one)! The thief is unmasked and
