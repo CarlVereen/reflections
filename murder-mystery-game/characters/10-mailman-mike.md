@@ -20,9 +20,8 @@ never miss a neighborhood party (or a chance to catch up on the gossip).
   Patterson signed for a package and can vouch for you.
 
 # 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
-You suspect **AUNT BELLA**: *"She showed up with TWO pie carriers this morning.
-Who brings a spare — unless you're planning to carry home a pie that isn't
-yours?"*
+You suspect **COACH DIEGO**: *"The judge had every pie in his hands all day —
+awfully convenient, if you ask me. I'd start with him."*
 
 # 🎭 HOW TO PLAY IT
 "Deliver" imaginary mail to guests as an excuse to snoop. Drop hints that you
@@ -31,8 +30,8 @@ know more than you should.
 you deliver them, so you know everyone's business. Don't let on how you know.
 
 # ❓ QUESTIONS TO ASK OTHERS
-- "Who brought TWO pie carriers to a one-pie contest?"
-- "Aunt Bella — what was that empty spare carrier for?"
+- "Who came carrying more than they needed this morning?"
+- "Who was hauling stuff around before the contest even started?"
 - "Anybody's hands or clothes got apple on 'em?"
 
 ------------------------------------------------------------

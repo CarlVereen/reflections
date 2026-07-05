@@ -15,9 +15,8 @@
 >
 > _______________________________________________________
 >
->   *'Twelve years. Twelve years of coming in second while everyone*
->   *fawns over her pie. Not this time. That blue ribbon is coming*
->   *home with ME — whatever it takes.'*
+>   *'This is finally MY year. That blue ribbon is coming home with*
+>   *ME — whatever it takes. I am DONE watching someone else win.'*
 >
 > _______________________________________________________
 >
@@ -25,20 +24,21 @@
 > letters — with a tiny **heart dotted over every letter 'i'.** 💗
 >
 > So now we know the *why*. Our thief isn't a stranger and isn't a dog. Our
-> thief is **someone in this contest who is sick and tired of losing** — someone
-> who has placed second, year after year, and finally decided that this was
-> their year to win, no matter the cost.
+> thief is **someone in this contest who is desperate to win** — someone tired of
+> watching another baker take the blue ribbon, who finally decided this was their
+> year, no matter the cost.
 >
-> Sleuths — who at this cookout has spent twelve years finishing *second*?
-> And whose blue ribbon would it be if the champion's pie simply... disappeared?"
+> Sleuths — who at this cookout has been ACHING to win that contest? And whose
+> blue ribbon would it be if the champion's pie simply... disappeared? (You'll
+> have to ASK around to find out who's that desperate.)"
 
 ---
 
 ### 🧩 What this clue tells the sleuths:
-- **MOTIVE:** The thief is a **pie-contest regular** who is **tired of losing** —
-  a perennial runner-up.
-- With the champion pie gone, whoever **usually comes in second** would finally
-  take **first**.
+- **MOTIVE:** The thief is a **pie-contest entrant** who is **desperate to win** —
+  tired of watching another baker take the ribbon.
+- With the champion pie gone, one of the OTHER entrants would finally take first.
+  (Who entered? Who wants it most? You'll have to ask around.)
 - The handwriting — fancy, looping, **hearts over the i's** — is a signature all
   its own. Who writes like that? (Ask the sharp-eyed folks; someone may have
   seen that handwriting before...)

@@ -14,9 +14,10 @@ You're at the family cookout with all your cousins — and the dessert table ful
 of sweets is the best part!
 
 # 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
-- During the salute you were **hiding under the dessert table** (eating cupcakes!).
-- From under there you saw the **thief's HANDS grab the pie — and they were
-  STICKY with gooey apple filling.** You did NOT see the face.
+- During the salute you were **hiding under the dessert table**, facing away and
+  stuffing your face with stolen cupcakes.
+- You caught only the **thief's HANDS** as they reached down and lifted the pie —
+  **sticky with gooey apple filling.** You were turned away and never saw a face.
 
 # 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
 You blame **UNCLE MARTY**: *"He's always so grumpy and he REALLY wanted that pie.

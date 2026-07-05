@@ -21,8 +21,8 @@ for the crowd's favorite.)
   Diego.** Neither of you left. (So you can each vouch for the other.)
 
 # 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
-You suspect **AUNT BELLA**: *"She borrowed my oven mitts this morning — and those
-very mitts turned up right where the pie was stolen. Explain THAT, Bella!"*
+You suspect **REALTOR RITA**: *"That woman would swipe anything to win — she's
+the most cutthroat person on this street. I've got my eye on her."*
 
 # 🎭 HOW TO PLAY IT
 Big, loud grill-master energy. Wave your spatula, brag about your burgers.
@@ -31,8 +31,8 @@ burgers to charcoal and tossed them in the bushes. If asked about burnt burgers
 in the hedge, whistle and change the subject.
 
 # ❓ QUESTIONS TO ASK OTHERS
-- "Aunt Bella — I lent YOU those oven mitts this morning. Care to explain?"
-- "Who else borrowed anything odd today?"
+- "Did anybody borrow anything odd from folks this morning?"
+- "Where was everyone standing during the salute?"
 - "Let's see everybody's hands — any apple filling?"
 
 ------------------------------------------------------------

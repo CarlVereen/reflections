@@ -30,7 +30,7 @@ your yards are fake — you put them up to look more successful than you are.
 
 # ❓ QUESTIONS TO ASK OTHERS
 - "Who wanted that blue ribbon badly enough to CHEAT for it?"
-- "Aunt Bella — twelve years of second place must sting, hmm?"
+- "Who's been absolutely DYING to win that contest for years?"
 - "Where were you standing? Be specific — I deal in details."
 
 ------------------------------------------------------------

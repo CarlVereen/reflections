@@ -22,8 +22,8 @@
 # 📣 THE GRAND REVEAL — read this aloud in Round 5
 
 > **"Sleuths, every clue you needed was right in front of you all afternoon.
-> A pair of borrowed oven mitts. A spare pie carrier. A note about twelve years
-> of losing. A sticky trail to a lawn chair, and a fork with one guilty bite.
+> A pair of borrowed oven mitts. A spare pie carrier. A desperate note about finally
+> winning. A sticky trail to a lawn chair, and a fork with one guilty bite.
 > Put them together, and they point to just one person...**
 >
 > 🥁 _(drumroll — have everyone pat their knees!)_ 🥁
@@ -44,9 +44,8 @@
 > heart out and finished *second* to Grandma Rose — every single time. This year
 > she decided she was done losing. With the champion pie gone, there'd be no
 > contest to lose, and her cobbler would take the blue ribbon by default. That
-> crumpled note — *'Twelve years of coming in second... that blue ribbon is
-> coming home with ME'* — was hers, right down to the little hearts she dots over
-> her i's.
+> crumpled note — *'This is finally MY year... whatever it takes'* — was hers,
+> right down to the little hearts she dots over her i's.
 >
 > **HOW she did it (the plan):** Bella planned this for a whole year. She arrived
 > with **two pie carriers** — one for her cobbler, one empty and hidden in her

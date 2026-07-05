@@ -25,6 +25,8 @@ ribbon.
   → Admit it. Your reason: *"I just stepped over to sit in the lawn chairs."*
 - You **carried a covered dish to the lawn chairs** during the salute.
   → Admit it. Your reason: *"Oh, just some leftovers I was saving for later."*
+- The **striped lawn chair is yours** — you always sit there.
+  → If asked "which chair is yours?", admit it: *"The striped one, of course."*
 
 # 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
 You point at **COACH DIEGO**: *"He's the JUDGE — he had every pie in his hands

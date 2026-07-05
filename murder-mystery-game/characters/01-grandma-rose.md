@@ -18,6 +18,8 @@ Champion — it's the highlight of your whole year.
   just before the flag salute. It was there.
 - When you turned back after the salute, it was **GONE.** So the pie was stolen
   **during the flag salute**, while everyone faced the flag.
+- During the salute you were **up front, singing and facing the flag** with
+  everyone — you never went near your own pie.
 
 # 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
 You suspect **COACH DIEGO**: *"That judge had every pie in his hands today — who

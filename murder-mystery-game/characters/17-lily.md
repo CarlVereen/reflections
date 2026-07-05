@@ -19,8 +19,8 @@ best spot on the block, right by the kitchen door.
   only person who went in during the salute.)
 
 # 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
-You suspect **AUNT BELLA**: *"I saw her sneak into the kitchen during the salute
-— why would she go inside when everyone else was watching the flag?"*
+You suspect **MAYOR MAPLE**: *"He made such a big fuss about his fancy ceremony —
+maybe he wanted everyone looking at HIM. Grown-ups are weird!"*
 
 # 🎭 HOW TO PLAY IT
 Keep "working" your stand — "Ice-cold lemonade, 25 cents!" — and butt into
@@ -30,8 +30,8 @@ watered down the lemonade. Change the subject if anyone says it tastes weak!
 
 # ❓ QUESTIONS TO ASK OTHERS
 - "Where exactly were you during the flag salute?"
-- "Aunt Bella — I saw you go in the kitchen. What were you doing in there?"
-- "Did anyone else go inside? Because I'd have seen them!"
+- "Did anyone sneak into the house or kitchen during the salute?"
+- "Who left the crowd while everyone was watching the flag?"
 
 ------------------------------------------------------------
 🔒 SECRET — read this ALONE, then keep it to yourself.
