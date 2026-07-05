@@ -1,46 +1,38 @@
 ╔══════════════════════════════════════════════════════════╗
      🔍  CLUE ENVELOPE #2  🔍
-     Open and read aloud in ROUND 2
+     Open and read aloud at the END of ROUND 2
      (Do NOT open early!)
 ╚══════════════════════════════════════════════════════════╝
 
 # 📣 Read this aloud to everyone:
 
-> **CLUE #2: A crumpled note — and a reason.**
+> **CLUE #2: What if it was never about the pie?**
 >
-> "A plan needs a *reason*, sleuths. And someone was careless enough to leave
-> theirs behind. This looks like a half-written note — the kind you scribble to
-> work up your nerve — crushed into a ball in the trash can by the
-> grill — written this morning, before the party even started. Listen:
+> "Here's a strange one, sleuths. Whoever took that pie didn't take a slice. Didn't
+> sneak a bite behind the barn. They took the WHOLE pie and made it disappear — as
+> if the point wasn't to *eat* it at all, but to make sure **nobody ever cuts it
+> open.**
 >
-> _______________________________________________________
+> And what's inside that pie? Grandpa Joe's gold wedding ring. Or... is it? Think
+> about it. A ring baked into a pie, about to be sliced open in front of the whole
+> family. If that ring were a **fake** — a cheap look-alike — the second that pie
+> was cut, everyone would SEE it. The secret would be out.
 >
->   *'This is finally MY year. That blue ribbon is coming home with*
->   *ME — whatever it takes. I am DONE watching someone else win.'*
->
-> _______________________________________________________
->
-> No signature. But the handwriting tells its own story: neat, fancy, looping
-> letters — with a tiny **heart dotted over every letter 'i'.** 💗
->
-> So now we know the *why*. Our thief isn't a stranger and isn't a dog. Our
-> thief is **someone in this contest who is desperate to win** — someone tired of
-> watching another baker take the blue ribbon, who finally decided this was their
-> year, no matter the cost.
->
-> Sleuths — who at this cookout has been ACHING to win that contest? And whose
-> blue ribbon would it be if the champion's pie simply... disappeared? (You'll
-> have to ASK around to find out who's that desperate.)"
+> So ask yourself: **who would be desperate to stop that pie from ever being cut?**
+> Not someone who wanted dessert. Someone who couldn't afford for the world to see
+> what's really inside. Someone tied to that ring... and to money."
 
 ---
 
 ### 🧩 What this clue tells the sleuths:
-- **MOTIVE:** The thief is a **pie-contest entrant** who is **desperate to win** —
-  tired of watching another baker take the ribbon.
-- With the champion pie gone, one of the OTHER entrants would finally take first.
-  (Who entered? Who wants it most? You'll have to ask around.)
-- The handwriting — fancy, looping, **hearts over the i's** — is a signature all
-  its own. Who writes like that? (Ask the sharp-eyed folks; someone may have
-  seen that handwriting before...)
+- The thief took the **whole pie** to prevent it being **cut open** — the pie itself
+  was never the prize.
+- The ring inside may be a **fake** — meaning someone swapped the real one and can't
+  let anyone find out.
+- Motive shifts from "wanted the pie" to "**needed to hide something about the
+  ring.**"
 
-**➡️ Now return to the Master Script for Investigation Time.**
+_(Start asking: "Who's connected to that gold ring? Who needed money this spring?
+Who had access to where the ring was kept?" Go talk to Pawnshop Pearl...)_
+
+**➡️ Now return to the Master Script for Round 3.**

@@ -1,40 +1,42 @@
 ╔══════════════════════════════════════════════════════════╗
-   📚  LIBRARIAN LOU  ·  The Observant Detail-Noticer  ·  🧑 ADULT
+   📚  LIBRARIAN LOU  ·  The Quiet Observer  ·  🧑 ADULT
    🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
 # 👤 WHO YOU ARE  (all true — you can't lie about this)
-The quiet, sharp-eyed town librarian who notices every detail and reads everyone
-like a book. Calm, precise, a bit of a know-it-all. You "shush" loud people out
-of habit. Say "Actually, if you look closely..."
-**Costume:** cardigan, glasses on a chain, a stack of books, a "SHHH" button.
+The soft-spoken town librarian who notices everything and says almost nothing.
+Still waters run deep — and a little scheming.
+**Costume:** a cardigan, glasses, and a book tucked under one arm.
 
 # 🎈 WHY YOU'RE AT THE PARTY  (true)
-You set up a little book-and-reading table at the cookout — a quiet corner away
-from the noise, where you can watch everyone (a favorite hobby of yours).
+A quiet family friend who likes the calm corner of the porch.
 
-# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
-- You got a close look at **the note the thief dropped.** Its fancy, loopy
-  handwriting — with hearts over the i's — **matches the pie-contest SIGN-UP
-  SHEET.** So the thief is someone who **ENTERED the contest.**
-- During the salute you were **at your book table (next to Baker Benny's sample
-  booth)** — Benny never left his booth, and you never left your chair.
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth; you may ONLY add a REASON)
+- You're **secretly writing a family tell-all** and want the "fake ring"
+  scandal for a juicy chapter.
+  → If asked, you MUST admit it. Your reason: *"It's... historical research, really."*
+- You **found an old will** in the library archives suggesting Grandpa's ring
+  was promised to YOUR side of the family.
+  → If asked, you MUST admit it. Your reason: *"I only just found it — I wasn't looking for it!"*
+- During the salute you were **reading at the book table on the porch**, in
+  plain view of Lily's lemonade stand.
+  → If asked, you MUST tell the truth — there's nothing to spin.
+
+# 💭 WHY PEOPLE MIGHT SUSPECT YOU — YOUR MOTIVES  (all true — own them, it's fun!)
+1. You want the juicy "fake ring" scandal for your secret tell-all book.
+2. An old will says Grandpa's ring should have gone to YOUR family.
 
 # 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
-You suspect **BAKER BENNY**: *"The evidence points to a contest regular with a
-bruised ego — and a professional who can't bear to lose fits that profile
-precisely."* (You may well be wrong — but the handwriting clue is the real key.)
+**Pawnshop Pearl** — *"She knows more about that ring than she's letting on."*
 
 # 🎭 HOW TO PLAY IT
-Examine "clues" with great seriousness (a magnifying glass is perfect). Shush
-loud guests and announce small observations dramatically.
-**Your embarrassing secret (dodge it if you can):** you owe over $500 in unpaid
-library late fees on your OWN account — a scandal for a librarian!
+Watch everyone, jot little notes, drop cryptic observations, and downplay
+your tell-all book whenever it comes up.
 
 # ❓ QUESTIONS TO ASK OTHERS
-- "Who ENTERED the pie contest this year?" (Cross it with the handwriting!)
-- "Whose handwriting is loopy, with little hearts over the i's?"
-- "Where exactly was everyone standing during the salute?"
+- "Has anyone considered the ring in that pie was never real?"
+- "Pearl, in your professional opinion — how would one spot a FAKE ring?"
+- "Who benefits if that pie is never cut open? Think about it."
 
 ------------------------------------------------------------
 🔒 SECRET — read this ALONE, then keep it to yourself.
@@ -42,10 +44,9 @@ library late fees on your OWN account — a scandal for a librarian!
 **THE TWO RULES:**
 1. Never tell anyone whether your card makes you innocent or guilty.
 2. You may NOT lie about a FACT on this card — who you are, why you're here, what
-   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
-   thing you may invent is a REASON.
+   you know, your motives, or who you suspect. If someone asks, you MUST admit it.
+   The ONLY thing you may invent is a REASON.
 
-**Are you the thief?** ❌ NO. Your handwriting clue narrows the thief to a contest
-entrant — a huge lead. Tell the truth if asked, but be sharp: use it to be the
-one who solves the whole case first.
+**Are you the thief?** ❌ NO. You wanted the scandal and feel entitled to the ring (suspicious!) —
+but you were reading on the porch, in plain view of Lily, the whole salute.
 ------------------------------------------------------------

@@ -36,8 +36,10 @@ or as little as you like. Mix in whatever your crew loves.
 
 ## 🥧 The Star of the Show: DESSERT
 - **The Rescued Blue-Ribbon Apple Pie** 🥧 — serve the "stolen" pie AFTER the
-  big reveal, once the sleuths have saved it! Tie a blue ribbon around the
-  dish. Ice cream on the side makes it a champion.
+  big reveal, once it's been recovered from the barn! For a laugh, bake a **cheap
+  plastic ring** into the prop pie and cut it open at the reveal to prove the ring
+  was a fake all along. Tie a blue ribbon around the dish; ice cream makes it a
+  champion. *(Serve a separate, clean pie for actually eating!)*
 - **Berry "Case Closed" Shortcakes** — biscuits + strawberries + whipped cream.
 
 ---

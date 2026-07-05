@@ -1,101 +1,87 @@
-# 🇺🇸 Organizer's Setup Guide (Spoiler-Safe!)
+# 🇺🇸 Host Setup Guide — *The Pie That Wasn't*
 
-> **You can read this whole file and still play the game blind.** It never
-> reveals the thief. The only file that spoils the mystery is
-> `99-SOLUTION-DO-NOT-OPEN.md` — so just don't open that one, and you're safe.
+> **You are the HOST / NARRATOR.** You run the show and keep one secret. You do NOT
+> play a character, so it's okay that you know how it ends — your job is to emcee,
+> read the script, drop the clues, and land the big twist. The only file that spoils
+> the mystery for *players* is `99-SOLUTION-DO-NOT-OPEN.md` — keep that to yourself.
 
 ---
 
-## 🕵️ The one rule that lets you play too
-
-While you print and prep, follow these three "no-peek" rules:
-
-1. **Don't open `99-SOLUTION-DO-NOT-OPEN.md`.** Ever. (Until the grand reveal.)
-2. **Don't read the inside of the character cards.** Print them, fold them,
-   done. If you like, print them and have an adult who *isn't* playing stuff
-   the envelopes — but it's not required. The cards are written so a quick
-   glance while folding won't obviously give away the thief. Just don't sit and
-   read all eight.
-3. **Pick your own character last, and read only that one.**
-
-That's it. Everything else in this kit is safe for your eyes.
-
-> 💡 **Want to be 100% surprised?** Ask a non-playing grown-up (or an older
-> kid) to do Step 4 below — the printing and envelope-stuffing. Then you walk
-> in as a player knowing nothing. Totally optional.
+## 🎯 The game in one breath
+It's the 4th of July cookout and pie contest at Maple Farm. Grandma Rose baked
+Grandpa's gold wedding ring into her prize pie — and during the flag salute, the
+pie vanishes. **18 guests** each play a character, mingle to investigate, and at the
+end **everyone votes** on who did it. The twist: the ring was a fake, and the thief
+took the pie to hide a secret sacrifice. It ends with a whole-family forgiveness
+vote. Runs **75–90 minutes.**
 
 ---
 
 ## 🛒 Shopping / props list
 
 **Must-haves (all cheap or already in your house):**
-- Printer + paper (about 25–30 pages)
-- 3 envelopes for the Clue Envelopes (label them **1**, **2**, **3**), OR just
-  3 folded pages you set out clue-side-down
+- Printer + paper (about 30–35 pages)
+- 3 envelopes for the Clue Envelopes (label them **1**, **2**, **3**)
 - 1 envelope for the sealed Solution (label it **DO NOT OPEN TIL THE END**)
-- Pens/pencils for the solution slips
-- Tape and string or a lanyard for name tags (or just safety pins)
+- Pens/pencils for the ballots
+- Tape, string, or safety pins for name tags
 
 **Nice-to-haves (make it pop, all optional):**
-- A **stand-in "blue-ribbon pie"** — an empty pie tin, a play-food pie, or a
-  real pie you'll "rescue" and eat at the end! 🥧 Tie a blue ribbon on it.
-- A pair of **red-white-and-blue oven mitts** — the thief dropped these at the
-  scene, so leave them right by the empty dessert-table spot (prop for Clue 1)
-- A **pie carrier or covered dish** to hide the "stolen pie" in — tuck it under
-  one of the lawn chairs so it can be "found" at the reveal
-- **Apple-cinnamon "drips"** for the trail clue: a few cinnamon sprinkles, or
-  small paper apple/crumb cut-outs, leading from the dessert table toward the
-  lawn chairs
-- A blue first-place ribbon (dollar-store or paper) for the winner
-- 4th of July snacks: burgers/hot dogs, "firecracker" fruit skewers
-  (strawberry-banana-blueberry), red-white-blue popsicles, lemonade,
-  watermelon, chips
-- Red/white/blue decorations, a flag, sparklers for later (with a grown-up!)
-- A patriotic playlist for background music
+- A **stand-in "blue-ribbon pie"** — an empty pie tin, play-food pie, or a real
+  pie you'll "rescue" and eat at the end. Tie a blue ribbon on it. 🥧
+- A **cheap plastic ring** to bake/tuck into the prop pie — the big reveal is
+  cutting it open to show the "ring" was a fake all along.
+- A **covered dish / pie carrier** to hide the prop pie in — stash it in your
+  "barn" (a shed, garage, corner, or any out-of-the-way spot) under a towel/"tarp"
+  to be "found" at the reveal.
+- A **"pawn ticket"** prop for Mailman Mike — a slip reading *"Pearl's Pawn — 1 gold
+  ring — this spring."* (a fun physical clue he can wave around).
+- A blue first-place ribbon (dollar-store or paper) for the contest.
+- 4th of July food: burgers/hot dogs, "firecracker" fruit skewers, red-white-blue
+  popsicles, lemonade, watermelon, chips.
+- Red/white/blue decorations, a flag for the salute, sparklers for later (with a
+  grown-up).
+- A patriotic playlist for background music.
 
-**Costumes are encouraged but never required.** Anything red, white, and blue —
-a flag T-shirt, star sunglasses, a bandana — is perfect. See
-`02-INVITATIONS.md` for per-character costume ideas to send guests.
+**Costumes are encouraged but never required** — anything red, white, and blue
+works. Per-character costume ideas are in `02-INVITATIONS.md`.
 
 ---
 
 ## 🖨️ Step-by-step setup (about 30–40 minutes)
 
-### Step 1 — Decide your cast (10 min)
-Open `characters/00-CHARACTER-GUIDE.md`. This edition has **18 roles — 15 adults
-(`01–15`) and 3 kids (`16–18`)** — so match each guest to a character. Assign by
-personality: outgoing folks love the big talkers (Gus, Mayor Maple, Holly); the
-quieter guests do great as the observant witnesses (Librarian Lou, Ruby). Give
-the 3 kids roles 16–18 — they're easy and each kid holds a real clue.
+### Step 1 — Cast your 18 guests (10 min)
+Open `characters/00-CHARACTER-GUIDE.md`. There are **18 roles — 15 adults (`01–15`)
+and 3 kids (`16–18`).** Assign by personality. Pay special attention to the **five
+load-bearing roles** flagged in the guide:
+- **Uncle Pete** (the thief) — give to a warm, confident guest who can deliver a
+  heartfelt confession.
+- **Pawnshop Pearl** (key witness) — give to someone reliable who'll remember to
+  admit the pawn clue when asked.
+- **Ruby, Max, Lily** (the kids) — each holds one witness clue; perfect for kids.
 
 ### Step 2 — Print the cards (15 min)
-Print one copy of each character card you're using
-(`characters/01-*.md` through `18-*.md` — that's 18 cards for a full group).
-Fold each in half so the name shows on the outside. **You don't need to read
-them.** (Tip: with 18 to print, a stapler and a big table help — collate them by
-name so handout is quick.)
+Print one copy of each character card you're using (`characters/01-*.md` through
+`18-*.md`). Fold each in half so the name shows on the outside. Hand each guest ONLY
+their own card. **Don't hand out `00-CHARACTER-GUIDE.md` — that one names the thief.**
 
 ### Step 3 — Print the shared materials (10 min)
-- `03-MASTER-SCRIPT.md` — 1 copy (this is the script you'll read from)
-- `clues/clue-envelope-1.md`, `-2.md`, `-3.md` — 1 copy of each
-- `clues/name-tags-and-ballots.md` — print name tags for your cast, plus 1
-  solution slip per player and a few award certificates
+- `03-MASTER-SCRIPT.md` — 1 copy (your script to read from).
+- `clues/clue-envelope-1.md`, `-2.md`, `-3.md` — 1 copy of each.
+- `clues/name-tags-and-ballots.md` — name tags for your cast, 1 ballot per player,
+  and a few award certificates.
+- `99-SOLUTION-DO-NOT-OPEN.md` — 1 copy for you (keep it hidden).
 
-### Step 4 — Set the scene & stuff the envelopes (5 min)
-- Put each **Clue** page into its numbered envelope (1, 2, 3). Set them aside
-  in order.
-- Print `99-SOLUTION-DO-NOT-OPEN.md` **without reading it** (or have your helper
-  do it), fold it answer-side-in, and seal it in the "DO NOT OPEN" envelope.
-- Set up a **dessert table** with an empty spot where the pie "was," and leave
-  the **oven mitts** dropped right beside it. Sprinkle a little cinnamon or a few
-  paper "crumbs" in a trail leading toward the **lawn chairs**, and (if you're
-  using a prop pie) tuck it under one of those chairs to be discovered at the
-  reveal. _(Hide it under a chair generally — you don't need to know whose it
-  is, so this stays spoiler-safe.)_
+### Step 4 — Set the scene (5 min)
+- Put each **Clue** page into its numbered envelope (1, 2, 3). Set them in order.
+- Fold the **Solution** answer-side-in and seal it in the "DO NOT OPEN" envelope.
+- Set up a **dessert table** with an empty spot where the pie "was."
+- Pick your **"barn"** (shed, garage, corner) and hide the covered prop pie there
+  under a "tarp." That's where it gets found at the reveal.
+- Optional: hand Mailman Mike his "pawn ticket" prop as he arrives.
 
-### Step 5 — Pick your own character (2 min)
-Choose the leftover character, read **only** that card, put on something
-red-white-and-blue, and you're a player now. 🎇
+### Step 5 — Brief yourself (2 min)
+Skim the Master Script once so the flow is familiar. You've got this. 🎆
 
 ---
 
@@ -103,114 +89,72 @@ red-white-and-blue, and you're a player now. 🎇
 
 | Time | What happens |
 |------|--------------|
-| As guests arrive | Hand out name tags + character cards. Kids read their **own** card privately and get into costume. Snacks + music. |
-| ~10 min in | Everyone's here → gather in a circle. The most confident reader starts the **Master Script**. |
-| Rounds 1–4 (~10 min each) | Follow the script. Open a Clue Envelope each round. Mingle and question between readings. |
-| Round 5 (~10 min) | Everyone fills out a **solution slip**. Open the sealed Solution. Reveal! |
-| Wrap-up | Hand out awards, then eat the "rescued" pie. Sparklers/fireworks after dark (grown-up supervised). |
+| As guests arrive | Hand out name tags + character cards. Everyone reads their **own** card privately and gets into costume. Snacks + music. |
+| ~10 min in | Everyone's here → gather the group. You read the **Opening** and **Rules** from the Master Script. |
+| Round 1 (~15 min) | "Where was everyone during the salute?" Mingle, then read Clue Envelope 1. |
+| Round 2 (~15 min) | "It was never about the pie." Mingle, then read Clue Envelope 2. |
+| Round 3 (~15 min) | "Triangulate the thief." Mingle, then read Clue Envelope 3. |
+| The Vote (~5 min) | Everyone fills out a ballot. Collect them. |
+| The Reveal (~10 min) | Read the Solution: Uncle Pete, and WHY. Pete confesses. |
+| The Forgiveness Vote | The whole family votes to forgive Pete. Cut the prop pie open. |
+| Wrap-up | Hand out awards, eat the "rescued" pie, then fireworks after dark. |
 
-**Total: about 45–75 minutes.** Younger or wigglier crews: keep rounds short.
-Older, into-it crews: let the questioning run longer.
+**Total: about 75–90 minutes.** Younger/wigglier crews: keep rounds to ~10 min.
 
 ---
 
-## 🧩 How to run the rounds (super simple)
+## 🧩 How the mystery works (so you can nudge, never railroad)
 
-The Master Script does the heavy lifting. Your only "jobs" as the group:
-1. **Take turns reading** the script out loud. Pass it around — it even tells
-   you when to pass.
-2. **Open the right Clue Envelope** when the script says to, and read it aloud.
-3. **Let kids mingle and question each other** during the "Investigation Time"
-   breaks. The script gives them starter questions.
+The whole game runs on **three rules** (the Master Script reads them aloud):
 
-There are **no rulings to make**. Every character card tells that kid
-exactly what they know and what to say. Nobody can "break" the game.
+1. **Your card is TRUE.** Every fact on a card really happened. Asked a straight
+   question about a fact, a guest MUST answer honestly — *even the thief.* This is
+   what makes it solvable at a party: no endless web of lies.
+2. **But you can spin the REASON.** "Yes, I slipped away during the salute — just to
+   check the animals." The fact is locked; the excuse is the bluff. That's the fun.
+3. **Never say if you're innocent or guilty.** Everyone acts a little suspicious, so
+   nobody gets found by elimination.
 
-> ⚠️ **The THREE RULES that make the mystery work** (the Master Script reads these
-> aloud, but remind folks as they arrive):
-> 1. **Never reveal whether your card makes you innocent or guilty.** If people
->    announce "my card says I'm innocent," the thief gets found by elimination and
->    the game deflates. Everyone acts a little guilty!
-> 2. **You can't lie about the FACTS on your card** — who you are, why you're
->    here, what you saw, who you suspect. If someone asks a straight question, you
->    must tell the truth (yes, even the thief). This is what makes it solvable — a
->    party has no time to untangle a web of lies.
-> 3. **You CAN make up a reason.** "Yes, I was in the kitchen — just grabbing
->    silverware." The facts are fixed; the excuses are the bluff. The whole game
->    is asking the right people the right questions and catching the reasons that
->    don't add up.
-
-> 🕵️ **Everyone is an accuser.** Each card names one *other* guest that character
-> truthfully suspects, with a reason — so accusations fly from the first minute.
-> Most hunches are dead wrong (the loud false leads land on Uncle Marty and Baker
-> Benny); the true trail is quieter. It keeps 18 people loud and questioning each
-> other.
-
-> 🏆 **It's every-guest-for-themselves — no teams.** Each guest races to be the ONE
-> who cracks the case, so you don't volunteer your own clues (though you must
-> answer honestly if asked). In the final round everyone writes their own private
-> solution. **Anyone who nails it wins as a Master Sleuth; if nobody does, the
-> thief gets away with the perfect crime.**
-
-> 🎬 **Tip for extra fun:** Each card has a **"How to play it"** section — a bit of
-> drama and personality to perform (a swoon, a grumpy nap, a burst of song), plus
-> each character's embarrassing little secret to hide. Encourage everyone to *act*
-> during the Investigation Time breaks. A murder mystery is way more fun when
-> people are hamming it up and acting suspicious than when they're sitting and
-> reading. Ham it up!
+**Why nobody can "break" it:** every one of the thief's tells is *shared* with an
+innocent decoy (see the table in `00-CHARACTER-GUIDE.md`). No single clue convicts
+Pete — sleuths must stack motive + the pawned ring + the bandaged thumb + slipping
+away + the barn + ring access. Only Pete matches all of them.
 
 ### 🎪 Big-group tips (for 18 players)
-With a full cast of 18, a little crowd control keeps it smooth and fun:
-- **Give people room to roam.** A backyard or two open rooms works great — the
-  investigation is basically everyone mingling and questioning each other.
-- **Use a bell or a whistle** to pause the mingling and re-gather the group for
-  each round. (Coach Diego even has a whistle — recruit that player to help!)
-- **Keep the action moving around the space** so everyone can see and hear the
-  drama. When two characters "argue," they should do it out loud where others
-  notice.
-- **Rotate the reader.** With a big group, pick a few strong, loud readers to
-  take turns on the Master Script so everyone can hear.
-- **Let the gossips do their job.** Hairdresser Holly and Nurse Nancy are built
-  to repeat clues around the yard — that keeps 18 people on the same page.
-- **Give it a little more time.** Intros and mingling take longer with 18, so
-  budget closer to **75–90 minutes** total.
+- **Give people room to roam** — a backyard or two open rooms is ideal.
+- **Use a bell or whistle** to pause mingling and re-gather for each clue. (Coach
+  Diego has a whistle — recruit that player to help!)
+- **Point kids toward the clue-holders.** If the room stalls, steer people to Pearl
+  ("ask who pawned a ring"), then Lily and Max ("who slipped away? where'd the pie
+  go?").
+- **Let the gossips work** — Mailman Mike and Nurse Nancy are built to carry clues
+  around the yard and keep 18 people on the same page.
 
 ---
 
 ## 🆘 Quick troubleshooting
-
-- **A kid is stuck / shy:** Their card has a "Things to say" list and
-  "Questions to ask others." Point them to it. Extra Guests can buddy up
-  with them.
-- **Someone guesses the thief early:** Great! They still have to *prove* it
-  with clues in the final accusation. Keep it moving — the reveal is still fun.
-- **The thief gets nervous about fibbing:** Remind them it's just pretend and
-  bluffing is the fun part. Their card gives them cover stories.
-- **Too rowdy:** Ring a "dinner bell" (any bell/timer) to pause and pass the
-  script to the next reader.
-- **Reading level:** An adult or strong reader can be the main narrator while
-  kids still play their own characters.
+- **A kid is shy/stuck:** Their card has "How to play it" and "Questions to ask." Their
+  one clue is enough — have them just repeat what they saw. They're a hero at the reveal.
+- **Someone solves it early:** Ask them to keep it quiet and help you feed hints to
+  others. Everyone still votes at the end, so the reveal still lands.
+- **The thief gets nervous:** Remind the guest playing Pete that they can never *deny*
+  a fact — the whole trick is the calm, innocent reason. Their card scripts it all.
+- **Too rowdy:** Ring the bell, re-gather, read the next clue.
+- **Reading level:** You (the host) narrate everything important; kids only speak
+  their own character.
 
 ---
 
-## 🎨 Make it your own (themes & ages)
+## 🎨 Make it your own
+This is a family-friendly 4th of July backyard theme for 18, but the skeleton travels:
+a sympathetic fixed culprit, a "it was never about the object" twist, three timed
+clues (opportunity → motive/twist → witness triangulation), decoys that each share
+one of the thief's tells, and an everyone-votes finale. Reskin the wrapper (pirates &
+a treasure, space station & a crystal, etc.) and the logic still holds.
 
-This kit is a family-friendly 4th of July backyard theme built for 18 players,
-but the *structure* works for any theme and group size. To adapt it:
-- **Keep the skeleton:** 1 fixed culprit, 3 timed clues (a "how-it-was-done"
-  clue, a "why" clue, and a "physical trail" clue), plus a broken alibi and an
-  eyewitness. The other suspects are red herrings with motives.
-- **Swap the wrapper:** Pirates (a stolen treasure), magic school (a mischief
-  spell), space station (a stolen crystal), carnival, detective agency, etc.
-- **Smaller group:** Drop pure red-herring adults (Mayor Maple, Realtor Rita,
-  Baker Benny, Fireman Frank, Farmer Fran) — see the Character Guide for the
-  roles you must keep. A 6-person version needs only the core clue-holders.
-- **All adults / all kids / different ages:** The roles are written
-  family-friendly, but you can dial the humor up or down. For very young kids,
-  shorten cards to the "Who you are / Your secret / What you saw" lines and
-  have grown-ups help read.
-
-If you want, ask me to generate a reskinned version in a different theme or for
-a different age — the mystery logic stays the same.
+- **Smaller group:** drop pure red herrings in this order — Librarian Lou, Realtor
+  Rita, Farmer Fran, Coach Diego, Grill Master Gus (keep Gus OR Fran for a barn
+  decoy). Never drop Grandma, Pete, Pearl, Nancy, or the three kids.
+- **More than 18:** add clue-free "neighbor" walk-ons who just mingle and vote.
 
 **Next up:** send the invitations in `02-INVITATIONS.md`. 🎆

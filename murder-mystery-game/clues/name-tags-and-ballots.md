@@ -1,4 +1,4 @@
-# 🖨️ Name Tags, Solution Slips & Awards (Print These!)
+# 🖨️ Name Tags, Ballots & Awards (Print These!)
 
 Print this page, then cut out what you need. Everything here is spoiler-free.
 
@@ -10,80 +10,77 @@ Cut these out and pin/tape them on, or write the names on sticker tags.
 
 ```
 ┌──────────────────────────┐  ┌──────────────────────────┐
-│ 🥧 GRANDMA ROSE          │  │ 🏆 AUNT BELLA            │
-│ Blue-Ribbon Pie Baker    │  │ Always 2nd at the Contest │
+│ 🥧 GRANDMA ROSE          │  │ 🚜 UNCLE PETE            │
+│ Blue-Ribbon Pie Baker    │  │ The Farm-Keeper           │
 └──────────────────────────┘  └──────────────────────────┘
 ┌──────────────────────────┐  ┌──────────────────────────┐
-│ 🍔 GRILL MASTER GUS      │  │ 🥇 COACH DIEGO           │
-│ King of the Grill        │  │ Pie Contest Judge         │
+│ ☀️ AUNT SUNNY            │  │ 🏆 AUNT BELLA            │
+│ Farm Co-Heir             │  │ Always 2nd at the Contest │
 └──────────────────────────┘  └──────────────────────────┘
 ┌──────────────────────────┐  ┌──────────────────────────┐
-│ 😴 UNCLE MARTY           │  │ 🎸 UNCLE SUNNY           │
-│ Grumpy Pie Lover         │  │ Sing-Along Song Leader    │
+│ 😤 UNCLE MARTY           │  │ 💸 COUSIN CHARLIE        │
+│ Grumpy Pie Lover         │  │ The Broke Cousin          │
 └──────────────────────────┘  └──────────────────────────┘
 ┌──────────────────────────┐  ┌──────────────────────────┐
-│ 🎀 MAYOR MAPLE           │  │ 🩹 NURSE NANCY           │
-│ Ribbon Presenter         │  │ Neighborhood Nurse        │
+│ 🏅 COACH DIEGO           │  │ 🔥 GRILL MASTER GUS      │
+│ Pie Contest Judge        │  │ King of the Grill         │
 └──────────────────────────┘  └──────────────────────────┘
 ┌──────────────────────────┐  ┌──────────────────────────┐
-│ 🍎 FARMER FRAN           │  │ 📬 MAILMAN MIKE          │
-│ Apple Orchard Grower     │  │ Nosy Mail Carrier         │
+│ 🏦 BANKER BILL           │  │ 💍 PAWNSHOP PEARL        │
+│ The Loan Officer         │  │ The Pawnbroker            │
 └──────────────────────────┘  └──────────────────────────┘
 ┌──────────────────────────┐  ┌──────────────────────────┐
-│ 👨‍🍳 BAKER BENNY           │  │ 🏡 REALTOR RITA          │
-│ Professional Baker       │  │ Competitive Deal-Closer   │
+│ 🩹 NURSE NANCY           │  │ 📬 MAILMAN MIKE          │
+│ Neighborhood Nurse       │  │ Nosy Mail Carrier         │
 └──────────────────────────┘  └──────────────────────────┘
 ┌──────────────────────────┐  ┌──────────────────────────┐
-│ 🚒 FIREMAN FRANK         │  │ 📚 LIBRARIAN LOU         │
-│ Fireworks Guard          │  │ Detail-Noticer            │
+│ 🏡 REALTOR RITA          │  │ 📚 LIBRARIAN LOU         │
+│ Competitive Deal-Closer  │  │ The Quiet Observer        │
 └──────────────────────────┘  └──────────────────────────┘
 ┌──────────────────────────┐  ┌──────────────────────────┐
-│ 💇 HAIRDRESSER HOLLY     │  │ 🧁 RUBY                  │
-│ Neighborhood Gossip      │  │ The Littlest Cousin       │
+│ 🌽 FARMER FRAN           │  │ 🧁 RUBY                  │
+│ Neighbor Farmer          │  │ The Littlest Cousin       │
 └──────────────────────────┘  └──────────────────────────┘
 ┌──────────────────────────┐  ┌──────────────────────────┐
-│ 🍋 LILY                  │  │ 🛴 MAX                   │
-│ Lemonade-Stand Kid       │  │ The Scooter Kid           │
-└──────────────────────────┘  └──────────────────────────┘
-┌──────────────────────────┐  ┌──────────────────────────┐
-│ 🕵️ EXTRA GUEST      │  │ 🕵️ EXTRA GUEST      │
-│ Case Investigator        │  │ Case Investigator         │
+│ 🤕 MAX                   │  │ 🍋 LILY                  │
+│ Scraped-Knee Adventurer  │  │ Lemonade-Stand Boss       │
 └──────────────────────────┘  └──────────────────────────┘
 ```
 
+*(Need more? Add blank "🕵️ NEIGHBOR — Case Investigator" tags for extra walk-on
+guests beyond 18.)*
+
 ---
 
-## 🗳️ SECRET SOLUTION SLIPS
+## 🗳️ VOTING BALLOTS
 
-Print **one slip per player** (18+). Hand them out in Round 5. Everyone privately
-fills in their own answer — **no sharing, no teaming up!**
+Print **one ballot per player** (18+). Hand them out right before the vote.
+**Everyone votes** — grownups and kids, every character, no matter their role.
 
-> 🏆 **How winning works:** This is every-guest-for-themselves. Each player
-> secretly writes down who they think did it. When the sealed solution opens,
-> **anyone who correctly named the real culprit cracked the case and wins as a
-> Master Sleuth** — best of all if you're the *only* one who got it. **If nobody
-> named the real thief, the thief pulls off the perfect crime and wins!** Keep
-> your slip hidden — the whole point is to be the one clever guest who solves it.
+> 🏅 **How it works:** After three rounds of mingling, every guest fills in a
+> ballot naming who they think took the pie and why. Then the host reveals the
+> truth. **Everyone who named the thief is a Master Sleuth!** There's no "losing" —
+> this is a whole-family whodunit, and it ends with one last vote everybody takes
+> together (you'll see...). Fill yours in on your own — no peeking at a neighbor's!
 
 ```
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        🕵️  MY SECRET SOLUTION  🕵️
-        The Case of the Missing Blue-Ribbon Pie
+        🕵️  MY BALLOT  🕵️
+        The Pie That Wasn't — Maple Farm, 4th of July
 
    Your name: ______________________________
 
-   WHO stole Grandma Rose's blue-ribbon pie? (Check ONE)
+   WHO took Grandma Rose's pie? (Check ONE)
 
-     ☐ Grandma Rose       ☐ Mailman Mike
-     ☐ Aunt Bella         ☐ Baker Benny
-     ☐ Grill Master Gus   ☐ Realtor Rita
-     ☐ Coach Diego        ☐ Fireman Frank
-     ☐ Uncle Marty        ☐ Librarian Lou
-     ☐ Uncle Sunny        ☐ Hairdresser Holly
-     ☐ Mayor Maple        ☐ Ruby
-     ☐ Nurse Nancy        ☐ Lily
-     ☐ Farmer Fran        ☐ Max
+     ☐ Grandma Rose      ☐ Banker Bill
+     ☐ Uncle Pete        ☐ Pawnshop Pearl
+     ☐ Aunt Sunny        ☐ Nurse Nancy
+     ☐ Aunt Bella        ☐ Mailman Mike
+     ☐ Uncle Marty       ☐ Realtor Rita
+     ☐ Cousin Charlie    ☐ Librarian Lou
+     ☐ Coach Diego       ☐ Farmer Fran
+     ☐ Grill Master Gus  ☐ Ruby / Max / Lily
 
    WHY did they do it? ______________________________
    _________________________________________________
@@ -103,51 +100,61 @@ invent extra awards so **everybody wins something!**
 
 ```
 ╔═══════════════════════════════════════════════════╗
-║   🏅  MASTER SLEUTH AWARD  🏅                   ║
+║   🏅  MASTER SLEUTH AWARD  🏅                       ║
 ║                                                     ║
-║   Presented to: ______________________________     ║
+║   Presented to: ______________________________      ║
 ║                                                     ║
-║   For cracking The Case of the Missing              ║
-║   Blue-Ribbon Pie — naming the right thief          ║
-║   AND the right reason! Sharp work, sleuth.      ║
+║   For cracking the case of The Pie That Wasn't —    ║
+║   naming Uncle Pete as the one who took the pie!    ║
 ║                                                     ║
-║   Awarded on: ________________  🥧🇺🇸               ║
+║   Awarded on: ________________  🥧🇺🇸                ║
+╚═══════════════════════════════════════════════════╝
+
+╔═══════════════════════════════════════════════════╗
+║   🔍  SHARPEST SLEUTH AWARD  🔍                     ║
+║                                                     ║
+║   Presented to: ______________________________      ║
+║                                                     ║
+║   For naming the thief AND the real reason —        ║
+║   he pawned the ring to save the family farm.       ║
+║                                                     ║
+║   Awarded on: ________________  🧩                   ║
+╚═══════════════════════════════════════════════════╝
+
+╔═══════════════════════════════════════════════════╗
+║   🧒  JUNIOR DETECTIVE AWARD  🧒                    ║
+║                                                     ║
+║   Presented to: ______________________________      ║
+║                                                     ║
+║   For Ruby, Max & Lily — the young witnesses        ║
+║   whose clues cracked the whole case wide open!     ║
+║                                                     ║
+║   Awarded on: ________________  🕵️                   ║
 ╚═══════════════════════════════════════════════════╝
 
 ╔═══════════════════════════════════════════════════╗
 ║   🎭  BEST ACTOR AWARD  🎭                          ║
 ║                                                     ║
-║   Presented to: ______________________________     ║
+║   Presented to: ______________________________      ║
 ║                                                     ║
-║   For the most dramatic, hilarious, and             ║
-║   convincing performance at the cookout.            ║
+║   For the most heartfelt, convincing performance    ║
+║   at the cookout. (Usually Uncle Pete!)             ║
 ║                                                     ║
-║   Awarded on: ________________  🎬                  ║
+║   Awarded on: ________________  🎬                   ║
 ╚═══════════════════════════════════════════════════╝
 
 ╔═══════════════════════════════════════════════════╗
 ║   🇺🇸  BEST RED-WHITE-&-BLUE AWARD  🇺🇸              ║
 ║                                                     ║
-║   Presented to: ______________________________     ║
+║   Presented to: ______________________________      ║
 ║                                                     ║
-║   For the most patriotic, sparkly, star-spangled    ║
-║   4th of July outfit at the whole cookout!          ║
+║   For the most patriotic, star-spangled 4th of      ║
+║   July outfit at the whole cookout!                 ║
 ║                                                     ║
-║   Awarded on: ________________  🎆                  ║
-╚═══════════════════════════════════════════════════╝
-
-╔═══════════════════════════════════════════════════╗
-║   🍋  MOST CURIOUS SLEUTH AWARD  🍋              ║
-║                                                     ║
-║   Presented to: ______________________________     ║
-║                                                     ║
-║   For asking the cleverest questions and never      ║
-║   giving up on the truth. A real super-sleuth!      ║
-║                                                     ║
-║   Awarded on: ________________  🔍                  ║
+║   Awarded on: ________________  🎆                   ║
 ╚═══════════════════════════════════════════════════╝
 ```
 
 > 💡 With 18 players, invent more awards so everyone gets one — "Sneakiest
 > Suspect," "Best Grumpy Face" (Uncle Marty!), "Loudest Accusation," "Best
-> Gossip," "Junior Sleuth of the Year," "Future FBI Agent," etc.
+> Gossip" (Mailman Mike!), "Biggest Heart," "Future FBI Agent," etc.

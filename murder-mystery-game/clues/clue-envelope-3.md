@@ -1,49 +1,42 @@
 ╔══════════════════════════════════════════════════════════╗
      🔍  CLUE ENVELOPE #3  🔍
-     Open and read aloud in ROUND 3
+     Open and read aloud at the END of ROUND 3
      (Do NOT open early!)
 ╚══════════════════════════════════════════════════════════╝
 
 # 📣 Read this aloud to everyone:
 
-> **CLUE #3: The pie left a trail.**
+> **CLUE #3: The little cousins saw more than anyone.**
 >
-> "A hot apple pie is a leaky thing, sleuths — and this one betrayed the
-> thief with every step. As they carried it away, it **dripped.**
+> "Sleuths, the smallest guests at this party cracked it wide open. Listen close:
 >
-> Follow the evidence: a line of sticky **apple-cinnamon drips** leads away from
-> the dessert table... across the patio... and straight to the row of **lawn
-> chairs** where guests were sitting. The trail doesn't leave the yard. It
-> doesn't head for a car or the street. It **stops at the lawn chairs** — which
-> means the pie never left the party at all. It's *hidden here, among us.*
+> 🧁 **Ruby** was hiding under the dessert table during the salute. She saw the
+> thief's HANDS lift the pie — and **one thumb was wrapped in a white bandage.**
 >
-> And one more thing. Tucked beside one of those lawn chairs, someone found a
-> **fork — with a fresh bite of apple pie still on it.** 🍴 Our thief couldn't
-> resist a taste of their prize.
+> 🤕 **Max** was sneaking near the barn. He saw a **covered, pie-sized dish carried
+> INTO the barn and tucked under a tarp** — during the salute.
 >
-> Now put it all together, sleuths. You have everything you need:
->   • The thief **planned it** — hot pie, oven mitts (Clue 1).
->   • The thief is **tired of finishing second** (the note, Clue 2).
->   • The pie is **hidden by the lawn chairs**, and someone sat down for a bite
->     (this clue).
->   • Somebody saw the thief's sticky hands. Somebody saw who ducked into the
->     kitchen. Ask the right people the right questions — remember, they HAVE to
->     tell you the truth (they can only make up a reason).
+> 🍋 **Lily** was at her lemonade stand. She saw someone **slip away from the crowd
+> during the salute and head straight toward the barn.**
 >
-> Whose chair? Whose sticky hands? Whose story doesn't hold up? Name your thief."
+> Now put it ALL together. You're looking for ONE person who checks every box:
+> **had a reason** (the farm, the money) · **is tied to that pawned gold ring** ·
+> **had a bandaged thumb** · **slipped away during the salute** · **went to the
+> barn** · and **could get to Grandpa's ring in the first place.**
+>
+> Lots of people match ONE or two of those. Only ONE person matches them ALL. Find
+> that person — and you've found your thief."
 
 ---
 
 ### 🧩 What this clue tells the sleuths:
-- The pie is **hidden by the lawn chairs** — still on the property, not carried
-  off.
-- A **fork with fresh pie** sits beside one chair — *whose* chair?
-- Combine with: the **sticky apple hands** (ask whoever hid under the table), the
-  **person seen going into the kitchen** (ask whoever runs the lemonade stand),
-  the **motive note** (Clue 2), and the **planning** (Clue 1). They all point to
-  one person.
+- **Bandaged thumb** (Ruby) + **pie hidden in the barn** (Max) + **slipped away to
+  the barn during the salute** (Lily).
+- Cross off anyone who only matches *some* of the clues — check their alibis.
+- The thief is the single person who matches **motive + the pawned ring + bandaged
+  thumb + slipping away + the barn + access to the ring.**
 
-_(Time to figure out whose lawn chair, whose sticky hands, and whose story falls
-apart. Get ready to make your accusation!)_
+_(Talk to Pearl about who pawned a ring. Talk to Nurse Nancy about whose thumb she
+bandaged. Then find the person those clues share.)_
 
-**➡️ Now return to the Master Script for the final round.**
+**➡️ Now return to the Master Script — it's time to VOTE!**

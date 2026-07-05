@@ -1,67 +1,69 @@
-# 👥 Character Guide (Spoiler-Free — safe for the organizer)
+# 🎭 CHARACTER GUIDE — For the Host's Eyes
 
-> This guide does **NOT** reveal the thief. Any of these 18 characters *could*
-> be the culprit as far as this page is concerned. Use it to decide who plays
-> whom.
+> This is your roster for assigning parts. It's **mildly spoiler-y** (it marks the
+> thief), so don't hand it to guests. Give each guest ONLY their own numbered card
+> from this folder.
 
-**This version is built for 18 players — 15 adults + 3 kids — and EVERYONE gets
-their own suspect character.** Give each person the card that matches their
-character. **Players read only their own card.**
+## 👥 The 18 Characters (15 adults + 3 kids)
 
----
+| # | Character | Who they are | Age | Difficulty to play |
+|---|-----------|--------------|-----|--------------------|
+| 01 | 🥧 **Grandma Rose** | The pie champion; it's her pie | Adult | Easy |
+| 02 | 🚜 **Uncle Pete** | The dependable farm-keeper — **THE THIEF** 🤫 | Adult | ⭐ Give to a confident, warm actor |
+| 03 | ☀️ **Aunt Sunny** | Pete's sister, farm co-heir | Adult | Easy |
+| 04 | 🏆 **Aunt Bella** | The always-second-place baker | Adult | Easy–Medium |
+| 05 | 😤 **Uncle Marty** | The grumpy pie-hound | Adult | Easy (fun ham role) |
+| 06 | 💸 **Cousin Charlie** | The broke cousin (decoy bandage) | Adult | Medium |
+| 07 | 🏅 **Coach Diego** | The pie-contest judge | Adult | Easy |
+| 08 | 🔥 **Grill Master Gus** | The grill boss (decoy barn trip) | Adult | Easy (fun ham role) |
+| 09 | 🏦 **Banker Bill** | The loan officer | Adult | Medium |
+| 10 | 💍 **Pawnshop Pearl** | The pawnbroker — **KEY WITNESS** | Adult | ⭐ Give to someone reliable |
+| 11 | 🩹 **Nurse Nancy** | The family nurse (muddies the bandage) | Adult | Medium |
+| 12 | 📬 **Mailman Mike** | The town snoop | Adult | Easy (fun ham role) |
+| 13 | 🏡 **Realtor Rita** | The competitive agent | Adult | Easy |
+| 14 | 📚 **Librarian Lou** | The quiet observer | Adult | Medium |
+| 15 | 🌽 **Farmer Fran** | The neighbor farmer (decoy barn trip) | Adult | Easy |
+| 16 | 🧁 **Ruby** | Saw the thief's **bandaged thumb** | Kid | ⭐ Key kid clue |
+| 17 | 🤕 **Max** | Saw the pie carried **into the barn** | Kid | ⭐ Key kid clue |
+| 18 | 🍋 **Lily** | Saw **Pete slip away** to the barn | Kid | ⭐ Key kid clue |
 
-## 🧑 The 15 Adult Roles
+## ⭐ The five "load-bearing" roles — assign these thoughtfully
+These carry the solution. Give them to guests who'll show up and speak up:
+- **02 Uncle Pete** (the thief) — needs to stay calm, deflect kindly, and deliver
+  the heartfelt confession at the end.
+- **10 Pawnshop Pearl** — holds the killer clue (Pete pawned a ring). Must remember
+  to admit it when asked, and return the ring at the reveal.
+- **16 Ruby / 17 Max / 18 Lily** (the kids) — each holds one witness clue. Perfect
+  for kids because their job is simply to repeat what they saw.
 
-| # | Character | In one line | Great for someone who is... |
-|---|-----------|-------------|------------------------------|
-| 01 | **Grandma Rose** | The beloved baker whose blue-ribbon pie was stolen | Loves being the dramatic center of attention |
-| 02 | **Aunt Bella** | The fancy neighbor who always comes 2nd at the pie contest | Confident, a good actor, can keep a straight face |
-| 03 | **Grill Master Gus** | The loud, nosy king of the grill | Big personality, enjoys being a know-it-all |
-| 04 | **Coach Diego** | The whistle-blowing pie-contest judge | Energetic, likes taking charge |
-| 05 | **Uncle Marty** | The grumpy uncle who loves pie a little TOO much | Loves playing a lovable grump |
-| 06 | **Uncle Sunny** | The goofy guitar-playing song leader | Silly, performative, musical |
-| 07 | **Mayor Maple** | The pompous mayor here to present the ribbon | Enjoys big speeches and being self-important |
-| 08 | **Nurse Nancy** | The caring (and gossipy) neighborhood nurse | Warm, chatty, likes fussing over people |
-| 09 | **Farmer Fran** | The proud apple grower with a grudge | Fun at playing grumpy/underappreciated |
-| 10 | **Mailman Mike** | The nosy mail carrier who sees all | Playful, likes snooping and one-liners |
-| 11 | **Baker Benny** | The snooty pro baker who keeps losing to Grandma | Loves being dramatic and over-the-top |
-| 12 | **Realtor Rita** | The super-competitive deal-closer | High energy, loves a big personality bit |
-| 13 | **Fireman Frank** | The earnest fireworks guard | Likes playing the heroic, rule-following type |
-| 14 | **Librarian Lou** | The quiet, sharp-eyed detail-noticer | Observant, enjoys being the clever one |
-| 15 | **Hairdresser Holly** | The bubbly neighborhood gossip | Chatty, loves drama and stirring the pot |
+## 🧩 How the clue-chain works (so you can nudge players)
+Every one of Pete's tells is **shared with an innocent decoy**, so no single clue
+convicts him. Sleuths must stack ALL of them:
 
-## 🧒 The 3 Kid Roles (easy, fun, and important to the case!)
+| Pete's tell | Who ALSO has it (the decoy) | What clears the decoy |
+|-------------|------------------------------|------------------------|
+| Money/farm trouble | Sunny, Bill, Fran, Rita, Nancy | Each has a salute alibi |
+| Tied to a gold ring | Bella, Bill, Charlie, Mike | None actually *pawned* one |
+| Pawned a ring (Pearl saw) | — (**Pete alone**) | This is the killer clue |
+| Bandaged hand | Cousin Charlie | Charlie held the flag up front |
+| Slipped away during salute | Lily | Lily went to the spigot & back |
+| Went to the barn | Gus, Fran, Marty, Max | Theirs was morning, not the salute |
+| Access to Grandpa's ring | Aunt Sunny | Sunny led the anthem up front |
 
-| # | Character | In one line | Great for a kid who is... |
-|---|-----------|-------------|---------------------------|
-| 16 | **Ruby** | The sneaky littlest cousin (secret eyewitness!) | Imaginative; also great for a quieter kid |
-| 17 | **Lily** | The lemonade-stand kid with a view of everything | Honest, notices things, good memory |
-| 18 | **Max** | The zooming scooter kid (saw where the pie was hidden!) | High energy, loves being in motion |
+**Pete is the only person all of these point to at once.**
 
-> The 3 kid roles are written simply and each kid holds a **real, important
-> clue** — so the kids are heroes of the case, not just along for the ride.
+## 🔧 Scaling the guest count
+- **Exactly 18:** use everyone as written.
+- **Fewer than 18 — drop in THIS order** (these are pure red herrings; the solution
+  still works): Librarian Lou (14) → Realtor Rita (13) → Farmer Fran (15) → Coach
+  Diego (07) → Grill Master Gus (08). *Keep at least Gus OR Fran if you want a barn
+  decoy.*
+- **NEVER drop these:** Grandma Rose, Uncle Pete, Pawnshop Pearl, Nurse Nancy, and
+  the three kids (Ruby, Max, Lily) — they hold the mystery together.
+- **More than 18:** add extra "neighbor" walk-ons with no clues (a second grill
+  helper, more kids at the lemonade stand) — they just mingle and vote.
 
----
-
-## 🎚️ Adjusting the group size
-
-- **Exactly 18 (15 adults + 3 kids):** Use everyone above — the perfect fit. ✅
-- **A few more guests show up:** Extra folks join as **extra guests** — no
-  card, they just mingle, snoop, and race to solve it too. (Or print a second copy
-  of a chatty role like Mailman Mike or Hairdresser Holly and let two people
-  play "partners.")
-- **A few fewer:** You can safely drop some of the pure **red-herring adults**
-  (Mayor Maple, Realtor Rita, Baker Benny, Fireman Frank, Farmer Fran) without
-  breaking the mystery. Keep the ones marked below.
-
-> 🧩 **Do NOT drop these — the case needs them.** Each holds a TRUE fact that,
-> combined, points to the culprit: **Aunt Bella** (the culprit), **Grill Master
-> Gus** (lent her the mitts), **Mailman Mike** (saw her spare carrier), **Lily**
-> (saw her enter the kitchen), **Uncle Sunny** (saw her slip away), **Uncle
-> Marty** (saw her carry a dish to the lawn chairs), **Librarian Lou** (the
-> handwriting → a contest entrant), **Coach Diego** (the list of entrants), and
-> **Grandma Rose** (when & where the pie was taken). **Ruby** and **Max** add the
-> physical clues (sticky hands; the hiding spot). Everyone else adds motive and
-> misdirection. *(No spoilers — just trust each carries a piece of the puzzle.)*
-
-**Next:** hand out cards, then start `03-MASTER-SCRIPT.md`.
+## 👶 Kid-friendly notes
+- The crime is a **stolen pie**, never anything scary. The "stakes" (almost losing
+  the farm) are kept gentle and hopeful — it ends with the family together.
+- The three kid roles are the HEROES who crack the case. Lean into that at the reveal.

@@ -1,41 +1,45 @@
 ╔══════════════════════════════════════════════════════════╗
-   🥧  GRANDMA ROSE  ·  The Blue-Ribbon Pie Baker  ·  🧑 ADULT
+   🥧  GRANDMA ROSE  ·  The Blue-Ribbon Matriarch  ·  🧑 ADULT
    🤫 FOR YOUR EYES ONLY — read only your own card!
 ╚══════════════════════════════════════════════════════════╝
 
 # 👤 WHO YOU ARE  (all true — you can't lie about this)
-The beloved grandma of Maple Street, whose apple pie wins the blue ribbon EVERY
-year. Warm and sweet — until someone touches your pie. Dramatic, fussy, calls
-everyone "sweetie." You are HEARTBROKEN your pie is gone.
-**Costume:** an apron (flour handprint = bonus!), reading glasses, a sun hat.
+The heart of Maple Farm and the reigning pie champion — widow of Grandpa
+Joe, warm, proud, and a little theatrical. This year you baked Grandpa's gold
+wedding ring right into your apple pie to give to a grandchild at the fireworks.
+**Costume:** an apron over a red-white-and-blue dress, flour on your hands, reading glasses.
 
 # 🎈 WHY YOU'RE AT THE PARTY  (true)
-To win the pie contest for the TWELFTH year running and be crowned Maple Street
-Champion — it's the highlight of your whole year.
+It's YOUR cookout and pie contest at the family farm — the biggest, proudest
+day of your whole year.
 
-# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth)
-- You set your pie on the **dessert table** (right by the kitchen door) to cool,
-  just before the flag salute. It was there.
-- When you turned back after the salute, it was **GONE.** So the pie was stolen
-  **during the flag salute**, while everyone faced the flag.
-- During the salute you were **up front, singing and facing the flag** with
-  everyone — you never went near your own pie.
+# 🔎 WHAT YOU KNOW — FACTS  (all TRUE — if asked, you MUST tell the truth; you may ONLY add a REASON)
+- You baked what you believed was Grandpa Joe's gold wedding ring into your
+  apple pie, to reveal at the fireworks.
+  → If asked, you MUST tell the truth — there's nothing to spin.
+- You'd kept that ring for years in the old rolltop desk in the farmhouse
+  office — the office Uncle Pete now runs the farm's books from.
+  → If asked, you MUST tell the truth — there's nothing to spin.
+- Your prize pie was on the dessert table right up until the flag salute —
+  then it vanished.
+  → If asked, you MUST tell the truth — there's nothing to spin.
+
+# 💭 WHY PEOPLE MIGHT SUSPECT YOU — YOUR MOTIVES  (all true — own them, it's fun!)
+1. You suspected the ring might not be real — so you *could* have hidden your
+   own pie to avoid being publicly embarrassed.
 
 # 🕵️ WHO YOU SUSPECT — AND WHY  (say it truthfully)
-You suspect **COACH DIEGO**: *"That judge had every pie in his hands today — who
-else could've slipped mine away? I don't trust him one bit, sweetie!"*
+You don't want to believe family did it — but you keep eyeing **Coach
+Diego**, who had every pie in his hands all afternoon.
 
 # 🎭 HOW TO PLAY IT
-Swoon and fan yourself every time your stolen pie comes up. Fuss, gasp, and
-demand answers. You're the most heartbroken guest at the cookout.
-**Your embarrassing secret (dodge it if you can):** you don't make your flaky
-crust from scratch — you buy it at the store! Get flustered if asked your "secret
-recipe."
+Fret loudly over your missing pie. Remind everyone the ring inside is
+"priceless" and "the last piece of Grandpa." Rally the guests to find it.
 
 # ❓ QUESTIONS TO ASK OTHERS
-- "Where were you during the flag salute, sweetie?"
-- "Coach Diego, you handle all the pies — explain yourself!"
-- "Who was near my dessert table by the kitchen?"
+- "Who was near my pie during the salute?"
+- "Did anyone SEE who touched my pie?"
+- "Coach Diego — you handle every pie. Where was mine?"
 
 ------------------------------------------------------------
 🔒 SECRET — read this ALONE, then keep it to yourself.
@@ -43,10 +47,8 @@ recipe."
 **THE TWO RULES:**
 1. Never tell anyone whether your card makes you innocent or guilty.
 2. You may NOT lie about a FACT on this card — who you are, why you're here, what
-   you saw, or who you suspect. If someone asks, you MUST admit it. The ONLY
-   thing you may invent is a REASON.
+   you know, your motives, or who you suspect. If someone asks, you MUST admit it.
+   The ONLY thing you may invent is a REASON.
 
-**Are you the thief?** ❌ NO — it's YOUR pie, you want it back! You know exactly
-when it was taken (during the salute) and where it was (the dessert table by the
-kitchen). Use that, and try to crack the case first.
+**Are you the thief?** ❌ NO. It's your own pie — you desperately want it back. Help solve it!
 ------------------------------------------------------------

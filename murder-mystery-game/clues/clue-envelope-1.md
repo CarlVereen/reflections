@@ -1,41 +1,36 @@
 ╔══════════════════════════════════════════════════════════╗
      🔍  CLUE ENVELOPE #1  🔍
-     Open and read aloud in ROUND 1
+     Open and read aloud at the END of ROUND 1
      (Do NOT open early!)
 ╚══════════════════════════════════════════════════════════╝
 
 # 📣 Read this aloud to everyone:
 
-> **CLUE #1: This was no accident — and no hungry dog.**
+> **CLUE #1: This was no accident — and this year, the farm nearly wasn't here.**
 >
-> "Sleuths, look closely at the scene. The whole pie is gone — and so is the
-> pie dish. A dog or a clumsy elbow would have left a splat on the ground, a
-> mess to clean up. There's no splat. There's no mess. That means the pie didn't
-> *fall* — it was **lifted, clean and quick, and carried away on purpose.**
+> "Sleuths, look at the scene. The whole pie is gone — dish and all. No splat, no
+> mess, no crumbs on the ground. A hungry dog or a clumsy elbow leaves a mess. This
+> pie didn't *fall* — it was **lifted, clean and quick, and carried off on purpose,
+> during the flag salute, while every head was turned toward the flag.**
 >
-> And here's the detail that gives the game away: Grandma's pie came out of the
-> oven only minutes before the flag salute. It was still **hot.** A hungry
-> thief grabbing a pie on a whim would have burned their fingers and dropped it.
-> Our thief didn't. Because right there beside the empty dish, dropped in a
-> hurry, is what they used —
+> So the very first question is simple: **who LEFT the crowd during the salute?**
+> Everyone standing shoulder-to-shoulder facing the flag has an alibi. The thief is
+> someone who slipped away.
 >
-> **a pair of red-white-and-blue OVEN MITTS.**
->
-> Think about what that means. You don't carry oven mitts around a barbecue by
-> accident. Whoever took this pie **knew it would be hot, and came ready for
-> it.** This wasn't a snack attack. It was a plan."
+> And one more thing you should know, because it matters. This spring, **Maple Farm
+> almost didn't make it.** Months behind on the taxes. The bank was circling. This
+> whole family nearly lost the place. Keep that in your pocket — because desperate
+> times make people do desperate things."
 
 ---
 
 ### 🧩 What this clue tells the sleuths:
-- The pie was **lifted and carried off deliberately** — not knocked over.
-- The pie was **still hot**, so the thief used **oven mitts** — meaning they
-  **planned ahead**. (Who would need oven mitts at a cookout? Who borrowed a
-  pair?)
-- A planned theft points away from "someone got hungry" and toward **someone
-  with a reason** to want that pie gone.
+- The pie was **lifted and carried off deliberately** during the salute — not
+  knocked over. So the thief **left the crowd** at that moment.
+- **Maple Farm was nearly lost this spring** to unpaid taxes — a motive is in the
+  air for anyone tied to the farm's money.
 
-_(Start asking: Who borrowed oven mitts today? Who came to this cookout more
-"prepared" than they should have been?)_
+_(Start asking: "Where were you during the flag salute? Who did you SEE slip away?"
+And: "How bad did the farm's money troubles really get — and who knew?")_
 
-**➡️ Now return to the Master Script for Investigation Time.**
+**➡️ Now return to the Master Script for Round 2.**
