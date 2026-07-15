@@ -1,0 +1,11 @@
+# WAT framework — never commit these
+.tmp/
+.env
+credentials.json
+token.json
+*.pyc
+__pycache__/
+
+# Personal cost profiles / client data (keep private)
+my_truck.json
+*_profile.json
