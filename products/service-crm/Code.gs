@@ -90,9 +90,26 @@ function onOpen() {
       .addItem('⏰  Turn ON daily automations', 'installDailyTriggers')
       .addItem('⏹️  Turn OFF daily automations', 'removeDailyTriggers'))
     .addSeparator()
+    .addItem('📲  Open the app (get link)', 'showWebAppLink')
     .addItem('📱  Create mobile lead-capture form', 'createLeadForm')
     .addItem('ℹ️  About / help', 'showAbout')
     .addToUi();
+}
+
+/** Shows the deployed web-app URL (or how to deploy it). */
+function showWebAppLink() {
+  const ui = SpreadsheetApp.getUi();
+  let url = '';
+  try { url = ScriptApp.getService().getUrl(); } catch (e) { url = ''; }
+  if (url) {
+    ui.alert('📲 Your CRM app', 'Open this on any device — bookmark it on your phone\'s home screen:\n\n' + url +
+      '\n\nIt runs your whole CRM as an app, backed by this sheet.', ui.ButtonSet.OK);
+  } else {
+    ui.alert('Deploy the app first (one time)',
+      'In the Apps Script editor: Deploy ▸ New deployment ▸ (gear) Web app ▸ Execute as "Me", ' +
+      'Access "Only myself" ▸ Deploy ▸ Authorize. Then this menu shows your app link. ' +
+      'Full steps are in the DEPLOY guide.', ui.ButtonSet.OK);
+  }
 }
 
 function showSidebar() {
@@ -586,115 +603,39 @@ function createEstimatePdf() { generateDoc_('ESTIMATE'); }
  * adds a Pay-now button (invoices), emails the client, and saves a copy to Drive.
  */
 function generateDoc_(kind) {
-  const isInv = (kind === 'INVOICE');
   const ui = SpreadsheetApp.getUi();
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheetName = isInv ? TABS.INVOICES : TABS.ESTIMATES;
+  const sheetName = (kind === 'INVOICE') ? TABS.INVOICES : TABS.ESTIMATES;
   const sh = ss.getSheetByName(sheetName);
-  const clients = ss.getSheetByName(TABS.CLIENTS);
   if (!sh) { ui.alert('Run setup first.'); return; }
   if (ss.getActiveSheet().getName() !== sheetName) {
     ui.alert('Go to the ' + sheetName + ' tab, click the row you want, then run this again.'); return;
   }
   const row = ss.getActiveRange().getRow();
   if (row < 2) { ui.alert('Click a row first.'); return; }
-  const v = sh.getRange(row, 1, 1, 6).getValues()[0]; // num, client, dateA, dateB(due/valid), amount, status
-  if (!v[1]) { ui.alert('This ' + kind.toLowerCase() + ' needs a Client.'); return; }
-
-  const num = (v[0] === '' || v[0] === null) ? 'draft' : v[0];
-  const biz = getSetting_(ss, 'Business name') || 'Your Business';
-  const bizPhone = getSetting_(ss, 'Business phone') || '';
-  const pay = getSetting_(ss, 'Invoice payment instructions') || '';
-  const payLink = String(getSetting_(ss, 'Payment link (Stripe/PayPal/Venmo — optional)') || '').trim();
-  const cur = String(getSetting_(ss, 'Currency symbol') || '$').trim() || '$';
-  const taxPct = Number(getSetting_(ss, 'Sales tax % (0 for none)')) || 0;
-  const tz = Session.getScriptTimeZone();
-  const fmtD = d => (d instanceof Date) ? Utilities.formatDate(d, tz, 'MMM d, yyyy') : '';
-  const money = n => cur + (Number(n) || 0).toFixed(2);
-
-  // Optional line items matched by number. Itemized docs get tax; a single typed
-  // Amount is treated as the final total (no tax applied) to avoid double-taxing on re-run.
-  const items = lineItemsFor_(ss, v[0]);
-  let subtotal = 0, tax = 0, rowsHtml = '';
-  if (items.length) {
-    items.forEach(function (it) {
-      const lt = it.qty * it.rate; subtotal += lt;
-      rowsHtml += '<tr><td style="padding:9px;border-bottom:1px solid #eee">' + it.desc + '</td>' +
-        '<td style="padding:9px;border-bottom:1px solid #eee;text-align:center">' + it.qty + '</td>' +
-        '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(it.rate) + '</td>' +
-        '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(lt) + '</td></tr>';
-    });
-    tax = subtotal * taxPct / 100;
-  } else {
-    subtotal = Number(v[4]) || 0;
-    if (!subtotal) { ui.alert('Add an Amount on this row, or add line items in the 🧾 Line Items tab (match #' + num + ').'); return; }
-    rowsHtml = '<tr><td style="padding:9px;border-bottom:1px solid #eee">Services rendered — ' + biz + '</td>' +
-      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:center">1</td>' +
-      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(subtotal) + '</td>' +
-      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(subtotal) + '</td></tr>';
+  const vals = sh.getRange(row, 1, 1, 6).getValues()[0]; // num, client, dateA, dateB, amount, status
+  if (!vals[1]) { ui.alert('This ' + kind.toLowerCase() + ' needs a Client.'); return; }
+  const comp = docComputed_(ss, kind, vals);   // shared with the web app (see Api.gs)
+  if (!comp.items.length && !comp.subtotal) {
+    ui.alert('Add an Amount on this row, or add line items in the 🧾 Line Items tab (match #' + (vals[0] || 'draft') + ').'); return;
   }
-  const total = subtotal + tax;
-
-  // client email
-  let email = '';
-  const cData = clients ? clients.getDataRange().getValues() : [];
-  for (let i = 1; i < cData.length; i++) if (String(cData[i][0]).trim().toLowerCase() === String(v[1]).trim().toLowerCase()) email = String(cData[i][2]).trim();
-
-  const title = isInv ? 'INVOICE' : 'ESTIMATE';
-  const dateBLabel = isInv ? 'Due' : 'Valid until';
-  const totalsRows =
-    (tax > 0 ?
-      '<tr><td colspan="3" style="padding:6px 9px;text-align:right">Subtotal</td><td style="padding:6px 9px;text-align:right">' + money(subtotal) + '</td></tr>' +
-      '<tr><td colspan="3" style="padding:6px 9px;text-align:right">Tax (' + taxPct + '%)</td><td style="padding:6px 9px;text-align:right">' + money(tax) + '</td></tr>' : '') +
-    '<tr><td colspan="3" style="padding:9px;text-align:right;font-weight:bold">' + (isInv ? 'Total Due' : 'Estimated Total') + '</td>' +
-    '<td style="padding:9px;text-align:right;font-weight:bold;font-size:18px;color:' + BRAND.accent2 + '">' + money(total) + '</td></tr>';
-
-  const payBtn = (isInv && payLink) ?
-    '<p style="text-align:center;margin:22px 0"><a href="' + payLink + '" style="background:' + BRAND.accent2 +
-    ';color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:bold">Pay now</a></p>' : '';
-
-  const html =
-    '<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#1a1c1f">' +
-    '<table style="width:100%;border-bottom:3px solid ' + BRAND.accent + ';margin-bottom:22px"><tr>' +
-    '<td style="padding-bottom:14px;vertical-align:top"><div style="font-size:24px;font-weight:bold">' + biz + '</div>' +
-    (bizPhone ? '<div style="color:#52565c">' + bizPhone + '</div>' : '') + '</td>' +
-    '<td style="padding-bottom:14px;text-align:right;vertical-align:top">' +
-    '<div style="font-size:28px;font-weight:bold;color:' + BRAND.accent + '">' + title + '</div>' +
-    '<div style="color:#52565c">#' + num + '</div></td></tr></table>' +
-    '<table style="width:100%;margin-bottom:20px"><tr>' +
-    '<td><b>' + (isInv ? 'Bill to' : 'Prepared for') + ':</b><br>' + v[1] + (email ? '<br>' + email : '') + '</td>' +
-    '<td style="text-align:right"><b>Issued:</b> ' + fmtD(v[2]) + '<br><b>' + dateBLabel + ':</b> ' + fmtD(v[3]) + '</td></tr></table>' +
-    '<table style="width:100%;border-collapse:collapse;margin-bottom:6px">' +
-    '<tr style="background:#1a1c1f;color:#fff"><th style="text-align:left;padding:9px">Description</th>' +
-    '<th style="padding:9px">Qty</th><th style="text-align:right;padding:9px">Rate</th><th style="text-align:right;padding:9px">Amount</th></tr>' +
-    rowsHtml + totalsRows + '</table>' + payBtn +
-    (pay && isInv ? '<div style="background:' + BRAND.soft + ';padding:14px;border-radius:8px"><b>Payment:</b> ' + pay + '</div>' : '') +
-    '<p style="color:#52565c;margin-top:20px">' + (isInv ? 'Thank you for your business!' :
-      'This estimate is for your review — reply to accept and we\'ll get you scheduled.') + '</p></div>';
-
-  const fname = (isInv ? 'Invoice' : 'Estimate') + '-' + num + '-' + String(v[1]).replace(/\s+/g, '') + '.pdf';
-  const pdf = Utilities.newBlob(html, 'text/html', 'doc.html').getAs('application/pdf').setName(fname);
-
-  // Keep the Amount column in sync with the computed total so dashboards stay accurate.
-  sh.getRange(row, 5).setValue(total);
-
+  const pdf = docPdfBlob_(kind, vals, docHtml_(ss, kind, vals, comp));
+  sh.getRange(row, 5).setValue(comp.total);   // keep Amount synced to the computed total
+  const email = docClientEmail_(ss, vals[1]);
   if (email) {
-    const resp = ui.alert('Email ' + kind.toLowerCase() + '?', 'Email this ' + kind.toLowerCase() + ' PDF to ' + v[1] + ' at ' + email + '?', ui.ButtonSet.YES_NO);
+    const resp = ui.alert('Email ' + kind.toLowerCase() + '?', 'Email this ' + kind.toLowerCase() + ' PDF to ' + vals[1] + ' at ' + email + '?', ui.ButtonSet.YES_NO);
     if (resp === ui.Button.YES) {
-      MailApp.sendEmail({ to: email, subject: title.charAt(0) + title.slice(1).toLowerCase() + ' #' + num + ' from ' + biz,
-        htmlBody: 'Hi ' + String(v[1]).split(' ')[0] + ',<br><br>Please find your ' + kind.toLowerCase() + ' attached. ' +
-          (isInv && payLink ? 'Pay online here: ' + payLink + '<br>' : '') + (isInv && pay ? pay : '') +
-          '<br><br>Thank you!<br>' + biz, attachments: [pdf] });
+      docEmail_(ss, kind, vals, pdf, email);
       sh.getRange(row, 6).setValue('Sent');
       DriveApp.createFile(pdf);
-      ui.alert('✅ ' + title.charAt(0) + title.slice(1).toLowerCase() + ' emailed to ' + v[1] + ' and marked Sent. A copy is saved in your Drive.');
+      ui.alert('✅ ' + niceKind_(kind) + ' emailed to ' + vals[1] + ' and marked Sent. A copy is saved in your Drive.');
     } else {
       DriveApp.createFile(pdf);
       ui.alert('Saved the ' + kind.toLowerCase() + ' PDF to your Drive (not emailed).');
     }
   } else {
     DriveApp.createFile(pdf);
-    ui.alert('No email on file for ' + v[1] + ' (add one in 👥 Clients to email directly). Saved the PDF to your Drive instead.');
+    ui.alert('No email on file for ' + vals[1] + ' (add one in 👥 Clients to email directly). Saved the PDF to your Drive instead.');
   }
 }
 

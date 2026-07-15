@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<style>
+  :root{
+    --accent:#8f5f22; --accent-lite:#b8823a; --dark:#1a1c1f; --ink:#1a1c1f; --soft:#f3f0ea;
+    --line:#e4dccd; --muted:#6b6459; --good:#3f7d55; --warn:#c0492b; --bg:#faf8f4; --card:#fff;
+    --blue:#2a4d80; --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+  .app{max-width:640px;margin:0 auto;min-height:100vh;padding-bottom:76px}
+  /* top bar */
+  .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--accent),#6e4a1a);color:#fff;
+    padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+  .topbar h1{font-size:17px;font-weight:800;letter-spacing:-.2px}
+  .topbar .sub{font-size:11.5px;opacity:.85}
+  .iconbtn{background:rgba(255,255,255,.18);border:0;color:#fff;width:36px;height:36px;border-radius:10px;font-size:16px;cursor:pointer}
+  /* screens */
+  .screen{display:none;padding:14px}
+  .screen.on{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:.3}to{opacity:1}}
+  h2.sec{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800;margin:18px 4px 10px}
+  /* metric tiles */
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+  .tile .l{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .tile .v{font-size:26px;font-weight:800;color:var(--ink);margin-top:4px;letter-spacing:-.5px}
+  .tile.good .v{color:var(--good)}
+  /* cards & lists */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .list-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+  .list-item:active{border-color:var(--accent-lite)}
+  .list-item .name{font-weight:700}
+  .list-item .meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .pill{font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap}
+  .p-new{background:#e8eef7;color:#2a4d80}.p-contacted{background:#fff3d6;color:#8a6d1a}.p-quoted{background:#ffe4c4;color:#8f5f22}
+  .p-won,.p-accepted,.p-paid,.p-done{background:#d8efdf;color:#2c6b42}.p-lost,.p-declined,.p-overdue,.p-cancelled{background:#f5d9d3;color:#a33}
+  .p-draft{background:#eeeeee;color:#555}.p-sent{background:#fff3d6;color:#8a6d1a}.p-scheduled{background:#e8eef7;color:#2a4d80}.p-inprogress{background:#fff3d6;color:#8a6d1a}
+  .muted{color:var(--muted);font-size:13px}
+  .empty{color:var(--muted);text-align:center;padding:26px 10px;font-style:italic}
+  /* buttons */
+  .btn{display:block;width:100%;border:0;border-radius:999px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;
+    background:linear-gradient(180deg,var(--accent),#6e4a1a);color:#fff;margin-top:10px;text-align:center;text-decoration:none}
+  .btn:active{filter:brightness(1.1)}
+  .btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .btn.sm{width:auto;display:inline-block;padding:9px 16px;font-size:13px;margin:0}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .btnrow .btn{flex:1;margin-top:0}
+  /* forms */
+  label{display:block;font-weight:700;font-size:12.5px;margin:12px 0 4px;color:var(--ink)}
+  input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff;font-family:inherit}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(143,95,34,.25)}
+  .two{display:flex;gap:8px}.two>div{flex:1}
+  /* FAB */
+  .fab{position:fixed;right:calc(50% - 320px + 16px);bottom:88px;z-index:25;width:56px;height:56px;border-radius:50%;
+    background:linear-gradient(180deg,var(--accent),#6e4a1a);color:#fff;border:0;font-size:26px;box-shadow:0 6px 18px rgba(143,95,34,.45);cursor:pointer}
+  @media(max-width:672px){.fab{right:16px}}
+  /* bottom nav */
+  .nav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid var(--line);
+    display:flex;max-width:640px;margin:0 auto}
+  .nav button{flex:1;background:none;border:0;padding:9px 0 8px;font-size:10.5px;color:var(--muted);cursor:pointer;font-weight:700}
+  .nav button .i{display:block;font-size:19px;margin-bottom:1px}
+  .nav button.on{color:var(--accent)}
+  /* line item builder */
+  .lirow{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+  .lirow select{flex:2}.lirow input{flex:1;min-width:0}
+  .lirow .x{flex:0 0 auto;width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--warn);font-size:16px;cursor:pointer}
+  .totalbar{display:flex;justify-content:space-between;font-weight:800;font-size:17px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+  .totalbar .tax{font-weight:600;font-size:13px;color:var(--muted)}
+  /* modal */
+  .overlay{position:fixed;inset:0;z-index:40;background:rgba(20,22,25,.5);display:none;align-items:flex-end;justify-content:center}
+  .overlay.on{display:flex}
+  .sheet{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px 26px}
+  .sheet h3{font-size:18px;font-weight:800;margin-bottom:4px}
+  .sheet .close{float:right;background:none;border:0;font-size:22px;color:var(--muted);cursor:pointer}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:60;background:var(--dark);color:#fff;
+    padding:11px 18px;border-radius:999px;font-size:13.5px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%}
+  .toast.on{opacity:1}
+  .spin{text-align:center;padding:40px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div><h1 id="bizName">Service Pro CRM</h1><div class="sub" id="screenName">Home</div></div>
+    <button class="iconbtn" onclick="refreshAll()" title="Refresh">⟳</button>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen on" id="s-home">
+    <div id="homeBody"><div class="spin">Loading…</div></div>
+  </div>
+
+  <!-- LEADS -->
+  <div class="screen" id="s-leads">
+    <input id="leadSearch" placeholder="Search leads…" oninput="renderLeads()">
+    <div id="leadsBody" style="margin-top:10px"></div>
+  </div>
+
+  <!-- QUOTES -->
+  <div class="screen" id="s-quotes">
+    <button class="btn" onclick="openQuoteBuilder()">+ New estimate</button>
+    <div id="quotesBody" style="margin-top:12px"></div>
+  </div>
+
+  <!-- INVOICES -->
+  <div class="screen" id="s-invoices">
+    <div id="invoicesBody"></div>
+  </div>
+
+  <!-- MORE -->
+  <div class="screen" id="s-more">
+    <h2 class="sec">More</h2>
+    <div class="list-item" onclick="nav('jobs')"><div class="row"><div><div class="name">🗓️ Jobs</div><div class="meta">Schedule & track work</div></div><span>›</span></div></div>
+    <div class="list-item" onclick="nav('clients')"><div class="row"><div><div class="name">👥 Clients</div><div class="meta">Your customer book</div></div><span>›</span></div></div>
+    <div class="list-item" onclick="nav('settings')"><div class="row"><div><div class="name">⚙️ Settings</div><div class="meta">Business info, services, tax, links</div></div><span>›</span></div></div>
+  </div>
+
+  <!-- JOBS -->
+  <div class="screen" id="s-jobs">
+    <button class="btn" onclick="openJobForm()">+ New job</button>
+    <div id="jobsBody" style="margin-top:12px"></div>
+  </div>
+
+  <!-- CLIENTS -->
+  <div class="screen" id="s-clients">
+    <div id="clientsBody"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="screen" id="s-settings">
+    <div id="settingsBody"></div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="fabAction()">+</button>
+
+<div class="nav">
+  <button class="on" data-s="home" onclick="nav('home')"><span class="i">🏠</span>Home</button>
+  <button data-s="leads" onclick="nav('leads')"><span class="i">🎯</span>Leads</button>
+  <button data-s="quotes" onclick="nav('quotes')"><span class="i">📄</span>Quotes</button>
+  <button data-s="invoices" onclick="nav('invoices')"><span class="i">💵</span>Invoices</button>
+  <button data-s="more" onclick="nav('more')"><span class="i">⋯</span>More</button>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- state + api ---------------- */
+var S={settings:{},services:[],dashboard:null,leads:[],clients:[],jobs:[],quotes:[],invoices:[],statuses:{}};
+var CUR='$';
+function api(fn){
+  var args=[].slice.call(arguments,1);
+  return new Promise(function(res,rej){
+    if(typeof google==='undefined'||!google.script||!google.script.run){ return res(mock(fn,args)); }
+    var r=google.script.run.withSuccessHandler(res).withFailureHandler(function(e){rej(e);});
+    r[fn].apply(r,args);
+  });
+}
+function money(n){ n=Number(n)||0; return CUR+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function money0(n){ n=Number(n)||0; return CUR+Math.round(n).toLocaleString(); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function pill(status){ var k=String(status||'').toLowerCase().replace(/[^a-z]/g,''); return '<span class="pill p-'+k+'">'+esc(status||'')+'</span>'; }
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},2600); }
+function busy(msg){ toast(msg||'Working…'); }
+
+/* ---------------- nav ---------------- */
+var CUR_SCREEN='home';
+var TITLES={home:'Home',leads:'Leads',quotes:'Estimates',invoices:'Invoices',more:'More',jobs:'Jobs',clients:'Clients',settings:'Settings'};
+function nav(s){
+  CUR_SCREEN=s;
+  document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('on');});
+  document.getElementById('s-'+s).classList.add('on');
+  document.querySelectorAll('.nav button').forEach(function(b){ b.classList.toggle('on', b.dataset.s===s); });
+  document.getElementById('screenName').textContent=TITLES[s]||'';
+  var fab=document.getElementById('fab'); fab.style.display=(['leads','quotes','jobs'].indexOf(s)>-1)?'block':'none';
+  window.scrollTo(0,0);
+  if(s==='home')loadHome();
+  if(s==='leads')loadLeads();
+  if(s==='quotes')loadQuotes();
+  if(s==='invoices')loadInvoices();
+  if(s==='jobs')loadJobs();
+  if(s==='clients')loadClients();
+  if(s==='settings')renderSettings();
+}
+function fabAction(){ if(CUR_SCREEN==='leads')openLeadForm(); else if(CUR_SCREEN==='quotes')openQuoteBuilder(); else if(CUR_SCREEN==='jobs')openJobForm(); }
+
+/* ---------------- modal ---------------- */
+function openModal(html){ document.getElementById('sheet').innerHTML=html; document.getElementById('overlay').classList.add('on'); }
+function closeModal(){ document.getElementById('overlay').classList.remove('on'); }
+
+/* ---------------- boot ---------------- */
+function boot(){
+  api('apiBootstrap').then(function(b){
+    if(!b||!b.ready){ document.getElementById('homeBody').innerHTML='<div class="empty">Run <b>⚡ CRM ▸ Set up / rebuild CRM</b> in the sheet first, then reload.</div>'; return; }
+    S.settings=b.settings||{}; S.services=b.services||[]; S.dashboard=b.dashboard;
+    S.statuses={lead:b.leadStatuses,job:b.jobStatuses,inv:b.invStatuses,est:b.estStatuses,repeat:b.repeatOpts};
+    CUR=(S.settings.currency||'$').trim()||'$';
+    if(S.settings.businessName) document.getElementById('bizName').textContent=S.settings.businessName;
+    renderHome();
+  }).catch(function(e){ document.getElementById('homeBody').innerHTML='<div class="empty">Could not load: '+esc(e&&e.message||e)+'</div>'; });
+}
+function refreshAll(){ busy('Refreshing…'); S.dashboard=null; boot(); nav(CUR_SCREEN); }
+
+/* ---------------- HOME ---------------- */
+function loadHome(){ if(!S.dashboard){ api('apiDashboard').then(function(d){S.dashboard=d;renderHome();}); } else renderHome(); }
+function renderHome(){
+  var d=S.dashboard; if(!d){ return; }
+  var h='';
+  h+='<div class="tiles">'+
+     tile('New leads · 7d',d.newLeads)+tile('Open pipeline',money0(d.pipeline))+
+     tile('Jobs this week',d.jobsWeek)+tile('Revenue · mo',money0(d.revMonth))+'</div>';
+  h+='<div class="tiles" style="margin-top:10px">'+tileGood('Win rate',d.winRate+'%')+tileGood('Lifetime',money0(d.revLife))+'</div>';
+  h+='<div class="btnrow"><button class="btn" onclick="openLeadForm()">+ Lead</button><button class="btn" onclick="openQuoteBuilder()">+ Estimate</button></div>';
+  h+='<h2 class="sec">🔔 Follow-ups due</h2>';
+  if(d.followUps&&d.followUps.length){ d.followUps.forEach(function(f){
+    h+='<div class="list-item"><div class="row"><div><div class="name">'+esc(f.name)+'</div><div class="meta">'+esc(f.phone||'—')+' · due '+esc(f.due)+'</div></div>'+pill(f.status)+'</div></div>';
+  }); } else h+='<div class="empty">All caught up 🎉</div>';
+  h+='<h2 class="sec">📅 This week\'s jobs</h2>';
+  if(d.weekJobs&&d.weekJobs.length){ d.weekJobs.forEach(function(j){
+    h+='<div class="list-item"><div class="row"><div><div class="name">'+esc(j.client)+'</div><div class="meta">'+esc(j.date)+' · '+esc(j.service||'')+'</div></div>'+pill(j.status)+'</div></div>';
+  }); } else h+='<div class="empty">No jobs scheduled this week</div>';
+  document.getElementById('homeBody').innerHTML=h;
+}
+function tile(l,v){ return '<div class="tile"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>'; }
+function tileGood(l,v){ return '<div class="tile good"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>'; }
+
+/* ---------------- LEADS ---------------- */
+function loadLeads(){ document.getElementById('leadsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListLeads').then(function(l){S.leads=l||[];renderLeads();}); }
+function renderLeads(){
+  var q=(document.getElementById('leadSearch').value||'').toLowerCase();
+  var list=S.leads.filter(function(l){ return !q || (l.name+' '+l.phone+' '+l.service).toLowerCase().indexOf(q)>-1; });
+  if(!list.length){ document.getElementById('leadsBody').innerHTML='<div class="empty">No leads yet. Tap + to add one.</div>'; return; }
+  var h=''; list.forEach(function(l){
+    h+='<div class="list-item" onclick="openLead('+l.row+')"><div class="row"><div><div class="name">'+esc(l.name)+'</div>'+
+       '<div class="meta">'+esc(l.phone||'—')+(l.service?' · '+esc(l.service):'')+(l.value?' · '+money0(l.value):'')+'</div></div>'+pill(l.status)+'</div></div>';
+  });
+  document.getElementById('leadsBody').innerHTML=h;
+}
+function openLeadForm(){
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>New lead</h3>'+
+    field('Name *','ld_name','')+ '<div class="two"><div>'+field('Phone','ld_phone','')+'</div><div>'+field('Est. value','ld_value','')+'</div></div>'+
+    field('Email','ld_email','')+ serviceSelect('ld_service')+
+    '<button class="btn" onclick="saveLead()">Add lead</button>');
+}
+function saveLead(){
+  var name=val('ld_name'); if(!name){toast('Name is required');return;}
+  busy('Adding…');
+  api('apiAddLead',{name:name,phone:val('ld_phone'),email:val('ld_email'),service:val('ld_service'),value:val('ld_value')})
+    .then(function(r){ closeModal(); toast('✅ Lead added'); S.dashboard=null; loadLeads(); });
+}
+function openLead(row){
+  var l=S.leads.filter(function(x){return x.row===row;})[0]; if(!l)return;
+  var actions=(S.statuses.lead||[]).map(function(st){ return '<button class="btn sm sec" onclick="setLeadStatus('+row+',\''+st+'\')">'+st+'</button>'; }).join(' ');
+  var tel=l.phone?String(l.phone).replace(/[^0-9+]/g,''):'';
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(l.name)+'</h3>'+
+    '<div class="muted">'+esc(l.phone||'—')+(l.email?' · '+esc(l.email):'')+'</div>'+
+    '<div class="muted" style="margin-top:2px">'+esc(l.service||'')+(l.value?' · '+money0(l.value):'')+' · '+esc(l.status)+'</div>'+
+    (tel?'<div class="btnrow"><a class="btn sec" href="tel:'+tel+'">Call</a><a class="btn sec" href="sms:'+tel+'">Text</a></div>':'')+
+    '<button class="btn" onclick="quoteFromLead('+row+')">Create estimate</button>'+
+    '<h2 class="sec">Set status</h2><div class="btnrow" style="flex-wrap:wrap">'+actions+'</div>');
+}
+function setLeadStatus(row,st){ api('apiSetLeadStatus',row,st).then(function(){ closeModal(); toast('Status → '+st); S.dashboard=null; loadLeads(); }); }
+function quoteFromLead(row){ var l=S.leads.filter(function(x){return x.row===row;})[0]; closeModal(); openQuoteBuilder(l); }
+
+/* ---------------- QUOTE BUILDER ---------------- */
+var QLINES=[];
+function openQuoteBuilder(lead){
+  QLINES=[{service:'',qty:1,rate:''}];
+  var pre=lead||{};
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>New estimate</h3>'+
+    field('Client name *','q_client',pre.name||'')+
+    '<div class="two"><div>'+field('Email','q_email',pre.email||'')+'</div><div>'+field('Phone','q_phone',pre.phone||'')+'</div></div>'+
+    '<label>Line items</label><div id="qlines"></div>'+
+    '<button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
+    '<div class="totalbar"><span>Total <span class="tax" id="q_taxnote"></span></span><span id="q_total">'+money(0)+'</span></div>'+
+    '<button class="btn" onclick="createQuote(false)">Create estimate</button>'+
+    '<button class="btn sec" onclick="createQuote(true)">Create & send</button>');
+  renderQLines();
+}
+function renderQLines(){
+  var opts=serviceOptions();
+  var h=QLINES.map(function(l,i){
+    return '<div class="lirow">'+
+      '<select onchange="QLINES['+i+'].service=this.value">'+'<option value="">Service…</option>'+opts.map(function(s){return '<option'+(s===l.service?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select>'+
+      '<input type="number" inputmode="decimal" placeholder="Qty" value="'+(l.qty||'')+'" oninput="QLINES['+i+'].qty=this.value;calcQ()">'+
+      '<input type="number" inputmode="decimal" placeholder="Price" value="'+(l.rate||'')+'" oninput="QLINES['+i+'].rate=this.value;calcQ()">'+
+      '<button class="x" onclick="delQLine('+i+')">×</button></div>';
+  }).join('');
+  document.getElementById('qlines').innerHTML=h; calcQ();
+}
+function addQLine(){ QLINES.push({service:'',qty:1,rate:''}); renderQLines(); }
+function delQLine(i){ QLINES.splice(i,1); if(!QLINES.length)QLINES.push({service:'',qty:1,rate:''}); renderQLines(); }
+function calcQ(){
+  var sub=0; QLINES.forEach(function(l){ sub+=(Number(l.qty)||0)*(Number(l.rate)||0); });
+  var taxPct=Number(S.settings.taxPct)||0; var tax=sub*taxPct/100;
+  document.getElementById('q_total').textContent=money(sub+tax);
+  document.getElementById('q_taxnote').textContent=taxPct?('(incl '+taxPct+'% tax)'):'';
+}
+function createQuote(send){
+  var client=val('q_client'); if(!client){toast('Client name required');return;}
+  var lines=QLINES.filter(function(l){return l.service&&Number(l.rate)>0;});
+  if(!lines.length){toast('Add a line item with a price');return;}
+  busy('Creating…');
+  api('apiCreateEstimate',{client:client,email:val('q_email'),phone:val('q_phone'),validDays:14,lines:lines})
+   .then(function(r){
+     if(!r||!r.ok){toast(r&&r.msg||'Failed');return;}
+     if(send){ api('apiSendDoc','ESTIMATE',r.number).then(function(s){ closeModal(); toast(s&&s.emailed?'📧 Estimate #'+r.number+' sent':'Estimate #'+r.number+' created (no client email)'); S.dashboard=null; loadQuotes(); }); }
+     else { closeModal(); toast('Estimate #'+r.number+' created'); loadQuotes(); }
+   });
+}
+
+/* ---------------- QUOTES list + detail ---------------- */
+function loadQuotes(){ document.getElementById('quotesBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListDocs','ESTIMATE').then(function(l){S.quotes=l||[];renderDocs('quotesBody',S.quotes,'ESTIMATE');}); }
+function loadInvoices(){ document.getElementById('invoicesBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListDocs','INVOICE').then(function(l){S.invoices=l||[];renderDocs('invoicesBody',S.invoices,'INVOICE');}); }
+function renderDocs(el,list,kind){
+  if(!list.length){ document.getElementById(el).innerHTML='<div class="empty">'+(kind==='INVOICE'?'No invoices yet. Approve an estimate to create one.':'No estimates yet. Tap + to build one.')+'</div>'; return; }
+  var h=''; list.forEach(function(d){
+    h+='<div class="list-item" onclick="openDoc(\''+kind+'\','+JSON.stringify(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
+       '<div class="meta">'+money(d.amount)+' · '+esc(d.dateA||'draft')+'</div></div>'+pill(d.status)+'</div></div>';
+  });
+  document.getElementById(el).innerHTML=h;
+}
+function openDoc(kind,number){
+  var list=kind==='INVOICE'?S.invoices:S.quotes;
+  var d=list.filter(function(x){return String(x.number)===String(number);})[0]; if(!d)return;
+  api('apiGetDocLines',number).then(function(lines){
+    var items=(lines||[]).map(function(l){return '<div class="row" style="padding:4px 0"><span>'+esc(l.service)+' ×'+l.qty+'</span><span>'+money(l.qty*l.rate)+'</span></div>';}).join('')||'<div class="muted">No line items (uses amount '+money(d.amount)+')</div>';
+    var btns='';
+    if(kind==='ESTIMATE'){
+      btns='<button class="btn" onclick="sendDoc(\'ESTIMATE\','+JSON.stringify(number)+')">Send estimate</button>'+
+           '<button class="btn ghost" onclick="approve('+JSON.stringify(number)+')">Approve → create invoice</button>';
+    } else {
+      btns='<button class="btn" onclick="sendDoc(\'INVOICE\','+JSON.stringify(number)+')">Send invoice</button>'+
+           (d.status!=='Paid'?'<button class="btn sec" onclick="markPaid('+JSON.stringify(number)+')">Mark paid</button>':'');
+    }
+    openModal('<button class="close" onclick="closeModal()">×</button><h3>'+(kind==='INVOICE'?'Invoice':'Estimate')+' #'+esc(number)+'</h3>'+
+      '<div class="muted">'+esc(d.client)+' · '+esc(d.status)+'</div>'+
+      '<div class="card" style="margin-top:12px">'+items+'<div class="totalbar"><span>Total</span><span>'+money(d.amount)+'</span></div></div>'+
+      '<button class="btn sec" onclick="editLines(\''+kind+'\','+JSON.stringify(number)+')">Edit line items</button>'+btns);
+  });
+}
+function sendDoc(kind,number){ busy('Building PDF…'); api('apiSendDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive (no client email)'):(r&&r.msg||'Failed')); S.dashboard=null; kind==='INVOICE'?loadInvoices():loadQuotes(); }); }
+function approve(number){ busy('Approving…'); api('apiApproveEstimate',number).then(function(r){ closeModal(); if(r&&r.ok){toast('✅ Invoice #'+r.invoiceNumber+' draft + job created'); S.dashboard=null; nav('invoices');} else toast(r&&r.msg||'Failed'); }); }
+function markPaid(number){ api('apiMarkInvoicePaid',number).then(function(){ closeModal(); toast('💰 Marked paid'); S.dashboard=null; loadInvoices(); }); }
+function editLines(kind,number){
+  api('apiGetDocLines',number).then(function(lines){
+    QLINES=(lines&&lines.length)?lines.map(function(l){return {service:l.service,qty:l.qty,rate:l.rate};}):[{service:'',qty:1,rate:''}];
+    openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit line items · #'+esc(number)+'</h3>'+
+      '<div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
+      '<div class="totalbar"><span>Total <span class="tax" id="q_taxnote"></span></span><span id="q_total"></span></div>'+
+      '<button class="btn" onclick="saveLines(\''+kind+'\','+JSON.stringify(number)+')">Save</button>');
+    renderQLines();
+  });
+}
+function saveLines(kind,number){
+  var lines=QLINES.filter(function(l){return l.service&&Number(l.rate)>0;});
+  busy('Saving…');
+  api('apiSetDocLines',kind,number,lines).then(function(){ closeModal(); toast('Line items saved'); kind==='INVOICE'?loadInvoices():loadQuotes(); });
+}
+
+/* ---------------- JOBS ---------------- */
+function loadJobs(){ document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListJobs').then(function(l){S.jobs=l||[];renderJobs();}); }
+function renderJobs(){
+  if(!S.jobs.length){ document.getElementById('jobsBody').innerHTML='<div class="empty">No jobs yet. Tap + to add one.</div>'; return; }
+  var h=''; S.jobs.forEach(function(j){
+    h+='<div class="list-item" onclick="openJob('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div>'+
+       '<div class="meta">'+esc(j.date)+(j.service?' · '+esc(j.service):'')+' · '+money0(j.price)+(j.paid==='Yes'?' · paid':'')+'</div></div>'+pill(j.status)+'</div></div>';
+  });
+  document.getElementById('jobsBody').innerHTML=h;
+}
+function openJobForm(){
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>New job</h3>'+
+    field('Client *','j_client','')+ '<div class="two"><div>'+field('Date (M/D/YYYY)','j_date','')+'</div><div>'+field('Time (e.g. 2pm)','j_time','')+'</div></div>'+
+    serviceSelect('j_service')+ field('Price','j_price','')+
+    '<label>Repeat</label><select id="j_repeat">'+(S.statuses.repeat||['None']).map(function(r){return '<option>'+r+'</option>';}).join('')+'</select>'+
+    '<button class="btn" onclick="saveJob()">Add job</button>');
+}
+function saveJob(){
+  var client=val('j_client'); if(!client){toast('Client required');return;} busy('Adding…');
+  api('apiAddJob',{client:client,date:val('j_date'),time:val('j_time'),service:val('j_service'),price:val('j_price'),repeat:val('j_repeat')})
+   .then(function(){ closeModal(); toast('Job added'); S.dashboard=null; loadJobs(); });
+}
+function openJob(row){
+  var j=S.jobs.filter(function(x){return x.row===row;})[0]; if(!j)return;
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(j.client)+'</h3>'+
+    '<div class="muted">'+esc(j.date)+' · '+esc(j.service||'')+' · '+money(j.price)+'</div>'+
+    '<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+
+    (S.statuses.job||[]).map(function(st){return '<button class="btn sm sec" onclick="setJob('+row+',{status:\''+st+'\'})">'+st+'</button>';}).join(' ')+'</div>'+
+    '<div class="btnrow"><button class="btn" onclick="setJob('+row+',{paid:\'Yes\'})">Mark paid</button></div>');
+}
+function setJob(row,f){ api('apiSetJob',row,f).then(function(){ closeModal(); toast('Updated'); S.dashboard=null; loadJobs(); }); }
+
+/* ---------------- CLIENTS ---------------- */
+function loadClients(){ document.getElementById('clientsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListClients').then(function(l){S.clients=l||[];renderClients();}); }
+function renderClients(){
+  if(!S.clients.length){ document.getElementById('clientsBody').innerHTML='<div class="empty">No clients yet.</div>'; return; }
+  var h=''; S.clients.forEach(function(c){
+    var tel=c.phone?String(c.phone).replace(/[^0-9+]/g,''):'';
+    h+='<div class="list-item"><div class="row"><div><div class="name">'+esc(c.name)+'</div>'+
+       '<div class="meta">'+esc(c.phone||'—')+(c.email?' · '+esc(c.email):'')+'</div></div><div style="text-align:right"><div class="name">'+money0(c.totalSpent)+'</div><div class="meta">spent</div></div></div></div>';
+  });
+  document.getElementById('clientsBody').innerHTML=h;
+}
+
+/* ---------------- SETTINGS ---------------- */
+function renderSettings(){
+  var s=S.settings;
+  var h='<h2 class="sec">Business</h2>'+
+    field('Business name','set_businessName',s.businessName)+field('Owner email','set_ownerEmail',s.ownerEmail)+
+    field('Phone','set_phone',s.phone)+
+    '<div class="two"><div>'+field('Currency','set_currency',s.currency)+'</div><div>'+field('Sales tax %','set_taxPct',s.taxPct)+'</div></div>'+
+    field('Google review link','set_reviewLink',s.reviewLink)+
+    field('Payment instructions','set_payInstructions',s.payInstructions)+
+    field('Payment link (Pay-now button)','set_payLink',s.payLink)+
+    '<button class="btn" onclick="saveSettings()">Save settings</button>'+
+    '<h2 class="sec">Your services</h2><div class="muted" style="margin-bottom:8px">One per line — fills the Service dropdowns.</div>'+
+    '<textarea id="set_services" rows="7">'+esc((S.services||[]).join('\n'))+'</textarea>'+
+    '<button class="btn sec" onclick="saveServices()">Save services</button>';
+  document.getElementById('settingsBody').innerHTML=h;
+}
+function saveSettings(){
+  var keys=['businessName','ownerEmail','phone','currency','taxPct','reviewLink','payInstructions','payLink'];
+  var obj={}; keys.forEach(function(k){obj[k]=val('set_'+k);});
+  busy('Saving…');
+  api('apiSaveSettings',obj).then(function(){ S.settings=Object.assign(S.settings,obj); CUR=(obj.currency||'$').trim()||'$'; document.getElementById('bizName').textContent=obj.businessName||'Service Pro CRM'; toast('Settings saved'); });
+}
+function saveServices(){
+  var arr=(val('set_services')||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  api('apiSaveServices',arr).then(function(){ S.services=arr; toast('Services saved'); });
+}
+
+/* ---------------- form helpers ---------------- */
+function field(label,id,v){ return '<label>'+label+'</label><input id="'+id+'" value="'+esc(v==null?'':v)+'">'; }
+function val(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function serviceOptions(){ return S.services&&S.services.length?S.services:['Service']; }
+function serviceSelect(id){ return '<label>Service</label><select id="'+id+'"><option value="">— choose —</option>'+serviceOptions().map(function(s){return '<option>'+esc(s)+'</option>';}).join('')+'</select>'; }
+
+/* ---------------- mock (static preview only) ---------------- */
+function mock(fn,args){
+  if(fn==='apiBootstrap')return{ready:true,settings:{businessName:'Meridian Detailing',currency:'$',taxPct:8.25},services:['Full detail','Interior clean','Ceramic coat'],
+    leadStatuses:['New','Contacted','Quoted','Won','Lost'],jobStatuses:['Scheduled','In Progress','Done','Cancelled'],invStatuses:['Draft','Sent','Paid','Overdue'],estStatuses:['Draft','Sent','Accepted','Declined'],repeatOpts:['None','Weekly','Biweekly','Monthly'],
+    dashboard:{newLeads:14,pipeline:8450,jobsWeek:9,revMonth:6320,winRate:62,revLife:41900,followUps:[{name:'Marcus Bell',phone:'(555) 203-8871',status:'Quoted',due:'7/12'},{name:'Priya Shah',phone:'(555) 661-2049',status:'Contacted',due:'7/14'}],weekJobs:[{date:'7/16',client:'Dana Ruiz',service:'Full detail',status:'Scheduled'}]}};
+  if(fn==='apiDashboard')return mock('apiBootstrap').dashboard;
+  if(fn==='apiListLeads')return[{row:2,name:'Marcus Bell',phone:'(555) 203-8871',email:'',service:'Full detail',value:189,status:'Quoted',followUp:'7/12'},{row:3,name:'Priya Shah',phone:'(555) 661-2049',email:'p@x.com',service:'Interior clean',value:120,status:'New',followUp:'7/17'}];
+  if(fn==='apiListDocs')return args[0]==='INVOICE'?[{row:2,number:9001,client:'Dana Ruiz',dateA:'7/15',dateB:'7/29',amount:431.92,status:'Draft',items:3}]:[{row:2,number:1001,client:'Marcus Bell',dateA:'7/14',dateB:'7/28',amount:204.62,status:'Sent',items:2}];
+  if(fn==='apiListJobs')return[{row:2,date:'7/16',client:'Dana Ruiz',service:'Full detail',time:'2pm',status:'Scheduled',price:189,paid:'No',repeat:'None'}];
+  if(fn==='apiListClients')return[{row:2,name:'Dana Ruiz',phone:'(555) 442-9910',email:'dana@x.com',firstJob:'7/10',totalSpent:588}];
+  if(fn==='apiGetDocLines')return[{service:'Full detail',qty:1,rate:189}];
+  return {ok:true};
+}
+
+boot();
+</script>
+</body>
+</html>
