@@ -9,3 +9,6 @@ __pycache__/
 # Personal cost profiles / client data (keep private)
 my_truck.json
 *_profile.json
+
+# Client data — keep private
+clients/
