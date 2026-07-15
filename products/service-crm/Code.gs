@@ -32,12 +32,25 @@ const LEAD_STATUSES = ['New', 'Contacted', 'Quoted', 'Won', 'Lost'];
 const JOB_STATUSES  = ['Scheduled', 'In Progress', 'Done', 'Cancelled'];
 const INV_STATUSES  = ['Draft', 'Sent', 'Paid', 'Overdue'];
 
-/** Brand — change these to re-skin the entire CRM in seconds. */
+/* ─────────────────────────────────────────────────────────────────────
+ *  VARIANT CONFIG — this is the ONLY block that changes between niche
+ *  editions (Universal / Cleaning / Lawn Care / …). Swap these ~8 lines
+ *  and re-run setup to re-skin the entire product. See variants/ folder.
+ * ───────────────────────────────────────────────────────────────────── */
+const CONFIG = {
+  productName: 'Service Pro CRM',
+  accent:  '#b8823a',   // primary brand color (amber)
+  accent2: '#8f5f22',   // darker shade
+  // Suggested services shown as a dropdown (users can still type their own):
+  services: ['Consultation', 'Standard service', 'Premium service', 'Recurring service', 'Emergency call'],
+};
+
+/** Brand palette — accent is driven by CONFIG so variants re-skin cleanly. */
 const BRAND = {
   header:    '#1a1c1f',
   headerTxt: '#ffffff',
-  accent:    '#b8823a',
-  accent2:   '#8f5f22',
+  accent:    CONFIG.accent,
+  accent2:   CONFIG.accent2,
   good:      '#3f7d55',
   warn:      '#c0492b',
   soft:      '#f3f0ea',
@@ -116,6 +129,12 @@ function dropdown_(sh, col, values, firstRow, numRows) {
   sh.getRange(firstRow, col, numRows, 1).setDataValidation(rule);
 }
 
+/** Like dropdown_ but lets the user type a custom value too (suggestions only). */
+function suggestList_(sh, col, values, firstRow, numRows) {
+  const rule = SpreadsheetApp.newDataValidation().requireValueInList(values, true).setAllowInvalid(true).build();
+  sh.getRange(firstRow, col, numRows, 1).setDataValidation(rule);
+}
+
 function buildLeads_(ss) {
   const sh = getOrCreate_(ss, TABS.LEADS);
   const headers = ['Date Added', 'Name', 'Phone', 'Email', 'Source', 'Service', 'Est. Value', 'Status', 'Next Follow-up', 'Notes'];
@@ -125,6 +144,7 @@ function buildLeads_(ss) {
   const rows = 500;
   dropdown_(sh, 8, LEAD_STATUSES, 2, rows);
   dropdown_(sh, 5, ['Referral', 'Google', 'Facebook', 'Instagram', 'Flyer', 'Repeat', 'Other'], 2, rows);
+  suggestList_(sh, 6, CONFIG.services, 2, rows);   // Service — niche suggestions, custom allowed
   sh.getRange(2, 1, rows, 1).setNumberFormat('m/d/yyyy');
   sh.getRange(2, 9, rows, 1).setNumberFormat('m/d/yyyy');
   sh.getRange(2, 7, rows, 1).setNumberFormat('$#,##0');
@@ -148,6 +168,7 @@ function buildJobs_(ss) {
   sh.setColumnWidth(2, 160); sh.setColumnWidth(10, 240);
   const rows = 500;
   dropdown_(sh, 5, JOB_STATUSES, 2, rows);
+  suggestList_(sh, 3, CONFIG.services, 2, rows);   // Service — niche suggestions, custom allowed
   dropdown_(sh, 7, ['Yes', 'No'], 2, rows);
   dropdown_(sh, 8, ['Yes', 'No'], 2, rows);
   dropdown_(sh, 9, ['Yes', 'No'], 2, rows);
@@ -198,7 +219,7 @@ function buildDashboard_(ss) {
   sh.getCharts().forEach(ch => sh.removeChart(ch));
   sh.setHiddenGridlines(true);
   const L = "'" + TABS.LEADS + "'", J = "'" + TABS.JOBS + "'", I = "'" + TABS.INVOICES + "'";
-  sh.getRange('B2').setValue('⚡ SERVICE PRO CRM').setFontSize(20).setFontWeight('bold').setFontColor(BRAND.header);
+  sh.getRange('B2').setValue('⚡ ' + CONFIG.productName.toUpperCase()).setFontSize(20).setFontWeight('bold').setFontColor(BRAND.header);
   sh.getRange('B3').setValue('Your business at a glance — updates automatically.').setFontColor('#52565c');
 
   const tiles = [
@@ -281,7 +302,7 @@ function buildStartHere_(ss) {
   sh.getCharts().forEach(ch => sh.removeChart(ch));
   sh.setHiddenGridlines(true);
   sh.setColumnWidth(1, 24); sh.setColumnWidth(2, 40); sh.setColumnWidth(3, 640);
-  sh.getRange('B2').setValue('🚀 Welcome to Service Pro CRM').setFontSize(22).setFontWeight('bold').setFontColor(BRAND.header);
+  sh.getRange('B2').setValue('🚀 Welcome to ' + CONFIG.productName).setFontSize(22).setFontWeight('bold').setFontColor(BRAND.header);
   sh.getRange('B3').setValue('Everything runs from one sheet. Follow these 5 steps once and you\'re live (about 3 minutes).').setFontColor('#52565c');
   const steps = [
     'Open ⚙️ Settings and fill in your business name, email, phone, Google review link, and payment instructions.',
