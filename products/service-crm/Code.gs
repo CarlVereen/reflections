@@ -257,7 +257,7 @@ function buildEstimates_(ss) {
   const c = (t, bg, fc) => SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo(t).setBackground(bg).setFontColor(fc || BRAND.header).setRanges([statusRange]).build();
   rules.push(c('Draft', '#eeeeee'), c('Sent', '#fff3d6'), c('Accepted', '#d8efdf'), c('Declined', '#f5d9d3', BRAND.warn));
   sh.setConditionalFormatRules(rules);
-  sh.getRange('H1').setValue('Add line items for an estimate/invoice in the 🧾 Line Items tab (match the number).').setFontColor('#9a958b').setFontSize(9);
+  sh.getRange('H1').setValue('Add line items for an estimate/invoice in the 🧾 Line Items tab (match the number).').setFontColor('#6b6459').setFontSize(9);
 }
 
 function buildLineItems_(ss) {
@@ -275,7 +275,7 @@ function buildLineItems_(ss) {
     arr.push(['=IF(AND($C' + r + '<>"",$D' + r + '<>""),$C' + r + '*$D' + r + ',"")']);
   }
   sh.getRange(2, 5, rows, 1).setFormulas(arr).setNumberFormat('$#,##0.00');
-  sh.getRange('G1').setValue('Optional: itemize a doc here. Leave blank to just use a single Amount on the invoice/estimate.').setFontColor('#9a958b').setFontSize(9);
+  sh.getRange('G1').setValue('Optional: itemize a doc here. Leave blank to just use a single Amount on the invoice/estimate.').setFontColor('#6b6459').setFontSize(9);
 }
 
 function buildDashboard_(ss) {
@@ -297,10 +297,10 @@ function buildDashboard_(ss) {
   tiles.forEach((t, idx) => {
     const cc = cols[idx];
     sh.getRange(5, cc).setValue(t[0]).setFontColor('#52565c').setFontWeight('bold').setFontSize(10);
-    const v = sh.getRange(6, cc).setFormula(t[1]).setFontSize(24).setFontWeight('bold').setFontColor(BRAND.accent);
+    const v = sh.getRange(6, cc).setFormula(t[1]).setFontSize(20).setFontWeight('bold').setFontColor(BRAND.header);
     if (idx === 1 || idx === 3) v.setNumberFormat('$#,##0');
     sh.getRange(5, cc, 2, 1).setBackground(BRAND.soft);
-    sh.setColumnWidth(cc, 150);
+    sh.setColumnWidth(cc, 168);
     if (cc + 1 <= 9) sh.setColumnWidth(cc + 1, 24);
   });
 
@@ -318,7 +318,7 @@ function buildDashboard_(ss) {
 
   // 6-month revenue helper in columns R:S (off to the right; NOT hidden —
   // Google Sheets charts do not plot data in hidden columns).
-  sh.getRange(1, 18).setValue('Chart data ↓').setFontColor('#b7b1a4').setFontSize(9);
+  sh.getRange(1, 18).setValue('Chart data ↓').setFontColor('#6b6459').setFontSize(9);
   for (let m = 5; m >= 0; m--) {
     const r = 2 + (5 - m);
     sh.getRange(r, 18).setFormula('=TEXT(EOMONTH(TODAY(),-' + m + '),"mmm")');           // R: month label
@@ -552,10 +552,10 @@ function generateDoc_(kind) {
       '<tr><td colspan="3" style="padding:6px 9px;text-align:right">Subtotal</td><td style="padding:6px 9px;text-align:right">' + money(subtotal) + '</td></tr>' +
       '<tr><td colspan="3" style="padding:6px 9px;text-align:right">Tax (' + taxPct + '%)</td><td style="padding:6px 9px;text-align:right">' + money(tax) + '</td></tr>' : '') +
     '<tr><td colspan="3" style="padding:9px;text-align:right;font-weight:bold">' + (isInv ? 'Total Due' : 'Estimated Total') + '</td>' +
-    '<td style="padding:9px;text-align:right;font-weight:bold;font-size:18px;color:' + BRAND.accent + '">' + money(total) + '</td></tr>';
+    '<td style="padding:9px;text-align:right;font-weight:bold;font-size:18px;color:' + BRAND.accent2 + '">' + money(total) + '</td></tr>';
 
   const payBtn = (isInv && payLink) ?
-    '<p style="text-align:center;margin:22px 0"><a href="' + payLink + '" style="background:' + BRAND.accent +
+    '<p style="text-align:center;margin:22px 0"><a href="' + payLink + '" style="background:' + BRAND.accent2 +
     ';color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:bold">Pay now</a></p>' : '';
 
   const html =
@@ -625,8 +625,8 @@ function sendFollowUpDigest() {
   const email = getSetting_(ss, 'Owner email (for follow-up digest)') || Session.getActiveUser().getEmail();
   const biz = getSetting_(ss, 'Business name') || 'Your Business';
   const due = sidebarFollowUps();
-  if (!email) return;
-  if (!due.length) { MailApp.sendEmail(email, '⚡ ' + biz + ' — no follow-ups due today 🎉', 'All caught up. Nice work.'); return; }
+  if (!email) return '⚠ No owner email set in ⚙️ Settings.';
+  if (!due.length) { MailApp.sendEmail(email, '⚡ ' + biz + ' — no follow-ups due today 🎉', 'All caught up. Nice work.'); return '📧 Emailed you — nothing due, all caught up 🎉'; }
   let html = '<div style="font-family:Arial,sans-serif;max-width:600px"><h2 style="color:#1a1c1f">🔔 ' + due.length +
     ' follow-up' + (due.length > 1 ? 's' : '') + ' due — ' + biz + '</h2>' +
     '<table style="border-collapse:collapse;width:100%"><tr style="background:#1a1c1f;color:#fff">' +
@@ -645,17 +645,19 @@ function sendFollowUpDigest() {
   });
   html += '</table><p style="color:#52565c;font-size:13px">On your phone, tap "Text ›" to message a lead. Update their status in the CRM after you reach out.</p></div>';
   MailApp.sendEmail({ to: email, subject: '🔔 ' + due.length + ' follow-up(s) due — ' + biz, htmlBody: html });
+  return '📧 Emailed you ' + due.length + ' follow-up(s) to make today.';
 }
 
 function sendReviewRequests() {
   const ui = SpreadsheetApp.getUi();
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const jobs = ss.getSheetByName(TABS.JOBS), clients = ss.getSheetByName(TABS.CLIENTS);
-  if (!jobs || !clients) { ui.alert('Run setup first.'); return; }
+  if (!jobs || !clients) { ui.alert('Run setup first.'); return 'Run setup first.'; }
   const link = String(getSetting_(ss, 'Google review link (for review requests)') || '').trim();
   const biz = getSetting_(ss, 'Business name') || 'our business';
   if (!link || link.indexOf('your-review-link') > -1 || link.indexOf('http') !== 0) {
-    ui.alert('Add your Google review link first', 'Open ⚙️ Settings and paste your Google review link, then run this again.', ui.ButtonSet.OK); return;
+    ui.alert('Add your Google review link first', 'Open ⚙️ Settings and paste your Google review link, then run this again.', ui.ButtonSet.OK);
+    return '⚠ Add your Google review link in ⚙️ Settings first.';
   }
   const emailByName = clientEmailMap_(clients);
   const jData = jobs.getDataRange().getValues();
@@ -670,7 +672,7 @@ function sendReviewRequests() {
     const html = '<div style="font-family:Arial,sans-serif;max-width:520px;color:#1a1c1f">' +
       '<p>Hi ' + client.split(' ')[0] + ',</p><p>Thank you for choosing <b>' + biz + '</b> for ' + svc +
       '. It was a pleasure!</p><p>If you were happy, a quick Google review helps other local folks find us (30 seconds):</p>' +
-      '<p style="text-align:center;margin:26px 0"><a href="' + link + '" style="background:' + BRAND.accent +
+      '<p style="text-align:center;margin:26px 0"><a href="' + link + '" style="background:' + BRAND.accent2 +
       ';color:#fff;text-decoration:none;padding:13px 26px;border-radius:999px;font-weight:bold">⭐ Leave a review</a></p>' +
       '<p>Thanks again,<br>' + biz + '</p></div>';
     MailApp.sendEmail({ to: email, subject: 'Quick favor? ⭐ ' + biz, htmlBody: html });
@@ -680,6 +682,7 @@ function sendReviewRequests() {
   if (noEmail) msg += '\n\n' + noEmail + ' finished job(s) skipped — no client email. Add it in 👥 Clients.';
   if (!sent && !noEmail) msg += '\n\nNo new finished-and-paid jobs were waiting.';
   ui.alert(msg);
+  return msg;
 }
 
 function remindUpcomingJobs() {
@@ -904,7 +907,7 @@ function onLeadFormSubmit(e) {
 function showAbout() {
   SpreadsheetApp.getUi().alert('⚡ Service Pro CRM',
     'A complete CRM inside your own Google account — no subscriptions, no data leaving your Drive.\n\n' +
-    'Tabs: Start Here, Dashboard, Leads, Jobs, Clients, Invoices, Settings.\n\n' +
+    'Tabs: Start Here, Dashboard, Leads, Jobs, Clients, Estimates, Invoices, Line Items, Settings.\n\n' +
     'Highlights:\n• ⚡ Quick Actions side panel\n• 🧾 One-click PDF invoices, emailed to clients\n' +
     '• 🔔 Daily follow-up emails\n• ⭐ Automatic Google-review requests\n• 📅 Appointment reminders\n' +
     '• 🚩 Auto-flag overdue invoices\n• 📈 Revenue chart\n\n' +

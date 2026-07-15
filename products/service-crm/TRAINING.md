@@ -23,8 +23,10 @@ clients, and invoices**, and automatically emails **follow-up reminders**,
 | 🎯 **Leads** | Track every potential customer through New → Contacted → Quoted → Won/Lost. |
 | 🗓️ **Jobs** | Schedule and track work — booked, in progress, done, paid. |
 | 👥 **Clients** | Your customer address book. "Total Spent" adds itself up. |
-| 💵 **Invoices** | Log invoices; generate a PDF and email it in one click. |
-| ⚙️ **Settings** | Your business name, email, phone, review link, and payment note. |
+| 📄 **Estimates** | Log quotes; generate a branded PDF estimate in one click. |
+| 💵 **Invoices** | Log invoices; generate a PDF (with tax + Pay-now) and email it in one click. |
+| 🧾 **Line Items** | Optional: itemize an estimate/invoice (Description / Qty / Rate). |
+| ⚙️ **Settings** | Business info, currency, sales tax %, review link, payment note & link. |
 
 ## 3. First-time setup (do this once)
 
