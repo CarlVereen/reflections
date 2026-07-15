@@ -1,0 +1,85 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+  @page { size: Letter; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; color: #1a1c1f; }
+  .page { width: 8.5in; min-height: 11in; padding: 0 0 0.6in; }
+  .hero {
+    background: linear-gradient(135deg, #b8823a, #8f5f22); color: #fff;
+    padding: 0.7in 0.75in 0.6in;
+  }
+  .hero .kicker { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; opacity: .9; font-weight: 700; }
+  .hero h1 { font-size: 30px; margin: 8px 0 6px; letter-spacing: -.5px; }
+  .hero p { font-size: 14px; opacity: .95; max-width: 6in; }
+  .body { padding: 0.4in 0.75in 0; }
+  .cta {
+    display: block; text-align: center; text-decoration: none;
+    background: #1a1c1f; color: #fff; font-weight: 800; font-size: 17px;
+    padding: 16px; border-radius: 12px; margin: 6px 0 6px;
+  }
+  .cta small { display:block; font-weight:500; font-size:11px; opacity:.75; margin-top:4px; }
+  .linknote { text-align:center; font-size:11px; color:#52565c; margin-bottom: 22px; word-break: break-all; }
+  h2 { font-size: 16px; margin: 20px 0 12px; color: #1a1c1f; }
+  .accentbar { display:inline-block; width:26px; height:3px; background:#b8823a; vertical-align:middle; margin-right:8px; border-radius:2px; }
+  ol.steps { list-style: none; counter-reset: s; }
+  ol.steps li { counter-increment: s; position: relative; padding: 0 0 14px 40px; font-size: 13.5px; line-height: 1.5; }
+  ol.steps li::before {
+    content: counter(s); position: absolute; left: 0; top: -1px;
+    width: 26px; height: 26px; background: #f3f0ea; color: #8f5f22; font-weight: 800;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;
+  }
+  ol.steps b { color: #1a1c1f; }
+  .included { background: #f3f0ea; border-radius: 12px; padding: 18px 22px; margin-top: 6px; }
+  .included ul { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+  .included li { font-size: 12.5px; padding-left: 20px; position: relative; }
+  .included li::before { content: "✓"; position: absolute; left: 0; color: #3f7d55; font-weight: 800; }
+  .note { font-size: 12px; color: #52565c; background: #fff8ec; border: 1px solid #f0dcb8; border-radius: 10px; padding: 12px 16px; margin-top: 20px; }
+  .support { margin-top: 24px; padding-top: 16px; border-top: 1px solid #e4dccd; font-size: 12.5px; color: #52565c; }
+  .support b { color: #1a1c1f; }
+  .foot { text-align: center; font-size: 10.5px; color: #9a958b; margin-top: 22px; }
+</style></head>
+<body>
+<div class="page">
+  <div class="hero">
+    <div class="kicker">⚡ Your download is ready</div>
+    <h1>Welcome to Service Pro CRM</h1>
+    <p>Thank you for your purchase! You're about 5 minutes away from running your whole service business from one Google Sheet. Let's get you set up.</p>
+  </div>
+  <div class="body">
+    <a class="cta" href="{{COPY_LINK}}">👉 Click here to get your CRM
+      <small>Opens Google Sheets — then choose “Make a copy”</small></a>
+    <div class="linknote">Button not working? Paste this into your browser:<br>{{COPY_LINK}}</div>
+
+    <h2><span class="accentbar"></span>Set up in 5 minutes</h2>
+    <ol class="steps">
+      <li>Open the link above and click <b>File ▸ Make a copy</b>. The copy is now <b>yours</b> — private and editable, in your own Google Drive.</li>
+      <li>Open the <b>⚙️ Settings</b> tab and fill in your business name, email, phone, Google review link, and payment note.</li>
+      <li>Reload the sheet. A <b>⚡ CRM</b> menu appears at the top. Click <b>⚡ CRM ▸ Set up / rebuild CRM</b> (approve the one-time Google authorization — it's your own copy).</li>
+      <li>Click <b>⚡ CRM ▸ Open Quick Actions panel</b> — your daily command center. Add your first lead right there.</li>
+      <li>Turn on autopilot: <b>⚡ CRM ▸ Automations ▸ Turn ON daily automations</b> for automatic follow-ups, appointment reminders, and review requests.</li>
+    </ol>
+
+    <h2><span class="accentbar"></span>What's included</h2>
+    <div class="included">
+      <ul>
+        <li>Live dashboard + revenue chart</li>
+        <li>Color-coded lead pipeline</li>
+        <li>Quick Actions side panel</li>
+        <li>One-click PDF invoices</li>
+        <li>Automatic follow-up emails</li>
+        <li>Google-review request emails</li>
+        <li>Appointment reminders</li>
+        <li>Client book with auto totals</li>
+      </ul>
+    </div>
+
+    <div class="note"><b>Tip:</b> Works on your phone too — install the Google Sheets app and sign in. Your CRM is right there.</div>
+
+    <div class="support">
+      <b>Need a hand?</b> Reply to your Etsy order message and we'll help you get running — usually same day.
+      Full user manual and quick tips are included on the <b>🚀 Start Here</b> tab inside your CRM.
+    </div>
+
+    <div class="foot">Not affiliated with Google. Requires a free Google account. © Service Pro CRM.</div>
+  </div>
+</div>
+</body></html>
