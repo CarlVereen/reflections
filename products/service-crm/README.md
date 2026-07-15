@@ -15,7 +15,7 @@ This is the **product master**. Each sale is a *copy* of the finished sheet.
 |-----|--------------|
 | 📊 **Dashboard** | Live KPIs — new leads (7 days), open pipeline value, jobs this week, revenue this month, win rate, lifetime revenue, a **follow-ups-due** list, and a 6-month revenue chart. Auto-updates. |
 | 🎯 **Leads** | Pipeline with color-coded statuses (New → Contacted → Quoted → Won/Lost), estimated value, and follow-up dates that turn **red when overdue**. |
-| 🗓️ **Jobs** | Scheduled work with status, price, paid flag, and a **Repeat** column (weekly/biweekly/monthly recurring). |
+| 🗓️ **Jobs** | Scheduled work with status, price, paid flag, a **Repeat** column (recurring), and a **Photos** link → add to Google Calendar or create a before/after photo folder in one click. |
 | 👥 **Clients** | Contact book; **Total Spent auto-calculates** from paid jobs. |
 | 📄 **Estimates** | Quote log (Draft/Sent/Accepted/Declined) → one-click branded PDF. |
 | 💵 **Invoices** | Invoice log (Draft/Sent/Paid/Overdue) → one-click branded PDF with tax + Pay-now. |
@@ -26,6 +26,7 @@ This is the **product master**. Each sale is a *copy* of the finished sheet.
 - **⚡ Quick Actions panel** — add leads, see follow-ups, one-click sends.
 - **Estimates & invoices** — itemized branded PDFs with sales tax and a Pay-now button, emailed to the client.
 - **Recurring jobs** — `rollForwardRecurringJobs` auto-creates the next visit when a recurring job is done.
+- **Google Calendar + photos** — `addJobToCalendar` puts a job on the owner's phone calendar; `createJobPhotoFolder` makes a shareable before/after Drive folder per job.
 - **Review requests, follow-up digest (with tap-to-text links), appointment reminders, overdue-invoice flagging** — all on a daily-trigger autopilot.
 - **Mobile lead-capture Google Form** — `createLeadForm` builds a phone-friendly form that feeds the Leads tab.
 

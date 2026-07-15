@@ -74,6 +74,9 @@ function onOpen() {
       .addItem('➕  Add a lead', 'addLead')
       .addItem('📅  Schedule a job from selected lead', 'scheduleJobFromLead')
       .addItem('✅  Convert selected lead → client', 'convertLeadToClient'))
+    .addSubMenu(SpreadsheetApp.getUi().createMenu('Jobs')
+      .addItem('📆  Add selected job to Google Calendar', 'addJobToCalendar')
+      .addItem('📸  Create photo folder for selected job', 'createJobPhotoFolder'))
     .addSubMenu(SpreadsheetApp.getUi().createMenu('Invoices & estimates')
       .addItem('📄  Create & email estimate (selected row)', 'createEstimatePdf')
       .addItem('🧾  Create & email invoice (selected row)', 'createInvoicePdf')
@@ -190,10 +193,10 @@ function buildLeads_(ss) {
 function buildJobs_(ss) {
   const sh = getOrCreate_(ss, TABS.JOBS);
   const headers = ['Job Date', 'Client', 'Service', 'Scheduled Time', 'Status', 'Price', 'Paid?',
-                   'Review Sent?', 'Reminder Sent?', 'Notes', 'Repeat', 'Rolled?'];
+                   'Review Sent?', 'Reminder Sent?', 'Notes', 'Repeat', 'Rolled?', 'Photos'];
   header_(sh, headers);
   sh.setColumnWidths(1, headers.length, 118);
-  sh.setColumnWidth(2, 160); sh.setColumnWidth(10, 220);
+  sh.setColumnWidth(2, 160); sh.setColumnWidth(10, 220); sh.setColumnWidth(13, 240);
   const rows = 500;
   dropdown_(sh, 5, JOB_STATUSES, 2, rows);
   suggestList_(sh, 3, CONFIG.services, 2, rows);   // Service — niche suggestions, custom allowed
@@ -478,6 +481,59 @@ function convertLeadToClient() {
   upsertClient_(ss, v[1], v[2], v[3], v[9]);   // dedupes if the client already exists
   leads.getRange(row, 8).setValue('Won'); leads.getRange(row, 9).setValue('');
   ui.alert('🎉 "' + v[1] + '" is now a client.');
+}
+
+/* ========================= JOBS: CALENDAR & PHOTOS =============== */
+
+/** Push the selected Job row to the owner's Google Calendar (their phone's day view). */
+function addJobToCalendar() {
+  const ui = SpreadsheetApp.getUi();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const jobs = ss.getSheetByName(TABS.JOBS);
+  if (!jobs) { ui.alert('Run setup first.'); return; }
+  if (ss.getActiveSheet().getName() !== TABS.JOBS) { ui.alert('Go to the 🗓️ Jobs tab, click the job row, then run this again.'); return; }
+  const row = ss.getActiveRange().getRow();
+  if (row < 2) { ui.alert('Click a job row first.'); return; }
+  const v = jobs.getRange(row, 1, 1, 4).getValues()[0]; // date, client, service, time
+  if (!(v[0] instanceof Date)) { ui.alert('This job needs a Job Date first.'); return; }
+  const title = (String(v[1]).trim() || 'Job') + (String(v[2]).trim() ? ' — ' + String(v[2]).trim() : '');
+  const cal = CalendarApp.getDefaultCalendar();
+  const start = parseTimeOnDate_(v[0], v[3]);
+  if (start) cal.createEvent(title, start, new Date(start.getTime() + 90 * 60000), { description: 'Service Pro CRM job' });
+  else cal.createAllDayEvent(title, v[0], { description: 'Service Pro CRM job' });
+  ui.alert('📆 Added to Google Calendar', '"' + title + '" is on your calendar for ' +
+    Utilities.formatDate(v[0], Session.getScriptTimeZone(), 'EEE, MMM d') + '. It shows on your phone\'s calendar app too.', ui.ButtonSet.OK);
+}
+
+/** Create a shareable Drive folder for before/after photos and link it on the Job row. */
+function createJobPhotoFolder() {
+  const ui = SpreadsheetApp.getUi();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const jobs = ss.getSheetByName(TABS.JOBS);
+  if (!jobs) { ui.alert('Run setup first.'); return; }
+  if (ss.getActiveSheet().getName() !== TABS.JOBS) { ui.alert('Go to the 🗓️ Jobs tab, click the job row, then run this again.'); return; }
+  const row = ss.getActiveRange().getRow();
+  if (row < 2) { ui.alert('Click a job row first.'); return; }
+  const v = jobs.getRange(row, 1, 1, 3).getValues()[0]; // date, client, service
+  const client = String(v[1]).trim();
+  if (!client) { ui.alert('This job needs a Client first.'); return; }
+  const dateStr = (v[0] instanceof Date) ? Utilities.formatDate(v[0], Session.getScriptTimeZone(), 'yyyy-MM-dd') : 'job';
+  const folder = DriveApp.createFolder('Job Photos — ' + client + ' ' + dateStr + (String(v[2]).trim() ? ' (' + String(v[2]).trim() + ')' : ''));
+  folder.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  jobs.getRange(row, 13).setValue(folder.getUrl());
+  ui.alert('📸 Photo folder created', 'A shareable Drive folder is now linked in the Photos column. Open it on your phone to upload before/after shots, and send the client the link as proof of work.', ui.ButtonSet.OK);
+}
+
+/** Combine a date with a free-text time ("2pm", "2:30pm", "14:00"); null if no usable time. */
+function parseTimeOnDate_(date, timeStr) {
+  const m = String(timeStr || '').trim().toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/);
+  if (!m) return null;
+  let h = parseInt(m[1], 10); const min = m[2] ? parseInt(m[2], 10) : 0; const ap = m[3];
+  if (ap === 'pm' && h < 12) h += 12;
+  if (ap === 'am' && h === 12) h = 0;
+  if (h > 23 || min > 59) return null;
+  const d = new Date(date); d.setHours(h, min, 0, 0);
+  return d;
 }
 
 /* ==================== ESTIMATES & INVOICES ======================= */

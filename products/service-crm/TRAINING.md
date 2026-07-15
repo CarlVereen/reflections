@@ -68,6 +68,11 @@ That's it. Everything feeds the Dashboard automatically.
 - **Recurring work?** Set the **Repeat** column to Weekly / Biweekly / Monthly. When you
   mark that job **Done**, the CRM automatically creates the next visit for you (once daily
   automations are on, or via **⚡ CRM ▸ Automations ▸ Roll forward finished recurring jobs**).
+- **See it on your phone's calendar:** click a job row → **⚡ CRM ▸ Jobs ▸ Add selected job
+  to Google Calendar**. (Put a time like `2pm` in Scheduled Time for a timed event.)
+- **Before/after photos:** click a job row → **⚡ CRM ▸ Jobs ▸ Create photo folder for
+  selected job**. A shareable Drive folder is linked in the **Photos** column — upload
+  shots from your phone and send the client the link as proof of work.
 
 ## 7. Estimates & invoices in one click
 

@@ -60,6 +60,10 @@ live. Check each box; if one fails, note the step number and send it to me.
 - [ ] **J1.** `⚡ CRM ▸ Create mobile lead-capture form` → approve any new authorization → an alert shows the **form URL** (also saved in ⚙️ Settings). A "Form Responses" tab appears.
 - [ ] **J2.** Open the form URL (on your phone ideally), submit a test lead → it appears in 🎯 **Leads** with status New and a follow-up date.
 
+## K. Google Calendar + photos (new)
+- [ ] **K1.** In 🗓️ Jobs, put a time like `2pm` in Scheduled Time on a job. Click that row → `⚡ CRM ▸ Jobs ▸ Add selected job to Google Calendar` → approve the Calendar authorization → an event appears on your Google Calendar (check your phone). A job with no time makes an all-day event.
+- [ ] **K2.** Click a job row → `⚡ CRM ▸ Jobs ▸ Create photo folder for selected job` → approve any Drive authorization → a shareable folder link appears in the **Photos** column; opening it shows an (empty) Drive folder you can upload to.
+
 ---
 
 ## If something fails

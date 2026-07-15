@@ -35,12 +35,28 @@ recurring job is marked Done. Idempotent — never spawns twice.
 submissions flow straight into the 🎯 Leads tab via an onFormSubmit trigger. URL is
 saved to Settings to bookmark on a phone.
 
-## Strong follow-ons (next tier)
-- Google Calendar sync / a real "today & this week" schedule view of Jobs.
-- Before/after photo field on jobs (Drive-folder link column).
-- "Assigned To" column (ready for helper #1).
-- Expense / mileage tab for tax time.
-- Deposits / balance-due on invoices.
+## Post-launch-research decisions (voice-of-customer review)
+
+Validated the build against real demand (Reddit/forums/Quora/X + review-site
+complaints). Verdict: **simplicity + no-subscription + own-your-data is the wedge** —
+so we closed only the two highest-leverage feasible gaps and deliberately stopped,
+to avoid bloating the one thing users praise most.
+
+### ✅ Closed
+- **Google Calendar** — `addJobToCalendar` pushes a Job to the owner's Google Calendar,
+  which IS their phone's schedule/day view (better than a cramped in-sheet calendar).
+- **Before/after photos** — `createJobPhotoFolder` makes a shareable Drive folder per
+  job and links it in the new Jobs "Photos" column. Big for cleaning/lawn niches.
+
+### ⏸️ Deliberately deferred (would add tabs/complexity; add only if buyers ask)
+- Deposits / balance-due on invoices (niche to higher-ticket trades).
+- Expense / mileage tab (modest demand).
+- "Assigned To" column (only matters after they hire helper #1).
+
+### 🚫 Out of scope for a Sheet (disclose, don't build)
+Native 2-way SMS from a business number, in-app card processing / tap-to-pay,
+availability-based online booking, real-time QuickBooks sync, GPS routing/dispatch.
+These are why $50/mo apps exist; a $69 Sheet can't imitate them without breaking.
 
 ## Notes on hard limits (set expectations, don't try to hide)
 - Custom menu + sidebar are **desktop-web only** (not in the Sheets mobile app).
