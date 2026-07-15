@@ -32,6 +32,8 @@ handymen, pool & HVAC techs, movers, and more.
 - 🎯 **Lead pipeline** — color-coded New → Contacted → Quoted → Won/Lost, with
   follow-up dates that turn **red the moment they're overdue** so nothing slips.
 - 🔔 **Automatic follow-up emails** — get a morning list of who to call back.
+- ⭐ **Automatic Google-review requests** — one click emails every finished-and-paid
+  customer a branded "leave us a review" message. More 5-star reviews = more jobs.
 - 🗓️ **Job scheduler** — track what's booked, done, and paid.
 - 👥 **Client book** — total spent per client calculates automatically.
 - 💵 **Invoice log** — Draft / Sent / Paid / Overdue at a glance.

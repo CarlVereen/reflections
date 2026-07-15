@@ -51,6 +51,8 @@ function onOpen() {
     .addItem('📧  Email me today\'s follow-ups', 'sendFollowUpDigest')
     .addItem('⏰  Turn on daily 8am follow-up email', 'installDailyTrigger')
     .addSeparator()
+    .addItem('⭐  Send review requests for finished jobs', 'sendReviewRequests')
+    .addSeparator()
     .addItem('ℹ️  About / help', 'showAbout')
     .addToUi();
 }
@@ -146,14 +148,15 @@ function buildLeads_(ss) {
 /* ----- Jobs ----- */
 function buildJobs_(ss) {
   const sh = getOrCreate_(ss, TABS.JOBS);
-  const headers = ['Job Date', 'Client', 'Service', 'Scheduled Time', 'Status', 'Price', 'Paid?', 'Notes'];
+  const headers = ['Job Date', 'Client', 'Service', 'Scheduled Time', 'Status', 'Price', 'Paid?', 'Review Sent?', 'Notes'];
   header_(sh, headers);
   sh.setColumnWidths(1, headers.length, 130);
-  sh.setColumnWidth(2, 160); sh.setColumnWidth(8, 260);
+  sh.setColumnWidth(2, 160); sh.setColumnWidth(9, 260);
 
   const rows = 500;
   dropdown_(sh, 5, JOB_STATUSES, 2, rows);
   dropdown_(sh, 7, ['Yes', 'No'], 2, rows);
+  dropdown_(sh, 8, ['Yes', 'No'], 2, rows);
   sh.getRange(2, 1, rows, 1).setNumberFormat('m/d/yyyy');
   sh.getRange(2, 6, rows, 1).setNumberFormat('$#,##0.00');
 
@@ -268,6 +271,7 @@ function buildSettings_(ss) {
     ['Owner email (for follow-up digest)', Session.getActiveUser().getEmail() || 'you@example.com'],
     ['Currency symbol', '$'],
     ['Default follow-up (days after new lead)', 2],
+    ['Google review link (for review requests)', 'https://g.page/r/your-review-link/review'],
   ];
   sh.getRange(4, 2, rowsData.length, 2).setValues(rowsData);
   sh.getRange(4, 2, rowsData.length, 1).setFontWeight('bold').setFontColor('#52565c');
@@ -372,6 +376,73 @@ function sendFollowUpDigest() {
   MailApp.sendEmail({ to: email, subject: '🔔 ' + due.length + ' follow-up(s) due — ' + biz, htmlBody: html });
 }
 
+/* ===================== REVIEW REQUESTS ============================ */
+/**
+ * Emails a review request to every client whose job is Done + Paid but not yet
+ * asked. More 5-star Google reviews is the #1 growth lever for service
+ * businesses — this automates the ask so it actually happens.
+ */
+function sendReviewRequests() {
+  const ui = SpreadsheetApp.getUi();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const jobs = ss.getSheetByName(TABS.JOBS);
+  const clients = ss.getSheetByName(TABS.CLIENTS);
+  if (!jobs || !clients) { ui.alert('Run ⚡ CRM ▸ Set up / rebuild CRM first.'); return; }
+
+  const reviewLink = String(getSetting_(ss, 'Google review link (for review requests)') || '').trim();
+  const biz = getSetting_(ss, 'Business name') || 'our business';
+  if (!reviewLink || reviewLink.indexOf('your-review-link') > -1 || reviewLink.indexOf('http') !== 0) {
+    ui.alert('Add your Google review link first',
+      'Open the ⚙️ Settings tab and paste your Google "leave a review" link into ' +
+      '"Google review link (for review requests)". Then run this again.', ui.ButtonSet.OK);
+    return;
+  }
+
+  // Build name -> email map from Clients.
+  const cData = clients.getDataRange().getValues();
+  const emailByName = {};
+  for (let i = 1; i < cData.length; i++) {
+    const nm = String(cData[i][0]).trim();
+    const em = String(cData[i][2]).trim();
+    if (nm && em) emailByName[nm.toLowerCase()] = em;
+  }
+
+  const jData = jobs.getDataRange().getValues();
+  // cols: 0 date,1 client,2 service,3 time,4 status,5 price,6 paid,7 reviewSent,8 notes
+  let sent = 0, skippedNoEmail = 0;
+  for (let r = 1; r < jData.length; r++) {
+    const row = jData[r];
+    const client = String(row[1]).trim();
+    if (!client) continue;
+    if (row[4] !== 'Done' || row[6] !== 'Yes') continue;   // only finished + paid
+    if (row[7] === 'Yes') continue;                          // already asked
+    const email = emailByName[client.toLowerCase()];
+    if (!email) { skippedNoEmail++; continue; }
+
+    const service = String(row[2] || 'your recent service').trim();
+    const html =
+      '<div style="font-family:Arial,sans-serif;max-width:520px;color:#1a1c1f">' +
+      '<p>Hi ' + client.split(' ')[0] + ',</p>' +
+      '<p>Thank you for choosing <b>' + biz + '</b> for ' + service + '. It was a pleasure working with you!</p>' +
+      '<p>If you were happy with the job, a quick Google review would mean the world to us and helps other local ' +
+      'folks find us. It takes about 30 seconds:</p>' +
+      '<p style="text-align:center;margin:26px 0">' +
+      '<a href="' + reviewLink + '" style="background:#b8823a;color:#fff;text-decoration:none;' +
+      'padding:13px 26px;border-radius:999px;font-weight:bold;display:inline-block">⭐ Leave a review</a></p>' +
+      '<p>Thanks again,<br>' + biz + '</p></div>';
+
+    MailApp.sendEmail({ to: email, subject: 'Quick favor? ⭐ ' + biz, htmlBody: html });
+    jobs.getRange(r + 1, 8).setValue('Yes');  // mark Review Sent?
+    sent++;
+    Utilities.sleep(300);
+  }
+
+  let msg = '⭐ Sent ' + sent + ' review request' + (sent === 1 ? '' : 's') + '.';
+  if (skippedNoEmail) msg += '\n\n' + skippedNoEmail + ' finished job(s) were skipped because the client has no email in the 👥 Clients tab. Add their email and run again.';
+  if (!sent && !skippedNoEmail) msg += '\n\nNo new finished-and-paid jobs were waiting for a review request.';
+  ui.alert(msg);
+}
+
 function installDailyTrigger() {
   const ui = SpreadsheetApp.getUi();
   ScriptApp.getProjectTriggers().forEach(t => {
@@ -405,7 +476,8 @@ function showAbout() {
     'A complete CRM that lives in your own Google account — no subscriptions, no data leaving your Drive.\n\n' +
     'Tabs: Dashboard, Leads, Jobs, Clients, Invoices, Settings.\n\n' +
     'Menu actions:\n' +
-    '• Add a lead\n• Convert a won lead to a client\n• Email yourself today\'s follow-ups\n• Turn on a daily 8am follow-up email\n\n' +
+    '• Add a lead\n• Convert a won lead to a client\n• Email yourself today\'s follow-ups\n' +
+    '• Turn on a daily 8am follow-up email\n• Send Google-review requests for finished jobs\n\n' +
     'Need setup help or customization? Reply to your purchase receipt.',
     SpreadsheetApp.getUi().ButtonSet.OK
   );
