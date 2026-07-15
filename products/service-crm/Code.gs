@@ -121,6 +121,7 @@ function buildCRM() {
     if (resp !== ui.Button.YES) return;
   }
 
+  buildSettings_(ss);   // built first so the Service dropdowns can reference its services list
   buildLeads_(ss);
   buildJobs_(ss);
   buildClients_(ss);
@@ -128,7 +129,6 @@ function buildCRM() {
   buildInvoices_(ss);
   buildLineItems_(ss);
   buildDashboard_(ss);
-  buildSettings_(ss);
   buildStartHere_(ss);
   reorderTabs_(ss, [TABS.START, TABS.DASH, TABS.LEADS, TABS.JOBS, TABS.CLIENTS,
                     TABS.ESTIMATES, TABS.INVOICES, TABS.ITEMS, TABS.SETTINGS]);
@@ -167,6 +167,17 @@ function suggestList_(sh, col, values, firstRow, numRows) {
   sh.getRange(firstRow, col, numRows, 1).setDataValidation(rule);
 }
 
+/** Dropdown sourced from a live range (so editing that range updates the dropdown). Custom values allowed. */
+function suggestRange_(sh, col, range, firstRow, numRows) {
+  const rule = SpreadsheetApp.newDataValidation().requireValueInRange(range, true).setAllowInvalid(true).build();
+  sh.getRange(firstRow, col, numRows, 1).setDataValidation(rule);
+}
+
+/** The editable services range in the Settings tab (E3:E32) — drives every Service dropdown. */
+function servicesRange_(ss) {
+  return ss.getSheetByName(TABS.SETTINGS).getRange('E3:E32');
+}
+
 function buildLeads_(ss) {
   const sh = getOrCreate_(ss, TABS.LEADS);
   const headers = ['Date Added', 'Name', 'Phone', 'Email', 'Source', 'Service', 'Est. Value', 'Status', 'Next Follow-up', 'Notes'];
@@ -176,9 +187,11 @@ function buildLeads_(ss) {
   const rows = 500;
   dropdown_(sh, 8, LEAD_STATUSES, 2, rows);
   dropdown_(sh, 5, ['Referral', 'Google', 'Facebook', 'Instagram', 'Flyer', 'Repeat', 'Other'], 2, rows);
-  suggestList_(sh, 6, CONFIG.services, 2, rows);   // Service — niche suggestions, custom allowed
+  suggestRange_(sh, 6, servicesRange_(ss), 2, rows);   // Service — from the editable list in Settings
   sh.getRange(2, 1, rows, 1).setNumberFormat('m/d/yyyy');
   sh.getRange(2, 9, rows, 1).setNumberFormat('m/d/yyyy');
+  // Next Follow-up is a DATE only (no time) — cleaner to edit and gives a calendar picker.
+  sh.getRange(2, 9, rows, 1).setDataValidation(SpreadsheetApp.newDataValidation().requireDate().setAllowInvalid(false).build());
   sh.getRange(2, 7, rows, 1).setNumberFormat('$#,##0');
   const statusRange = sh.getRange(2, 8, rows, 1);
   const rules = [];
@@ -199,7 +212,7 @@ function buildJobs_(ss) {
   sh.setColumnWidth(2, 160); sh.setColumnWidth(10, 220); sh.setColumnWidth(13, 240);
   const rows = 500;
   dropdown_(sh, 5, JOB_STATUSES, 2, rows);
-  suggestList_(sh, 3, CONFIG.services, 2, rows);   // Service — niche suggestions, custom allowed
+  suggestRange_(sh, 3, servicesRange_(ss), 2, rows);   // Service — from the editable list in Settings
   dropdown_(sh, 7, ['Yes', 'No'], 2, rows);
   dropdown_(sh, 8, ['Yes', 'No'], 2, rows);
   dropdown_(sh, 9, ['Yes', 'No'], 2, rows);
@@ -364,7 +377,18 @@ function buildSettings_(ss) {
   sh.getRange(4, 2, rowsData.length, 1).setFontWeight('bold').setFontColor('#52565c');
   sh.setColumnWidth(2, 320); sh.setColumnWidth(3, 320);
   sh.getRange(4, 3, rowsData.length, 1).setBackground('#ffffff').setBorder(true, true, true, true, false, false, BRAND.line, null);
-  sh.getRange('B13').setValue('Tip: change any value above, then just keep working — the CRM reads these live.').setFontColor('#52565c').setFontStyle('italic');
+  sh.getRange('B15').setValue('Tip: change any value above, then just keep working — the CRM reads these live.').setFontColor('#52565c').setFontStyle('italic');
+
+  // Editable services list (column E, rows 3-32). Drives the Service dropdown in the
+  // Quick Actions panel AND the Service columns in the Leads and Jobs tabs.
+  sh.getRange('E2').setValue('Your services (edit this list)').setFontSize(12).setFontWeight('bold').setFontColor(BRAND.header);
+  const svc = (CONFIG.services || []).map(function (s) { return [s]; });
+  if (svc.length) sh.getRange(3, 5, svc.length, 1).setValues(svc);
+  sh.setColumnWidth(5, 260);
+  sh.getRange(3, 5, 30, 1).setBackground('#ffffff').setBorder(true, true, true, true, true, true, BRAND.line, SpreadsheetApp.BorderStyle.SOLID);
+  sh.setColumnWidth(6, 18); sh.setColumnWidth(7, 300);
+  sh.getRange('G3').setValue('← Add, rename, or remove services here. They fill the Service dropdown in the Quick Actions panel and in the Leads & Jobs tabs — edit once, updates everywhere.')
+    .setFontColor('#6b6459').setFontSize(9).setWrap(true).setVerticalAlignment('top');
 }
 
 function buildStartHere_(ss) {
@@ -420,7 +444,7 @@ function addLeadCore_(name, phone, email, service, valueStr) {
   if (!name || !String(name).trim()) return 'A name is required.';
   const value = valueStr ? Number(String(valueStr).replace(/[^0-9.]/g, '')) : '';
   const days = Number(getSetting_(ss, 'Default follow-up (days after new lead)')) || 2;
-  const follow = new Date(); follow.setDate(follow.getDate() + days);
+  const follow = new Date(); follow.setDate(follow.getDate() + days); follow.setHours(0, 0, 0, 0); // date only — no time
   sh.appendRow([new Date(), name, phone || '', email || '', 'Other', service || '', value, 'New', follow, '']);
   return '✅ Added "' + name + '" — follow-up set for ' + Utilities.formatDate(follow, Session.getScriptTimeZone(), 'M/d') + '.';
 }
@@ -430,6 +454,21 @@ function sidebarAddLead(form) {
   const msg = addLeadCore_(form.name, form.phone, form.email, form.service, form.value);
   SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(SpreadsheetApp.getActiveSpreadsheet().getSheetByName(TABS.LEADS));
   return msg;
+}
+
+/** Called from the sidebar — the editable services list (for the Service dropdown). */
+function sidebarServices() {
+  return getServices_(SpreadsheetApp.getActiveSpreadsheet());
+}
+
+/** Reads the editable services list from Settings E3:E32; falls back to CONFIG defaults. */
+function getServices_(ss) {
+  const sh = ss.getSheetByName(TABS.SETTINGS);
+  if (!sh) return CONFIG.services;
+  const vals = sh.getRange(3, 5, 30, 1).getValues();
+  const out = [];
+  vals.forEach(function (r) { const s = String(r[0]).trim(); if (s) out.push(s); });
+  return out.length ? out : CONFIG.services;
 }
 
 /** Called from the sidebar — today's follow-up list as data. */

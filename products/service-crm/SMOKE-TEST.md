@@ -16,10 +16,11 @@ live. Check each box; if one fails, note the step number and send it to me.
 
 ## B. Settings
 - [ ] **B1.** ⚙️ Settings is pre-filled. Set **Business name**, **Owner email** (your address), **Business phone**, **Google review link** (any real URL for testing), and **payment instructions**.
+- [ ] **B2.** In ⚙️ Settings, find **"Your services"** (column E) — a starter list is there. Add one (e.g. "Deep clean"). Then in 🎯 Leads, click a **Service** cell → the dropdown should include your new service. *(Confirms the editable list drives the in-cell dropdowns.)*
 
 ## C. Leads (menu + sidebar)
 - [ ] **C1.** `⚡ CRM ▸ Open Quick Actions panel` — the branded sidebar opens on the right.
-- [ ] **C2.** In the panel, add a lead (name + email = **your own email** so later tests can send to you). Toast says "✅ Added…", and the row appears in 🎯 Leads with a **Next Follow-up** date auto-set.
+- [ ] **C2.** In the panel, add a lead (name + email = **your own email** so later tests can send to you). The **Service** field is a **dropdown** fed by your Settings list. Toast says "✅ Added…", and the row appears in 🎯 Leads with a **Next Follow-up** date (date only — no time) auto-set.
 - [ ] **C3.** In 🎯 Leads, set that lead's **Next Follow-up** to **today or earlier**. The date cell turns **red**.
 - [ ] **C4.** In the panel, click **↻ Refresh** under "Follow-ups due" — the lead now appears there.
 

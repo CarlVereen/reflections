@@ -12,8 +12,8 @@
   .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:14px; }
   .card h2 { margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:#52565c; }
   label { display:block; font-weight:600; margin:8px 0 3px; font-size:12px; }
-  input { width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:13px; }
-  input:focus { outline:none; border-color:var(--accent2); box-shadow:0 0 0 3px rgba(143,95,34,.30); }
+  input, select { width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:13px; background:#fff; }
+  input:focus, select:focus { outline:none; border-color:var(--accent2); box-shadow:0 0 0 3px rgba(143,95,34,.30); }
   button { width:100%; border:0; border-radius:999px; padding:11px; font-weight:700; font-size:13px; cursor:pointer; color:#fff;
            background:linear-gradient(180deg,var(--accent2),#6e4a1a); margin-top:12px; }
   button:hover { filter:brightness(1.08); }
@@ -49,7 +49,7 @@
     <label>Email</label>
     <input id="email" placeholder="jane@email.com">
     <label>Service</label>
-    <input id="service" placeholder="Deep clean">
+    <select id="service"><option value="">— choose a service —</option></select>
     <button id="addBtn" onclick="addLead()">Add lead</button>
     <div id="toast" class="toast"></div>
   </div>
@@ -109,6 +109,13 @@
     google.script.run.withSuccessHandler(function(res){ showToast('toast2', res || 'Done.', true); })
       .withFailureHandler(function(e){ showToast('toast2', e.message || 'Something went wrong.', false); })[fn]();
   }
+  function loadServices() {
+    google.script.run.withSuccessHandler(function(list){
+      var sel = document.getElementById('service');
+      (list || []).forEach(function(s){ var o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
+    }).sidebarServices();
+  }
+  loadServices();
   loadFollowUps();
 </script>
 </body>

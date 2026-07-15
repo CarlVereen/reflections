@@ -26,7 +26,7 @@ clients, and invoices**, and automatically emails **follow-up reminders**,
 | 📄 **Estimates** | Log quotes; generate a branded PDF estimate in one click. |
 | 💵 **Invoices** | Log invoices; generate a PDF (with tax + Pay-now) and email it in one click. |
 | 🧾 **Line Items** | Optional: itemize an estimate/invoice (Description / Qty / Rate). |
-| ⚙️ **Settings** | Business info, currency, sales tax %, review link, payment note & link. |
+| ⚙️ **Settings** | Business info, currency, sales tax %, review link, payment note & link — plus **"Your services"** (edit that list to control the Service dropdown in the panel and the Leads/Jobs tabs). |
 
 ## 3. First-time setup (do this once)
 
