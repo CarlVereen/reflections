@@ -37,11 +37,17 @@ This is the **product master**. Each sale is a *copy* of the finished sheet.
 ## How to build the master (one-time, ~5 min)
 
 1. Create a new Google Sheet named **Service Pro CRM — MASTER**.
-2. `Extensions ▸ Apps Script`. Paste **all of `Code.gs`** into `Code.gs`. Then add a
-   file → **HTML** → name it **`Sidebar`** → paste **all of `Sidebar.html`**. Save.
+2. `Extensions ▸ Apps Script`. Add **four files**:
+   - `Code.gs` (paste over the stub) — sheet logic, menu, automations
+   - `Api.gs` (new script file) — the web-app server API
+   - `Sidebar` (new **HTML** file) — the desktop Quick Actions panel
+   - `WebApp` (new **HTML** file) — the mobile web-app UI
+   Save.
 3. Back in the sheet, reload the tab. A **⚡ CRM** menu appears.
 4. Click **⚡ CRM ▸ Set up / rebuild CRM**. Approve the auth prompt once.
-5. The nine tabs build themselves. That's the master. (Run the smoke test — `SMOKE-TEST.md`.)
+5. The nine tabs build themselves. That's the sheet/master.
+6. **Deploy the web app** (one time) so the CRM runs as a phone/desktop app — see
+   `DEPLOY.md`. Then run the smoke test in `SMOKE-TEST.md`.
 
 ## How to fulfill a sale (~60 seconds, repeatable)
 

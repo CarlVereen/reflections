@@ -65,6 +65,15 @@ live. Check each box; if one fails, note the step number and send it to me.
 - [ ] **K1.** In 🗓️ Jobs, put a time like `2pm` in Scheduled Time on a job. Click that row → `⚡ CRM ▸ Jobs ▸ Add selected job to Google Calendar` → approve the Calendar authorization → an event appears on your Google Calendar (check your phone). A job with no time makes an all-day event.
 - [ ] **K2.** Click a job row → `⚡ CRM ▸ Jobs ▸ Create photo folder for selected job` → approve any Drive authorization → a shareable folder link appears in the **Photos** column; opening it shows an (empty) Drive folder you can upload to.
 
+## L. The web app (deploy first — see DEPLOY.md)
+- [ ] **L1.** Confirm all four files exist in Apps Script: Code.gs, **Api.gs**, **WebApp.html**, Sidebar.html.
+- [ ] **L2.** Deploy per `DEPLOY.md` (Deploy ▸ Web app ▸ Execute as Me ▸ Only myself ▸ Authorize). Open the URL — the app loads with your Home screen (KPIs, follow-ups, this week's jobs).
+- [ ] **L3.** **Leads:** tap +, add a lead (Service is a dropdown from your list). It appears in the list and in the 🎯 Leads sheet tab.
+- [ ] **L4.** **Quote flow:** Quotes ▸ + New estimate → enter a client, add 2 line items, watch the running total (with tax) → **Create & send**. Check the 📄 Estimates tab got a numbered row and the customer (if emailed) received the PDF.
+- [ ] **L5.** **Approve:** open that estimate → **Approve → create invoice**. Confirm a 💵 Invoice draft appears (lines copied) AND a 🗓️ Job was scheduled.
+- [ ] **L6.** **Invoice:** open the invoice → optionally Edit line items → **Send invoice** → **Mark paid**. Dashboard revenue updates.
+- [ ] **L7.** Open the app **on your phone**, add to home screen, run through the same flow.
+
 ---
 
 ## If something fails
