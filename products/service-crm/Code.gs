@@ -86,9 +86,14 @@ function onOpen() {
 }
 
 function showSidebar() {
-  const html = HtmlService.createHtmlOutputFromFile('Sidebar')
-    .setTitle('⚡ Quick Actions');
-  SpreadsheetApp.getUi().showSidebar(html);
+  try {
+    const html = HtmlService.createHtmlOutputFromFile('Sidebar').setTitle('⚡ Quick Actions');
+    SpreadsheetApp.getUi().showSidebar(html);
+  } catch (e) {
+    SpreadsheetApp.getUi().alert('Quick Actions panel not found',
+      'Add the file "Sidebar.html" in Extensions ▸ Apps Script (alongside the code), then reload the sheet.',
+      SpreadsheetApp.getUi().ButtonSet.OK);
+  }
 }
 
 /* ============================ BUILD ============================== */
@@ -263,8 +268,9 @@ function buildDashboard_(ss) {
   sh.getRange('B13').setFormula(
     '=IFERROR(QUERY(' + L + '!A2:J,"select B, C, I, H where I is not null and I <= date \'"&TEXT(TODAY(),"yyyy-mm-dd")&"\' and H <> \'Won\' and H <> \'Lost\' order by I asc label B \'Name\', C \'Phone\', I \'Follow-up\', H \'Status\'",0),"Nothing due — you\'re all caught up. 🎉")');
 
-  // 6-month revenue helper (hidden columns R:S) + chart.
-  const monthsFormula = [];
+  // 6-month revenue helper in columns R:S (off to the right; NOT hidden —
+  // Google Sheets charts do not plot data in hidden columns).
+  sh.getRange(1, 18).setValue('Chart data ↓').setFontColor('#b7b1a4').setFontSize(9);
   for (let m = 5; m >= 0; m--) {
     const r = 2 + (5 - m);
     sh.getRange(r, 18).setFormula('=TEXT(EOMONTH(TODAY(),-' + m + '),"mmm")');           // R: month label
@@ -272,7 +278,6 @@ function buildDashboard_(ss) {
       '!C:C,">="&EOMONTH(TODAY(),-' + (m + 1) + ')+1,' + I + '!C:C,"<="&EOMONTH(TODAY(),-' + m + '))'); // S: revenue
   }
   sh.getRange(2, 19, 6, 1).setNumberFormat('$#,##0');
-  sh.hideColumns(18, 2);
   const chart = sh.newChart()
     .asColumnChart()
     .addRange(sh.getRange(2, 18, 6, 2))
@@ -405,8 +410,9 @@ function scheduleJobFromLead() {
   const when = parseDate_(whenStr);
   if (!when) { ui.alert('Could not read that date. Try month/day/year, like 7/22/2026.'); return; }
   jobs.appendRow([when, v[1], v[5], '', 'Scheduled', v[6] || '', 'No', 'No', 'No', 'From lead']);
+  upsertClient_(ss, v[1], v[2], v[3]);   // ensure client exists (carries email so reminders/reviews work)
   leads.getRange(row, 8).setValue('Won');
-  ui.alert('📅 Job scheduled for ' + v[1] + ' on ' + Utilities.formatDate(when, Session.getScriptTimeZone(), 'M/d') + '. Lead marked Won.');
+  ui.alert('📅 Job scheduled for ' + v[1] + ' on ' + Utilities.formatDate(when, Session.getScriptTimeZone(), 'M/d') + '. Lead marked Won and added to Clients.');
 }
 
 function convertLeadToClient() {
@@ -418,7 +424,7 @@ function convertLeadToClient() {
   const row = ss.getActiveRange().getRow();
   if (row < 2) { ui.alert('Click a lead row first.'); return; }
   const v = leads.getRange(row, 1, 1, 10).getValues()[0];
-  clients.appendRow([v[1], v[2], v[3], '', new Date(), '', v[9]]);
+  upsertClient_(ss, v[1], v[2], v[3], v[9]);   // dedupes if the client already exists
   leads.getRange(row, 8).setValue('Won'); leads.getRange(row, 9).setValue('');
   ui.alert('🎉 "' + v[1] + '" is now a client.');
 }
@@ -439,6 +445,7 @@ function createInvoicePdf() {
   const biz = getSetting_(ss, 'Business name') || 'Your Business';
   const bizPhone = getSetting_(ss, 'Business phone') || '';
   const pay = getSetting_(ss, 'Invoice payment instructions') || '';
+  const cur = String(getSetting_(ss, 'Currency symbol') || '$').trim() || '$';
   const tz = Session.getScriptTimeZone();
   const fmtD = d => (d instanceof Date) ? Utilities.formatDate(d, tz, 'MMM d, yyyy') : '';
   const amount = Number(v[4]) || 0;
@@ -465,9 +472,9 @@ function createInvoicePdf() {
     '<table style="width:100%;border-collapse:collapse;margin-bottom:20px">' +
     '<tr style="background:#1a1c1f;color:#fff"><th style="text-align:left;padding:10px">Description</th><th style="text-align:right;padding:10px">Amount</th></tr>' +
     '<tr><td style="padding:10px;border-bottom:1px solid #eee">Services rendered — ' + biz + '</td>' +
-    '<td style="padding:10px;border-bottom:1px solid #eee;text-align:right">$' + amount.toFixed(2) + '</td></tr>' +
+    '<td style="padding:10px;border-bottom:1px solid #eee;text-align:right">' + cur + amount.toFixed(2) + '</td></tr>' +
     '<tr><td style="padding:10px;text-align:right;font-weight:bold">Total Due</td>' +
-    '<td style="padding:10px;text-align:right;font-weight:bold;font-size:18px;color:' + BRAND.accent + '">$' + amount.toFixed(2) + '</td></tr></table>' +
+    '<td style="padding:10px;text-align:right;font-weight:bold;font-size:18px;color:' + BRAND.accent + '">' + cur + amount.toFixed(2) + '</td></tr></table>' +
     (pay ? '<div style="background:' + BRAND.soft + ';padding:14px;border-radius:8px"><b>Payment:</b> ' + pay + '</div>' : '') +
     '<p style="color:#52565c;margin-top:24px">Thank you for your business!</p></div>';
 
@@ -614,6 +621,26 @@ function removeDailyTriggers_() {
 }
 
 /* =========================== HELPERS ============================= */
+
+/** Add a client if they don't exist yet; if they do, fill in a missing email. */
+function upsertClient_(ss, name, phone, email, note) {
+  const sh = ss.getSheetByName(TABS.CLIENTS);
+  if (!sh || !name) return;
+  const last = sh.getLastRow();
+  if (last >= 2) {
+    const names = sh.getRange(2, 1, last - 1, 1).getValues();
+    for (let i = 0; i < names.length; i++) {
+      if (String(names[i][0]).trim().toLowerCase() === String(name).trim().toLowerCase()) {
+        if (email) {
+          const cell = sh.getRange(i + 2, 3);
+          if (!String(cell.getValue()).trim()) cell.setValue(email);
+        }
+        return;
+      }
+    }
+  }
+  sh.appendRow([name, phone || '', email || '', '', new Date(), '', note || '']);
+}
 
 function clientEmailMap_(clients) {
   const cData = clients.getDataRange().getValues();
