@@ -882,24 +882,33 @@ function rollForwardRecurringJobs() {
 
 /* =========================== HELPERS ============================= */
 
-/** Add a client if they don't exist yet; if they do, fill in a missing email. */
+/**
+ * Add a client if they don't exist yet; if they do, back-fill a missing email.
+ * NOTE: the Clients tab pre-fills 500 "Total Spent" formulas, so appendRow() would
+ * drop new clients at row ~502. We instead write to the first empty Name row.
+ */
 function upsertClient_(ss, name, phone, email, note) {
   const sh = ss.getSheetByName(TABS.CLIENTS);
   if (!sh || !name) return;
-  const last = sh.getLastRow();
-  if (last >= 2) {
-    const names = sh.getRange(2, 1, last - 1, 1).getValues();
-    for (let i = 0; i < names.length; i++) {
-      if (String(names[i][0]).trim().toLowerCase() === String(name).trim().toLowerCase()) {
-        if (email) {
-          const cell = sh.getRange(i + 2, 3);
-          if (!String(cell.getValue()).trim()) cell.setValue(email);
-        }
-        return;
-      }
+  const key = String(name).trim().toLowerCase();
+  const scanRows = Math.max(sh.getMaxRows() - 1, 1);
+  const colA = sh.getRange(2, 1, scanRows, 1).getValues();
+  let firstEmpty = -1;
+  for (let i = 0; i < colA.length; i++) {
+    const val = String(colA[i][0]).trim();
+    if (val === '') { if (firstEmpty === -1) firstEmpty = i + 2; continue; }
+    if (val.toLowerCase() === key) { // existing client — back-fill email if blank
+      if (email) { const cell = sh.getRange(i + 2, 3); if (!String(cell.getValue()).trim()) cell.setValue(email); }
+      return;
     }
   }
-  sh.appendRow([name, phone || '', email || '', '', new Date(), '', note || '']);
+  const target = (firstEmpty === -1) ? sh.getLastRow() + 1 : firstEmpty;
+  sh.getRange(target, 1, 1, 3).setValues([[name, phone || '', email || '']]); // Name, Phone, Email
+  sh.getRange(target, 5).setValue(new Date());   // First Job
+  sh.getRange(target, 7).setValue(note || '');   // Notes
+  // Ensure the Total Spent formula exists on this row (covers rows beyond the pre-filled block).
+  sh.getRange(target, 6).setFormula('=IF($A' + target + '="","",SUMIFS(\'' + TABS.JOBS + '\'!F:F,\'' +
+    TABS.JOBS + '\'!B:B,$A' + target + ',\'' + TABS.JOBS + '\'!G:G,"Yes"))');
 }
 
 function clientEmailMap_(clients) {
