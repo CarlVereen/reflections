@@ -95,6 +95,17 @@ function showSidebar() {
 
 function buildCRM() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ui = SpreadsheetApp.getUi();
+
+  // Guard: rebuilding clears the data tabs. Never wipe a buyer's real data silently.
+  if (hasExistingData_(ss)) {
+    const resp = ui.alert('Rebuild CRM?',
+      'You already have data in this CRM. Rebuilding resets the Leads, Jobs, Clients, and Invoices ' +
+      'tabs and will ERASE those rows. Only do this on a fresh copy.\n\nContinue and erase?',
+      ui.ButtonSet.YES_NO);
+    if (resp !== ui.Button.YES) return;
+  }
+
   buildLeads_(ss);
   buildJobs_(ss);
   buildClients_(ss);
@@ -103,6 +114,9 @@ function buildCRM() {
   buildSettings_(ss);
   buildStartHere_(ss);
   reorderTabs_(ss, [TABS.START, TABS.DASH, TABS.LEADS, TABS.JOBS, TABS.CLIENTS, TABS.INVOICES, TABS.SETTINGS]);
+  // Remove the leftover default sheet created with a new spreadsheet.
+  const def = ss.getSheetByName('Sheet1') || ss.getSheetByName('Sheet 1');
+  if (def && ss.getSheets().length > 1) ss.deleteSheet(def);
   ss.setActiveSheet(ss.getSheetByName(TABS.START));
   SpreadsheetApp.getUi().alert('⚡ Service Pro CRM is ready!',
     'Open the 🚀 Start Here tab for a 3-minute setup, then click ⚡ CRM ▸ Open Quick Actions panel to run your day from one place.',
@@ -156,8 +170,6 @@ function buildLeads_(ss) {
     .whenFormulaSatisfied('=AND($I2<>"",$I2<TODAY(),$H2<>"Won",$H2<>"Lost")')
     .setBackground('#f5d9d3').setFontColor(BRAND.warn).setRanges([sh.getRange(2, 9, rows, 1)]).build());
   sh.setConditionalFormatRules(rules);
-  sh.getRange(2, 1).setValue(new Date());
-  sh.getRange(2, 8).setValue('New');
 }
 
 function buildJobs_(ss) {
@@ -388,9 +400,10 @@ function scheduleJobFromLead() {
   const row = ss.getActiveRange().getRow();
   if (row < 2) { ui.alert('Click a lead row first.'); return; }
   const v = leads.getRange(row, 1, 1, 10).getValues()[0];
-  const whenStr = promptOrCancel_(ui, 'Job date for "' + v[1] + '"? (e.g. 7/22)');
+  const whenStr = promptOrCancel_(ui, 'Job date for "' + v[1] + '"? (e.g. 7/22/2026)');
   if (whenStr === null) return;
-  const when = new Date(whenStr); if (isNaN(when)) { ui.alert('Could not read that date.'); return; }
+  const when = parseDate_(whenStr);
+  if (!when) { ui.alert('Could not read that date. Try month/day/year, like 7/22/2026.'); return; }
   jobs.appendRow([when, v[1], v[5], '', 'Scheduled', v[6] || '', 'No', 'No', 'No', 'From lead']);
   leads.getRange(row, 8).setValue('Won');
   ui.alert('📅 Job scheduled for ' + v[1] + ' on ' + Utilities.formatDate(when, Session.getScriptTimeZone(), 'M/d') + '. Lead marked Won.');
@@ -439,11 +452,13 @@ function createInvoicePdf() {
 
   const html =
     '<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#1a1c1f">' +
-    '<div style="border-bottom:3px solid ' + BRAND.accent + ';padding-bottom:14px;margin-bottom:22px;display:flex;justify-content:space-between">' +
-    '<div><div style="font-size:24px;font-weight:bold">' + biz + '</div>' +
-    (bizPhone ? '<div style="color:#52565c">' + bizPhone + '</div>' : '') + '</div>' +
-    '<div style="text-align:right"><div style="font-size:28px;font-weight:bold;color:' + BRAND.accent + '">INVOICE</div>' +
-    '<div style="color:#52565c">#' + (v[0] || '—') + '</div></div></div>' +
+    // Header as a table (not flexbox) so it lays out reliably in the HTML→PDF conversion.
+    '<table style="width:100%;border-bottom:3px solid ' + BRAND.accent + ';margin-bottom:22px"><tr>' +
+    '<td style="padding-bottom:14px;vertical-align:top"><div style="font-size:24px;font-weight:bold">' + biz + '</div>' +
+    (bizPhone ? '<div style="color:#52565c">' + bizPhone + '</div>' : '') + '</td>' +
+    '<td style="padding-bottom:14px;text-align:right;vertical-align:top">' +
+    '<div style="font-size:28px;font-weight:bold;color:' + BRAND.accent + '">INVOICE</div>' +
+    '<div style="color:#52565c">#' + (v[0] || '—') + '</div></td></tr></table>' +
     '<table style="width:100%;margin-bottom:20px"><tr>' +
     '<td><b>Bill to:</b><br>' + v[1] + (email ? '<br>' + email : '') + '</td>' +
     '<td style="text-align:right"><b>Issued:</b> ' + fmtD(v[2]) + '<br><b>Due:</b> ' + fmtD(v[3]) + '</td></tr></table>' +
@@ -466,12 +481,16 @@ function createInvoicePdf() {
         htmlBody: 'Hi ' + String(v[1]).split(' ')[0] + ',<br><br>Please find your invoice attached. ' +
         (pay ? pay : '') + '<br><br>Thank you!<br>' + biz, attachments: [pdf] });
       inv.getRange(row, 6).setValue('Sent');
+      DriveApp.createFile(pdf);
       ui.alert('🧾 Invoice emailed to ' + v[1] + ' and marked Sent. A copy is saved in your Drive.');
+    } else {
+      DriveApp.createFile(pdf);
+      ui.alert('Saved the invoice PDF to your Drive (not emailed).');
     }
   } else {
-    ui.alert('No email on file for ' + v[1] + ' (add it in 👥 Clients to email directly). Saving the PDF to your Drive instead.');
+    DriveApp.createFile(pdf);
+    ui.alert('No email on file for ' + v[1] + ' (add one in 👥 Clients to email directly). Saved the PDF to your Drive instead.');
   }
-  DriveApp.createFile(pdf); // keep a copy in Drive either way
 }
 
 /* ========================= AUTOMATIONS ============================ */
@@ -610,6 +629,27 @@ function promptOrCancel_(ui, msg) {
   const r = ui.prompt(msg, ui.ButtonSet.OK_CANCEL);
   if (r.getSelectedButton() !== ui.Button.OK) return null;
   return r.getResponseText().trim();
+}
+
+/** True if any of the four data tabs already contain real rows (not just headers/formulas). */
+function hasExistingData_(ss) {
+  const checks = [[TABS.LEADS, 2], [TABS.JOBS, 2], [TABS.CLIENTS, 1], [TABS.INVOICES, 1]];
+  return checks.some(function (pair) {
+    const sh = ss.getSheetByName(pair[0]);
+    if (!sh) return false;
+    const last = sh.getLastRow();
+    if (last < 2) return false;
+    return sh.getRange(2, pair[1], last - 1, 1).getValues().some(function (r) { return String(r[0]).trim() !== ''; });
+  });
+}
+
+/** Parse a user-typed date. Accepts M/D (assumes current year) or full M/D/YYYY. Null if invalid. */
+function parseDate_(s) {
+  s = String(s || '').trim();
+  if (!s) return null;
+  if (/^\d{1,2}\/\d{1,2}$/.test(s)) s = s + '/' + (new Date()).getFullYear();
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
 }
 
 function getSetting_(ss, key) {
