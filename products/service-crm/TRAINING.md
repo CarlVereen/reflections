@@ -93,7 +93,13 @@ Turn it off anytime with **Turn OFF daily automations**.
 
 ## 10. Tips & limits
 
-- **Works on your phone** — install the Google Sheets app and it's all there.
+- **Desktop vs phone (important):** the ⚡ CRM menu and Quick Actions panel work on a
+  **computer** (Google Sheets in a browser), *not* in the phone app. Do your setup,
+  data entry, and invoicing on a laptop. On your phone you can still **view and edit
+  the sheet** in the Google Sheets app — and the daily automations (follow-up emails,
+  appointment reminders, review requests, overdue flags) **run on their own**, no menu needed.
+- **Emails, not texts:** reminders and review requests are sent by **email**. Apps Script
+  can't send SMS on its own.
 - **Email limit:** a normal Gmail account can send ~100 automated emails/day
   (plenty for a small business). Google Workspace accounts get ~1,500.
 - **Back up anytime:** File ▸ Make a copy.

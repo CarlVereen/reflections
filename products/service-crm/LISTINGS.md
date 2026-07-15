@@ -42,6 +42,14 @@ Service Pro CRM tracks your leads, jobs, clients, and invoices, and automaticall
 ★ HOW IT WORKS
 After purchase you get a PDF with a link. Click "Make a copy" and it's yours — private and editable. A 5-minute quick-start guide is included.
 
+★ PLEASE READ BEFORE BUYING (so it's a great fit)
+This is a Google Sheets system, not a mobile app. Set it up and send invoices from a
+computer; the automatic reminder & review emails then run on their own. It sends by
+EMAIL (not text/SMS), and customers pay you however you tell them (add your own
+Stripe/PayPal/Venmo link) — there's no built-in card processing or automatic quotes yet.
+Best for solo owners who want to organize leads, never miss a follow-up, log jobs, send
+branded invoices, and get more Google reviews — without a monthly fee.
+
 Perfect for: cleaners, landscapers, lawn care, detailers, contractors, handymen, HVAC, pool & pest techs, movers, trainers, and any service pro.
 
 Not affiliated with Google. Requires a free Google account. Digital product — no refunds once delivered.
