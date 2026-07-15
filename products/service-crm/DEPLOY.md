@@ -38,6 +38,21 @@ The deploy step is the most technical part of setup, which is exactly why the **
 Done-For-You** tier is worth offering — you (the owner) deploy it for the buyer and hand
 them a working URL. For DIY buyers, this guide + the in-sheet menu link cover it.
 
+## ⚠️ Troubleshooting: "Sorry, unable to open the file at this time" (on a computer)
+
+This Google Drive error means the app opened under the **wrong Google account** — you're
+signed into more than one, and the app landed on an account that doesn't own the sheet.
+(It's why it can work on your phone but not your computer.) Fixes, easiest first:
+
+1. **Incognito window** (Ctrl/Cmd+Shift+N) → paste the app URL → sign in with **only** the
+   account that owns the sheet. This always works and confirms the cause.
+2. **Make the owner account your default:** sign out of all Google accounts, then sign in
+   with the owner account **first** (first account = default).
+3. **Force the account in the URL:** insert `/u/0/` after `script.google.com`, e.g.
+   `https://script.google.com/u/0/macros/s/XXXX/exec` — try `/u/1/`, `/u/2/`… until it opens.
+4. Make sure you're using the **`/exec`** URL from *Deploy ▸ Manage deployments*, not the
+   **`/dev`** test URL (the `/dev` URL only works for the owner with editor access).
+
 ## Access model (plain English)
 "Execute as Me / Only myself" means the app runs as **you** and **only you** can open it
 (while signed into your Google account). Your data never leaves your account. If you ever
