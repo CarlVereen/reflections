@@ -53,6 +53,11 @@ a "Pay now" button — there's no built-in card processing inside the sheet. Bes
 owners who want to organize leads, quote, invoice, never miss a follow-up, and get more
 Google reviews — without a monthly fee.
 
+Setup takes about 5 minutes and includes a one-time Google approval step — you'll see a
+normal "Google hasn't verified this app" screen (because it runs in YOUR account, not
+ours); the included guide shows the exact clicks. Prefer not to DIY? Grab the Done-For-You
+setup option and we'll do it all for you.
+
 Perfect for: cleaners, landscapers, lawn care, detailers, contractors, handymen, HVAC, pool & pest techs, movers, trainers, and any service pro.
 
 Not affiliated with Google. Requires a free Google account. Digital product — no refunds once delivered.

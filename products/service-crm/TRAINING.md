@@ -38,9 +38,31 @@ clients, and invoices**, and automatically emails **follow-up reminders**,
 3. Click **⚡ CRM ▸ Set up / rebuild CRM** (only needed once, or after big changes).
 4. Click **⚡ CRM ▸ Open Quick Actions panel** — this is your daily command center.
 
-> The first time you use a menu item, Google asks you to **authorize** the script.
-> This is normal — it's your own copy running in your own account. Click through
-> Advanced ▸ Go to Service Pro CRM ▸ Allow.
+### ⚠️ Approving the app — read this first (it looks scarier than it is)
+
+The first time you run a menu item, Google shows a warning. **This is 100% normal and
+expected** for any tool that runs inside your own Google account — it's not a virus and
+nothing is wrong. Here's the exact path to click:
+
+1. **"Authorization required"** → click **Continue**.
+2. **Choose your Google account** (the one that owns this sheet).
+3. **"Google hasn't verified this app"** — don't stop here. Click the small **Advanced**
+   link (bottom-left).
+4. Click **"Go to Service Pro CRM (unsafe)."** The word *unsafe* is just Google's generic
+   label for any personal script — this is **your own copy**, running only in **your**
+   account. Your data never leaves your Google Drive.
+5. Review the permissions and click **Allow**.
+
+**Why it needs permission:** to send your emails (follow-ups, invoices, review requests),
+save invoice PDFs and photo folders to your Drive, add jobs to your Calendar, and build
+your lead form. It only ever acts inside your own account.
+
+You may see this prompt **once more later** the first time you use a feature that needs a
+new permission (like creating the lead Form or adding a calendar event) — same quick steps.
+
+> **On a work/school (Google Workspace) account** and don't see the **Advanced** link? Your
+> company admin blocks unverified scripts. Just use a **personal @gmail.com account**
+> instead — everything works the same, with no restrictions.
 
 ## 4. Your daily routine (2 minutes)
 
