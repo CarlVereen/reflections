@@ -43,6 +43,23 @@ live. Check each box; if one fails, note the step number and send it to me.
 ## G. Safety guard
 - [ ] **G1.** With data now in the sheet, run `⚡ CRM ▸ Set up / rebuild CRM` again → a **warning dialog** asks before erasing. Click **No** → nothing is wiped. *(This protects real data — do not click Yes on your live sheet.)*
 
+## H. Estimates + itemized + tax (new)
+- [ ] **H1.** In ⚙️ Settings set **Sales tax %** (e.g. 8.25) and a **Payment link** (any URL) and **Currency symbol**.
+- [ ] **H2.** In 🧾 Line Items add 2–3 rows with the same **Doc #** (e.g. 1001), each with Description / Qty / Rate. Confirm **Line Total** auto-calculates.
+- [ ] **H3.** In 📄 Estimates add a row: Estimate # = 1001, Client = your test client, dates. Click it → `⚡ CRM ▸ Invoices & estimates ▸ Create & email estimate` → you receive an **ESTIMATE** PDF that is **itemized**, shows **subtotal + tax + total**, and says "Valid until".
+- [ ] **H4.** In 💵 Invoices add a row: Invoice # = 1001, same client. Create & email invoice → **INVOICE** PDF, itemized, with tax, a **Pay now** button (your link), marked **Sent**, Amount column updated to the total.
+- [ ] **H5.** Run Create & email invoice on the **same row again** → the total is the **same** (tax not applied twice). ✅ this verifies the no-double-tax fix.
+- [ ] **H6.** Add an invoice with **no** line items but a typed **Amount** → PDF shows a single line = that amount, no tax added.
+
+## I. Recurring jobs (new)
+- [ ] **I1.** In 🗓️ Jobs, set a job's **Repeat = Weekly** and **Status = Done**.
+- [ ] **I2.** `⚡ CRM ▸ Automations ▸ Roll forward finished recurring jobs` → a **new Scheduled job** appears **7 days later** for the same client; the original's **Rolled? = Yes**.
+- [ ] **I3.** Run it again → **no duplicate** is created (idempotent).
+
+## J. Mobile lead-capture form (new)
+- [ ] **J1.** `⚡ CRM ▸ Create mobile lead-capture form` → approve any new authorization → an alert shows the **form URL** (also saved in ⚙️ Settings). A "Form Responses" tab appears.
+- [ ] **J2.** Open the form URL (on your phone ideally), submit a test lead → it appears in 🎯 **Leads** with status New and a follow-up date.
+
 ---
 
 ## If something fails

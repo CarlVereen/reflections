@@ -10,27 +10,30 @@ Apps Script unless noted. This is the backlog that most raises perceived value a
 
 ## Product backlog (highest value first)
 
-### P1 — Quotes / Estimates  ⭐ biggest expectation gap, low effort
-Clone the existing invoice PDF engine into "Create & email estimate." Stamp ESTIMATE,
-pull from Leads/a Quotes tab. Makes the existing "Quoted" pipeline stage real.
+### ✅ P1 — Quotes / Estimates  (DONE)
+Shared PDF engine (`generateDoc_`) now produces both estimates and invoices. New
+📄 Estimates tab; `Create & email estimate` stamps ESTIMATE with a "Valid until" date.
 
-### P2 — Itemized invoices + tax
-Line items (description / qty / rate) + a tax % from Settings, summed in the PDF.
-Turns the weakest artifact (one-line invoice) into something professional.
+### ✅ P2 — Itemized invoices + tax  (DONE)
+New 🧾 Line Items tab (Doc # / Description / Qty / Rate / Line Total). Invoices &
+estimates pull matching items, apply a Sales tax % from Settings, and show
+subtotal / tax / total. A single typed Amount still works (treated as the total,
+no double-taxing on re-run).
 
-### P3 — Recurring / repeat jobs  ⭐ existential for Cleaning & Lawn Care
-"Repeat every: weekly/biweekly/monthly" column + a daily trigger that auto-creates the
-next job when one is marked Done. Without this, the two flagship niches fight the tool.
+### ✅ P3 — Recurring / repeat jobs  (DONE)
+Jobs gained a "Repeat" column (Weekly/Biweekly/Monthly) + internal "Rolled?" flag.
+`rollForwardRecurringJobs` (daily trigger) auto-creates the next visit when a
+recurring job is marked Done. Idempotent — never spawns twice.
 
-### P4 — Pay-now link + SMS fallback  (kills two loud complaints, low effort)
-- Settings "Payment link" (their Stripe/Square/PayPal.me/Venmo) → rendered as a button
-  in the invoice email/PDF. No processing integration — just a link.
-- Sidebar "Text this client" → builds an `sms:` link with a pre-filled reminder/review
-  message they tap to send from their own phone. Sidesteps the Twilio wall.
+### ✅ P4 — Pay-now link + SMS fallback  (DONE)
+- Settings "Payment link" renders a **Pay now** button in invoices (PDF + email).
+- The follow-up digest email now has a tap-to-text **"Text ›"** `sms:` link per lead —
+  works on the phone where they read it, sidestepping the Twilio wall.
 
-### P5 — Honest mobile capture: Google Form for "Add a lead"
-A linked Google Form (works perfectly on phones, unlike the desktop-only sidebar) that
-feeds the Leads tab. Gives a real driveway lead-capture path.
+### ✅ P5 — Mobile lead capture via Google Form  (DONE)
+`Create mobile lead-capture form` builds a Google Form (great on phones) whose
+submissions flow straight into the 🎯 Leads tab via an onFormSubmit trigger. URL is
+saved to Settings to bookmark on a phone.
 
 ## Strong follow-ons (next tier)
 - Google Calendar sync / a real "today & this week" schedule view of Jobs.

@@ -13,28 +13,34 @@ This is the **product master**. Each sale is a *copy* of the finished sheet.
 
 | Tab | What it does |
 |-----|--------------|
-| 📊 **Dashboard** | Live KPIs — new leads (7 days), open pipeline value, jobs this week, revenue this month, win rate, lifetime revenue, and a **follow-ups-due** list. Auto-updates. |
+| 📊 **Dashboard** | Live KPIs — new leads (7 days), open pipeline value, jobs this week, revenue this month, win rate, lifetime revenue, a **follow-ups-due** list, and a 6-month revenue chart. Auto-updates. |
 | 🎯 **Leads** | Pipeline with color-coded statuses (New → Contacted → Quoted → Won/Lost), estimated value, and follow-up dates that turn **red when overdue**. |
-| 🗓️ **Jobs** | Scheduled work with status, price, and paid flag. |
+| 🗓️ **Jobs** | Scheduled work with status, price, paid flag, and a **Repeat** column (weekly/biweekly/monthly recurring). |
 | 👥 **Clients** | Contact book; **Total Spent auto-calculates** from paid jobs. |
-| 💵 **Invoices** | Simple invoice log with Draft/Sent/Paid/Overdue statuses. |
-| ⚙️ **Settings** | Business name, owner email, currency, default follow-up window. |
+| 📄 **Estimates** | Quote log (Draft/Sent/Accepted/Declined) → one-click branded PDF. |
+| 💵 **Invoices** | Invoice log (Draft/Sent/Paid/Overdue) → one-click branded PDF with tax + Pay-now. |
+| 🧾 **Line Items** | Optional itemization for any estimate/invoice (Description / Qty / Rate). |
+| ⚙️ **Settings** | Business info, currency, sales tax %, review link, payment instructions, payment link, follow-up window. |
 
-**Automations (Apps Script):**
-- `⚡ CRM ▸ Add a lead` — guided lead entry with an auto-set follow-up date.
-- `⚡ CRM ▸ Convert selected lead → client` — one click moves a won lead into Clients.
-- `⚡ CRM ▸ Email me today's follow-ups` — sends the owner a formatted digest.
-- `⚡ CRM ▸ Turn on daily 8am follow-up email` — installs a time-based trigger.
+**Actions & automations (Apps Script):**
+- **⚡ Quick Actions panel** — add leads, see follow-ups, one-click sends.
+- **Estimates & invoices** — itemized branded PDFs with sales tax and a Pay-now button, emailed to the client.
+- **Recurring jobs** — `rollForwardRecurringJobs` auto-creates the next visit when a recurring job is done.
+- **Review requests, follow-up digest (with tap-to-text links), appointment reminders, overdue-invoice flagging** — all on a daily-trigger autopilot.
+- **Mobile lead-capture Google Form** — `createLeadForm` builds a phone-friendly form that feeds the Leads tab.
+
+> Container-bound project needs **two files**: `Code.gs` and `Sidebar.html`.
 
 ---
 
 ## How to build the master (one-time, ~5 min)
 
 1. Create a new Google Sheet named **Service Pro CRM — MASTER**.
-2. `Extensions ▸ Apps Script`. Delete the stub, paste **all of `Code.gs`**, Save.
+2. `Extensions ▸ Apps Script`. Paste **all of `Code.gs`** into `Code.gs`. Then add a
+   file → **HTML** → name it **`Sidebar`** → paste **all of `Sidebar.html`**. Save.
 3. Back in the sheet, reload the tab. A **⚡ CRM** menu appears.
 4. Click **⚡ CRM ▸ Set up / rebuild CRM**. Approve the auth prompt once.
-5. The six tabs build themselves. That's the master.
+5. The nine tabs build themselves. That's the master. (Run the smoke test — `SMOKE-TEST.md`.)
 
 ## How to fulfill a sale (~60 seconds, repeatable)
 

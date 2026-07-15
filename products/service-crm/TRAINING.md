@@ -63,14 +63,24 @@ That's it. Everything feeds the Dashboard automatically.
 - Log work in the 🗓️ **Jobs** tab: date, client, service, price.
 - Mark **Status = Done** and **Paid? = Yes** when complete.
 - The client's **Total Spent** (in 👥 Clients) updates automatically.
+- **Recurring work?** Set the **Repeat** column to Weekly / Biweekly / Monthly. When you
+  mark that job **Done**, the CRM automatically creates the next visit for you (once daily
+  automations are on, or via **⚡ CRM ▸ Automations ▸ Roll forward finished recurring jobs**).
 
-## 7. Invoices in one click
+## 7. Estimates & invoices in one click
 
-1. Go to 💵 **Invoices**, add a row: invoice #, client, dates, amount.
-2. Click that row, then **⚡ CRM ▸ Invoices ▸ Create & email invoice**.
-3. A branded **PDF** is generated, emailed to the client (if they have an email
-   in 👥 Clients), and saved to your Drive. The invoice is marked **Sent**.
-4. **⚡ CRM ▸ Invoices ▸ Flag overdue invoices** marks anything past its due date.
+Both work the same way and produce a branded PDF, emailed to the client and saved to Drive.
+
+1. **Estimate:** add a row in 📄 **Estimates** (estimate #, client, dates). Click it →
+   **⚡ CRM ▸ Invoices & estimates ▸ Create & email estimate**.
+2. **Invoice:** add a row in 💵 **Invoices** (invoice #, client, dates). Click it →
+   **Create & email invoice**. It's marked **Sent** and can flag **Overdue** later.
+3. **Itemize (optional):** in 🧾 **Line Items**, add rows with the **same number** as the
+   estimate/invoice — Description / Qty / Rate. The PDF then lists each line, adds your
+   **Sales tax %** (from ⚙️ Settings), and totals it. No line items? Just type a single
+   **Amount** on the row instead.
+4. **Get paid online:** put your Stripe/PayPal/Venmo link in ⚙️ **Settings ▸ Payment link**
+   and invoices show a **Pay now** button.
 
 ## 8. Getting more 5-star reviews (the money-maker)
 
@@ -85,9 +95,15 @@ More Google reviews = more jobs. The CRM automates the ask:
 ## 9. Turn on autopilot
 
 **⚡ CRM ▸ Automations ▸ Turn ON daily automations.** From then on, every morning:
-- 🔔 You get your **follow-up list** by email (8am).
-- 📅 **Appointment reminders** go to clients scheduled for the next day.
+- 🔁 **Recurring jobs** roll forward to their next visit.
 - 🚩 **Overdue invoices** get flagged.
+- 🔔 You get your **follow-up list** by email (8am) — with a **tap-to-text** link per lead.
+- 📅 **Appointment reminders** go to clients scheduled for the next day.
+
+**Capture leads from your phone:** run **⚡ CRM ▸ Create mobile lead-capture form** once.
+You'll get a Google Form link — bookmark it on your phone. Anything submitted drops
+straight into your 🎯 Leads tab. (The menu and side panel are computer-only, so this
+Form is the mobile-friendly way to add a lead from a driveway.)
 
 Turn it off anytime with **Turn OFF daily automations**.
 

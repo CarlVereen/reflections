@@ -28,10 +28,12 @@ Service Pro CRM tracks your leads, jobs, clients, and invoices, and automaticall
 • Live dashboard — new leads, pipeline value, revenue, win rate + revenue chart
 • Lead pipeline — color-coded, with follow-up dates that turn red when overdue
 • Quick Actions panel — add leads & fire off emails without touching the grid
-• One-click PDF invoices — branded, emailed to your client, saved to your Drive
+• Branded PDF estimates AND invoices — itemized, with sales tax and a "Pay now" button
+• Recurring jobs — weekly/biweekly/monthly visits roll forward automatically
 • Automatic Google-review requests — more 5-star reviews = more jobs
-• Follow-up + appointment reminder emails on autopilot
-• Job scheduler, client book (auto totals), invoice log
+• Follow-up + appointment reminder emails on autopilot (tap-to-text link included)
+• Mobile lead-capture Google Form → feeds your Leads tab from anywhere
+• Job scheduler, client book (auto totals), estimate + invoice logs
 
 ★ WHY IT BEATS A $30/MONTH APP
 • One-time price. Own it forever.
@@ -43,12 +45,13 @@ Service Pro CRM tracks your leads, jobs, clients, and invoices, and automaticall
 After purchase you get a PDF with a link. Click "Make a copy" and it's yours — private and editable. A 5-minute quick-start guide is included.
 
 ★ PLEASE READ BEFORE BUYING (so it's a great fit)
-This is a Google Sheets system, not a mobile app. Set it up and send invoices from a
-computer; the automatic reminder & review emails then run on their own. It sends by
-EMAIL (not text/SMS), and customers pay you however you tell them (add your own
-Stripe/PayPal/Venmo link) — there's no built-in card processing or automatic quotes yet.
-Best for solo owners who want to organize leads, never miss a follow-up, log jobs, send
-branded invoices, and get more Google reviews — without a monthly fee.
+This is a Google Sheets system, not a mobile app. Set it up, send estimates/invoices,
+and do data entry from a computer; the automatic reminder & review emails then run on
+their own. Customer messages go by EMAIL (a tap-to-text link is included for you on
+mobile). Customers pay you through your own payment link (Stripe/PayPal/Venmo) shown as
+a "Pay now" button — there's no built-in card processing inside the sheet. Best for solo
+owners who want to organize leads, quote, invoice, never miss a follow-up, and get more
+Google reviews — without a monthly fee.
 
 Perfect for: cleaners, landscapers, lawn care, detailers, contractors, handymen, HVAC, pool & pest techs, movers, trainers, and any service pro.
 

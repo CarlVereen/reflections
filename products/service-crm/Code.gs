@@ -19,18 +19,22 @@
  *************************************************************************/
 
 const TABS = {
-  START:    '🚀 Start Here',
-  DASH:     '📊 Dashboard',
-  LEADS:    '🎯 Leads',
-  JOBS:     '🗓️ Jobs',
-  CLIENTS:  '👥 Clients',
-  INVOICES: '💵 Invoices',
-  SETTINGS: '⚙️ Settings',
+  START:     '🚀 Start Here',
+  DASH:      '📊 Dashboard',
+  LEADS:     '🎯 Leads',
+  JOBS:      '🗓️ Jobs',
+  CLIENTS:   '👥 Clients',
+  ESTIMATES: '📄 Estimates',
+  INVOICES:  '💵 Invoices',
+  ITEMS:     '🧾 Line Items',
+  SETTINGS:  '⚙️ Settings',
 };
 
 const LEAD_STATUSES = ['New', 'Contacted', 'Quoted', 'Won', 'Lost'];
 const JOB_STATUSES  = ['Scheduled', 'In Progress', 'Done', 'Cancelled'];
 const INV_STATUSES  = ['Draft', 'Sent', 'Paid', 'Overdue'];
+const EST_STATUSES  = ['Draft', 'Sent', 'Accepted', 'Declined'];
+const REPEAT_OPTS   = ['None', 'Weekly', 'Biweekly', 'Monthly'];
 
 /* ─────────────────────────────────────────────────────────────────────
  *  VARIANT CONFIG — this is the ONLY block that changes between niche
@@ -70,17 +74,20 @@ function onOpen() {
       .addItem('➕  Add a lead', 'addLead')
       .addItem('📅  Schedule a job from selected lead', 'scheduleJobFromLead')
       .addItem('✅  Convert selected lead → client', 'convertLeadToClient'))
-    .addSubMenu(SpreadsheetApp.getUi().createMenu('Invoices')
+    .addSubMenu(SpreadsheetApp.getUi().createMenu('Invoices & estimates')
+      .addItem('📄  Create & email estimate (selected row)', 'createEstimatePdf')
       .addItem('🧾  Create & email invoice (selected row)', 'createInvoicePdf')
       .addItem('🚩  Flag overdue invoices now', 'markOverdueInvoices'))
     .addSubMenu(SpreadsheetApp.getUi().createMenu('Automations')
       .addItem('📧  Email me today\'s follow-ups', 'sendFollowUpDigest')
       .addItem('⭐  Send review requests for finished jobs', 'sendReviewRequests')
       .addItem('📅  Send tomorrow\'s appointment reminders', 'remindUpcomingJobs')
+      .addItem('🔁  Roll forward finished recurring jobs', 'rollForwardRecurringJobs')
       .addSeparator()
       .addItem('⏰  Turn ON daily automations', 'installDailyTriggers')
       .addItem('⏹️  Turn OFF daily automations', 'removeDailyTriggers'))
     .addSeparator()
+    .addItem('📱  Create mobile lead-capture form', 'createLeadForm')
     .addItem('ℹ️  About / help', 'showAbout')
     .addToUi();
 }
@@ -114,11 +121,14 @@ function buildCRM() {
   buildLeads_(ss);
   buildJobs_(ss);
   buildClients_(ss);
+  buildEstimates_(ss);
   buildInvoices_(ss);
+  buildLineItems_(ss);
   buildDashboard_(ss);
   buildSettings_(ss);
   buildStartHere_(ss);
-  reorderTabs_(ss, [TABS.START, TABS.DASH, TABS.LEADS, TABS.JOBS, TABS.CLIENTS, TABS.INVOICES, TABS.SETTINGS]);
+  reorderTabs_(ss, [TABS.START, TABS.DASH, TABS.LEADS, TABS.JOBS, TABS.CLIENTS,
+                    TABS.ESTIMATES, TABS.INVOICES, TABS.ITEMS, TABS.SETTINGS]);
   // Remove the leftover default sheet created with a new spreadsheet.
   const def = ss.getSheetByName('Sheet1') || ss.getSheetByName('Sheet 1');
   if (def && ss.getSheets().length > 1) ss.deleteSheet(def);
@@ -179,16 +189,19 @@ function buildLeads_(ss) {
 
 function buildJobs_(ss) {
   const sh = getOrCreate_(ss, TABS.JOBS);
-  const headers = ['Job Date', 'Client', 'Service', 'Scheduled Time', 'Status', 'Price', 'Paid?', 'Review Sent?', 'Reminder Sent?', 'Notes'];
+  const headers = ['Job Date', 'Client', 'Service', 'Scheduled Time', 'Status', 'Price', 'Paid?',
+                   'Review Sent?', 'Reminder Sent?', 'Notes', 'Repeat', 'Rolled?'];
   header_(sh, headers);
-  sh.setColumnWidths(1, headers.length, 125);
-  sh.setColumnWidth(2, 160); sh.setColumnWidth(10, 240);
+  sh.setColumnWidths(1, headers.length, 118);
+  sh.setColumnWidth(2, 160); sh.setColumnWidth(10, 220);
   const rows = 500;
   dropdown_(sh, 5, JOB_STATUSES, 2, rows);
   suggestList_(sh, 3, CONFIG.services, 2, rows);   // Service — niche suggestions, custom allowed
   dropdown_(sh, 7, ['Yes', 'No'], 2, rows);
   dropdown_(sh, 8, ['Yes', 'No'], 2, rows);
   dropdown_(sh, 9, ['Yes', 'No'], 2, rows);
+  dropdown_(sh, 11, REPEAT_OPTS, 2, rows);         // Repeat (recurring)
+  dropdown_(sh, 12, ['Yes', 'No'], 2, rows);       // Rolled? (internal — next visit already created)
   sh.getRange(2, 1, rows, 1).setNumberFormat('m/d/yyyy');
   sh.getRange(2, 6, rows, 1).setNumberFormat('$#,##0.00');
   const statusRange = sh.getRange(2, 5, rows, 1);
@@ -228,6 +241,41 @@ function buildInvoices_(ss) {
   const c = (t, bg, fc) => SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo(t).setBackground(bg).setFontColor(fc || BRAND.header).setRanges([statusRange]).build();
   rules.push(c('Draft', '#eeeeee'), c('Sent', '#fff3d6'), c('Paid', '#d8efdf'), c('Overdue', '#f5d9d3', BRAND.warn));
   sh.setConditionalFormatRules(rules);
+}
+
+function buildEstimates_(ss) {
+  const sh = getOrCreate_(ss, TABS.ESTIMATES);
+  const headers = ['Estimate #', 'Client', 'Issue Date', 'Valid Until', 'Amount', 'Status'];
+  header_(sh, headers);
+  sh.setColumnWidths(1, headers.length, 140);
+  const rows = 500;
+  dropdown_(sh, 6, EST_STATUSES, 2, rows);
+  sh.getRange(2, 3, rows, 2).setNumberFormat('m/d/yyyy');
+  sh.getRange(2, 5, rows, 1).setNumberFormat('$#,##0.00');
+  const statusRange = sh.getRange(2, 6, rows, 1);
+  const rules = [];
+  const c = (t, bg, fc) => SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo(t).setBackground(bg).setFontColor(fc || BRAND.header).setRanges([statusRange]).build();
+  rules.push(c('Draft', '#eeeeee'), c('Sent', '#fff3d6'), c('Accepted', '#d8efdf'), c('Declined', '#f5d9d3', BRAND.warn));
+  sh.setConditionalFormatRules(rules);
+  sh.getRange('H1').setValue('Add line items for an estimate/invoice in the 🧾 Line Items tab (match the number).').setFontColor('#9a958b').setFontSize(9);
+}
+
+function buildLineItems_(ss) {
+  const sh = getOrCreate_(ss, TABS.ITEMS);
+  const headers = ['Doc # (Invoice or Estimate)', 'Description', 'Qty', 'Rate', 'Line Total'];
+  header_(sh, headers);
+  sh.setColumnWidth(1, 200); sh.setColumnWidth(2, 300); sh.setColumnWidth(3, 70);
+  sh.setColumnWidth(4, 110); sh.setColumnWidth(5, 120);
+  const rows = 500;
+  sh.getRange(2, 3, rows, 1).setNumberFormat('0.##');
+  sh.getRange(2, 4, rows, 1).setNumberFormat('$#,##0.00');
+  const arr = [];
+  for (let i = 0; i < rows; i++) {
+    const r = i + 2;
+    arr.push(['=IF(AND($C' + r + '<>"",$D' + r + '<>""),$C' + r + '*$D' + r + ',"")']);
+  }
+  sh.getRange(2, 5, rows, 1).setFormulas(arr).setNumberFormat('$#,##0.00');
+  sh.getRange('G1').setValue('Optional: itemize a doc here. Leave blank to just use a single Amount on the invoice/estimate.').setFontColor('#9a958b').setFontSize(9);
 }
 
 function buildDashboard_(ss) {
@@ -302,9 +350,12 @@ function buildSettings_(ss) {
     ['Owner email (for follow-up digest)', Session.getActiveUser().getEmail() || 'you@example.com'],
     ['Business phone', '(555) 000-0000'],
     ['Currency symbol', '$'],
+    ['Sales tax % (0 for none)', 0],
     ['Default follow-up (days after new lead)', 2],
     ['Google review link (for review requests)', 'https://g.page/r/your-review-link/review'],
     ['Invoice payment instructions', 'Pay via Zelle to you@email.com, or cash/check on completion.'],
+    ['Payment link (Stripe/PayPal/Venmo — optional)', ''],
+    ['Mobile lead-capture form URL (auto-filled)', ''],
   ];
   sh.getRange(4, 2, rowsData.length, 2).setValues(rowsData);
   sh.getRange(4, 2, rowsData.length, 1).setFontWeight('bold').setFontColor('#52565c');
@@ -429,75 +480,142 @@ function convertLeadToClient() {
   ui.alert('🎉 "' + v[1] + '" is now a client.');
 }
 
-/* ========================= INVOICE PDF ============================ */
+/* ==================== ESTIMATES & INVOICES ======================= */
 
-function createInvoicePdf() {
+function createInvoicePdf()  { generateDoc_('INVOICE'); }
+function createEstimatePdf() { generateDoc_('ESTIMATE'); }
+
+/**
+ * Shared PDF generator for invoices and estimates. Pulls optional line items from
+ * the 🧾 Line Items tab (matched by number), applies sales tax to itemized docs,
+ * adds a Pay-now button (invoices), emails the client, and saves a copy to Drive.
+ */
+function generateDoc_(kind) {
+  const isInv = (kind === 'INVOICE');
   const ui = SpreadsheetApp.getUi();
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const inv = ss.getSheetByName(TABS.INVOICES), clients = ss.getSheetByName(TABS.CLIENTS);
-  if (!inv) { ui.alert('Run setup first.'); return; }
-  if (ss.getActiveSheet().getName() !== TABS.INVOICES) { ui.alert('Go to the 💵 Invoices tab, click the invoice row, then run this again.'); return; }
+  const sheetName = isInv ? TABS.INVOICES : TABS.ESTIMATES;
+  const sh = ss.getSheetByName(sheetName);
+  const clients = ss.getSheetByName(TABS.CLIENTS);
+  if (!sh) { ui.alert('Run setup first.'); return; }
+  if (ss.getActiveSheet().getName() !== sheetName) {
+    ui.alert('Go to the ' + sheetName + ' tab, click the row you want, then run this again.'); return;
+  }
   const row = ss.getActiveRange().getRow();
-  if (row < 2) { ui.alert('Click an invoice row first.'); return; }
-  const v = inv.getRange(row, 1, 1, 6).getValues()[0]; // #, client, issue, due, amount, status
-  if (!v[1] || !v[4]) { ui.alert('This invoice needs at least a Client and an Amount.'); return; }
+  if (row < 2) { ui.alert('Click a row first.'); return; }
+  const v = sh.getRange(row, 1, 1, 6).getValues()[0]; // num, client, dateA, dateB(due/valid), amount, status
+  if (!v[1]) { ui.alert('This ' + kind.toLowerCase() + ' needs a Client.'); return; }
 
+  const num = (v[0] === '' || v[0] === null) ? 'draft' : v[0];
   const biz = getSetting_(ss, 'Business name') || 'Your Business';
   const bizPhone = getSetting_(ss, 'Business phone') || '';
   const pay = getSetting_(ss, 'Invoice payment instructions') || '';
+  const payLink = String(getSetting_(ss, 'Payment link (Stripe/PayPal/Venmo — optional)') || '').trim();
   const cur = String(getSetting_(ss, 'Currency symbol') || '$').trim() || '$';
+  const taxPct = Number(getSetting_(ss, 'Sales tax % (0 for none)')) || 0;
   const tz = Session.getScriptTimeZone();
   const fmtD = d => (d instanceof Date) ? Utilities.formatDate(d, tz, 'MMM d, yyyy') : '';
-  const amount = Number(v[4]) || 0;
+  const money = n => cur + (Number(n) || 0).toFixed(2);
+
+  // Optional line items matched by number. Itemized docs get tax; a single typed
+  // Amount is treated as the final total (no tax applied) to avoid double-taxing on re-run.
+  const items = lineItemsFor_(ss, v[0]);
+  let subtotal = 0, tax = 0, rowsHtml = '';
+  if (items.length) {
+    items.forEach(function (it) {
+      const lt = it.qty * it.rate; subtotal += lt;
+      rowsHtml += '<tr><td style="padding:9px;border-bottom:1px solid #eee">' + it.desc + '</td>' +
+        '<td style="padding:9px;border-bottom:1px solid #eee;text-align:center">' + it.qty + '</td>' +
+        '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(it.rate) + '</td>' +
+        '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(lt) + '</td></tr>';
+    });
+    tax = subtotal * taxPct / 100;
+  } else {
+    subtotal = Number(v[4]) || 0;
+    if (!subtotal) { ui.alert('Add an Amount on this row, or add line items in the 🧾 Line Items tab (match #' + num + ').'); return; }
+    rowsHtml = '<tr><td style="padding:9px;border-bottom:1px solid #eee">Services rendered — ' + biz + '</td>' +
+      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:center">1</td>' +
+      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(subtotal) + '</td>' +
+      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(subtotal) + '</td></tr>';
+  }
+  const total = subtotal + tax;
 
   // client email
   let email = '';
-  if (clients) {
-    const cData = clients.getDataRange().getValues();
-    for (let i = 1; i < cData.length; i++) if (String(cData[i][0]).trim().toLowerCase() === String(v[1]).trim().toLowerCase()) email = String(cData[i][2]).trim();
-  }
+  const cData = clients ? clients.getDataRange().getValues() : [];
+  for (let i = 1; i < cData.length; i++) if (String(cData[i][0]).trim().toLowerCase() === String(v[1]).trim().toLowerCase()) email = String(cData[i][2]).trim();
+
+  const title = isInv ? 'INVOICE' : 'ESTIMATE';
+  const dateBLabel = isInv ? 'Due' : 'Valid until';
+  const totalsRows =
+    (tax > 0 ?
+      '<tr><td colspan="3" style="padding:6px 9px;text-align:right">Subtotal</td><td style="padding:6px 9px;text-align:right">' + money(subtotal) + '</td></tr>' +
+      '<tr><td colspan="3" style="padding:6px 9px;text-align:right">Tax (' + taxPct + '%)</td><td style="padding:6px 9px;text-align:right">' + money(tax) + '</td></tr>' : '') +
+    '<tr><td colspan="3" style="padding:9px;text-align:right;font-weight:bold">' + (isInv ? 'Total Due' : 'Estimated Total') + '</td>' +
+    '<td style="padding:9px;text-align:right;font-weight:bold;font-size:18px;color:' + BRAND.accent + '">' + money(total) + '</td></tr>';
+
+  const payBtn = (isInv && payLink) ?
+    '<p style="text-align:center;margin:22px 0"><a href="' + payLink + '" style="background:' + BRAND.accent +
+    ';color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:bold">Pay now</a></p>' : '';
 
   const html =
     '<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#1a1c1f">' +
-    // Header as a table (not flexbox) so it lays out reliably in the HTML→PDF conversion.
     '<table style="width:100%;border-bottom:3px solid ' + BRAND.accent + ';margin-bottom:22px"><tr>' +
     '<td style="padding-bottom:14px;vertical-align:top"><div style="font-size:24px;font-weight:bold">' + biz + '</div>' +
     (bizPhone ? '<div style="color:#52565c">' + bizPhone + '</div>' : '') + '</td>' +
     '<td style="padding-bottom:14px;text-align:right;vertical-align:top">' +
-    '<div style="font-size:28px;font-weight:bold;color:' + BRAND.accent + '">INVOICE</div>' +
-    '<div style="color:#52565c">#' + (v[0] || '—') + '</div></td></tr></table>' +
+    '<div style="font-size:28px;font-weight:bold;color:' + BRAND.accent + '">' + title + '</div>' +
+    '<div style="color:#52565c">#' + num + '</div></td></tr></table>' +
     '<table style="width:100%;margin-bottom:20px"><tr>' +
-    '<td><b>Bill to:</b><br>' + v[1] + (email ? '<br>' + email : '') + '</td>' +
-    '<td style="text-align:right"><b>Issued:</b> ' + fmtD(v[2]) + '<br><b>Due:</b> ' + fmtD(v[3]) + '</td></tr></table>' +
-    '<table style="width:100%;border-collapse:collapse;margin-bottom:20px">' +
-    '<tr style="background:#1a1c1f;color:#fff"><th style="text-align:left;padding:10px">Description</th><th style="text-align:right;padding:10px">Amount</th></tr>' +
-    '<tr><td style="padding:10px;border-bottom:1px solid #eee">Services rendered — ' + biz + '</td>' +
-    '<td style="padding:10px;border-bottom:1px solid #eee;text-align:right">' + cur + amount.toFixed(2) + '</td></tr>' +
-    '<tr><td style="padding:10px;text-align:right;font-weight:bold">Total Due</td>' +
-    '<td style="padding:10px;text-align:right;font-weight:bold;font-size:18px;color:' + BRAND.accent + '">' + cur + amount.toFixed(2) + '</td></tr></table>' +
-    (pay ? '<div style="background:' + BRAND.soft + ';padding:14px;border-radius:8px"><b>Payment:</b> ' + pay + '</div>' : '') +
-    '<p style="color:#52565c;margin-top:24px">Thank you for your business!</p></div>';
+    '<td><b>' + (isInv ? 'Bill to' : 'Prepared for') + ':</b><br>' + v[1] + (email ? '<br>' + email : '') + '</td>' +
+    '<td style="text-align:right"><b>Issued:</b> ' + fmtD(v[2]) + '<br><b>' + dateBLabel + ':</b> ' + fmtD(v[3]) + '</td></tr></table>' +
+    '<table style="width:100%;border-collapse:collapse;margin-bottom:6px">' +
+    '<tr style="background:#1a1c1f;color:#fff"><th style="text-align:left;padding:9px">Description</th>' +
+    '<th style="padding:9px">Qty</th><th style="text-align:right;padding:9px">Rate</th><th style="text-align:right;padding:9px">Amount</th></tr>' +
+    rowsHtml + totalsRows + '</table>' + payBtn +
+    (pay && isInv ? '<div style="background:' + BRAND.soft + ';padding:14px;border-radius:8px"><b>Payment:</b> ' + pay + '</div>' : '') +
+    '<p style="color:#52565c;margin-top:20px">' + (isInv ? 'Thank you for your business!' :
+      'This estimate is for your review — reply to accept and we\'ll get you scheduled.') + '</p></div>';
 
-  const pdf = Utilities.newBlob(html, 'text/html', 'Invoice-' + (v[0] || 'draft') + '.html').getAs('application/pdf')
-    .setName('Invoice-' + (v[0] || 'draft') + '-' + String(v[1]).replace(/\s+/g, '') + '.pdf');
+  const fname = (isInv ? 'Invoice' : 'Estimate') + '-' + num + '-' + String(v[1]).replace(/\s+/g, '') + '.pdf';
+  const pdf = Utilities.newBlob(html, 'text/html', 'doc.html').getAs('application/pdf').setName(fname);
+
+  // Keep the Amount column in sync with the computed total so dashboards stay accurate.
+  sh.getRange(row, 5).setValue(total);
 
   if (email) {
-    const resp = ui.alert('Email invoice?', 'Email this invoice PDF to ' + v[1] + ' at ' + email + '?', ui.ButtonSet.YES_NO);
+    const resp = ui.alert('Email ' + kind.toLowerCase() + '?', 'Email this ' + kind.toLowerCase() + ' PDF to ' + v[1] + ' at ' + email + '?', ui.ButtonSet.YES_NO);
     if (resp === ui.Button.YES) {
-      MailApp.sendEmail({ to: email, subject: 'Invoice #' + (v[0] || '') + ' from ' + biz,
-        htmlBody: 'Hi ' + String(v[1]).split(' ')[0] + ',<br><br>Please find your invoice attached. ' +
-        (pay ? pay : '') + '<br><br>Thank you!<br>' + biz, attachments: [pdf] });
-      inv.getRange(row, 6).setValue('Sent');
+      MailApp.sendEmail({ to: email, subject: title.charAt(0) + title.slice(1).toLowerCase() + ' #' + num + ' from ' + biz,
+        htmlBody: 'Hi ' + String(v[1]).split(' ')[0] + ',<br><br>Please find your ' + kind.toLowerCase() + ' attached. ' +
+          (isInv && payLink ? 'Pay online here: ' + payLink + '<br>' : '') + (isInv && pay ? pay : '') +
+          '<br><br>Thank you!<br>' + biz, attachments: [pdf] });
+      sh.getRange(row, 6).setValue('Sent');
       DriveApp.createFile(pdf);
-      ui.alert('🧾 Invoice emailed to ' + v[1] + ' and marked Sent. A copy is saved in your Drive.');
+      ui.alert('✅ ' + title.charAt(0) + title.slice(1).toLowerCase() + ' emailed to ' + v[1] + ' and marked Sent. A copy is saved in your Drive.');
     } else {
       DriveApp.createFile(pdf);
-      ui.alert('Saved the invoice PDF to your Drive (not emailed).');
+      ui.alert('Saved the ' + kind.toLowerCase() + ' PDF to your Drive (not emailed).');
     }
   } else {
     DriveApp.createFile(pdf);
     ui.alert('No email on file for ' + v[1] + ' (add one in 👥 Clients to email directly). Saved the PDF to your Drive instead.');
   }
+}
+
+/** Returns line items [{desc,qty,rate}] whose Doc # matches (string compare). */
+function lineItemsFor_(ss, docNum) {
+  const sh = ss.getSheetByName(TABS.ITEMS);
+  if (!sh || docNum === '' || docNum === null || docNum === undefined) return [];
+  const key = String(docNum).trim().toLowerCase();
+  const data = sh.getDataRange().getValues();
+  const out = [];
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).trim().toLowerCase() !== key) continue;
+    const desc = String(data[i][1]).trim(), qty = Number(data[i][2]) || 0, rate = Number(data[i][3]) || 0;
+    if (desc && qty && rate) out.push({ desc: desc, qty: qty, rate: rate });
+  }
+  return out;
 }
 
 /* ========================= AUTOMATIONS ============================ */
@@ -509,15 +627,23 @@ function sendFollowUpDigest() {
   const due = sidebarFollowUps();
   if (!email) return;
   if (!due.length) { MailApp.sendEmail(email, '⚡ ' + biz + ' — no follow-ups due today 🎉', 'All caught up. Nice work.'); return; }
-  let html = '<div style="font-family:Arial,sans-serif;max-width:560px"><h2 style="color:#1a1c1f">🔔 ' + due.length +
+  let html = '<div style="font-family:Arial,sans-serif;max-width:600px"><h2 style="color:#1a1c1f">🔔 ' + due.length +
     ' follow-up' + (due.length > 1 ? 's' : '') + ' due — ' + biz + '</h2>' +
     '<table style="border-collapse:collapse;width:100%"><tr style="background:#1a1c1f;color:#fff">' +
     '<th style="padding:8px;text-align:left">Name</th><th style="padding:8px;text-align:left">Phone</th>' +
-    '<th style="padding:8px;text-align:left">Due</th><th style="padding:8px;text-align:left">Status</th></tr>';
-  due.forEach((d, i) => { html += '<tr style="background:' + (i % 2 ? BRAND.soft : '#fff') + '">' +
-    '<td style="padding:8px">' + d.name + '</td><td style="padding:8px">' + (d.phone || '—') + '</td>' +
-    '<td style="padding:8px">' + d.due + '</td><td style="padding:8px">' + d.status + '</td></tr>'; });
-  html += '</table><p style="color:#52565c;font-size:13px">Open your CRM to update these after you reach out.</p></div>';
+    '<th style="padding:8px;text-align:left">Due</th><th style="padding:8px;text-align:left">Status</th>' +
+    '<th style="padding:8px;text-align:left">Text</th></tr>';
+  due.forEach(function (d, i) {
+    const digits = String(d.phone || '').replace(/[^0-9+]/g, '');
+    const smsCell = digits
+      ? '<a href="sms:' + digits + '?&body=' + encodeURIComponent('Hi ' + String(d.name).split(' ')[0] + ", it's " + biz + ' following up — ') + '" style="color:' + BRAND.accent2 + ';font-weight:bold">Text ›</a>'
+      : '—';
+    html += '<tr style="background:' + (i % 2 ? BRAND.soft : '#fff') + '">' +
+      '<td style="padding:8px">' + d.name + '</td><td style="padding:8px">' + (d.phone || '—') + '</td>' +
+      '<td style="padding:8px">' + d.due + '</td><td style="padding:8px">' + d.status + '</td>' +
+      '<td style="padding:8px">' + smsCell + '</td></tr>';
+  });
+  html += '</table><p style="color:#52565c;font-size:13px">On your phone, tap "Text ›" to message a lead. Update their status in the CRM after you reach out.</p></div>';
   MailApp.sendEmail({ to: email, subject: '🔔 ' + due.length + ' follow-up(s) due — ' + biz, htmlBody: html });
 }
 
@@ -606,18 +732,54 @@ function markOverdueInvoices() {
 function installDailyTriggers() {
   const ui = SpreadsheetApp.getUi();
   removeDailyTriggers_();
+  ScriptApp.newTrigger('rollForwardRecurringJobs').timeBased().atHour(6).everyDays(1).create();
+  ScriptApp.newTrigger('markOverdueInvoices').timeBased().atHour(7).everyDays(1).create();
   ScriptApp.newTrigger('sendFollowUpDigest').timeBased().atHour(8).everyDays(1).create();
   ScriptApp.newTrigger('remindUpcomingJobs').timeBased().atHour(8).everyDays(1).create();
-  ScriptApp.newTrigger('markOverdueInvoices').timeBased().atHour(7).everyDays(1).create();
-  ui.alert('⏰ Autopilot is ON.', 'Every morning you\'ll get: your follow-up list (8am), appointment reminders sent to tomorrow\'s clients, and overdue invoices flagged automatically. You may be asked to authorize email once.', ui.ButtonSet.OK);
+  ui.alert('⏰ Autopilot is ON.', 'Every morning, automatically: recurring jobs roll forward, overdue invoices get flagged, your follow-up list is emailed to you (8am), and appointment reminders go to tomorrow\'s clients. You may be asked to authorize email once.', ui.ButtonSet.OK);
 }
 
 function removeDailyTriggers() { removeDailyTriggers_(); SpreadsheetApp.getUi().alert('⏹️ Daily automations turned off.'); }
 function removeDailyTriggers_() {
+  const handlers = ['sendFollowUpDigest', 'remindUpcomingJobs', 'markOverdueInvoices', 'rollForwardRecurringJobs'];
   ScriptApp.getProjectTriggers().forEach(t => {
-    const f = t.getHandlerFunction();
-    if (f === 'sendFollowUpDigest' || f === 'remindUpcomingJobs' || f === 'markOverdueInvoices') ScriptApp.deleteTrigger(t);
+    if (handlers.indexOf(t.getHandlerFunction()) > -1) ScriptApp.deleteTrigger(t);
   });
+}
+
+/**
+ * For every finished recurring job that hasn't spawned its next visit yet, create
+ * the next occurrence (Scheduled) at the right interval. Idempotent via the
+ * "Rolled?" column (col 12) so a job never spawns twice.
+ * Jobs columns: 1 Date,2 Client,3 Service,4 Time,5 Status,6 Price,7 Paid,
+ *               8 ReviewSent,9 ReminderSent,10 Notes,11 Repeat,12 Rolled?
+ */
+function rollForwardRecurringJobs() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName(TABS.JOBS);
+  if (!sh) return 0;
+  const data = sh.getDataRange().getValues();
+  const toAppend = [];
+  let made = 0;
+  for (let r = 1; r < data.length; r++) {
+    const row = data[r];
+    const repeat = String(row[10] || 'None').trim();
+    if (!(row[0] instanceof Date)) continue;
+    if (row[4] !== 'Done') continue;                 // only finished jobs spawn the next visit
+    if (repeat === '' || repeat === 'None') continue;
+    if (String(row[11]).trim() === 'Yes') continue;  // already rolled
+    const next = new Date(row[0]);
+    if (repeat === 'Weekly') next.setDate(next.getDate() + 7);
+    else if (repeat === 'Biweekly') next.setDate(next.getDate() + 14);
+    else if (repeat === 'Monthly') next.setMonth(next.getMonth() + 1);
+    else continue;
+    toAppend.push([next, row[1], row[2], row[3], 'Scheduled', row[5], 'No', 'No', 'No',
+                   'Recurring visit', repeat, 'No']);
+    sh.getRange(r + 1, 12).setValue('Yes');          // mark source rolled
+    made++;
+  }
+  toAppend.forEach(function (rowVals) { sh.appendRow(rowVals); });
+  return made;
 }
 
 /* =========================== HELPERS ============================= */
@@ -685,6 +847,58 @@ function getSetting_(ss, key) {
   const data = sh.getDataRange().getValues();
   for (let i = 0; i < data.length; i++) if (String(data[i][1]).trim() === key) return data[i][2];
   return '';
+}
+
+function setSetting_(ss, key, value) {
+  const sh = ss.getSheetByName(TABS.SETTINGS);
+  if (!sh) return;
+  const data = sh.getDataRange().getValues();
+  for (let i = 0; i < data.length; i++) {
+    if (String(data[i][1]).trim() === key) { sh.getRange(i + 1, 3).setValue(value); return; }
+  }
+}
+
+/* ===================== MOBILE LEAD FORM =========================== */
+/**
+ * Creates a Google Form (great on phones — unlike the desktop-only sidebar) whose
+ * submissions flow straight into the 🎯 Leads tab via an onFormSubmit trigger.
+ */
+function createLeadForm() {
+  const ui = SpreadsheetApp.getUi();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const existing = String(getSetting_(ss, 'Mobile lead-capture form URL (auto-filled)') || '').trim();
+  if (existing.indexOf('http') === 0) {
+    ui.alert('Lead form already exists', 'Your mobile lead form:\n\n' + existing +
+      '\n\nBookmark it on your phone. To make a new one, clear that value in ⚙️ Settings and run this again.', ui.ButtonSet.OK);
+    return;
+  }
+  const biz = getSetting_(ss, 'Business name') || 'New';
+  const form = FormApp.create(biz + ' — New Lead');
+  form.setDescription('Quick lead capture — submissions flow straight into the CRM.');
+  form.addTextItem().setTitle('Name').setRequired(true);
+  form.addTextItem().setTitle('Phone');
+  form.addTextItem().setTitle('Email');
+  form.addTextItem().setTitle('Service');
+  form.addTextItem().setTitle('Estimated value ($)');
+  form.addParagraphTextItem().setTitle('Notes');
+  form.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId());
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'onLeadFormSubmit') ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger('onLeadFormSubmit').forSpreadsheet(ss).onFormSubmit().create();
+  const url = form.getPublishedUrl();
+  setSetting_(ss, 'Mobile lead-capture form URL (auto-filled)', url);
+  ui.alert('📱 Mobile lead form created', 'Bookmark this on your phone to capture leads anywhere:\n\n' + url +
+    '\n\nSubmissions drop straight into your 🎯 Leads tab. (A "Form Responses" tab also appears — that\'s the raw log; you can ignore it.)', ui.ButtonSet.OK);
+}
+
+/** Trigger: a form submission → append to Leads with an auto follow-up date. */
+function onLeadFormSubmit(e) {
+  if (!e || !e.namedValues) return;
+  const fv = function (k) { const a = e.namedValues[k]; return (a && a[0]) ? String(a[0]).trim() : ''; };
+  const name = fv('Name');
+  if (!name) return;
+  addLeadCore_(name, fv('Phone'), fv('Email'), fv('Service'), fv('Estimated value ($)'));
 }
 
 function showAbout() {
