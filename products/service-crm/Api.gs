@@ -342,14 +342,18 @@ function apiSetLeadStatus(row, status) {
   return { ok: true };
 }
 
-/** Set a lead's Next Follow-up date (col 9). Accepts 'yyyy-MM-dd' (parsed in the
- *  script's local time so the day never shifts) or a typed date; '' clears it. */
+/** Parse a date from the app: 'yyyy-MM-dd' (interpreted in the script's local time so
+ *  the day never shifts) or a typed date. Returns a midnight Date, or null. */
+function toLocalDate_(iso) {
+  const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) { const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])); d.setHours(0, 0, 0, 0); return d; }
+  return parseDate_(iso) || null;
+}
+
+/** Set a lead's Next Follow-up date (col 9). Accepts an app date; '' clears it. */
 function apiSetLeadFollowUp(row, iso) {
   const sh = ss_().getSheetByName(TABS.LEADS);
-  let d = '';
-  const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (m) { d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])); d.setHours(0, 0, 0, 0); }
-  else { d = parseDate_(iso) || ''; }
+  const d = toLocalDate_(iso) || '';
   sh.getRange(row, 9).setValue(d);
   return { ok: true, followUp: d ? fmtd_(d) : '', followUpISO: d ? isoOrEmpty_(d) : '' };
 }
@@ -422,7 +426,7 @@ function apiListJobs() {
   const out = [];
   rows.forEach(function (r, i) {
     if (!r[1]) return;
-    out.push({ row: i + 2, date: fmtd_(r[0]), client: r[1], service: r[2] || '', time: r[3] || '',
+    out.push({ row: i + 2, date: fmtd_(r[0]), dateISO: isoOrEmpty_(r[0]), client: r[1], service: r[2] || '', time: r[3] || '',
       status: r[4] || 'Scheduled', price: num_(r[5]), paid: r[6] || 'No', repeat: r[10] || 'None' });
   });
   return out;
@@ -442,7 +446,10 @@ function apiSetJob(row, fields) {
   const sh = ss_().getSheetByName(TABS.JOBS);
   if (fields.status) sh.getRange(row, 5).setValue(fields.status);
   if (fields.paid) sh.getRange(row, 7).setValue(fields.paid);
-  return { ok: true };
+  if (fields.date !== undefined) { const d = toLocalDate_(fields.date); if (d) sh.getRange(row, 1).setValue(d); }
+  if (fields.time !== undefined) sh.getRange(row, 4).setValue(fields.time);
+  const nd = sh.getRange(row, 1).getValue();
+  return { ok: true, date: (nd instanceof Date) ? fmtd_(nd) : '', dateISO: (nd instanceof Date) ? isoOrEmpty_(nd) : '' };
 }
 
 /* ====================== ESTIMATES & INVOICES ===================== */
@@ -548,8 +555,9 @@ function apiSendDoc(kind, number) {
   return { ok: true, emailed: !!email, email: email, total: comp.total };
 }
 
-/** Approve an estimate: mark Accepted, create an invoice DRAFT (lines copied) + a scheduled Job. */
-function apiApproveEstimate(number) {
+/** Approve an estimate: mark Accepted, create an invoice DRAFT (lines copied) + a scheduled Job.
+ *  jobDateIso (optional) sets when the job is scheduled — quote today, work it next week. */
+function apiApproveEstimate(number, jobDateIso) {
   const ss = ss_();
   const est = ss.getSheetByName(TABS.ESTIMATES);
   const erow = findRowByNumber_(est, number);
@@ -565,11 +573,12 @@ function apiApproveEstimate(number) {
   inv.appendRow([invNum, ev[1], '', due, num_(ev[4]), 'Draft']); // issue date filled on send
   appendLineItems_(ss, invNum, items);
 
+  const jobDate = toLocalDate_(jobDateIso) || today;
   const jobs = ss.getSheetByName(TABS.JOBS);
   const summary = items.length ? items.slice(0, 2).map(function (i) { return i.service; }).join(', ') + (items.length > 2 ? '…' : '') : '';
-  jobs.appendRow([today, ev[1], summary, '', 'Scheduled', num_(ev[4]), 'No', 'No', 'No', 'From estimate ' + number, 'None', 'No', '']);
+  jobs.appendRow([jobDate, ev[1], summary, '', 'Scheduled', num_(ev[4]), 'No', 'No', 'No', 'From estimate ' + number, 'None', 'No', '']);
   upsertClient_(ss, ev[1], '', '', 'From estimate ' + number);
-  return { ok: true, invoiceNumber: invNum };
+  return { ok: true, invoiceNumber: invNum, jobDate: fmtd_(jobDate) };
 }
 
 function apiMarkInvoicePaid(number) {

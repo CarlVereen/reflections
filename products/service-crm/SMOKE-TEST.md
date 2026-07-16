@@ -28,16 +28,16 @@ and the error and send it over.
 - [ ] **D3.** **Add a second lead re-using the same email or phone** → a **⚠️ Possible duplicate** prompt lists the match; **Cancel** stops it, **Add anyway** still adds it (warn, not block).
 
 ## E. Quote → Approve → Invoice → Paid — the core flow (in the app)
-- [ ] **E1.** **Quotes ▸ + New estimate** → client = your test client (email = you) → add **2 line items** (Service + Qty + Price) → watch the **running Total** update (with tax) → **Create & send**.
-- [ ] **E2.** The estimate appears in the app **Quotes** list **and** the 📄 Estimates tab; you receive an **ESTIMATE PDF** — itemized, with **subtotal + tax + total** and "Valid until". *(If you set a custom start in C1, confirm the estimate # matches it — e.g. `Q-2001` — and the invoice created at E3 uses your invoice start.)*
-- [ ] **E3.** Open that estimate → **Approve → create invoice**. Confirm: estimate → **Accepted**; a 💵 **Invoice draft** appears with the **line items copied**; **and** a 🗓️ **Job (Scheduled)** was created.
-- [ ] **E4.** **Invoices** → open the draft → (optionally **Edit line items**) → **Send invoice** → you receive an **INVOICE PDF** (itemized, tax, a **Pay now** button) and status flips to **Sent**.
-- [ ] **E5.** **Mark paid** → status **Paid**; the invoice drops off the main list into a collapsed **Paid** group (tap it to expand). Go to **Home** → **Revenue** and **Lifetime** update.
+- [ ] **E1.** **Billing ▸ + New estimate** → client = your test client (email = you) → add **2 line items** (Service + Qty + Price) → watch the **running Total** update (with tax) → **Create & send**.
+- [ ] **E2.** The estimate appears under **Billing ▸ Quotes** **and** in the 📄 Estimates tab; you receive an **ESTIMATE PDF** — itemized, with **subtotal + tax + total** and "Valid until". *(If you set a custom start in C1, confirm the estimate # matches it — e.g. `Q-2001` — and the invoice created at E3 uses your invoice start.)*
+- [ ] **E3.** Open that estimate → **Approve → create invoice**. Confirm: estimate → **Accepted** (it moves to the collapsed **Closed quotes** group); a 💵 **Invoice draft** appears under **Outstanding invoices** with the **line items copied**; **and** a 🗓️ **Job (Scheduled)** was created.
+- [ ] **E4.** **Billing ▸ Outstanding invoices** → open the draft → (optionally **Edit line items**) → **Send invoice** → you receive an **INVOICE PDF** (itemized, tax, a **Pay now** button) and status flips to **Sent**.
+- [ ] **E5.** **Mark paid** → status **Paid**; the invoice drops out of **Outstanding** into the collapsed **Paid** group (tap it to expand). Go to **Home** → **Revenue** and **Lifetime** update.
 - [ ] **E6.** Re-open that invoice and **Send** again → the **total is unchanged** (tax is not applied twice). ✅
 
 ## F. Jobs & Clients (in the app)
-- [ ] **F1.** **More ▸ Jobs ▸ + New job** → add a job for the client (date, price) → appears in the app **Jobs** list and the 🗓️ Jobs tab.
-- [ ] **F2.** Tap a job → set **Status = Done** and **Mark paid**. From **Home**, tapping a "this week's jobs" row opens that **same job detail**.
+- [ ] **F1.** **Jobs ▸ + New job** → add a job for the client (date, price) → appears in the app **Jobs** list and the 🗓️ Jobs tab.
+- [ ] **F2.** Tap a job → **Reschedule** to a new date (it moves in the list), set **Status = Done** and **Mark paid**. From **Home**, tapping a "this week's jobs" row opens that **same job detail**.
 - [ ] **F3.** **More ▸ Clients** → your test client shows with **Total Spent** = the sum of their paid jobs.
 
 ## G. Automations & emails (from the sheet's ⚡ CRM menu)

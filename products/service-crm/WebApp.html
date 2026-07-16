@@ -112,21 +112,15 @@
     <div id="leadsBody" style="margin-top:10px"></div>
   </div>
 
-  <!-- QUOTES -->
-  <div class="screen" id="s-quotes">
+  <!-- BILLING (quotes + invoices in one place) -->
+  <div class="screen" id="s-billing">
     <button class="btn" onclick="openQuoteBuilder()">+ New estimate</button>
-    <div id="quotesBody" style="margin-top:12px"></div>
-  </div>
-
-  <!-- INVOICES -->
-  <div class="screen" id="s-invoices">
-    <div id="invoicesBody"></div>
+    <div id="billingBody" style="margin-top:12px"></div>
   </div>
 
   <!-- MORE -->
   <div class="screen" id="s-more">
     <h2 class="sec">More</h2>
-    <div class="list-item" onclick="nav('jobs')"><div class="row"><div><div class="name">🗓️ Jobs</div><div class="meta">Schedule & track work</div></div><span>›</span></div></div>
     <div class="list-item" onclick="nav('clients')"><div class="row"><div><div class="name">👥 Clients</div><div class="meta">Your customer book</div></div><span>›</span></div></div>
     <div class="list-item" onclick="nav('settings')"><div class="row"><div><div class="name">⚙️ Settings</div><div class="meta">Business info, services, tax, links</div></div><span>›</span></div></div>
   </div>
@@ -153,8 +147,8 @@
 <div class="nav">
   <button class="on" data-s="home" onclick="nav('home')"><span class="i">🏠</span>Home</button>
   <button data-s="leads" onclick="nav('leads')"><span class="i">🎯</span>Leads</button>
-  <button data-s="quotes" onclick="nav('quotes')"><span class="i">📄</span>Quotes</button>
-  <button data-s="invoices" onclick="nav('invoices')"><span class="i">💵</span>Invoices</button>
+  <button data-s="jobs" onclick="nav('jobs')"><span class="i">🗓️</span>Jobs</button>
+  <button data-s="billing" onclick="nav('billing')"><span class="i">💵</span>Billing</button>
   <button data-s="more" onclick="nav('more')"><span class="i">⋯</span>More</button>
 </div>
 
@@ -182,24 +176,24 @@ function busy(msg){ toast(msg||'Working…'); }
 
 /* ---------------- nav ---------------- */
 var CUR_SCREEN='home';
-var TITLES={home:'Home',leads:'Leads',quotes:'Estimates',invoices:'Invoices',more:'More',jobs:'Jobs',clients:'Clients',settings:'Settings'};
+var TITLES={home:'Home',leads:'Leads',billing:'Billing',more:'More',jobs:'Jobs',clients:'Clients',settings:'Settings'};
 function nav(s){
+  if(s==='quotes'||s==='invoices') s='billing';   // old names → merged Billing screen
   CUR_SCREEN=s;
   document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('on');});
   document.getElementById('s-'+s).classList.add('on');
   document.querySelectorAll('.nav button').forEach(function(b){ b.classList.toggle('on', b.dataset.s===s); });
   document.getElementById('screenName').textContent=TITLES[s]||'';
-  var fab=document.getElementById('fab'); fab.style.display=(['leads','quotes','jobs'].indexOf(s)>-1)?'block':'none';
+  var fab=document.getElementById('fab'); fab.style.display=(['leads','billing','jobs'].indexOf(s)>-1)?'block':'none';
   window.scrollTo(0,0);
   if(s==='home')loadHome();
   if(s==='leads')loadLeads();
-  if(s==='quotes')loadQuotes();
-  if(s==='invoices')loadInvoices();
+  if(s==='billing')loadBilling();
   if(s==='jobs')loadJobs();
   if(s==='clients')loadClients();
   if(s==='settings')renderSettings();
 }
-function fabAction(){ if(CUR_SCREEN==='leads')openLeadForm(); else if(CUR_SCREEN==='quotes')openQuoteBuilder(); else if(CUR_SCREEN==='jobs')openJobForm(); }
+function fabAction(){ if(CUR_SCREEN==='leads')openLeadForm(); else if(CUR_SCREEN==='billing')openQuoteBuilder(); else if(CUR_SCREEN==='jobs')openJobForm(); }
 
 /* ---------------- modal ---------------- */
 function openModal(html){ document.getElementById('sheet').innerHTML=html; document.getElementById('overlay').classList.add('on'); }
@@ -422,33 +416,42 @@ function createQuote(send){
 }
 
 /* ---------------- QUOTES list + detail ---------------- */
-function loadQuotes(){ document.getElementById('quotesBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListDocs','ESTIMATE').then(function(l){S.quotes=l||[];renderDocs('quotesBody',S.quotes,'ESTIMATE');}); }
-function loadInvoices(){ document.getElementById('invoicesBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListDocs','INVOICE').then(function(l){S.invoices=l||[];renderDocs('invoicesBody',S.invoices,'INVOICE');}); }
+// Quotes + invoices share one screen. Any refresh from an action reloads the whole view.
+function loadQuotes(){ loadBilling(); }
+function loadInvoices(){ loadBilling(); }
+function loadBilling(){
+  document.getElementById('billingBody').innerHTML='<div class="spin">Loading…</div>';
+  Promise.all([api('apiListDocs','ESTIMATE'),api('apiListDocs','INVOICE')]).then(function(r){
+    S.quotes=r[0]||[]; S.invoices=r[1]||[]; renderBilling();
+  });
+}
 function docRow(kind,d){
   return '<div class="list-item" onclick="openDoc(\''+kind+'\','+JSON.stringify(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
      '<div class="meta">'+money(d.amount)+' · '+esc(d.dateA||'draft')+'</div></div>'+pill(d.status)+'</div></div>';
 }
-// "Done" docs collapse under a header so the list defaults to what still needs action.
-function docDoneStatuses(kind){ return kind==='INVOICE'?['Paid']:['Accepted','Declined']; }
-var DOC_OPEN={};
-function toggleDocGroup(el,kind){ DOC_OPEN[el]=!DOC_OPEN[el]; renderDocs(el, kind==='INVOICE'?S.invoices:S.quotes, kind); }
-function renderDocs(el,list,kind){
-  var body=document.getElementById(el);
-  if(!list.length){ body.innerHTML='<div class="empty">'+(kind==='INVOICE'?'No invoices yet. Approve an estimate to create one.':'No estimates yet. Tap + to build one.')+'</div>'; return; }
-  var done=docDoneStatuses(kind);
-  var active=list.filter(function(d){ return done.indexOf(d.status)<0; });
-  var closed=list.filter(function(d){ return done.indexOf(d.status)>=0; });
+var BILL_OPEN={quotes:true,outstanding:true,paid:false,closedq:false};
+function toggleBill(k){ BILL_OPEN[k]=!BILL_OPEN[k]; renderBilling(); }
+function renderBilling(){
+  var body=document.getElementById('billingBody');
+  var quotes=S.quotes||[], invs=S.invoices||[];
+  if(!quotes.length && !invs.length){ body.innerHTML='<div class="empty">Nothing yet. Tap <b>+ New estimate</b> to send your first quote.</div>'; return; }
+  var groups=[
+    {k:'quotes',      label:'Quotes',              kind:'ESTIMATE', arr:quotes.filter(function(d){return ['Draft','Sent'].indexOf(d.status)>=0;}),      empty:'No open quotes',            always:true},
+    {k:'outstanding', label:'Outstanding invoices',kind:'INVOICE',  arr:invs.filter(function(d){return d.status!=='Paid';}),                              empty:'Nothing awaiting payment 🎉', always:true},
+    {k:'paid',        label:'Paid',                kind:'INVOICE',  arr:invs.filter(function(d){return d.status==='Paid';}),                              empty:'',                          always:false},
+    {k:'closedq',     label:'Closed quotes',       kind:'ESTIMATE', arr:quotes.filter(function(d){return ['Accepted','Declined'].indexOf(d.status)>=0;}),empty:'',                          always:false}
+  ];
   var h='';
-  h+= active.length ? active.map(function(d){return docRow(kind,d);}).join('')
-                    : '<div class="empty">'+(kind==='INVOICE'?'Nothing awaiting payment 🎉':'No open estimates')+'</div>';
-  if(closed.length){
-    var open=!!DOC_OPEN[el];
-    h+='<div class="grp" onclick="toggleDocGroup(\''+el+'\',\''+kind+'\')">'+
+  groups.forEach(function(g){
+    if(!g.arr.length && !g.always) return;                 // hide empty Paid / Closed-quotes headers
+    var open=!!BILL_OPEN[g.k];
+    h+='<div class="grp" onclick="toggleBill(\''+g.k+'\')">'+
        '<span class="car">'+(open?'▾':'▸')+'</span>'+
-       '<span class="gt">'+(kind==='INVOICE'?'Paid':'Closed')+'</span>'+
-       '<span class="gc">'+closed.length+'</span></div>';
-    if(open) h+=closed.map(function(d){return docRow(kind,d);}).join('');
-  }
+       '<span class="gt">'+g.label+'</span>'+
+       '<span class="gc">'+g.arr.length+'</span></div>';
+    if(open) h+= g.arr.length ? g.arr.map(function(d){return docRow(g.kind,d);}).join('')
+                              : '<div class="empty">'+g.empty+'</div>';
+  });
   body.innerHTML=h;
 }
 function openDoc(kind,number){
@@ -472,7 +475,20 @@ function openDoc(kind,number){
   });
 }
 function sendDoc(kind,number){ busy('Building PDF…'); api('apiSendDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive (no client email)'):(r&&r.msg||'Failed')); S.dashboard=null; kind==='INVOICE'?loadInvoices():loadQuotes(); }); }
-function approve(number){ busy('Approving…'); api('apiApproveEstimate',number).then(function(r){ closeModal(); if(r&&r.ok){toast('✅ Invoice #'+r.invoiceNumber+' draft + job created'); S.dashboard=null; nav('invoices');} else toast(r&&r.msg||'Failed'); }); }
+function approve(number){
+  var base=midnight(new Date());
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>Approve &amp; schedule</h3>'+
+    '<div class="muted" style="margin-bottom:10px">Accepts the quote, creates an invoice draft, and schedules the job. Pick when the job happens — it can be later than today.</div>'+
+    '<label>Job date</label><input type="date" id="ap_date" value="'+isoOf(base)+'">'+
+    '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setApDate(0)">Today</button><button class="btn sm sec" onclick="setApDate(1)">Tomorrow</button><button class="btn sm sec" onclick="setApDate(7)">+1 week</button><button class="btn sm sec" onclick="setApDate(14)">+2 weeks</button></div>'+
+    '<button class="btn" onclick="doApprove('+JSON.stringify(number)+')">Approve → invoice + job</button>');
+}
+function setApDate(days){ var e=document.getElementById('ap_date'); if(e)e.value=isoOf(addDays(midnight(new Date()),days)); }
+function doApprove(number){
+  var e=document.getElementById('ap_date'); var iso=e?e.value:'';
+  busy('Approving…');
+  api('apiApproveEstimate',number,iso).then(function(r){ closeModal(); if(r&&r.ok){toast('✅ Invoice #'+r.invoiceNumber+' + job scheduled '+(r.jobDate||'')); S.dashboard=null; nav('billing');} else toast(r&&r.msg||'Failed'); });
+}
 function markPaid(number){ busy('Confirming payment…'); api('apiMarkInvoicePaid',number).then(function(){ closeModal(); toast('💰 Payment confirmed'); S.dashboard=null; loadInvoices(); }); }
 function editLines(kind,number){
   busy('Opening line items…');
@@ -516,10 +532,21 @@ function saveJob(){
 function openJob(row){
   var j=S.jobs.filter(function(x){return x.row===row;})[0]; if(!j)return;
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(j.client)+'</h3>'+
-    '<div class="muted">'+esc(j.date)+' · '+esc(j.service||'')+' · '+money(j.price)+'</div>'+
+    '<div class="muted">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+' · '+esc(j.service||'')+' · '+money(j.price)+'</div>'+
+    '<h2 class="sec">Reschedule</h2>'+
+    '<div class="two"><div><input type="date" id="jb_date" value="'+esc(j.dateISO||'')+'"></div><div><input id="jb_time" placeholder="Time (e.g. 2pm)" value="'+esc(j.time||'')+'"></div></div>'+
+    '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setJbDate(0)">Today</button><button class="btn sm sec" onclick="setJbDate(1)">Tomorrow</button><button class="btn sm sec" onclick="setJbDate(7)">+1 week</button></div>'+
+    '<button class="btn sec" onclick="rescheduleJob('+row+')">Save new date</button>'+
     '<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+
     (S.statuses.job||[]).map(function(st){return '<button class="btn sm sec" onclick="setJob('+row+',{status:\''+st+'\'})">'+st+'</button>';}).join(' ')+'</div>'+
     '<div class="btnrow"><button class="btn" onclick="setJob('+row+',{paid:\'Yes\'})">Mark paid</button></div>');
+}
+function setJbDate(days){ var e=document.getElementById('jb_date'); if(e)e.value=isoOf(addDays(midnight(new Date()),days)); }
+function rescheduleJob(row){
+  var d=document.getElementById('jb_date'), t=document.getElementById('jb_time');
+  var iso=d?d.value:''; if(!iso){toast('Pick a date');return;}
+  busy('Rescheduling…');
+  api('apiSetJob',row,{date:iso,time:(t?t.value:'')}).then(function(r){ closeModal(); toast('📅 Rescheduled to '+((r&&r.date)||iso)); S.dashboard=null; if(CUR_SCREEN==='home')loadHome(); else loadJobs(); });
 }
 function setJob(row,f){ busy(f.paid?'Confirming payment…':(f.status?'Updating status…':'Updating…')); api('apiSetJob',row,f).then(function(){ closeModal(); toast(f.paid?'💰 Payment confirmed':'✅ Updated'); S.dashboard=null; if(CUR_SCREEN==='home')loadHome(); else loadJobs(); }); }
 /** Open a job's detail from anywhere (Home may not have the jobs list loaded yet). */
@@ -612,7 +639,7 @@ function mock(fn,args){
   if(fn==='apiDashboard')return mock('apiBootstrap').dashboard;
   if(fn==='apiListLeads')return[{row:2,name:'Marcus Bell',phone:'(555) 203-8871',email:'',service:'Full detail',value:189,status:'Quoted',followUp:'7/12',followUpISO:'2026-07-12'},{row:3,name:'Priya Shah',phone:'(555) 661-2049',email:'p@x.com',service:'Interior clean',value:120,status:'New',followUp:'7/17',followUpISO:'2026-07-17'}];
   if(fn==='apiListDocs')return args[0]==='INVOICE'?[{row:2,number:9001,client:'Dana Ruiz',dateA:'7/15',dateB:'7/29',amount:431.92,status:'Draft',items:3}]:[{row:2,number:1001,client:'Marcus Bell',dateA:'7/14',dateB:'7/28',amount:204.62,status:'Sent',items:2}];
-  if(fn==='apiListJobs')return[{row:2,date:'7/16',client:'Dana Ruiz',service:'Full detail',time:'2pm',status:'Scheduled',price:189,paid:'No',repeat:'None'}];
+  if(fn==='apiListJobs')return[{row:2,date:'7/16',dateISO:'2026-07-16',client:'Dana Ruiz',service:'Full detail',time:'2pm',status:'Scheduled',price:189,paid:'No',repeat:'None'}];
   if(fn==='apiListClients')return[{row:2,name:'Dana Ruiz',phone:'(555) 442-9910',email:'dana@x.com',firstJob:'7/10',totalSpent:588}];
   if(fn==='apiGetDocLines')return[{service:'Full detail',qty:1,rate:189}];
   return {ok:true};
