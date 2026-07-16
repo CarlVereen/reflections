@@ -246,6 +246,11 @@ function money0(n){ n=Number(n)||0; return CUR+Math.round(n).toLocaleString(); }
 function fmtLocal(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); return m?(+m[2])+'/'+(+m[3])+'/'+m[1]:''; }   // yyyy-mm-dd → M/D/YYYY
 function findDoc(kind,number){ var list=kind==='INVOICE'?S.invoices:S.quotes; return (list||[]).filter(function(x){return String(x.number)===String(number);})[0]; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+// A JS value safe to drop into a double-quoted on* HTML attribute. JSON.stringify on a STRING
+// arg (e.g. a formatted doc number like "1099") yields embedded double-quotes that would close
+// the attribute early and break the handler; esc() turns them into &quot; so the parser keeps
+// the whole call. (Freshly-created docs return string numbers; sheet reads return numeric ones.)
+function jarg(v){ return esc(JSON.stringify(v)); }
 function pill(status){ var k=String(status||'').toLowerCase().replace(/[^a-z]/g,''); return '<span class="pill p-'+k+'">'+esc(status||'')+'</span>'; }
 function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},2600); }
 function busy(msg){ toast(msg||'Working…'); }
@@ -516,7 +521,7 @@ function docRow(kind,d){
     return '<div class="list-item" onclick="toast(\'⏳ Still saving — one moment\')"><div class="row"><div><div class="name">'+esc(d.client)+'</div>'+
       '<div class="meta">'+money(d.amount)+' · saving…</div></div><span class="pill p-sent">⏳ Saving</span></div></div>';
   }
-  return '<div class="list-item" onclick="openDoc(\''+kind+'\','+JSON.stringify(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
+  return '<div class="list-item" onclick="openDoc(\''+kind+'\','+jarg(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
      '<div class="meta">'+money(d.amount)+' · '+esc(d.dateA||'draft')+'</div></div>'+pill(d.status)+'</div></div>';
 }
 var BILL_OPEN={quotes:true,outstanding:true,paid:false,closedq:false};
@@ -550,7 +555,7 @@ function openDoc(kind,number){
   busy('Opening…');
   api('apiGetDocLines',number).then(function(lines){
     var items=(lines||[]).map(function(l){return '<div class="row" style="padding:4px 0"><span>'+esc(l.service)+' ×'+l.qty+'</span><span>'+money(l.qty*l.rate)+'</span></div>';}).join('')||'<div class="muted">No line items (uses amount '+money(d.amount)+')</div>';
-    var na=JSON.stringify(number);
+    var na=jarg(number);
     var btns='';
     if(kind==='ESTIMATE'){
       btns='<button class="btn" onclick="sendDoc(\'ESTIMATE\','+na+')">Send estimate</button>'+
@@ -577,8 +582,8 @@ function deleteDoc(kind,number){
   var label=(kind==='INVOICE'?'invoice':'quote')+' #'+number;
   openModal('<button class="close" onclick="closeModal()">×</button><h3>🗑️ Delete '+esc(label)+'?</h3>'+
     '<div class="muted" style="margin-bottom:10px">This removes the '+esc(label)+' and its line items from your CRM. It can’t be undone. Any linked job stays.</div>'+
-    '<button class="btn danger" onclick="confirmDeleteDoc(\''+kind+'\','+JSON.stringify(number)+')">Delete permanently</button>'+
-    '<button class="btn sec" onclick="openDoc(\''+kind+'\','+JSON.stringify(number)+')">Cancel</button>');
+    '<button class="btn danger" onclick="confirmDeleteDoc(\''+kind+'\','+jarg(number)+')">Delete permanently</button>'+
+    '<button class="btn sec" onclick="openDoc(\''+kind+'\','+jarg(number)+')">Cancel</button>');
 }
 function confirmDeleteDoc(kind,number){ busy('Deleting…'); api('apiDeleteDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?'🗑️ Deleted':(r&&r.msg||'Failed')); invalidate(); loadBilling(); }); }
 function sendDoc(kind,number){ busy('Building PDF…'); api('apiSendDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive (no client email)'):(r&&r.msg||'Failed')); invalidate(); kind==='INVOICE'?loadInvoices():loadQuotes(); }); }
@@ -588,7 +593,7 @@ function approve(number){
     '<div class="muted" style="margin-bottom:10px">Accepts the quote, creates an invoice draft, and schedules the job. Pick when the job happens — it can be later than today.</div>'+
     '<label>Job date</label><input type="date" id="ap_date" value="'+isoOf(base)+'">'+
     '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setApDate(0)">Today</button><button class="btn sm sec" onclick="setApDate(1)">Tomorrow</button><button class="btn sm sec" onclick="setApDate(7)">+1 week</button><button class="btn sm sec" onclick="setApDate(14)">+2 weeks</button></div>'+
-    '<button class="btn" onclick="doApprove('+JSON.stringify(number)+')">Approve → invoice + job</button>');
+    '<button class="btn" onclick="doApprove('+jarg(number)+')">Approve → invoice + job</button>');
 }
 function setApDate(days){ var e=document.getElementById('ap_date'); if(e)e.value=isoOf(addDays(midnight(new Date()),days)); }
 function doApprove(number){
@@ -606,7 +611,7 @@ function editLines(kind,number){
     openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit line items · #'+esc(number)+'</h3>'+
       '<div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
       '<div class="totalbar"><span>Total <span class="tax" id="q_taxnote"></span></span><span id="q_total"></span></div>'+
-      '<button class="btn" onclick="saveLines(\''+kind+'\','+JSON.stringify(number)+')">Save</button>');
+      '<button class="btn" onclick="saveLines(\''+kind+'\','+jarg(number)+')">Save</button>');
     renderQLines();
   });
 }
