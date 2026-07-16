@@ -13,7 +13,9 @@ anything that isn't accurate, honest, and deliverable.
 ## Your checks (all must PASS)
 1. **Sourcing map:** every factual sentence in `edited_draft` maps to a `VERIFIED` claim
    in the verification record. Any orphan fact → FAIL.
-2. **Links:** WebFetch each link; all must resolve (2xx). No broken or placeholder URLs.
+2. **Links:** check each link with Bash `curl -sS -o /dev/null -w '%{http_code}' -L "<url>"`
+   (the `WebFetch` tool is blocked here — 403 on every host; `curl` works). All must
+   resolve (2xx, or a 3xx that lands on a 2xx). No broken or placeholder URLs.
 3. **Disclosure:** any affiliate/partner link is clearly disclosed. (Free-first phase:
    there should usually be none.)
 4. **Deliverability:** subject + body avoid spam-trigger phrasing; reasonable text-to-link

@@ -75,6 +75,16 @@ with an unverified fact or a failed QA check.
 
 ---
 
+## Environment note — fetching (learned 2026-07-16)
+
+In this remote environment the **`WebFetch` tool is blocked** (HTTP 403 on every host,
+including neutral controls) even under the "Full" network policy — it takes a different
+egress path than the container proxy. **Bash `curl` works.** So all page-fetching stations
+(`nl-researcher`, `nl-factchecker`, `nl-quality-gate`) fetch with `curl`, not `WebFetch`.
+`WebSearch` also works (Anthropic-proxied) and is used for discovery/corroboration.
+Sanity-check egress with `curl -sS -o /dev/null -w '%{http_code}' https://example.com/`
+(expect 200). This is why those three agents carry the `Bash` tool.
+
 ## Persistent vs. disposable
 
 - **Persistent (committed to git):** each newsletter's identity lives in
