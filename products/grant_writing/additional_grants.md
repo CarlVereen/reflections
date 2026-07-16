@@ -71,8 +71,57 @@ These supplement the tracker (`grant_tracker.md`). Each is a real fit for a
 - Everything here reuses the same core story and financials, so each new
   application gets faster.
 
-## Next research pass (when you want it)
-- Local Tucson/Pima foundations and the Community Foundation for Southern Arizona
-- Farm Credit / Farm Bureau ag grants
-- Pollinator-specific (Xerces/Bee Better) for the elderberry/mulberry plantings
-- Agritourism-specific grants (for the U-pick experience)
+---
+
+# Round 2 finds (2026-07-15)
+
+## Freed Fellowship — $500/mo + $2,500 annual prize (Ashley, recurring)
+- **What:** Monthly $500 grant + free mentorship + a $2,500 year-end prize for
+  women entrepreneurs. Rolling monthly, $19 application fee.
+- **Why you fit:** woman-owned, any stage. Like Amber — **re-apply every month.**
+- Apply: thefreedfellowship.com. **→ Add to the monthly routine with Amber.**
+
+## USDA Farmers Market Promotion Program (FMPP) — up to $500,000
+- **What:** Funds **direct producer-to-consumer** marketing — and **explicitly
+  includes agritourism**, which is exactly your U-pick model.
+- **Why you fit:** you sell direct via U-pick; FMPP funds promotion, on-farm
+  market development, agritourism infrastructure. 25% cost-share required.
+- **Status:** FY26 closed June 5; **next cycle ~2027.** Big watch — pairs with the
+  U-pick/branding story. ([FMPP](https://www.ams.usda.gov/services/grants/fmpp))
+
+## The Pollination Project — $1,000 seed grants (awarded daily)
+- **What:** $1,000 micro-grants for community-benefit/social-change projects.
+- **Why you might fit:** your farm's community mission — U-pick access, teaching
+  families about farm life, feeding neighbors clean food — is a fundable angle if
+  framed as community education/food access. ([site](https://thepollinationproject.org/))
+
+## Xerces Society — Bee Better / pollinator habitat (program + support)
+- **What:** Partners with farms on **pollinator conservation** (habitat, hedgerows)
+  and Bee Better certification. More a program + technical help than a cash grant,
+  but valuable for your **elderberry/mulberry** plantings and marketing.
+- **Why you fit:** pesticide-free orchard adding pollinator-friendly crops. Pairs
+  with NRCS habitat practices. ([Xerces](https://www.xerces.org/pollinator-conservation))
+
+## Tory Burch Foundation Fellows — $5,000 + fellowship (women; annual)
+- **What:** $5,000 educational grant + a year of business support for women
+  founders. Annual cycle; current round closed — **watch for the next opening.**
+- Also useful: their free **Funding Finder** tool lists women's grants.
+  ([Tory Burch](https://www.toryburchfoundation.org/fellows/))
+
+## Organic Farming Research Foundation (OFRF) — research grants
+- **What:** Grants for organic farmers/researchers running on-farm research.
+- **Why you might fit:** if you formalize a trial (e.g., desert-adapted elderberry/
+  mulberry, water-efficient organic methods), this funds it. Better once you're
+  organic-certified. ([OFRF](https://ofrf.org/research/grant-awards/))
+
+## Checked but likely NOT a fit (so you don't waste time)
+- **HerRise Microgrant ($1,000):** targets **women of color** — not eligible for Ashley.
+- **Community Foundation for Southern Arizona:** Tucson-local, but funds mostly
+  **501(c)(3) nonprofits**, not for-profit farms. Worth a courtesy call
+  (520-770-0800) about economic-empowerment/clean-energy funds, but don't count on it.
+
+## Still to mine (round 3, when you want)
+- Farm Credit / AZ Farm Bureau young-farmer grants
+- National Young Farmers Coalition resources
+- Whole Foods / Whole Planet & other retailer local-producer funds
+- AZ Dept of Ag "grant notification" email list (sign up so new state cycles come to you)

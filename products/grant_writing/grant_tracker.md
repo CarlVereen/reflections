@@ -15,6 +15,8 @@
 | ☐ | **NRCS EQIP (water)** | 50–90% of cost | Carl | Ongoing (ask ranking date) | Call Pima NRCS → `nrcs_call_script.md` |
 | ☐ | **AZ Organic Cost-Share** | 75% up to $750 | Either | Dec 31, 2026 | Call Robert Nick (602) 542-0439 |
 | ☐ | **NASE Growth Grant** | up to $4,000 | Either | Year-round (members) | Join NASE (~$120/yr), apply for equipment |
+| ☐ | **Freed Fellowship** | $500/mo + $2,500/yr | **Ashley** | Rolling monthly ($19) | Apply at thefreedfellowship.com (do with Amber) |
+| ☐ | **The Pollination Project** | $1,000 | Either | Rolling (daily awards) | Frame community/education angle, apply |
 
 ## 📝 FREE SIGNUPS (do once, they find grants for you)
 
@@ -35,12 +37,20 @@
 | ☐ | **REAP** | $1.5k–$500k | Solar irrigation / cold storage | Rolling quarterly |
 | ☐ | **AZ RFSI** (Resilient Food Systems) | competitive | Food-processing infrastructure | Next cycle · agriculture.az.gov |
 | ☐ | **AZ Specialty Crop Block Grant** | varies | Industry/research angle | ~March 2027 |
+| ☐ | **USDA FMPP** | up to $500,000 | ⭐ Agritourism / U-pick direct sales | ~2027 · ams.usda.gov/services/grants/fmpp |
+| ☐ | **AFT / FruitGuys / Xerces (pollinator)** | $5–10k | Elderberry/mulberry + habitat | Next cycles · pairs w/ water project |
+| ☐ | **Tory Burch Fellows** | $5,000 + program | Ashley (women) | Annual · currently closed, watch |
 
 ## ❓ CHECK ELIGIBILITY
 
 | Status | Grant | Amount | Catch to verify |
 |---|---|---|---|
 | ☐ | **Comcast RISE** | $5,000 + marketing | Ashley qualifies (woman-owned, 3+ yrs) — but confirm **Tucson is in Comcast service area** (may be Cox) |
+| ☐ | **Community Foundation of S. AZ** | varies | Local, but mostly funds **nonprofits** — courtesy call only (520-770-0800) |
+
+## 🚫 Checked — NOT eligible (don't waste time)
+- **HerRise Microgrant** — targets women of color; Ashley not eligible.
+- **FedEx Small Business Grant** — program retired (ended 2024).
 
 ---
 
