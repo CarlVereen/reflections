@@ -120,8 +120,64 @@ These supplement the tracker (`grant_tracker.md`). Each is a real fit for a
   **501(c)(3) nonprofits**, not for-profit farms. Worth a courtesy call
   (520-770-0800) about economic-empowerment/clean-energy funds, but don't count on it.
 
-## Still to mine (round 3, when you want)
-- Farm Credit / AZ Farm Bureau young-farmer grants
-- National Young Farmers Coalition resources
-- Whole Foods / Whole Planet & other retailer local-producer funds
-- AZ Dept of Ag "grant notification" email list (sign up so new state cycles come to you)
+---
+
+# Round 3 finds (2026-07-15)
+
+## ⭐ Farm Credit Young, Beginning & Small Farmer Grant — $20,000 (DEADLINE AUG 21!)
+- **What:** NEW for 2026 — **ten $20,000 grants** for young/beginning/small farmers
+  for on-farm needs and business growth. **Both current and non-Farm-Credit
+  customers eligible.**
+- **Why you fit:** you're textbook **beginning + small farmer.** $20k is real money
+  for equipment or the value-added launch.
+- **Deadline:** **August 21, 2026, 4:00 p.m.** — the most time-sensitive item we've
+  found. 
+- **Verify:** confirm the **Arizona Farm Credit association (AgWest Farm Credit)**
+  participates / covers AZ before investing time. Then apply.
+- Source: [Farm Credit YBS grant](https://www.horizonfc.com/ybs)
+- **→ This is worth drafting NOW. Say the word and I'll write it.**
+
+## Venmo Small Business Grant — $20,000
+- **What:** $20,000 grants to up to 10 entrepreneurs.
+- **Why you fit:** requires **fewer than 10 employees AND under $50,000 annual
+  revenue** — you're at ~$8k, easily qualifying. (Many can't meet the revenue cap;
+  you can — that's an edge.)
+- Apply: search "Venmo Small Business Grant" for the current round.
+
+## Verizon Digital Ready Grant — $10,000 (monthly, one app all year)
+- **What:** With LISC, Verizon picks **10 businesses each month ($10,000 each)**,
+  reviewed monthly **June–December 2026.** Submit **one** application and stay
+  eligible all year.
+- **Why you fit:** open to all US small businesses; also gives free courses.
+- Apply: digitalready.verizonwireless.com/funding → **add to the monthly routine.**
+
+## Arizona water money (for the irrigation/permaculture system)
+- **AZ Water Conservation Grant Fund (WIFA)** — funds **agricultural irrigation
+  upgrades** (flood→drip, efficiency). $14M+ authorized, more cycles coming. Check
+  current cycle at azwifa.gov. Pairs with (doesn't double-fund) NRCS EQIP.
+- **Arizona agricultural water-conservation TAX CREDIT** — AZ law gives a
+  nonrefundable **state tax credit** for buying/installing an ag water-conservation
+  system. Not a grant — money back at tax time. **Tell your accountant.**
+- **AZ Agriculture, Soil Health & Water Efficiency Innovation Pilot** (AZ Dept of
+  Ag) — newer program for water efficiency + soil health. Check status.
+- **REAP** (already listed) — up to 50% of a **solar water pump** / solar install.
+
+## Orchard safety net (not growth grants — protection worth setting up)
+- **Tree Assistance Program (TAP)** — if you **lose trees** to a natural disaster
+  (drought, freeze, fire blight), FSA covers **up to 65%** of replant/rehab cost.
+  A 2026 rule change removed the old 15%-loss threshold — more losses now qualify.
+  Apply at your FSA office within 90 days of a loss.
+- **NAP (Noninsured Crop Disaster Assistance)** — cheap coverage for your crop when
+  weather wipes out a harvest. Set it up at the FSA office **before** a disaster.
+
+## Checked but NOT a fit this round
+- **Farm Credit East AgEnhancement**, **The Food Co-op Farmer Fund** — regional to
+  other states.
+
+## Still to mine (round 4, when you want)
+- National Young Farmers Coalition resources & land-access programs
+- Whole Foods LPLP / Whole Planet & retailer local-producer funds
+- Kiva 0% crowdfunded microloans (not a grant, but 0% capital)
+- Startup Tucson / Sun Corridor / City of Tucson & Pima County small-biz programs
+- **Sign up for the AZ Dept of Ag grant-notification email list** so new state
+  cycles come to you automatically.
