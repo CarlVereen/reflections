@@ -402,14 +402,14 @@ function buildSettings_(ss) {
   sh.clear();
   sh.getRange('B2').setValue('⚙️ Settings').setFontSize(16).setFontWeight('bold');
   const rowsData = [
-    ['Business name', 'Your Business LLC'],
-    ['Owner email (for follow-up digest)', 'example@gmail.com'],
-    ['Business phone', '(555) 000-0000'],
+    ['Business name', ''],
+    ['Owner email (for follow-up digest)', ''],
+    ['Business phone', ''],
     ['Currency symbol', '$'],
     ['Sales tax % (0 for none)', 0],
     ['Default follow-up (days after new lead)', 2],
-    ['Google review link (for review requests)', 'https://g.page/r/your-review-link/review'],
-    ['Invoice payment instructions', 'Pay via Zelle to example@gmail.com, or cash/check on completion.'],
+    ['Google review link (for review requests)', ''],
+    ['Invoice payment instructions', ''],
     ['Payment link (Stripe/PayPal/Venmo — optional)', ''],
     ['Mobile lead-capture form URL (auto-filled)', ''],
   ];

@@ -245,8 +245,8 @@ function renderLeads(){
 }
 function openLeadForm(){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New lead</h3>'+
-    field('Name *','ld_name','')+ '<div class="two"><div>'+field('Phone','ld_phone','')+'</div><div>'+field('Est. value','ld_value','')+'</div></div>'+
-    field('Email','ld_email','')+ serviceSelect('ld_service')+
+    field('Name *','ld_name','','Jane Smith')+ '<div class="two"><div>'+field('Phone','ld_phone','','(555) 123-4567')+'</div><div>'+field('Est. value','ld_value','','250')+'</div></div>'+
+    field('Email','ld_email','','jane@email.com')+ serviceSelect('ld_service')+
     '<button class="btn" onclick="saveLead()">Add lead</button>');
 }
 function saveLead(){
@@ -275,8 +275,8 @@ function openQuoteBuilder(lead){
   QLINES=[{service:'',qty:1,rate:''}];
   var pre=lead||{};
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New estimate</h3>'+
-    field('Client name *','q_client',pre.name||'')+
-    '<div class="two"><div>'+field('Email','q_email',pre.email||'')+'</div><div>'+field('Phone','q_phone',pre.phone||'')+'</div></div>'+
+    field('Client name *','q_client',pre.name||'','Jane Smith')+
+    '<div class="two"><div>'+field('Email','q_email',pre.email||'','jane@email.com')+'</div><div>'+field('Phone','q_phone',pre.phone||'','(555) 123-4567')+'</div></div>'+
     '<label>Line items</label><div id="qlines"></div>'+
     '<button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
     '<div class="totalbar"><span>Total <span class="tax" id="q_taxnote"></span></span><span id="q_total">'+money(0)+'</span></div>'+
@@ -377,8 +377,8 @@ function renderJobs(){
 }
 function openJobForm(){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New job</h3>'+
-    field('Client *','j_client','')+ '<div class="two"><div>'+field('Date (M/D/YYYY)','j_date','')+'</div><div>'+field('Time (e.g. 2pm)','j_time','')+'</div></div>'+
-    serviceSelect('j_service')+ field('Price','j_price','')+
+    field('Client *','j_client','','Jane Smith')+ '<div class="two"><div>'+field('Date (M/D/YYYY)','j_date','','7/22/2026')+'</div><div>'+field('Time (e.g. 2pm)','j_time','','2pm')+'</div></div>'+
+    serviceSelect('j_service')+ field('Price','j_price','','189')+
     '<label>Repeat</label><select id="j_repeat">'+(S.statuses.repeat||['None']).map(function(r){return '<option>'+r+'</option>';}).join('')+'</select>'+
     '<button class="btn" onclick="saveJob()">Add job</button>');
 }
@@ -418,12 +418,13 @@ function renderClients(){
 function renderSettings(){
   var s=S.settings;
   var h='<h2 class="sec">Business</h2>'+
-    field('Business name','set_businessName',s.businessName)+field('Owner email','set_ownerEmail',s.ownerEmail)+
-    field('Phone','set_phone',s.phone)+
-    '<div class="two"><div>'+field('Currency','set_currency',s.currency)+'</div><div>'+field('Sales tax %','set_taxPct',s.taxPct)+'</div></div>'+
-    field('Google review link','set_reviewLink',s.reviewLink)+
-    field('Payment instructions','set_payInstructions',s.payInstructions)+
-    field('Payment link (Pay-now button)','set_payLink',s.payLink)+
+    field('Business name','set_businessName',s.businessName,'Your Business LLC')+
+    field('Owner email','set_ownerEmail',s.ownerEmail,'example@gmail.com')+
+    field('Phone','set_phone',s.phone,'(555) 123-4567')+
+    '<div class="two"><div>'+field('Currency','set_currency',s.currency,'$')+'</div><div>'+field('Sales tax %','set_taxPct',s.taxPct,'0')+'</div></div>'+
+    field('Google review link','set_reviewLink',s.reviewLink,'https://g.page/r/…/review')+
+    field('Payment instructions','set_payInstructions',s.payInstructions,'e.g. Zelle to example@gmail.com, or cash/check')+
+    field('Payment link (Pay-now button)','set_payLink',s.payLink,'https://paypal.me/you or your Stripe link')+
     '<button class="btn" onclick="saveSettings()">Save settings</button>'+
     '<h2 class="sec">Your services</h2><div class="muted" style="margin-bottom:8px">One per line — fills the Service dropdowns.</div>'+
     '<textarea id="set_services" rows="7">'+esc((S.services||[]).join('\n'))+'</textarea>'+
@@ -442,7 +443,7 @@ function saveServices(){
 }
 
 /* ---------------- form helpers ---------------- */
-function field(label,id,v){ return '<label>'+label+'</label><input id="'+id+'" value="'+esc(v==null?'':v)+'">'; }
+function field(label,id,v,ph){ return '<label>'+label+'</label><input id="'+id+'" value="'+esc(v==null?'':v)+'" placeholder="'+esc(ph==null?'':ph)+'">'; }
 function val(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
 function serviceOptions(){ return S.services&&S.services.length?S.services:['Service']; }
 function serviceSelect(id){ return '<label>Service</label><select id="'+id+'"><option value="">— choose —</option>'+serviceOptions().map(function(s){return '<option>'+esc(s)+'</option>';}).join('')+'</select>'; }
