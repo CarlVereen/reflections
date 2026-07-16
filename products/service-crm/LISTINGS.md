@@ -56,8 +56,9 @@ Customer messages are sent by EMAIL (a tap-to-text link is included for you on m
 there's no built-in texting from a business number. Customers pay through your own payment
 link (Stripe/PayPal/Venmo) shown as a "Pay now" button — no built-in card processing.
 
-Not comfortable with the setup? Grab the Done-For-You option and we'll build and turn on
-your app for you — you just start using it.
+Not comfortable with the setup? Grab the Done-For-You option — we'll brand it, load your
+services, configure everything, and walk you through the one-time deploy in a quick guided
+session, so you finish with a working app link.
 
 Perfect for: cleaners, landscapers, lawn care, detailers, contractors, handymen, HVAC, pool & pest techs, movers, trainers, and any service pro.
 
@@ -104,12 +105,18 @@ Run your lawn care or landscaping business from ONE Google Sheet — schedule jo
 
 ## ADD-ON LISTING — Done-for-you setup
 
-**Title:** `Done-For-You CRM Setup | I Brand & Configure Your Service Pro CRM`
+**Title:** `Done-For-You CRM Setup | I Brand, Configure & Guide Your Deploy`
 **Price:** $149
 **Description:**
 ```
-Don't want to set it up yourself? I'll brand your CRM with your business name and colors, load your services, and configure your review link and payment details — delivered ready to use within 2 business days. Purchase includes the full Service Pro CRM.
+Don't want to set it up yourself? I'll brand your CRM with your business name and colors, load your services, and configure your review link and payment details. Then, in a quick guided session (screen-share or a personalized video), I'll walk you through the one-time "deploy" so you finish with a working app link on your phone. Because the app runs inside YOUR own Google account, the final deploy click is done by you (with me guiding) — I never need your password. Delivered within 2 business days. Includes the full Service Pro CRM.
 ```
+
+> **How DFY actually works (for you, the seller):** you can't deploy inside a buyer's Google
+> account (no password, and it would run as *you*). So DFY = you pre-build a branded copy,
+> the buyer copies it, adds you as a temporary Editor if they want you to configure Settings,
+> and you guide the 6-tap deploy live or via a Loom. Then they remove your access. Never ask
+> for their password; never deploy as yourself in their sheet.
 
 ---
 
