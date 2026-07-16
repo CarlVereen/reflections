@@ -403,13 +403,13 @@ function buildSettings_(ss) {
   sh.getRange('B2').setValue('⚙️ Settings').setFontSize(16).setFontWeight('bold');
   const rowsData = [
     ['Business name', 'Your Business LLC'],
-    ['Owner email (for follow-up digest)', Session.getActiveUser().getEmail() || 'you@example.com'],
+    ['Owner email (for follow-up digest)', 'example@gmail.com'],
     ['Business phone', '(555) 000-0000'],
     ['Currency symbol', '$'],
     ['Sales tax % (0 for none)', 0],
     ['Default follow-up (days after new lead)', 2],
     ['Google review link (for review requests)', 'https://g.page/r/your-review-link/review'],
-    ['Invoice payment instructions', 'Pay via Zelle to you@email.com, or cash/check on completion.'],
+    ['Invoice payment instructions', 'Pay via Zelle to example@gmail.com, or cash/check on completion.'],
     ['Payment link (Stripe/PayPal/Venmo — optional)', ''],
     ['Mobile lead-capture form URL (auto-filled)', ''],
   ];
@@ -698,7 +698,10 @@ function lineItemsFor_(ss, docNum) {
 
 function sendFollowUpDigest() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const email = getSetting_(ss, 'Owner email (for follow-up digest)') || Session.getActiveUser().getEmail();
+  // Use the owner-email setting; if it's blank or still the placeholder, fall back to the
+  // account running this (so the digest works even before they set their email).
+  let email = String(getSetting_(ss, 'Owner email (for follow-up digest)') || '').trim();
+  if (!email || email.toLowerCase().indexOf('example@') === 0) email = Session.getActiveUser().getEmail();
   const biz = getSetting_(ss, 'Business name') || 'Your Business';
   const due = sidebarFollowUps();
   if (!email) return '⚠ No owner email set in ⚙️ Settings.';
