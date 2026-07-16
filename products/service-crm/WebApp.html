@@ -176,7 +176,7 @@ var CUR='$';
 // Bump this whenever you paste new code, so you can confirm a deploy actually took effect:
 // it shows at the bottom of More ▸ Settings. If it doesn't match after deploying, the old
 // version is still being served (Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version).
-var BUILD='2026-07-16h';
+var BUILD='2026-07-16i';
 function api(fn){
   var args=[].slice.call(arguments,1);
   return new Promise(function(res,rej){
@@ -584,8 +584,10 @@ function docRow(kind,d){
     return '<div class="list-item" onclick="toast(\'⏳ Still saving — one moment\')"><div class="row"><div><div class="name">'+esc(d.client)+'</div>'+
       '<div class="meta">'+money(d.amount)+' · saving…</div></div><span class="pill p-sent">⏳ Saving</span></div></div>';
   }
+  // Only append the date when there is one. Drafts (invoices get their issue date on send) have
+  // none — showing the literal "draft" here was redundant with the status pill and looked wrong.
   return '<div class="list-item" onclick="openDoc(\''+kind+'\','+jarg(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
-     '<div class="meta">'+money(d.amount)+' · '+esc(d.dateA||'draft')+'</div></div>'+pill(d.status)+'</div></div>';
+     '<div class="meta">'+money(d.amount)+(d.dateA?' · '+esc(d.dateA):'')+'</div></div>'+pill(d.status)+'</div></div>';
 }
 var BILL_TAB='quotes';
 function setBillTab(k){ BILL_TAB=k; renderBilling(); }
