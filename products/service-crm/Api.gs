@@ -43,15 +43,41 @@ function findRowByNumber_(sh, number) {
   return 0;
 }
 
-/** Next numeric doc number in column A, at or above startAt. */
-function nextNumber_(sh, startAt) {
+/** Split a doc number into its parts: "INV-001" → {prefix:'INV-', num:1, width:3}.
+ *  Pure text with no digits → num 1, width 0. Pure number → prefix '' kept as-is. */
+function parseDocNumber_(v) {
+  const s = String(v == null ? '' : v).trim();
+  const m = s.match(/^(.*?)(\d+)\s*$/);
+  if (!m) return { prefix: s, num: 1, width: 0 };
+  return { prefix: m[1], num: Number(m[2]), width: m[2].length };
+}
+
+/** Rebuild a doc number from parts, zero-padding the numeric run to at least `width`. */
+function formatDocNumber_(prefix, num, width) {
+  let s = String(num);
+  while (s.length < width) s = '0' + s;
+  return prefix + s;
+}
+
+/** Next doc number for a sheet, honoring a configurable start that may be a plain
+ *  number ("1001"), plain text, or a text+number combo ("INV-001"). Continues the
+ *  highest existing doc that shares the same prefix, preserving prefix & zero-pad width;
+ *  otherwise begins at the configured start. Falls back to `fallback` if start is blank. */
+function nextDocNumber_(sh, startSetting, fallback) {
+  const raw = (startSetting === '' || startSetting == null) ? fallback : startSetting;
+  const start = parseDocNumber_(raw);
+  let maxNum = start.num - 1;
   const last = sh.getLastRow();
-  let max = startAt - 1;
   if (last >= 2) {
     const col = sh.getRange(2, 1, last - 1, 1).getValues();
-    col.forEach(function (r) { const n = Number(r[0]); if (!isNaN(n) && n > max) max = n; });
+    col.forEach(function (r) {
+      const v = String(r[0]).trim();
+      if (!v) return;
+      const p = parseDocNumber_(v);
+      if (p.prefix.toLowerCase() === start.prefix.toLowerCase() && p.num > maxNum) maxNum = p.num;
+    });
   }
-  return max + 1;
+  return formatDocNumber_(start.prefix, maxNum + 1, start.width);
 }
 
 /** Write line items (Doc # = number) into the 🧾 Line Items tab at empty rows. */
@@ -260,14 +286,54 @@ function apiListLeads() {
   rows.forEach(function (r, i) {
     if (!r[1]) return;
     out.push({ row: i + 2, name: r[1], phone: r[2] || '', email: r[3] || '', service: r[5] || '',
-      value: num_(r[6]), status: r[7] || 'New', followUp: fmtd_(r[8]) });
+      value: num_(r[6]), status: r[7] || 'New', followUp: fmtd_(r[8]), followUpISO: isoOrEmpty_(r[8]) });
   });
   return out;
 }
 
 function apiAddLead(form) {
+  const ss = ss_();
+  // Warn (don't block) when the email or phone already exists on a lead or client.
+  if (!form.force) {
+    const dupes = findContactDupes_(ss, form.email, form.phone, 0);
+    if (dupes.length) return { ok: false, dup: true, dupes: dupes };
+  }
   const msg = addLeadCore_(form.name, form.phone, form.email, form.service, form.value);
   return { ok: msg.indexOf('✅') === 0, msg: msg };
+}
+
+/** Digits only; blank unless it looks like a real phone (≥7 digits) to avoid noise matches. */
+function normPhone_(s) { const d = String(s || '').replace(/[^0-9]/g, ''); return d.length >= 7 ? d : ''; }
+
+/** Find existing Leads/Clients that share this email or phone (for a warn-not-block prompt).
+ *  Returns [{where:'lead'|'client', name, phone, email}] — empty if nothing matches. */
+function findContactDupes_(ss, email, phone, excludeLeadRow) {
+  const out = [];
+  const em = String(email || '').trim().toLowerCase();
+  const ph = normPhone_(phone);
+  if (!em && !ph) return out;
+  const push = function (where, name, p, e) {
+    const en = String(e || '').trim().toLowerCase(), pn = normPhone_(p);
+    if ((em && en && en === em) || (ph && pn && pn === ph)) {
+      out.push({ where: where, name: String(name).trim(), phone: String(p || '').trim(), email: String(e || '').trim() });
+    }
+  };
+  const leads = ss.getSheetByName(TABS.LEADS);   // [added, name, phone(2), email(3), ...]
+  if (leads && leads.getLastRow() >= 2) {
+    const d = leads.getRange(2, 1, leads.getLastRow() - 1, 4).getValues();
+    for (let i = 0; i < d.length; i++) {
+      if (excludeLeadRow && (i + 2) === excludeLeadRow) continue;
+      if (String(d[i][1]).trim()) push('lead', d[i][1], d[i][2], d[i][3]);
+    }
+  }
+  const clients = ss.getSheetByName(TABS.CLIENTS); // [name, phone(1), email(2), ...]
+  if (clients && clients.getLastRow() >= 2) {
+    const d = clients.getRange(2, 1, clients.getLastRow() - 1, 3).getValues();
+    for (let i = 0; i < d.length; i++) {
+      if (String(d[i][0]).trim()) push('client', d[i][0], d[i][1], d[i][2]);
+    }
+  }
+  return out;
 }
 
 function apiSetLeadStatus(row, status) {
@@ -276,7 +342,67 @@ function apiSetLeadStatus(row, status) {
   return { ok: true };
 }
 
+/** Set a lead's Next Follow-up date (col 9). Accepts 'yyyy-MM-dd' (parsed in the
+ *  script's local time so the day never shifts) or a typed date; '' clears it. */
+function apiSetLeadFollowUp(row, iso) {
+  const sh = ss_().getSheetByName(TABS.LEADS);
+  let d = '';
+  const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) { d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])); d.setHours(0, 0, 0, 0); }
+  else { d = parseDate_(iso) || ''; }
+  sh.getRange(row, 9).setValue(d);
+  return { ok: true, followUp: d ? fmtd_(d) : '', followUpISO: d ? isoOrEmpty_(d) : '' };
+}
+
+/** Edit a lead's core fields (name, phone, email, service, est. value). */
+function apiUpdateLead(row, f) {
+  const sh = ss_().getSheetByName(TABS.LEADS);
+  if (!sh) return { ok: false };
+  if (f.name !== undefined) sh.getRange(row, 2).setValue(f.name);
+  if (f.phone !== undefined) sh.getRange(row, 3).setValue(f.phone);
+  if (f.email !== undefined) sh.getRange(row, 4).setValue(f.email);
+  if (f.service !== undefined) sh.getRange(row, 6).setValue(f.service);
+  if (f.value !== undefined) sh.getRange(row, 7).setValue(f.value === '' ? '' : num_(f.value));
+  return { ok: true };
+}
+
 /* ============================= CLIENTS =========================== */
+
+/** Edit a client. Renaming cascades to Jobs/Estimates/Invoices/Leads so totals & lookups stay correct. */
+function apiUpdateClient(row, f) {
+  const ss = ss_();
+  const sh = ss.getSheetByName(TABS.CLIENTS);
+  if (!sh) return { ok: false };
+  const oldName = String(sh.getRange(row, 1).getValue()).trim();
+  if (f.name !== undefined) {
+    const newName = String(f.name).trim();
+    if (newName && newName !== oldName) {
+      sh.getRange(row, 1).setValue(newName);
+      renameClientEverywhere_(ss, oldName, newName);
+    }
+  }
+  if (f.phone !== undefined) sh.getRange(row, 2).setValue(f.phone);
+  if (f.email !== undefined) sh.getRange(row, 3).setValue(f.email);
+  if (f.address !== undefined) sh.getRange(row, 4).setValue(f.address);
+  return { ok: true };
+}
+
+/** Rewrite every reference to oldName (client column) across the data tabs to newName. */
+function renameClientEverywhere_(ss, oldName, newName) {
+  const key = String(oldName).trim().toLowerCase();
+  if (!key) return;
+  [[TABS.JOBS, 2], [TABS.ESTIMATES, 2], [TABS.INVOICES, 2], [TABS.LEADS, 2]].forEach(function (t) {
+    const sh = ss.getSheetByName(t[0]);
+    if (!sh || sh.getLastRow() < 2) return;
+    const rng = sh.getRange(2, t[1], sh.getLastRow() - 1, 1);
+    const vals = rng.getValues();
+    let changed = false;
+    for (let i = 0; i < vals.length; i++) {
+      if (String(vals[i][0]).trim().toLowerCase() === key) { vals[i][0] = newName; changed = true; }
+    }
+    if (changed) rng.setValues(vals);
+  });
+}
 
 function apiListClients() {
   const rows = valuesOf_(ss_(), TABS.CLIENTS);
@@ -345,7 +471,7 @@ function apiCreateEstimate(p) {
   if (!p.client || !String(p.client).trim()) return { ok: false, msg: 'A client name is required.' };
   const lines = (p.lines || []).filter(function (l) { return String(l.service || '').trim() && num_(l.rate) > 0; });
   if (!lines.length) return { ok: false, msg: 'Add at least one line item with a price.' };
-  const number = nextNumber_(est, 1001);
+  const number = nextDocNumber_(est, getSetting_(ss, 'Starting quote/estimate number'), '1001');
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const valid = new Date(today); valid.setDate(valid.getDate() + (num_(p.validDays) || 14));
   const taxPct = num_(getSetting_(ss, 'Sales tax % (0 for none)'));
@@ -432,7 +558,7 @@ function apiApproveEstimate(number) {
   est.getRange(erow, 6).setValue('Accepted');
 
   const inv = ss.getSheetByName(TABS.INVOICES);
-  const invNum = nextNumber_(inv, 9001);
+  const invNum = nextDocNumber_(inv, getSetting_(ss, 'Starting invoice number'), '9001');
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const due = new Date(today); due.setDate(due.getDate() + 14);
   const items = lineItemsFor_(ss, number).map(function (it) { return { service: it.desc, qty: it.qty, rate: it.rate }; });
@@ -466,6 +592,8 @@ var SETTING_KEYS = {
   reviewLink: 'Google review link (for review requests)',
   payInstructions: 'Invoice payment instructions',
   payLink: 'Payment link (Stripe/PayPal/Venmo — optional)',
+  startEstimate: 'Starting quote/estimate number',
+  startInvoice: 'Starting invoice number',
 };
 
 function apiGetSettings() {

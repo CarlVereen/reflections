@@ -19,19 +19,20 @@ and the error and send it over.
 - [ ] **B2.** Open the URL → the **app loads on the Home screen** (KPI tiles, "Follow-ups due", "This week's jobs"). *(If you get a Drive "unable to open the file" error, you have multiple Google accounts — open it in an Incognito window signed into just the owner account. `⚡ CRM ▸ 📲 Open the app (get link)` shows the URL anytime.)*
 
 ## C. Settings & services (in the app)
-- [ ] **C1.** App → **More ▸ Settings** → fill **Business name**, **Owner email** (your address), phone, **Currency**, **Sales tax %** (e.g. 8.25), **Google review link** (any URL), payment instructions, and a **Payment link** (any URL) → **Save settings**.
+- [ ] **C1.** App → **More ▸ Settings** → fill **Business name**, **Owner email** (your address), phone, **Currency**, **Sales tax %** (e.g. 8.25), **Google review link** (any URL), payment instructions, and a **Payment link** (any URL). Under **Document numbering**, optionally set a custom **Next quote/estimate #** (e.g. `Q-2001`) and **Next invoice #** (e.g. `INV-5001`) → **Save settings**.
 - [ ] **C2.** Edit the **"Your services"** box (one per line) → **Save services**. The new service now appears in the app's Service dropdowns.
 
 ## D. Leads (in the app)
 - [ ] **D1.** **Leads ▸ +** (or Home ▸ **+ Lead**) → add a lead: name + **email = your own address**, pick a **Service** from the dropdown → **Add lead**. It appears in the app list **and** in the 🎯 Leads sheet tab, with a **Next Follow-up** date (date only, no time).
 - [ ] **D2.** Tap the lead → **Call / Text** links show, status buttons work, and **Create estimate** opens the builder pre-filled with that client.
+- [ ] **D3.** **Add a second lead re-using the same email or phone** → a **⚠️ Possible duplicate** prompt lists the match; **Cancel** stops it, **Add anyway** still adds it (warn, not block).
 
 ## E. Quote → Approve → Invoice → Paid — the core flow (in the app)
 - [ ] **E1.** **Quotes ▸ + New estimate** → client = your test client (email = you) → add **2 line items** (Service + Qty + Price) → watch the **running Total** update (with tax) → **Create & send**.
-- [ ] **E2.** The estimate appears in the app **Quotes** list **and** the 📄 Estimates tab; you receive an **ESTIMATE PDF** — itemized, with **subtotal + tax + total** and "Valid until".
+- [ ] **E2.** The estimate appears in the app **Quotes** list **and** the 📄 Estimates tab; you receive an **ESTIMATE PDF** — itemized, with **subtotal + tax + total** and "Valid until". *(If you set a custom start in C1, confirm the estimate # matches it — e.g. `Q-2001` — and the invoice created at E3 uses your invoice start.)*
 - [ ] **E3.** Open that estimate → **Approve → create invoice**. Confirm: estimate → **Accepted**; a 💵 **Invoice draft** appears with the **line items copied**; **and** a 🗓️ **Job (Scheduled)** was created.
 - [ ] **E4.** **Invoices** → open the draft → (optionally **Edit line items**) → **Send invoice** → you receive an **INVOICE PDF** (itemized, tax, a **Pay now** button) and status flips to **Sent**.
-- [ ] **E5.** **Mark paid** → status **Paid**; go to **Home** → **Revenue** and **Lifetime** update.
+- [ ] **E5.** **Mark paid** → status **Paid**; the invoice drops off the main list into a collapsed **Paid** group (tap it to expand). Go to **Home** → **Revenue** and **Lifetime** update.
 - [ ] **E6.** Re-open that invoice and **Send** again → the **total is unchanged** (tax is not applied twice). ✅
 
 ## F. Jobs & Clients (in the app)

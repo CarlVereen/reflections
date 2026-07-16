@@ -82,6 +82,16 @@
     padding:11px 18px;border-radius:999px;font-size:13.5px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%}
   .toast.on{opacity:1}
   .spin{text-align:center;padding:40px;color:var(--muted)}
+  /* collapsible date groups (Leads) */
+  .grp{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
+    margin:14px 2px 8px;padding:4px 2px;font-weight:800;font-size:13px;letter-spacing:.02em}
+  .grp .car{width:14px;color:var(--muted);font-size:12px}
+  .grp .gt{text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .grp .gt.od{color:var(--warn)}
+  .grp .gd{font-weight:600;color:var(--muted);font-size:12px}
+  .grp .gc{margin-left:auto;background:var(--soft);color:var(--muted);border-radius:999px;
+    min-width:22px;text-align:center;padding:1px 8px;font-size:11.5px;font-weight:800}
+  .grp.odh .gc{background:#f5d9d3;color:#a33}
 </style>
 </head>
 <body>
@@ -233,15 +243,57 @@ function tileGood(l,v){ return '<div class="tile good"><div class="l">'+l+'</div
 
 /* ---------------- LEADS ---------------- */
 function loadLeads(){ document.getElementById('leadsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListLeads').then(function(l){S.leads=l||[];renderLeads();}); }
+/* ---- date helpers for the follow-up buckets ---- */
+var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function midnight(d){ var x=new Date(d); x.setHours(0,0,0,0); return x; }
+function addDays(d,n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function nextMonday(t){ var diff=(8-t.getDay())%7; if(diff===0)diff=7; return addDays(t,diff); }
+function fmtShort(d){ return MON3[d.getMonth()]+' '+d.getDate(); }
+function isoToLocal(s){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||''); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
+function isoOf(d){ var m=d.getMonth()+1,day=d.getDate(); return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(day<10?'0':'')+day; }
+function leadBucket(l,t,tom,nMon,nnMon){
+  if(l.status==='Won'||l.status==='Lost'||!l.followUpISO) return 'none';
+  var d=isoToLocal(l.followUpISO); if(!d) return 'none'; d=midnight(d);
+  if(d<t) return 'overdue';
+  if(d.getTime()===t.getTime()) return 'today';
+  if(d.getTime()===tom.getTime()) return 'tomorrow';
+  if(d<nMon) return 'thisweek';
+  if(d<nnMon) return 'nextweek';
+  return 'later';
+}
+function leadRow(l){
+  var due=l.followUp?(' · '+esc(l.followUp)):'';
+  return '<div class="list-item" onclick="openLead('+l.row+')"><div class="row"><div><div class="name">'+esc(l.name)+'</div>'+
+     '<div class="meta">'+esc(l.phone||'—')+(l.service?' · '+esc(l.service):'')+(l.value?' · '+money0(l.value):'')+due+'</div></div>'+pill(l.status)+'</div></div>';
+}
+// Which groups start expanded (kept across re-renders). Near-term open, later collapsed.
+var LEAD_OPEN={overdue:true,today:true,tomorrow:true,thisweek:true,nextweek:false,later:false,none:false};
+function toggleLeadGroup(k){ LEAD_OPEN[k]=!LEAD_OPEN[k]; renderLeads(); }
 function renderLeads(){
   var q=(document.getElementById('leadSearch').value||'').toLowerCase();
-  var list=S.leads.filter(function(l){ return !q || (l.name+' '+l.phone+' '+l.service).toLowerCase().indexOf(q)>-1; });
-  if(!list.length){ document.getElementById('leadsBody').innerHTML='<div class="empty">No leads yet. Tap + to add one.</div>'; return; }
-  var h=''; list.forEach(function(l){
-    h+='<div class="list-item" onclick="openLead('+l.row+')"><div class="row"><div><div class="name">'+esc(l.name)+'</div>'+
-       '<div class="meta">'+esc(l.phone||'—')+(l.service?' · '+esc(l.service):'')+(l.value?' · '+money0(l.value):'')+'</div></div>'+pill(l.status)+'</div></div>';
+  var list=(S.leads||[]).filter(function(l){ return !q || (l.name+' '+l.phone+' '+l.email+' '+l.service).toLowerCase().indexOf(q)>-1; });
+  var body=document.getElementById('leadsBody');
+  if(!list.length){ body.innerHTML='<div class="empty">'+(q?'No leads match that search.':'No leads yet. Tap + to add one.')+'</div>'; return; }
+  if(q){ body.innerHTML=list.map(leadRow).join(''); return; }   // flat list while searching
+  var t=midnight(new Date()), tom=addDays(t,1), nMon=nextMonday(t), nnMon=addDays(nMon,7);
+  var groups={overdue:[],today:[],tomorrow:[],thisweek:[],nextweek:[],later:[],none:[]};
+  list.forEach(function(l){ groups[leadBucket(l,t,tom,nMon,nnMon)].push(l); });
+  var defs=[['overdue','⚠️ Overdue',''],['today','Today',fmtShort(t)],['tomorrow','Tomorrow',fmtShort(tom)],
+            ['thisweek','This week',''],['nextweek','Next week',fmtShort(nMon)+'+'],['later','Later',''],
+            ['none','No follow-up','']];
+  var h='';
+  defs.forEach(function(g){
+    var arr=groups[g[0]]; if(!arr.length) return;
+    arr.sort(function(a,b){ return (a.followUpISO||'').localeCompare(b.followUpISO||'') || a.name.localeCompare(b.name); });
+    var open=LEAD_OPEN[g[0]], od=(g[0]==='overdue');
+    h+='<div class="grp'+(od?' odh':'')+'" onclick="toggleLeadGroup(\''+g[0]+'\')">'+
+       '<span class="car">'+(open?'▾':'▸')+'</span>'+
+       '<span class="gt'+(od?' od':'')+'">'+g[1]+'</span>'+
+       (g[2]?'<span class="gd">'+g[2]+'</span>':'')+
+       '<span class="gc">'+arr.length+'</span></div>';
+    if(open) h+=arr.map(leadRow).join('');
   });
-  document.getElementById('leadsBody').innerHTML=h;
+  body.innerHTML=h;
 }
 function openLeadForm(){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New lead</h3>'+
@@ -249,24 +301,77 @@ function openLeadForm(){
     field('Email','ld_email','','jane@email.com')+ serviceSelect('ld_service')+
     '<button class="btn" onclick="saveLead()">Add lead</button>');
 }
+var PENDING_LEAD=null;
 function saveLead(){
   var name=val('ld_name'); if(!name){toast('Name is required');return;}
+  // Capture the form now — the confirm dialog (if any) replaces these inputs.
+  PENDING_LEAD={name:name,phone:val('ld_phone'),email:val('ld_email'),service:val('ld_service'),value:val('ld_value')};
+  submitLead(false);
+}
+function submitLead(force){
+  if(!PENDING_LEAD)return;
   busy('Adding…');
-  api('apiAddLead',{name:name,phone:val('ld_phone'),email:val('ld_email'),service:val('ld_service'),value:val('ld_value')})
-    .then(function(r){ closeModal(); toast('✅ Lead added'); S.dashboard=null; loadLeads(); });
+  var p=Object.assign({},PENDING_LEAD,{force:!!force});
+  api('apiAddLead',p).then(function(r){
+    if(r&&r.dup&&!force){ confirmDupLead(r); return; }
+    PENDING_LEAD=null; closeModal(); toast('✅ Lead added'); S.dashboard=null; loadLeads();
+  });
+}
+function confirmDupLead(r){
+  var rows=(r.dupes||[]).slice(0,4).map(function(d){
+    return '<div class="list-item"><div class="name">'+esc(d.name)+'</div><div class="meta">'+(d.where==='client'?'Client':'Lead')+
+      (d.phone?' · '+esc(d.phone):'')+(d.email?' · '+esc(d.email):'')+'</div></div>';
+  }).join('');
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>⚠️ Possible duplicate</h3>'+
+    '<div class="muted" style="margin-bottom:8px">The same email or phone is already in your CRM:</div>'+rows+
+    '<button class="btn" onclick="submitLead(true)">Add anyway</button>'+
+    '<button class="btn sec" onclick="PENDING_LEAD=null;closeModal();">Cancel</button>');
 }
 function openLead(row){
   var l=S.leads.filter(function(x){return x.row===row;})[0]; if(!l)return;
   var actions=(S.statuses.lead||[]).map(function(st){ return '<button class="btn sm sec" onclick="setLeadStatus('+row+',\''+st+'\')">'+st+'</button>'; }).join(' ');
   var tel=l.phone?String(l.phone).replace(/[^0-9+]/g,''):'';
+  var base=midnight(new Date());
+  var quick=[['Today',isoOf(base)],['Tomorrow',isoOf(addDays(base,1))],['+3 days',isoOf(addDays(base,3))],
+             ['Next Mon',isoOf(nextMonday(base))],['+1 week',isoOf(addDays(base,7))]];
+  var fuBtns=quick.map(function(b){ return '<button class="btn sm sec" onclick="setFollowUp('+row+',\''+b[1]+'\')">'+b[0]+'</button>'; }).join(' ');
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(l.name)+'</h3>'+
     '<div class="muted">'+esc(l.phone||'—')+(l.email?' · '+esc(l.email):'')+'</div>'+
     '<div class="muted" style="margin-top:2px">'+esc(l.service||'')+(l.value?' · '+money0(l.value):'')+' · '+esc(l.status)+'</div>'+
     (tel?'<div class="btnrow"><a class="btn sec" href="tel:'+tel+'">Call</a><a class="btn sec" href="sms:'+tel+'">Text</a></div>':'')+
-    '<button class="btn" onclick="quoteFromLead('+row+')">Create estimate</button>'+
+    '<div class="btnrow"><button class="btn" onclick="quoteFromLead('+row+')">Create estimate</button><button class="btn sec" onclick="openLeadEdit('+row+')">Edit</button></div>'+
+    '<h2 class="sec">Follow-up</h2>'+
+    '<div class="muted" style="margin-bottom:2px">Next follow-up: <b>'+esc(l.followUp||'not set')+'</b></div>'+
+    '<div class="btnrow" style="flex-wrap:wrap">'+fuBtns+'</div>'+
+    '<div class="two" style="margin-top:8px"><div><input type="date" id="fu_pick" value="'+esc(l.followUpISO||'')+'"></div><div><button class="btn sec" onclick="pickFollowUp('+row+')">Set date</button></div></div>'+
     '<h2 class="sec">Set status</h2><div class="btnrow" style="flex-wrap:wrap">'+actions+'</div>');
 }
 function setLeadStatus(row,st){ api('apiSetLeadStatus',row,st).then(function(){ closeModal(); toast('Status → '+st); S.dashboard=null; loadLeads(); }); }
+function setFollowUp(row,iso){
+  busy('Saving…');
+  api('apiSetLeadFollowUp',row,iso).then(function(r){
+    var l=S.leads.filter(function(x){return x.row===row;})[0];
+    if(l&&r){ l.followUp=r.followUp; l.followUpISO=r.followUpISO; }
+    closeModal(); toast('Follow-up: '+((r&&r.followUp)||'cleared')); S.dashboard=null; renderLeads();
+  });
+}
+function pickFollowUp(row){ var e=document.getElementById('fu_pick'); setFollowUp(row,e?e.value:''); }
+function openLeadEdit(row){
+  var l=S.leads.filter(function(x){return x.row===row;})[0]; if(!l)return;
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit lead</h3>'+
+    field('Name *','el_name',l.name,'Jane Smith')+
+    '<div class="two"><div>'+field('Phone','el_phone',l.phone,'(555) 123-4567')+'</div><div>'+field('Est. value','el_value',l.value||'','250')+'</div></div>'+
+    field('Email','el_email',l.email,'jane@email.com')+
+    '<label>Service</label><select id="el_service"><option value="">— choose —</option>'+serviceOptions().map(function(s){return '<option'+(s===l.service?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select>'+
+    '<button class="btn" onclick="saveLeadEdit('+row+')">Save changes</button>'+
+    '<button class="btn sec" onclick="openLead('+row+')">Cancel</button>');
+}
+function saveLeadEdit(row){
+  var name=val('el_name'); if(!name){toast('Name is required');return;}
+  busy('Saving…');
+  api('apiUpdateLead',row,{name:name,phone:val('el_phone'),email:val('el_email'),service:val('el_service'),value:val('el_value')})
+   .then(function(){ closeModal(); toast('Lead updated'); S.dashboard=null; loadLeads(); });
+}
 function quoteFromLead(row){ var l=S.leads.filter(function(x){return x.row===row;})[0]; closeModal(); openQuoteBuilder(l); }
 
 /* ---------------- QUOTE BUILDER ---------------- */
@@ -319,13 +424,32 @@ function createQuote(send){
 /* ---------------- QUOTES list + detail ---------------- */
 function loadQuotes(){ document.getElementById('quotesBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListDocs','ESTIMATE').then(function(l){S.quotes=l||[];renderDocs('quotesBody',S.quotes,'ESTIMATE');}); }
 function loadInvoices(){ document.getElementById('invoicesBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListDocs','INVOICE').then(function(l){S.invoices=l||[];renderDocs('invoicesBody',S.invoices,'INVOICE');}); }
+function docRow(kind,d){
+  return '<div class="list-item" onclick="openDoc(\''+kind+'\','+JSON.stringify(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
+     '<div class="meta">'+money(d.amount)+' · '+esc(d.dateA||'draft')+'</div></div>'+pill(d.status)+'</div></div>';
+}
+// "Done" docs collapse under a header so the list defaults to what still needs action.
+function docDoneStatuses(kind){ return kind==='INVOICE'?['Paid']:['Accepted','Declined']; }
+var DOC_OPEN={};
+function toggleDocGroup(el,kind){ DOC_OPEN[el]=!DOC_OPEN[el]; renderDocs(el, kind==='INVOICE'?S.invoices:S.quotes, kind); }
 function renderDocs(el,list,kind){
-  if(!list.length){ document.getElementById(el).innerHTML='<div class="empty">'+(kind==='INVOICE'?'No invoices yet. Approve an estimate to create one.':'No estimates yet. Tap + to build one.')+'</div>'; return; }
-  var h=''; list.forEach(function(d){
-    h+='<div class="list-item" onclick="openDoc(\''+kind+'\','+JSON.stringify(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
-       '<div class="meta">'+money(d.amount)+' · '+esc(d.dateA||'draft')+'</div></div>'+pill(d.status)+'</div></div>';
-  });
-  document.getElementById(el).innerHTML=h;
+  var body=document.getElementById(el);
+  if(!list.length){ body.innerHTML='<div class="empty">'+(kind==='INVOICE'?'No invoices yet. Approve an estimate to create one.':'No estimates yet. Tap + to build one.')+'</div>'; return; }
+  var done=docDoneStatuses(kind);
+  var active=list.filter(function(d){ return done.indexOf(d.status)<0; });
+  var closed=list.filter(function(d){ return done.indexOf(d.status)>=0; });
+  var h='';
+  h+= active.length ? active.map(function(d){return docRow(kind,d);}).join('')
+                    : '<div class="empty">'+(kind==='INVOICE'?'Nothing awaiting payment 🎉':'No open estimates')+'</div>';
+  if(closed.length){
+    var open=!!DOC_OPEN[el];
+    h+='<div class="grp" onclick="toggleDocGroup(\''+el+'\',\''+kind+'\')">'+
+       '<span class="car">'+(open?'▾':'▸')+'</span>'+
+       '<span class="gt">'+(kind==='INVOICE'?'Paid':'Closed')+'</span>'+
+       '<span class="gc">'+closed.length+'</span></div>';
+    if(open) h+=closed.map(function(d){return docRow(kind,d);}).join('');
+  }
+  body.innerHTML=h;
 }
 function openDoc(kind,number){
   var list=kind==='INVOICE'?S.invoices:S.quotes;
@@ -407,11 +531,37 @@ function loadClients(){ document.getElementById('clientsBody').innerHTML='<div c
 function renderClients(){
   if(!S.clients.length){ document.getElementById('clientsBody').innerHTML='<div class="empty">No clients yet.</div>'; return; }
   var h=''; S.clients.forEach(function(c){
-    var tel=c.phone?String(c.phone).replace(/[^0-9+]/g,''):'';
-    h+='<div class="list-item"><div class="row"><div><div class="name">'+esc(c.name)+'</div>'+
+    h+='<div class="list-item" onclick="openClient('+c.row+')"><div class="row"><div><div class="name">'+esc(c.name)+'</div>'+
        '<div class="meta">'+esc(c.phone||'—')+(c.email?' · '+esc(c.email):'')+'</div></div><div style="text-align:right"><div class="name">'+money0(c.totalSpent)+'</div><div class="meta">spent</div></div></div></div>';
   });
   document.getElementById('clientsBody').innerHTML=h;
+}
+function openClient(row){
+  var c=S.clients.filter(function(x){return x.row===row;})[0]; if(!c)return;
+  var tel=c.phone?String(c.phone).replace(/[^0-9+]/g,''):'';
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(c.name)+'</h3>'+
+    '<div class="muted">'+esc(c.phone||'—')+(c.email?' · '+esc(c.email):'')+'</div>'+
+    (c.address?'<div class="muted" style="margin-top:2px">'+esc(c.address)+'</div>':'')+
+    '<div class="muted" style="margin-top:2px">Total spent: <b>'+money0(c.totalSpent)+'</b>'+(c.firstJob?' · since '+esc(c.firstJob):'')+'</div>'+
+    (tel?'<div class="btnrow"><a class="btn sec" href="tel:'+tel+'">Call</a><a class="btn sec" href="sms:'+tel+'">Text</a></div>':'')+
+    '<button class="btn" onclick="openClientEdit('+row+')">Edit</button>');
+}
+function openClientEdit(row){
+  var c=S.clients.filter(function(x){return x.row===row;})[0]; if(!c)return;
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit client</h3>'+
+    field('Name *','ec_name',c.name,'Jane Smith')+
+    field('Phone','ec_phone',c.phone,'(555) 123-4567')+
+    field('Email','ec_email',c.email,'jane@email.com')+
+    field('Address','ec_address',c.address,'123 Main St')+
+    '<div class="muted" style="margin-top:8px">Renaming also updates this client on their jobs, estimates & invoices.</div>'+
+    '<button class="btn" onclick="saveClientEdit('+row+')">Save changes</button>'+
+    '<button class="btn sec" onclick="openClient('+row+')">Cancel</button>');
+}
+function saveClientEdit(row){
+  var name=val('ec_name'); if(!name){toast('Name is required');return;}
+  busy('Saving…');
+  api('apiUpdateClient',row,{name:name,phone:val('ec_phone'),email:val('ec_email'),address:val('ec_address')})
+   .then(function(){ closeModal(); toast('Client updated'); S.dashboard=null; loadClients(); });
 }
 
 /* ---------------- SETTINGS ---------------- */
@@ -425,6 +575,9 @@ function renderSettings(){
     field('Google review link','set_reviewLink',s.reviewLink,'https://g.page/r/…/review')+
     field('Payment instructions','set_payInstructions',s.payInstructions,'e.g. Zelle to example@gmail.com, or cash/check')+
     field('Payment link (Pay-now button)','set_payLink',s.payLink,'https://paypal.me/you or your Stripe link')+
+    '<h2 class="sec">Document numbering</h2>'+
+    '<div class="muted" style="margin-bottom:8px">Sets where new numbers start. Text is allowed — e.g. <b>INV-1001</b> or <b>Q-0001</b> (the number part counts up, leading zeros kept). Changing this only affects <b>new</b> documents.</div>'+
+    '<div class="two"><div>'+field('Next quote/estimate #','set_startEstimate',s.startEstimate,'1001')+'</div><div>'+field('Next invoice #','set_startInvoice',s.startInvoice,'9001')+'</div></div>'+
     '<button class="btn" onclick="saveSettings()">Save settings</button>'+
     '<h2 class="sec">Your services</h2><div class="muted" style="margin-bottom:8px">One per line — fills the Service dropdowns.</div>'+
     '<textarea id="set_services" rows="7">'+esc((S.services||[]).join('\n'))+'</textarea>'+
@@ -432,7 +585,7 @@ function renderSettings(){
   document.getElementById('settingsBody').innerHTML=h;
 }
 function saveSettings(){
-  var keys=['businessName','ownerEmail','phone','currency','taxPct','reviewLink','payInstructions','payLink'];
+  var keys=['businessName','ownerEmail','phone','currency','taxPct','reviewLink','payInstructions','payLink','startEstimate','startInvoice'];
   var obj={}; keys.forEach(function(k){obj[k]=val('set_'+k);});
   busy('Saving…');
   api('apiSaveSettings',obj).then(function(){ S.settings=Object.assign(S.settings,obj); CUR=(obj.currency||'$').trim()||'$'; document.getElementById('bizName').textContent=obj.businessName||'Service Pro CRM'; toast('Settings saved'); });
@@ -454,7 +607,7 @@ function mock(fn,args){
     leadStatuses:['New','Contacted','Quoted','Won','Lost'],jobStatuses:['Scheduled','In Progress','Done','Cancelled'],invStatuses:['Draft','Sent','Paid','Overdue'],estStatuses:['Draft','Sent','Accepted','Declined'],repeatOpts:['None','Weekly','Biweekly','Monthly'],
     dashboard:{newLeads:14,pipeline:8450,jobsWeek:9,revMonth:6320,winRate:62,revLife:41900,followUps:[{name:'Marcus Bell',phone:'(555) 203-8871',status:'Quoted',due:'7/12'},{name:'Priya Shah',phone:'(555) 661-2049',status:'Contacted',due:'7/14'}],weekJobs:[{row:2,date:'7/16',client:'Dana Ruiz',service:'Full detail',status:'Scheduled'}]}};
   if(fn==='apiDashboard')return mock('apiBootstrap').dashboard;
-  if(fn==='apiListLeads')return[{row:2,name:'Marcus Bell',phone:'(555) 203-8871',email:'',service:'Full detail',value:189,status:'Quoted',followUp:'7/12'},{row:3,name:'Priya Shah',phone:'(555) 661-2049',email:'p@x.com',service:'Interior clean',value:120,status:'New',followUp:'7/17'}];
+  if(fn==='apiListLeads')return[{row:2,name:'Marcus Bell',phone:'(555) 203-8871',email:'',service:'Full detail',value:189,status:'Quoted',followUp:'7/12',followUpISO:'2026-07-12'},{row:3,name:'Priya Shah',phone:'(555) 661-2049',email:'p@x.com',service:'Interior clean',value:120,status:'New',followUp:'7/17',followUpISO:'2026-07-17'}];
   if(fn==='apiListDocs')return args[0]==='INVOICE'?[{row:2,number:9001,client:'Dana Ruiz',dateA:'7/15',dateB:'7/29',amount:431.92,status:'Draft',items:3}]:[{row:2,number:1001,client:'Marcus Bell',dateA:'7/14',dateB:'7/28',amount:204.62,status:'Sent',items:2}];
   if(fn==='apiListJobs')return[{row:2,date:'7/16',client:'Dana Ruiz',service:'Full detail',time:'2pm',status:'Scheduled',price:189,paid:'No',repeat:'None'}];
   if(fn==='apiListClients')return[{row:2,name:'Dana Ruiz',phone:'(555) 442-9910',email:'dana@x.com',firstJob:'7/10',totalSpent:588}];

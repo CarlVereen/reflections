@@ -151,9 +151,9 @@ function buildCRM() {
   textFormat_(ss.getSheetByName(TABS.LEADS), [2, 3, 4, 6, 10]);   // Name, Phone, Email, Service, Notes
   textFormat_(ss.getSheetByName(TABS.CLIENTS), [1, 2, 3, 4, 7]);  // Name, Phone, Email, Address, Notes
   textFormat_(ss.getSheetByName(TABS.JOBS), [2, 3, 4, 10]);       // Client, Service, Time, Notes
-  textFormat_(ss.getSheetByName(TABS.ESTIMATES), [2]);           // Client
-  textFormat_(ss.getSheetByName(TABS.INVOICES), [2]);            // Client
-  textFormat_(ss.getSheetByName(TABS.ITEMS), [2]);               // Description
+  textFormat_(ss.getSheetByName(TABS.ESTIMATES), [1, 2]);        // Estimate #, Client
+  textFormat_(ss.getSheetByName(TABS.INVOICES), [1, 2]);         // Invoice #, Client
+  textFormat_(ss.getSheetByName(TABS.ITEMS), [1, 2]);            // Doc #, Description
   reorderTabs_(ss, [TABS.START, TABS.DASH, TABS.LEADS, TABS.JOBS, TABS.CLIENTS,
                     TABS.ESTIMATES, TABS.INVOICES, TABS.ITEMS, TABS.SETTINGS]);
   // Remove the leftover default sheet created with a new spreadsheet.
@@ -411,13 +411,19 @@ function buildSettings_(ss) {
     ['Google review link (for review requests)', ''],
     ['Invoice payment instructions', ''],
     ['Payment link (Stripe/PayPal/Venmo — optional)', ''],
+    ['Starting quote/estimate number', '1001'],
+    ['Starting invoice number', '9001'],
     ['Mobile lead-capture form URL (auto-filled)', ''],
   ];
   sh.getRange(4, 2, rowsData.length, 2).setValues(rowsData);
   sh.getRange(4, 2, rowsData.length, 1).setFontWeight('bold').setFontColor('#52565c');
   sh.setColumnWidth(2, 320); sh.setColumnWidth(3, 320);
   sh.getRange(4, 3, rowsData.length, 1).setBackground('#ffffff').setBorder(true, true, true, true, false, false, BRAND.line, null);
-  sh.getRange('B15').setValue('Tip: change any value above, then just keep working — the CRM reads these live.').setFontColor('#52565c').setFontStyle('italic');
+  // The two doc-number settings are free text (support prefixes + leading zeros like "INV-001").
+  // Keep them literal so the sheet doesn't coerce "1001" → a number or drop leading zeros.
+  const startRow = 4 + rowsData.map(function (r) { return r[0]; }).indexOf('Starting quote/estimate number');
+  sh.getRange(startRow, 3, 2, 1).setNumberFormat('@');
+  sh.getRange('B17').setValue('Tip: change any value above, then just keep working — the CRM reads these live.').setFontColor('#52565c').setFontStyle('italic');
 
   // Editable services list (column E, rows 3-32). Drives the Service dropdown in the
   // Quick Actions panel AND the Service columns in the Leads and Jobs tabs.
