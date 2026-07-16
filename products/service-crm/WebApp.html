@@ -176,7 +176,7 @@ var CUR='$';
 // Bump this whenever you paste new code, so you can confirm a deploy actually took effect:
 // it shows at the bottom of More ▸ Settings. If it doesn't match after deploying, the old
 // version is still being served (Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version).
-var BUILD='2026-07-16g';
+var BUILD='2026-07-16h';
 function api(fn){
   var args=[].slice.call(arguments,1);
   return new Promise(function(res,rej){
@@ -350,6 +350,21 @@ function midnight(d){ var x=new Date(d); x.setHours(0,0,0,0); return x; }
 function addDays(d,n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
 function nextMonday(t){ var diff=(8-t.getDay())%7; if(diff===0)diff=7; return addDays(t,diff); }
 function isoOf(d){ var m=d.getMonth()+1,day=d.getDate(); return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(day<10?'0':'')+day; }
+// "7/22/2026" or "7/22" → "2026-07-22" (for local Today/Upcoming classification). '' if unparseable.
+function parseDateISO(s){ var m=/^(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?$/.exec(String(s||'').trim()); if(!m)return '';
+  var mo=+m[1],da=+m[2],yr=m[3]?+m[3]:(new Date()).getFullYear(); if(yr<100)yr+=2000;
+  return yr+'-'+(mo<10?'0':'')+mo+'-'+(da<10?'0':'')+da; }
+function normPhone(s){ var d=String(s||'').replace(/[^0-9]/g,''); return d.length>=7?d:''; }
+// Duplicate check against the already-loaded contacts — no server round-trip needed.
+function localDupes(email,phone){
+  var em=String(email||'').trim().toLowerCase(), ph=normPhone(phone);
+  if(!em&&!ph)return [];
+  return (S.contacts||[]).filter(function(c){ if(c._saving)return false;
+    var ce=String(c.email||'').trim().toLowerCase(), cp=normPhone(c.phone);
+    return (em&&ce&&ce===em)||(ph&&cp&&cp===ph);
+  }).map(function(c){ return {name:c.name,where:c.clientRow?'client':'lead',phone:c.phone,email:c.email}; });
+}
+function reindexContacts(){ (S.contacts||[]).forEach(function(c,i){c._i=i;}); }
 // Tag rule: once someone has a logged job, show their last job date (green). Otherwise
 // show their lead status (New / Quoted / Declined / Lost).
 function contactTag(c){
@@ -392,12 +407,25 @@ function saveLead(){
 }
 function submitLead(force){
   if(!PENDING_LEAD)return;
-  busy('Adding…');
-  var p=Object.assign({},PENDING_LEAD,{force:!!force});
-  api('apiAddLead',p).then(function(r){
-    if(r&&r.dup&&!force){ confirmDupLead(r); return; }
-    PENDING_LEAD=null; closeModal(); toast('✅ Contact added'); invalidate(); loadContacts();
-  });
+  // If contacts aren't cached yet, fall back to the one-time server flow (keeps the dup check).
+  if(!S.contacts){
+    busy('Adding…');
+    api('apiAddLead',Object.assign({},PENDING_LEAD,{force:!!force})).then(function(r){
+      if(r&&r.dup&&!force){ confirmDupLead(r); return; }
+      PENDING_LEAD=null; closeModal(); toast('✅ Contact added'); S.contacts=null; S.dashboard=null; loadContacts();
+    });
+    return;
+  }
+  if(!force){ var dupes=localDupes(PENDING_LEAD.email,PENDING_LEAD.phone); if(dupes.length){ confirmDupLead({dupes:dupes}); return; } }
+  // Optimistic: add to the local list instantly, sync in the background (force=true — already checked locally).
+  var p=PENDING_LEAD; PENDING_LEAD=null; closeModal(); toast('✅ Contact added');
+  var temp={_saving:true,key:String(p.name||'').trim().toLowerCase(),name:p.name,phone:p.phone||'',email:p.email||'',address:p.address||'',service:p.service||'',
+    leadRow:0,clientRow:0,leadStatus:'New',followUp:'',followUpISO:'',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0,
+    nextJobISO:'',nextJobDate:'',nextJobService:'',quotes:[],invoices:[]};
+  S.contacts.push(temp); reindexContacts(); if(CUR_SCREEN==='contacts')renderContacts();
+  enqueue('apiAddLead',[Object.assign({},p,{force:true})],'Contact '+p.name,{persist:false,onOk:function(r){
+    if(r&&r.row){ temp.leadRow=r.row; temp._saving=false; if(CUR_SCREEN==='contacts')renderContacts(); }
+  }});
 }
 function confirmDupLead(r){
   var rows=(r.dupes||[]).slice(0,4).map(function(d){
@@ -630,7 +658,13 @@ function deleteDoc(kind,number){
     '<button class="btn danger" onclick="confirmDeleteDoc(\''+kind+'\','+jarg(number)+')">Delete permanently</button>'+
     '<button class="btn sec" onclick="openDoc(\''+kind+'\','+jarg(number)+')">Cancel</button>');
 }
-function confirmDeleteDoc(kind,number){ busy('Deleting…'); api('apiDeleteDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?'🗑️ Deleted':(r&&r.msg||'Failed')); invalidate(); loadBilling(); }); }
+function confirmDeleteDoc(kind,number){
+  // Optimistic: remove from the local list now, delete on the server in the background.
+  var key=kind==='INVOICE'?'invoices':'quotes';
+  if(S[key]) S[key]=S[key].filter(function(x){return String(x.number)!==String(number);});
+  S.dashboard=null; closeModal(); toast('🗑️ Deleted'); if(CUR_SCREEN==='billing')renderBilling();
+  enqueue('apiDeleteDoc',[kind,number],'Delete '+(kind==='INVOICE'?'invoice':'quote')+' #'+number,{persist:false});
+}
 function sendDoc(kind,number){ busy('Building PDF…'); api('apiSendDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive (no client email)'):(r&&r.msg||'Failed')); invalidate(); kind==='INVOICE'?loadInvoices():loadQuotes(); }); }
 function approve(number){
   var base=midnight(new Date());
@@ -725,12 +759,24 @@ function openJobForm(){
     '<button class="btn" onclick="saveJob()">Add job</button>');
 }
 function saveJob(){
-  var client=val('j_client'); if(!client){toast('Client required');return;} busy('Adding…');
-  api('apiAddJob',{client:client,date:val('j_date'),time:val('j_time'),service:val('j_service'),price:val('j_price'),repeat:val('j_repeat')})
-   .then(function(){ closeModal(); toast('Job added'); invalidate(); loadJobs(); });
+  var client=val('j_client'); if(!client){toast('Client required');return;}
+  var form={client:client,date:val('j_date'),time:val('j_time'),service:val('j_service'),price:val('j_price'),repeat:val('j_repeat')};
+  var iso=parseDateISO(form.date);
+  var temp={row:-(++SYNC.seq),_saving:true,client:client,service:form.service||'',time:form.time||'',status:'Scheduled',
+    price:Number(String(form.price).replace(/[^0-9.]/g,''))||0,paid:'No',repeat:form.repeat||'None',
+    dateISO:iso,date:iso?fmtLocal(iso):String(form.date||'')};
+  closeModal(); toast('✅ Job added');
+  var go=function(){
+    S.jobs=S.jobs||[]; S.jobs.push(temp); S.dashboard=null; if(CUR_SCREEN==='jobs')renderJobs();
+    enqueue('apiAddJob',[form],'Job for '+client,{persist:false,onOk:function(r){
+      if(r&&r.ok&&r.row){ temp.row=r.row; temp._saving=false; if(CUR_SCREEN==='jobs')renderJobs(); }
+    }});
+  };
+  if(S.jobs){ go(); } else { api('apiListJobs').then(function(l){ S.jobs=l||[]; go(); }); }
 }
 function openJob(row){
   var j=S.jobs.filter(function(x){return x.row===row;})[0]; if(!j)return;
+  if(j._saving){ toast('⏳ Still saving — one moment'); return; }   // wait for the real row before editing
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(j.client)+'</h3>'+
     '<div class="muted">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+' · '+esc(j.service||'')+' · '+money(j.price)+'</div>'+
     '<h2 class="sec">Reschedule</h2>'+

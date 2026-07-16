@@ -416,7 +416,8 @@ function apiAddLead(form) {
     if (dupes.length) return { ok: false, dup: true, dupes: dupes };
   }
   const msg = addLeadCore_(form.name, form.phone, form.email, form.service, form.value, form.address);
-  return { ok: msg.indexOf('✅') === 0, msg: msg };
+  const sh = ss.getSheetByName(TABS.LEADS);
+  return { ok: msg.indexOf('✅') === 0, msg: msg, row: sh ? sh.getLastRow() : 0 };
 }
 
 /** Digits only; blank unless it looks like a real phone (≥7 digits) to avoid noise matches. */
@@ -559,7 +560,7 @@ function apiAddJob(form) {
   sh.appendRow([when, form.client, form.service || '', form.time || '', 'Scheduled', num_(form.price),
     'No', 'No', 'No', form.notes || '', form.repeat || 'None', 'No', '']);
   upsertClient_(ss, form.client, form.phone || '', form.email || '', 'From job');
-  return { ok: true };
+  return { ok: true, row: sh.getLastRow() };   // row lets the app reconcile its optimistic entry
 }
 
 function apiSetJob(row, fields) {
