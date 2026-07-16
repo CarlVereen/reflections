@@ -704,10 +704,11 @@ function apiApproveEstimate(number, jobDateIso) {
   const inv = ss.getSheetByName(TABS.INVOICES);
   const invNum = nextDocNumber_(inv, getSetting_(ss, 'Starting invoice number'), '9001');
   const today = new Date(); today.setHours(0, 0, 0, 0);
-  // Provisional due date on the draft; it's re-set from the actual send date when sent.
+  // Issue the invoice now (on approval) so it always has a date — many buyers are never emailed
+  // an invoice. Due date follows from the issue date + terms; a later send keeps this date.
   const due = new Date(today); due.setDate(due.getDate() + Math.max(0, invoiceTermsDays_(ss)));
   const items = lineItemsFor_(ss, number).map(function (it) { return { service: it.desc, qty: it.qty, rate: it.rate }; });
-  inv.appendRow([invNum, ev[1], '', due, num_(ev[4]), 'Draft']); // issue date filled on send
+  inv.appendRow([invNum, ev[1], today, due, num_(ev[4]), 'Draft']);
   appendLineItems_(ss, invNum, items);
 
   const jobDate = toLocalDate_(jobDateIso) || today;
