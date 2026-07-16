@@ -411,6 +411,7 @@ function buildSettings_(ss) {
     ['Google review link (for review requests)', ''],
     ['Invoice payment instructions', ''],
     ['Payment link (Stripe/PayPal/Venmo — optional)', ''],
+    ['Invoice due (days to pay; 0 = due upon receipt)', 14],
     ['Starting quote/estimate number', '1001'],
     ['Starting invoice number', '9001'],
     ['Mobile lead-capture form URL (auto-filled)', ''],

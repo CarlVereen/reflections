@@ -604,6 +604,8 @@ function renderSettings(){
     field('Google review link','set_reviewLink',s.reviewLink,'https://g.page/r/…/review')+
     field('Payment instructions','set_payInstructions',s.payInstructions,'e.g. Zelle to example@gmail.com, or cash/check')+
     field('Payment link (Pay-now button)','set_payLink',s.payLink,'https://paypal.me/you or your Stripe link')+
+    field('Invoice due (days to pay)','set_dueDays',s.dueDays,'14')+
+    '<div class="muted" style="margin:-4px 4px 4px">Days after you <b>send</b> an invoice. Enter <b>0</b> for “Due upon receipt.”</div>'+
     '<h2 class="sec">Document numbering</h2>'+
     '<div class="muted" style="margin-bottom:8px">Sets where new numbers start. Text is allowed — e.g. <b>INV-1001</b> or <b>Q-0001</b> (the number part counts up, leading zeros kept). Changing this only affects <b>new</b> documents.</div>'+
     '<div class="two"><div>'+field('Next quote/estimate #','set_startEstimate',s.startEstimate,'1001')+'</div><div>'+field('Next invoice #','set_startInvoice',s.startInvoice,'9001')+'</div></div>'+
@@ -614,7 +616,7 @@ function renderSettings(){
   document.getElementById('settingsBody').innerHTML=h;
 }
 function saveSettings(){
-  var keys=['businessName','ownerEmail','phone','currency','taxPct','reviewLink','payInstructions','payLink','startEstimate','startInvoice'];
+  var keys=['businessName','ownerEmail','phone','currency','taxPct','reviewLink','payInstructions','payLink','dueDays','startEstimate','startInvoice'];
   var obj={}; keys.forEach(function(k){obj[k]=val('set_'+k);});
   busy('Saving…');
   api('apiSaveSettings',obj).then(function(){ S.settings=Object.assign(S.settings,obj); CUR=(obj.currency||'$').trim()||'$'; document.getElementById('bizName').textContent=obj.businessName||'Service Pro CRM'; toast('✅ Settings saved'); });

@@ -161,7 +161,9 @@ function docHtml_(ss, kind, vals, comp) {
       '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(comp.subtotal) + '</td></tr>';
   }
   const title = isInv ? 'INVOICE' : 'ESTIMATE';
+  const isReceipt = isInv && invoiceTermsDays_(ss) === 0;   // due same day → wording, not a date
   const dateBLabel = isInv ? 'Due' : 'Valid until';
+  const dateBValue = isReceipt ? 'Upon receipt' : fmtD(vals[3]);
   const totalsRows =
     (comp.tax > 0 ?
       '<tr><td colspan="3" style="padding:6px 9px;text-align:right">Subtotal</td><td style="padding:6px 9px;text-align:right">' + money(comp.subtotal) + '</td></tr>' +
@@ -180,7 +182,7 @@ function docHtml_(ss, kind, vals, comp) {
     '<div style="color:#52565c">#' + numv + '</div></td></tr></table>' +
     '<table style="width:100%;margin-bottom:20px"><tr>' +
     '<td><b>' + (isInv ? 'Bill to' : 'Prepared for') + ':</b><br>' + escHtml_(vals[1]) + (email ? '<br>' + escHtml_(email) : '') + '</td>' +
-    '<td style="text-align:right"><b>Issued:</b> ' + fmtD(vals[2]) + '<br><b>' + dateBLabel + ':</b> ' + fmtD(vals[3]) + '</td></tr></table>' +
+    '<td style="text-align:right"><b>Issued:</b> ' + fmtD(vals[2]) + '<br><b>' + dateBLabel + ':</b> ' + dateBValue + '</td></tr></table>' +
     '<table style="width:100%;border-collapse:collapse;margin-bottom:6px">' +
     '<tr style="background:#1a1c1f;color:#fff"><th style="text-align:left;padding:9px">Description</th>' +
     '<th style="padding:9px">Qty</th><th style="text-align:right;padding:9px">Rate</th><th style="text-align:right;padding:9px">Amount</th></tr>' +
@@ -544,6 +546,13 @@ function apiSendDoc(kind, number) {
   if (!vals[1]) return { ok: false, msg: 'This ' + kind.toLowerCase() + ' needs a client.' };
   // set issue date on send if blank
   if (!(vals[2] instanceof Date)) { const t = new Date(); t.setHours(0, 0, 0, 0); sh.getRange(row, 3).setValue(t); vals[2] = t; }
+  // Invoices: (re)set the due date from the send/issue date using the configured terms.
+  // 0 days = due upon receipt (same day). Estimates keep their "Valid until" date.
+  if (kind === 'INVOICE') {
+    const terms = invoiceTermsDays_(ss);
+    const due = new Date(vals[2]); due.setHours(0, 0, 0, 0); due.setDate(due.getDate() + Math.max(0, terms));
+    sh.getRange(row, 4).setValue(due); vals[3] = due;
+  }
   const comp = docComputed_(ss, kind, vals);
   if (!comp.items.length && !comp.subtotal) return { ok: false, msg: 'Add line items or an amount first.' };
   const pdf = docPdfBlob_(kind, vals, docHtml_(ss, kind, vals, comp));
@@ -568,7 +577,8 @@ function apiApproveEstimate(number, jobDateIso) {
   const inv = ss.getSheetByName(TABS.INVOICES);
   const invNum = nextDocNumber_(inv, getSetting_(ss, 'Starting invoice number'), '9001');
   const today = new Date(); today.setHours(0, 0, 0, 0);
-  const due = new Date(today); due.setDate(due.getDate() + 14);
+  // Provisional due date on the draft; it's re-set from the actual send date when sent.
+  const due = new Date(today); due.setDate(due.getDate() + Math.max(0, invoiceTermsDays_(ss)));
   const items = lineItemsFor_(ss, number).map(function (it) { return { service: it.desc, qty: it.qty, rate: it.rate }; });
   inv.appendRow([invNum, ev[1], '', due, num_(ev[4]), 'Draft']); // issue date filled on send
   appendLineItems_(ss, invNum, items);
@@ -601,9 +611,21 @@ var SETTING_KEYS = {
   reviewLink: 'Google review link (for review requests)',
   payInstructions: 'Invoice payment instructions',
   payLink: 'Payment link (Stripe/PayPal/Venmo — optional)',
+  dueDays: 'Invoice due (days to pay; 0 = due upon receipt)',
   startEstimate: 'Starting quote/estimate number',
   startInvoice: 'Starting invoice number',
 };
+
+/** Invoice payment terms: number of days to pay after the invoice is sent.
+ *  0 means "Due upon receipt" (same day). Accepts a number, "0", or text like
+ *  "Due upon receipt". Defaults to 14 when blank. */
+function invoiceTermsDays_(ss) {
+  const s = String(getSetting_(ss, 'Invoice due (days to pay; 0 = due upon receipt)') || '').trim().toLowerCase();
+  if (s === '') return 14;
+  if (s.indexOf('receipt') >= 0 || s.indexOf('upon') >= 0) return 0;
+  const n = parseInt(s.replace(/[^0-9]/g, ''), 10);
+  return isNaN(n) ? 14 : n;
+}
 
 function apiGetSettings() {
   const ss = ss_();
