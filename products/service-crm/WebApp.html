@@ -43,6 +43,7 @@
   .p-draft{background:#eeeeee;color:#555}.p-sent{background:#fff3d6;color:#8a6d1a}.p-scheduled{background:#e8eef7;color:#2a4d80}.p-inprogress{background:#fff3d6;color:#8a6d1a}
   .muted{color:var(--muted);font-size:13px}
   .empty{color:var(--muted);text-align:center;padding:26px 10px;font-style:italic}
+  .warn{background:#fff3d6;border:1px solid #e6cf9a;color:#8a6d1a;border-radius:12px;padding:11px 13px;margin-bottom:10px;font-size:12.5px;line-height:1.35}
   /* buttons */
   .btn{display:block;width:100%;border:0;border-radius:999px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;
     background:linear-gradient(180deg,var(--accent),#6e4a1a);color:#fff;margin-top:10px;text-align:center;text-decoration:none}
@@ -175,6 +176,10 @@
 // calls invalidate() to null them so the next visit refetches. (See loadX + invalidate.)
 var S={settings:{},services:[],dashboard:null,contacts:null,jobs:null,quotes:null,invoices:null,statuses:{}};
 var CUR='$';
+// Bump this whenever you paste new code, so you can confirm a deploy actually took effect:
+// it shows at the bottom of More ▸ Settings. If it doesn't match after deploying, the old
+// version is still being served (Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version).
+var BUILD='2026-07-16b';
 function api(fn){
   var args=[].slice.call(arguments,1);
   return new Promise(function(res,rej){
@@ -616,7 +621,22 @@ function saveLines(kind,number){
 /* ---------------- JOBS ---------------- */
 function loadJobs(){ if(S.jobs&&S.jobs.length){renderJobs();return;} document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListJobs').then(function(l){S.jobs=l||[];renderJobs();}).catch(function(e){loadFail('jobsBody',e);}); }
 function renderJobs(){
-  if(!S.jobs.length){ document.getElementById('jobsBody').innerHTML='<div class="empty">No jobs yet. Tap + to add one.</div>'; return; }
+  if(!S.jobs.length){
+    // Self-heal: if the Jobs list came back empty but the dashboard already sees jobs this
+    // week, the two reads disagree — almost always an older deployment still serving stale
+    // code. Don't show a misleading "No jobs yet"; show the jobs we DO have (from the
+    // dashboard) and tell the owner exactly how to fix it.
+    var wk=(S.dashboard&&S.dashboard.weekJobs)||[];
+    if(wk.length){
+      var w='<div class="warn">⚠ Showing this week’s jobs from your dashboard — the full Jobs list didn’t load. This usually means the app is running older code. Fix it once: <b>Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version ▸ Deploy</b>, then tap ⟳.</div>';
+      wk.forEach(function(j){
+        w+='<div class="list-item" onclick="openJobFromHome('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div>'+
+           '<div class="meta">'+esc(j.date)+(j.service?' · '+esc(j.service):'')+'</div></div>'+pill(j.status)+'</div></div>';
+      });
+      document.getElementById('jobsBody').innerHTML=w; return;
+    }
+    document.getElementById('jobsBody').innerHTML='<div class="empty">No jobs yet. Tap + to add one.</div>'; return;
+  }
   var h=''; S.jobs.forEach(function(j){
     h+='<div class="list-item" onclick="openJob('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div>'+
        '<div class="meta">'+esc(j.date)+(j.service?' · '+esc(j.service):'')+' · '+money0(j.price)+(j.paid==='Yes'?' · paid':'')+'</div></div>'+pill(j.status)+'</div></div>';
@@ -690,7 +710,8 @@ function renderSettings(){
     '<button class="btn sec" onclick="saveServices()">Save services</button>'+
     '<h2 class="sec">Maintenance</h2>'+
     '<div class="muted" style="margin-bottom:8px">Move accepted/declined quotes and paid invoices from before this month (plus their line items) into 📦 Archived tabs — keeps the app fast as you grow. Lifetime revenue is preserved; jobs are left alone.</div>'+
-    '<button class="btn sec" onclick="archiveNow()">📦 Archive old paid &amp; closed docs</button>';
+    '<button class="btn sec" onclick="archiveNow()">📦 Archive old paid &amp; closed docs</button>'+
+    '<div class="muted" style="text-align:center;margin-top:18px;opacity:.7">Build '+esc(BUILD)+'</div>';
   document.getElementById('settingsBody').innerHTML=h;
 }
 function archiveNow(){
