@@ -1,0 +1,71 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+  @page { size: Letter; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; color: #1a1c1f; }
+  .page { width: 8.5in; height: 11in; padding: 0; display: flex; flex-direction: column; }
+  .hero { background: linear-gradient(135deg, #b8823a, #6e4a1a); color: #fff; padding: 0.55in 0.7in 0.5in; }
+  .hero .kicker { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; opacity: .9; font-weight: 700; }
+  .hero h1 { font-size: 30px; margin: 8px 0 6px; letter-spacing: -.5px; }
+  .hero p { font-size: 13.5px; opacity: .95; max-width: 6in; }
+  .body { padding: 0.35in 0.7in 0; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .step { background: #fff; border: 1px solid #e4dccd; border-radius: 14px; padding: 16px 16px 16px 58px; position: relative; }
+  .step .n { position: absolute; left: 14px; top: 14px; width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(180deg,#b8823a,#8f5f22); color: #fff; font-weight: 800; font-size: 16px;
+    display: flex; align-items: center; justify-content: center; }
+  .step .t { font-size: 14.5px; font-weight: 800; line-height: 1.3; }
+  .step .h { font-size: 11.5px; color: #6b6459; margin-top: 5px; line-height: 1.4; }
+  .step b { color: #8f5f22; }
+  .chip { display: inline-block; background: #f3f0ea; border: 1px solid #e4dccd; border-radius: 6px; padding: 1px 7px; font-weight: 700; font-size: 11.5px; color: #1a1c1f; }
+  .done { grid-column: 1 / -1; background: #d8efdf; border: 1px solid #b7e0c4; border-radius: 14px; padding: 14px 18px; text-align: center; font-weight: 700; color: #2c6b42; font-size: 14px; }
+  .notes { padding: 18px 0.7in 0; }
+  .note { font-size: 11.5px; color: #52565c; background: #fff8ec; border: 1px solid #f0dcb8; border-radius: 10px; padding: 11px 14px; margin-bottom: 9px; }
+  .note b { color: #1a1c1f; }
+  .foot { text-align: center; font-size: 10px; color: #9a958b; padding: 8px 0 14px; }
+</style></head>
+<body>
+<div class="page">
+  <div class="hero">
+    <div class="kicker">⚡ Service Pro CRM · Quick card</div>
+    <h1>Turn on your app — 6 taps</h1>
+    <p>Do this once, on a computer, to get your app link. After that you just open the link (add it to your phone's home screen). It all runs in <b>your own</b> Google account.</p>
+  </div>
+
+  <div class="body">
+    <div class="grid">
+      <div class="step"><div class="n">1</div>
+        <div class="t">Open the code editor</div>
+        <div class="h">In your sheet's top menu: <span class="chip">Extensions</span> → <span class="chip">Apps Script</span>. It opens in a new tab.</div></div>
+
+      <div class="step"><div class="n">2</div>
+        <div class="t">Start a deployment</div>
+        <div class="h">Top-right blue button: <span class="chip">Deploy</span> → <span class="chip">New deployment</span>.</div></div>
+
+      <div class="step"><div class="n">3</div>
+        <div class="t">Choose "Web app"</div>
+        <div class="h">Click the <span class="chip">⚙️ gear</span> (Select type) → pick <span class="chip">Web app</span>.</div></div>
+
+      <div class="step"><div class="n">4</div>
+        <div class="t">Set who can use it</div>
+        <div class="h"><b>Execute as:</b> Me &nbsp;·&nbsp; <b>Who has access:</b> Only myself. (Keeps it private to you.)</div></div>
+
+      <div class="step"><div class="n">5</div>
+        <div class="t">Deploy & allow</div>
+        <div class="h"><span class="chip">Deploy</span> → <span class="chip">Authorize access</span> → <b>Allow</b>. The "hasn't verified / unsafe" screen is normal — it's your own copy.</div></div>
+
+      <div class="step"><div class="n">6</div>
+        <div class="t">Copy your app link</div>
+        <div class="h">Copy the <b>Web app URL</b>. Open it — that's your app. On your phone: browser menu → <b>Add to Home Screen</b>.</div></div>
+
+      <div class="done">✅ Done — that link is your CRM. Reload it any time.</div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>Can't find the link again?</b> In your sheet: <b>⚡ CRM ▸ 📲 Open the app (get link)</b> shows it anytime.</div>
+    <div class="note"><b>On a computer and see "unable to open the file"?</b> You're signed into more than one Google account. Open the app link in an <b>Incognito window</b> signed in with just the account that owns the sheet (or make that account your default).</div>
+  </div>
+
+  <div class="foot">Not affiliated with Google · Requires a free Google account · © Service Pro CRM</div>
+</div>
+</body></html>

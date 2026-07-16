@@ -35,6 +35,9 @@ Do this a single time; every sale is a copy of it.
    edition's copy link.
 2. Print to PDF (Letter). That PDF is what you upload to Etsy/Gumroad.
    (Sample: `assets/Service-Pro-CRM-Delivery-SAMPLE.pdf`.)
+3. Also print **`deploy-card.html`** to PDF and include it — a one-page "Turn on your
+   app — 6 taps" quick card that makes the buyer's only technical moment painless.
+   (Sample: `assets/Deploy-Card-SAMPLE.pdf`.) Both platforms let you attach multiple files.
 
 ## 5. Fulfillment per sale — ~0 effort
 Because the copy link is generic and reusable, **you don't customize anything per order.**
@@ -78,6 +81,7 @@ buyers will happily pay you to do it. High margin — it's just you.
 |---|---|
 | `Code.gs`, `Api.gs`, `Sidebar.html`, `WebApp.html` | The product (paste into Apps Script) |
 | `delivery-template.html` | Buyer Start-Here doc → fill copy link → PDF |
+| `deploy-card.html` | "Turn on your app — 6 taps" quick card → PDF (bundle it too) |
 | `assets/webapp-home.png` + other PNGs, `*-SAMPLE.pdf` | Listing images + sample delivery |
 | `README.md` | Build the master + fulfill |
 | `DEPLOY.md` | Deploy the web app (+ multi-account troubleshooting) |
