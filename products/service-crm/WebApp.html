@@ -179,7 +179,7 @@ var CUR='$';
 // Bump this whenever you paste new code, so you can confirm a deploy actually took effect:
 // it shows at the bottom of More ▸ Settings. If it doesn't match after deploying, the old
 // version is still being served (Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version).
-var BUILD='2026-07-16c';
+var BUILD='2026-07-16d';
 function api(fn){
   var args=[].slice.call(arguments,1);
   return new Promise(function(res,rej){
@@ -501,7 +501,8 @@ function createQuote(send){
   var payload={client:client,email:val('q_email'),phone:val('q_phone'),validDays:14,lines:lines};
   var tempId='t'+(++SYNC.seq);
   // Optimistic: show a placeholder estimate immediately; the real number arrives on sync.
-  var temp={_tempId:tempId,_saving:true,row:0,number:'',client:client,dateA:fmtLocal(isoOf(midnight(new Date()))),amount:total,status:'Draft'};
+  var temp={_tempId:tempId,_saving:true,row:0,number:'',client:client,dateA:fmtLocal(isoOf(midnight(new Date()))),amount:total,status:'Draft',
+    _lines:lines.map(function(l){return {service:l.service,qty:Number(l.qty)||1,rate:Number(l.rate)||0};})};   // cache lines so opening is instant
   closeModal(); toast(send?'✅ Estimate saved — sending…':'✅ Estimate saved');
   // Add the placeholder and queue the create together (so the temp exists before it can sync).
   var go=function(){
@@ -562,31 +563,44 @@ function renderBilling(){
   });
   body.innerHTML=h;
 }
+// Line-item rows for the doc detail. `lines===null` → not loaded yet (background fetch pending).
+function docLinesHtml(lines,d){
+  if(lines==null) return '<div class="muted">Loading items…</div>';
+  if(!lines.length) return '<div class="muted">No line items (uses amount '+money(d.amount)+')</div>';
+  return lines.map(function(l){return '<div class="row" style="padding:4px 0"><span>'+esc(l.service)+' ×'+l.qty+'</span><span>'+money((Number(l.qty)||0)*(Number(l.rate)||0))+'</span></div>';}).join('');
+}
+var DOC_OPEN=null;   // token of the doc detail currently on screen (guards async fill-in)
 function openDoc(kind,number){
   var list=kind==='INVOICE'?S.invoices:S.quotes;
   var d=list.filter(function(x){return String(x.number)===String(number);})[0]; if(!d)return;
-  busy('Opening…');
-  api('apiGetDocLines',number).then(function(lines){
-    var items=(lines||[]).map(function(l){return '<div class="row" style="padding:4px 0"><span>'+esc(l.service)+' ×'+l.qty+'</span><span>'+money(l.qty*l.rate)+'</span></div>';}).join('')||'<div class="muted">No line items (uses amount '+money(d.amount)+')</div>';
-    var na=jarg(number);
-    var btns='';
-    if(kind==='ESTIMATE'){
-      btns='<button class="btn" onclick="sendDoc(\'ESTIMATE\','+na+')">Send estimate</button>'+
-           '<button class="btn ghost" onclick="approve('+na+')">Approve → create invoice</button>'+
-           '<h2 class="sec">Close / remove</h2>'+
-           '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Accepted\')">Mark accepted</button>'+
-           '<button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Declined\')">Mark declined</button></div>'+
-           '<button class="btn danger" onclick="deleteDoc(\'ESTIMATE\','+na+')">Delete quote</button>';
-    } else {
-      btns='<button class="btn" onclick="sendDoc(\'INVOICE\','+na+')">Send invoice</button>'+
-           (d.status!=='Paid'?'<button class="btn sec" onclick="markPaid('+na+')">Mark paid</button>':'')+
-           '<button class="btn danger" onclick="deleteDoc(\'INVOICE\','+na+')">Delete invoice</button>';
-    }
-    openModal('<button class="close" onclick="closeModal()">×</button><h3>'+(kind==='INVOICE'?'Invoice':'Estimate')+' #'+esc(number)+'</h3>'+
-      '<div class="muted">'+esc(d.client)+' · '+esc(d.status)+'</div>'+
-      '<div class="card" style="margin-top:12px">'+items+'<div class="totalbar"><span>Total</span><span>'+money(d.amount)+'</span></div></div>'+
-      '<button class="btn sec" onclick="editLines(\''+kind+'\','+na+')">Edit line items</button>'+btns);
-  });
+  // Optimistic open: render instantly from local state; line items come from cache (d._lines)
+  // or fill in from a background fetch — the sheet is only touched when we don't already have them.
+  var token=kind+':'+number; DOC_OPEN=token;
+  var itemsId='docItems_'+String(number).replace(/[^A-Za-z0-9]/g,'');
+  var na=jarg(number);
+  var btns='';
+  if(kind==='ESTIMATE'){
+    btns='<button class="btn" onclick="sendDoc(\'ESTIMATE\','+na+')">Send estimate</button>'+
+         '<button class="btn ghost" onclick="approve('+na+')">Approve → create invoice</button>'+
+         '<h2 class="sec">Close / remove</h2>'+
+         '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Accepted\')">Mark accepted</button>'+
+         '<button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Declined\')">Mark declined</button></div>'+
+         '<button class="btn danger" onclick="deleteDoc(\'ESTIMATE\','+na+')">Delete quote</button>';
+  } else {
+    btns='<button class="btn" onclick="sendDoc(\'INVOICE\','+na+')">Send invoice</button>'+
+         (d.status!=='Paid'?'<button class="btn sec" onclick="markPaid('+na+')">Mark paid</button>':'')+
+         '<button class="btn danger" onclick="deleteDoc(\'INVOICE\','+na+')">Delete invoice</button>';
+  }
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>'+(kind==='INVOICE'?'Invoice':'Estimate')+' #'+esc(number)+'</h3>'+
+    '<div class="muted">'+esc(d.client)+' · '+esc(d.status)+'</div>'+
+    '<div class="card" style="margin-top:12px"><div id="'+itemsId+'">'+docLinesHtml(d._lines==null?null:d._lines,d)+'</div><div class="totalbar"><span>Total</span><span>'+money(d.amount)+'</span></div></div>'+
+    '<button class="btn sec" onclick="editLines(\''+kind+'\','+na+')">Edit line items</button>'+btns);
+  if(d._lines==null){   // not cached yet — fetch in the background and fill in if still on screen
+    api('apiGetDocLines',number).then(function(lines){
+      d._lines=lines||[];
+      if(DOC_OPEN===token){ var el=document.getElementById(itemsId); if(el)el.innerHTML=docLinesHtml(d._lines,d); }
+    });
+  }
 }
 function setDocStatus(kind,number,status){ var d=findDoc(kind,number); if(d)d.status=status;   // optimistic
   closeModal(); toast('✅ '+(kind==='INVOICE'?'Invoice':'Quote')+' → '+status); renderBilling();
@@ -618,20 +632,24 @@ function markPaid(number){ var d=findDoc('INVOICE',number); if(d)d.status='Paid'
   closeModal(); toast('💰 Payment confirmed'); renderBilling();
   enqueue('apiMarkInvoicePaid',[number],'Mark paid #'+number); }
 function editLines(kind,number){
-  busy('Opening line items…');
-  api('apiGetDocLines',number).then(function(lines){
+  var d=findDoc(kind,number);
+  var build=function(lines){
     QLINES=(lines&&lines.length)?lines.map(function(l){return {service:l.service,qty:l.qty,rate:l.rate};}):[{service:'',qty:1,rate:''}];
     openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit line items · #'+esc(number)+'</h3>'+
       '<div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
       '<div class="totalbar"><span>Total <span class="tax" id="q_taxnote"></span></span><span id="q_total"></span></div>'+
       '<button class="btn" onclick="saveLines(\''+kind+'\','+jarg(number)+')">Save</button>');
     renderQLines();
-  });
+  };
+  if(d&&d._lines!=null){ build(d._lines); return; }                 // use cache — no round-trip
+  busy('Opening line items…');
+  api('apiGetDocLines',number).then(function(lines){ if(d)d._lines=lines||[]; build(lines); });
 }
 function saveLines(kind,number){
   var lines=QLINES.filter(function(l){return l.service&&Number(l.rate)>0;});
   var sub=0; lines.forEach(function(l){ sub+=(Number(l.qty)||1)*(Number(l.rate)||0); });
-  var tax=Number(S.settings.taxPct)||0; var d=findDoc(kind,number); if(d)d.amount=sub+sub*tax/100;   // optimistic total
+  var tax=Number(S.settings.taxPct)||0; var d=findDoc(kind,number);
+  if(d){ d.amount=sub+sub*tax/100; d._lines=lines.map(function(l){return {service:l.service,qty:Number(l.qty)||1,rate:Number(l.rate)||0};}); }   // optimistic total + line cache
   closeModal(); toast('✅ Line items saved'); renderBilling();
   enqueue('apiSetDocLines',[kind,number,lines],'Line items #'+number);
 }
