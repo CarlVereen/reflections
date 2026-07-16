@@ -249,7 +249,7 @@ function tileGood(l,v,h){ return '<div class="tile good"><div class="l">'+l+'</d
 function loadFail(el,e){ document.getElementById(el).innerHTML='<div class="empty">Couldn\'t load — '+esc(e&&e.message||e||'unknown error')+'.<br>Tap ⟳ to retry. If this persists after a code change, redeploy a new version (Deploy ▸ Manage deployments ▸ ✏️ ▸ New version).</div>'; }
 
 /* ---------------- CONTACTS (leads + clients merged) ---------------- */
-function loadContacts(){ if(S.contacts){renderContacts();return;} document.getElementById('contactsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListContacts').then(function(l){S.contacts=l||[];S.contacts.forEach(function(c,i){c._i=i;});renderContacts();}).catch(function(e){loadFail('contactsBody',e);}); }
+function loadContacts(){ if(S.contacts&&S.contacts.length){renderContacts();return;} document.getElementById('contactsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListContacts').then(function(l){S.contacts=l||[];S.contacts.forEach(function(c,i){c._i=i;});renderContacts();}).catch(function(e){loadFail('contactsBody',e);}); }
 /* ---- date helpers (follow-up + job reschedule) ---- */
 function midnight(d){ var x=new Date(d); x.setHours(0,0,0,0); return x; }
 function addDays(d,n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
@@ -416,7 +416,7 @@ function createQuote(send){
 function loadQuotes(){ loadBilling(); }
 function loadInvoices(){ loadBilling(); }
 function loadBilling(){
-  if(S.quotes&&S.invoices){renderBilling();return;}
+  if(S.quotes&&S.invoices&&(S.quotes.length||S.invoices.length)){renderBilling();return;}
   document.getElementById('billingBody').innerHTML='<div class="spin">Loading…</div>';
   api('apiListBilling').then(function(r){
     S.quotes=(r&&r.estimates)||[]; S.invoices=(r&&r.invoices)||[]; renderBilling();
@@ -520,7 +520,7 @@ function saveLines(kind,number){
 }
 
 /* ---------------- JOBS ---------------- */
-function loadJobs(){ if(S.jobs){renderJobs();return;} document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListJobs').then(function(l){S.jobs=l||[];renderJobs();}).catch(function(e){loadFail('jobsBody',e);}); }
+function loadJobs(){ if(S.jobs&&S.jobs.length){renderJobs();return;} document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListJobs').then(function(l){S.jobs=l||[];renderJobs();}).catch(function(e){loadFail('jobsBody',e);}); }
 function renderJobs(){
   if(!S.jobs.length){ document.getElementById('jobsBody').innerHTML='<div class="empty">No jobs yet. Tap + to add one.</div>'; return; }
   var h=''; S.jobs.forEach(function(j){
