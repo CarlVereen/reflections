@@ -59,10 +59,6 @@
   input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff;font-family:inherit}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(143,95,34,.25)}
   .two{display:flex;gap:8px}.two>div{flex:1}
-  /* FAB */
-  .fab{position:fixed;right:calc(50% - 320px + 16px);bottom:88px;z-index:25;width:56px;height:56px;border-radius:50%;
-    background:linear-gradient(180deg,var(--accent),#6e4a1a);color:#fff;border:0;font-size:26px;box-shadow:0 6px 18px rgba(143,95,34,.45);cursor:pointer}
-  @media(max-width:672px){.fab{right:16px}}
   /* bottom nav */
   .nav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid var(--line);
     display:flex;max-width:640px;margin:0 auto}
@@ -85,20 +81,11 @@
     padding:11px 18px;border-radius:999px;font-size:13.5px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%}
   .toast.on{opacity:1}
   .spin{text-align:center;padding:40px;color:var(--muted)}
-  /* collapsible date groups (Leads) */
-  .grp{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
-    margin:14px 2px 8px;padding:4px 2px;font-weight:800;font-size:13px;letter-spacing:.02em}
-  .grp .car{width:14px;color:var(--muted);font-size:12px}
-  .grp .gt{text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
-  .grp .gt.od{color:var(--warn)}
-  .grp .gd{font-weight:600;color:var(--muted);font-size:12px}
-  .grp .gc{margin-left:auto;background:var(--soft);color:var(--muted);border-radius:999px;
-    min-width:22px;text-align:center;padding:1px 8px;font-size:11.5px;font-weight:800}
-  .grp.odh .gc{background:#f5d9d3;color:#a33}
-  /* segmented sort control */
+  /* segmented sort control + tabs */
   .seg{display:flex;gap:6px;margin-top:8px}
-  .segbtn{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 0;font-weight:700;font-size:13px;color:var(--muted);cursor:pointer}
+  .segbtn{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 4px;font-weight:700;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
   .segbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .segbtn .tc{display:inline-block;margin-left:4px;font-size:10.5px;font-weight:800;opacity:.8;vertical-align:top}
   /* sync badge (top bar) */
   .syncb{font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap;display:none}
   .syncb.on{display:inline-block}
@@ -130,12 +117,13 @@
       <button class="segbtn" data-sort="job" onclick="setContactSort('job')">Last job</button>
     </div>
     <div id="contactsBody" style="margin-top:10px"></div>
+    <button class="btn" style="margin-top:16px" onclick="openContactForm()">+ New contact</button>
   </div>
 
   <!-- BILLING (quotes + invoices in one place) -->
   <div class="screen" id="s-billing">
-    <button class="btn" onclick="openQuoteBuilder()">+ New estimate</button>
-    <div id="billingBody" style="margin-top:12px"></div>
+    <div id="billingBody"></div>
+    <button class="btn" style="margin-top:16px" onclick="openQuoteBuilder()">+ New estimate</button>
   </div>
 
   <!-- MORE -->
@@ -146,8 +134,8 @@
 
   <!-- JOBS -->
   <div class="screen" id="s-jobs">
-    <button class="btn" onclick="openJobForm()">+ New job</button>
-    <div id="jobsBody" style="margin-top:12px"></div>
+    <div id="jobsBody"></div>
+    <button class="btn" style="margin-top:16px" onclick="openJobForm()">+ New job</button>
   </div>
 
   <!-- SETTINGS -->
@@ -155,8 +143,6 @@
     <div id="settingsBody"></div>
   </div>
 </div>
-
-<button class="fab" id="fab" onclick="fabAction()">+</button>
 
 <div class="nav">
   <button class="on" data-s="home" onclick="nav('home')"><span class="i">🏠</span>Home</button>
@@ -179,7 +165,7 @@ var CUR='$';
 // Bump this whenever you paste new code, so you can confirm a deploy actually took effect:
 // it shows at the bottom of More ▸ Settings. If it doesn't match after deploying, the old
 // version is still being served (Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version).
-var BUILD='2026-07-16d';
+var BUILD='2026-07-16e';
 function api(fn){
   var args=[].slice.call(arguments,1);
   return new Promise(function(res,rej){
@@ -266,7 +252,6 @@ function nav(s){
   document.getElementById('s-'+s).classList.add('on');
   document.querySelectorAll('.nav button').forEach(function(b){ b.classList.toggle('on', b.dataset.s===s); });
   document.getElementById('screenName').textContent=TITLES[s]||'';
-  var fab=document.getElementById('fab'); fab.style.display=(['contacts','billing','jobs'].indexOf(s)>-1)?'block':'none';
   window.scrollTo(0,0);
   if(s==='home')loadHome();
   if(s==='contacts')loadContacts();
@@ -274,7 +259,6 @@ function nav(s){
   if(s==='jobs')loadJobs();
   if(s==='settings')renderSettings();
 }
-function fabAction(){ if(CUR_SCREEN==='contacts')openContactForm(); else if(CUR_SCREEN==='billing')openQuoteBuilder(); else if(CUR_SCREEN==='jobs')openJobForm(); }
 
 /* ---------------- modal ---------------- */
 function openModal(html){ document.getElementById('sheet').innerHTML=html; document.getElementById('overlay').classList.add('on'); }
@@ -538,30 +522,27 @@ function docRow(kind,d){
   return '<div class="list-item" onclick="openDoc(\''+kind+'\','+jarg(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
      '<div class="meta">'+money(d.amount)+' · '+esc(d.dateA||'draft')+'</div></div>'+pill(d.status)+'</div></div>';
 }
-var BILL_OPEN={quotes:true,outstanding:true,paid:false,closedq:false};
-function toggleBill(k){ BILL_OPEN[k]=!BILL_OPEN[k]; renderBilling(); }
+var BILL_TAB='quotes';
+function setBillTab(k){ BILL_TAB=k; renderBilling(); }
+var BILL_ORDER=['quotes','outstanding','paid','closedq'];
 function renderBilling(){
   var body=document.getElementById('billingBody');
   var quotes=S.quotes||[], invs=S.invoices||[];
-  if(!quotes.length && !invs.length){ body.innerHTML='<div class="empty">Nothing yet. Tap <b>+ New estimate</b> to send your first quote.</div>'; return; }
-  var groups=[
-    {k:'quotes',      label:'Quotes',              kind:'ESTIMATE', arr:quotes.filter(function(d){return ['Draft','Sent'].indexOf(d.status)>=0;}),      empty:'No open quotes',            always:true},
-    {k:'outstanding', label:'Outstanding invoices',kind:'INVOICE',  arr:invs.filter(function(d){return d.status!=='Paid';}),                              empty:'Nothing awaiting payment 🎉', always:true},
-    {k:'paid',        label:'Paid',                kind:'INVOICE',  arr:invs.filter(function(d){return d.status==='Paid';}),                              empty:'',                          always:false},
-    {k:'closedq',     label:'Closed quotes',       kind:'ESTIMATE', arr:quotes.filter(function(d){return ['Accepted','Declined'].indexOf(d.status)>=0;}),empty:'',                          always:false}
-  ];
-  var h='';
-  groups.forEach(function(g){
-    if(!g.arr.length && !g.always) return;                 // hide empty Paid / Closed-quotes headers
-    var open=!!BILL_OPEN[g.k];
-    h+='<div class="grp" onclick="toggleBill(\''+g.k+'\')">'+
-       '<span class="car">'+(open?'▾':'▸')+'</span>'+
-       '<span class="gt">'+g.label+'</span>'+
-       '<span class="gc">'+g.arr.length+'</span></div>';
-    if(open) h+= g.arr.length ? g.arr.map(function(d){return docRow(g.kind,d);}).join('')
-                              : '<div class="empty">'+g.empty+'</div>';
-  });
-  body.innerHTML=h;
+  var groups={
+    quotes:      {label:'Quotes',      kind:'ESTIMATE', arr:quotes.filter(function(d){return ['Draft','Sent'].indexOf(d.status)>=0;}),       empty:'No open quotes yet.'},
+    outstanding: {label:'Outstanding', kind:'INVOICE',  arr:invs.filter(function(d){return d.status!=='Paid';}),                              empty:'Nothing awaiting payment 🎉'},
+    paid:        {label:'Paid',        kind:'INVOICE',  arr:invs.filter(function(d){return d.status==='Paid';}),                              empty:'No paid invoices yet.'},
+    closedq:     {label:'Closed',      kind:'ESTIMATE', arr:quotes.filter(function(d){return ['Accepted','Declined'].indexOf(d.status)>=0;}),empty:'No closed quotes.'}
+  };
+  if(!groups[BILL_TAB]) BILL_TAB='quotes';
+  var tabs='<div class="seg">'+BILL_ORDER.map(function(k){
+    var g=groups[k], n=g.arr.length;
+    return '<button class="segbtn'+(k===BILL_TAB?' on':'')+'" onclick="setBillTab(\''+k+'\')">'+g.label+(n?'<span class="tc">'+n+'</span>':'')+'</button>';
+  }).join('')+'</div>';
+  var g=groups[BILL_TAB];
+  var list=g.arr.length ? g.arr.map(function(d){return docRow(g.kind,d);}).join('')
+                        : '<div class="empty">'+g.empty+'</div>';
+  body.innerHTML=tabs+'<div style="margin-top:12px">'+list+'</div>';
 }
 // Line-item rows for the doc detail. `lines===null` → not loaded yet (background fetch pending).
 function docLinesHtml(lines,d){
@@ -656,7 +637,15 @@ function saveLines(kind,number){
 
 /* ---------------- JOBS ---------------- */
 function loadJobs(){ if(S.jobs&&S.jobs.length){renderJobs();return;} document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListJobs').then(function(l){S.jobs=l||[];renderJobs();}).catch(function(e){loadFail('jobsBody',e);}); }
+var JOB_TAB='today';
+function setJobTab(k){ JOB_TAB=k; renderJobs(); }
+var JOB_ORDER=['today','upcoming','completed'];
+function jobRow(j){
+  return '<div class="list-item" onclick="openJob('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div>'+
+    '<div class="meta">'+esc(j.date)+(j.service?' · '+esc(j.service):'')+' · '+money0(j.price)+(j.paid==='Yes'?' · paid':'')+'</div></div>'+pill(j.status)+'</div></div>';
+}
 function renderJobs(){
+  var body=document.getElementById('jobsBody');
   if(!S.jobs.length){
     // Self-heal: if the Jobs list came back empty but the dashboard already sees jobs this
     // week, the two reads disagree — almost always an older deployment still serving stale
@@ -669,15 +658,25 @@ function renderJobs(){
         w+='<div class="list-item" onclick="openJobFromHome('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div>'+
            '<div class="meta">'+esc(j.date)+(j.service?' · '+esc(j.service):'')+'</div></div>'+pill(j.status)+'</div></div>';
       });
-      document.getElementById('jobsBody').innerHTML=w; return;
+      body.innerHTML=w; return;
     }
-    document.getElementById('jobsBody').innerHTML='<div class="empty">No jobs yet. Tap + to add one.</div>'; return;
   }
-  var h=''; S.jobs.forEach(function(j){
-    h+='<div class="list-item" onclick="openJob('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div>'+
-       '<div class="meta">'+esc(j.date)+(j.service?' · '+esc(j.service):'')+' · '+money0(j.price)+(j.paid==='Yes'?' · paid':'')+'</div></div>'+pill(j.status)+'</div></div>';
-  });
-  document.getElementById('jobsBody').innerHTML=h;
+  var today=isoOf(midnight(new Date()));
+  var done=function(j){return ['Done','Cancelled'].indexOf(j.status)>=0;};
+  var groups={
+    today:     {label:'Today',     arr:S.jobs.filter(function(j){return !done(j)&&(!j.dateISO||j.dateISO<=today);}).sort(function(a,b){return String(a.dateISO||'').localeCompare(String(b.dateISO||''));})},
+    upcoming:  {label:'Upcoming',  arr:S.jobs.filter(function(j){return !done(j)&&j.dateISO&&j.dateISO>today;}).sort(function(a,b){return String(a.dateISO).localeCompare(String(b.dateISO));})},
+    completed: {label:'Completed', arr:S.jobs.filter(done).sort(function(a,b){return String(b.dateISO||'').localeCompare(String(a.dateISO||''));})}
+  };
+  if(!groups[JOB_TAB]) JOB_TAB='today';
+  var tabs='<div class="seg">'+JOB_ORDER.map(function(k){
+    var g=groups[k], n=g.arr.length;
+    return '<button class="segbtn'+(k===JOB_TAB?' on':'')+'" onclick="setJobTab(\''+k+'\')">'+g.label+(n?'<span class="tc">'+n+'</span>':'')+'</button>';
+  }).join('')+'</div>';
+  var g=groups[JOB_TAB];
+  var empty={today:'Nothing scheduled for today.',upcoming:'No upcoming jobs.',completed:'No completed jobs yet.'}[JOB_TAB];
+  var list=g.arr.length ? g.arr.map(jobRow).join('') : '<div class="empty">'+empty+'</div>';
+  body.innerHTML=tabs+'<div style="margin-top:12px">'+list+'</div>';
 }
 function openJobForm(){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New job</h3>'+
