@@ -4,8 +4,11 @@ Snapshot for resuming after a cleared conversation. **Everything below is commit
 
 - **Repo / branch:** `carlvereen/reflections` · branch `claude/revenue-idea-2k-pj7f90`
 - **Product dir:** `products/service-crm/`
-- **As of commit:** `bb2cacb` (Phase 2 optimistic create). Working tree clean, branch level with origin.
+- **As of commit:** `32d67c0` (self-healing Jobs tab + `Build` stamp). Working tree clean, level with origin.
 - **Date of this snapshot:** 2026-07-16
+- **Deployed build check:** Settings shows a `Build <date>` stamp (currently `2026-07-16b`). If it
+  doesn't match the latest, you're on a stale deploy → cut a New version. (Jobs "empty" was a
+  client stale-empty cache; server `apiListJobs` returns fine — confirmed 6 jobs in exec logs.)
 
 ## What this is
 **Service Pro CRM** — a Google Apps Script web app (HtmlService single-page app in
