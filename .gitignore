@@ -1,0 +1,11 @@
+# WAT framework — disposable & secret files (per CLAUDE.md)
+.tmp/
+.env
+credentials.json
+token.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
