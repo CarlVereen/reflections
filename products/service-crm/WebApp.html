@@ -224,7 +224,7 @@ function renderHome(){
   }); } else h+='<div class="empty">All caught up 🎉</div>';
   h+='<h2 class="sec">📅 This week\'s jobs</h2>';
   if(d.weekJobs&&d.weekJobs.length){ d.weekJobs.forEach(function(j){
-    h+='<div class="list-item"><div class="row"><div><div class="name">'+esc(j.client)+'</div><div class="meta">'+esc(j.date)+' · '+esc(j.service||'')+'</div></div>'+pill(j.status)+'</div></div>';
+    h+='<div class="list-item" onclick="openJobFromHome('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div><div class="meta">'+esc(j.date)+' · '+esc(j.service||'')+'</div></div>'+pill(j.status)+'</div></div>';
   }); } else h+='<div class="empty">No jobs scheduled this week</div>';
   document.getElementById('homeBody').innerHTML=h;
 }
@@ -395,7 +395,12 @@ function openJob(row){
     (S.statuses.job||[]).map(function(st){return '<button class="btn sm sec" onclick="setJob('+row+',{status:\''+st+'\'})">'+st+'</button>';}).join(' ')+'</div>'+
     '<div class="btnrow"><button class="btn" onclick="setJob('+row+',{paid:\'Yes\'})">Mark paid</button></div>');
 }
-function setJob(row,f){ api('apiSetJob',row,f).then(function(){ closeModal(); toast('Updated'); S.dashboard=null; loadJobs(); }); }
+function setJob(row,f){ api('apiSetJob',row,f).then(function(){ closeModal(); toast('Updated'); S.dashboard=null; if(CUR_SCREEN==='home')loadHome(); else loadJobs(); }); }
+/** Open a job's detail from anywhere (Home may not have the jobs list loaded yet). */
+function openJobFromHome(row){
+  if(S.jobs&&S.jobs.some(function(j){return j.row===row;})){ openJob(row); }
+  else { busy('Opening…'); api('apiListJobs').then(function(l){ S.jobs=l||[]; openJob(row); }); }
+}
 
 /* ---------------- CLIENTS ---------------- */
 function loadClients(){ document.getElementById('clientsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListClients').then(function(l){S.clients=l||[];renderClients();}); }
@@ -446,7 +451,7 @@ function serviceSelect(id){ return '<label>Service</label><select id="'+id+'"><o
 function mock(fn,args){
   if(fn==='apiBootstrap')return{ready:true,settings:{businessName:'Meridian Detailing',currency:'$',taxPct:8.25},services:['Full detail','Interior clean','Ceramic coat'],
     leadStatuses:['New','Contacted','Quoted','Won','Lost'],jobStatuses:['Scheduled','In Progress','Done','Cancelled'],invStatuses:['Draft','Sent','Paid','Overdue'],estStatuses:['Draft','Sent','Accepted','Declined'],repeatOpts:['None','Weekly','Biweekly','Monthly'],
-    dashboard:{newLeads:14,pipeline:8450,jobsWeek:9,revMonth:6320,winRate:62,revLife:41900,followUps:[{name:'Marcus Bell',phone:'(555) 203-8871',status:'Quoted',due:'7/12'},{name:'Priya Shah',phone:'(555) 661-2049',status:'Contacted',due:'7/14'}],weekJobs:[{date:'7/16',client:'Dana Ruiz',service:'Full detail',status:'Scheduled'}]}};
+    dashboard:{newLeads:14,pipeline:8450,jobsWeek:9,revMonth:6320,winRate:62,revLife:41900,followUps:[{name:'Marcus Bell',phone:'(555) 203-8871',status:'Quoted',due:'7/12'},{name:'Priya Shah',phone:'(555) 661-2049',status:'Contacted',due:'7/14'}],weekJobs:[{row:2,date:'7/16',client:'Dana Ruiz',service:'Full detail',status:'Scheduled'}]}};
   if(fn==='apiDashboard')return mock('apiBootstrap').dashboard;
   if(fn==='apiListLeads')return[{row:2,name:'Marcus Bell',phone:'(555) 203-8871',email:'',service:'Full detail',value:189,status:'Quoted',followUp:'7/12'},{row:3,name:'Priya Shah',phone:'(555) 661-2049',email:'p@x.com',service:'Interior clean',value:120,status:'New',followUp:'7/17'}];
   if(fn==='apiListDocs')return args[0]==='INVOICE'?[{row:2,number:9001,client:'Dana Ruiz',dateA:'7/15',dateB:'7/29',amount:431.92,status:'Draft',items:3}]:[{row:2,number:1001,client:'Marcus Bell',dateA:'7/14',dateB:'7/28',amount:204.62,status:'Sent',items:2}];

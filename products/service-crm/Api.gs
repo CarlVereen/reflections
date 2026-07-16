@@ -226,10 +226,10 @@ function apiDashboard() {
   });
 
   let jobsWeek = 0; const weekJobs = [];
-  jobs.forEach(function (r) {
+  jobs.forEach(function (r, i) {
     if (!(r[0] instanceof Date)) return;
     const d = new Date(r[0]); d.setHours(0, 0, 0, 0);
-    if (d >= wkStart && d < wkEnd && r[4] !== 'Cancelled') { jobsWeek++; weekJobs.push({ date: fmtd_(d), client: r[1], service: r[2] || '', status: r[4] || '' }); }
+    if (d >= wkStart && d < wkEnd && r[4] !== 'Cancelled') { jobsWeek++; weekJobs.push({ row: i + 2, date: fmtd_(d), client: r[1], service: r[2] || '', status: r[4] || '' }); }
   });
 
   let revMonth = 0, revLife = 0;
