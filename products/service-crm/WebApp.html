@@ -98,13 +98,22 @@
   .seg{display:flex;gap:6px;margin-top:8px}
   .segbtn{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 0;font-weight:700;font-size:13px;color:var(--muted);cursor:pointer}
   .segbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  /* sync badge (top bar) */
+  .syncb{font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap;display:none}
+  .syncb.on{display:inline-block}
+  .syncb.saving{background:rgba(255,255,255,.22);color:#fff}
+  .syncb.ok{background:#d8efdf;color:#2c6b42}
+  .syncb.fail{background:#f5d9d3;color:#a33;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
     <div><h1 id="bizName">Service Pro CRM</h1><div class="sub" id="screenName">Home</div></div>
-    <button class="iconbtn" onclick="refreshAll()" title="Refresh">⟳</button>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span id="syncBadge" class="syncb" onclick="syncRetry()"></span>
+      <button class="iconbtn" onclick="refreshAll()" title="Refresh">⟳</button>
+    </div>
   </div>
 
   <!-- HOME -->
@@ -174,8 +183,63 @@ function api(fn){
     r[fn].apply(r,args);
   });
 }
+
+/* ================= OPTIMISTIC SYNC ENGINE =================
+ * The UI updates local state instantly, then queues the server write and uploads it in the
+ * background (sequential FIFO, so create-then-edit stays ordered). Edits are idempotent and
+ * persisted to localStorage so they survive a reload; creates are in-session only (replaying
+ * a create could duplicate a financial doc) and guarded by an unload warning. A visible badge
+ * plus loud toasts report success and failure. Single-team, no-conflict → safe (see the plan). */
+var SYNC={q:[],active:false,seq:0};
+var STORE_KEY='crm_sync_v1';
+function syncLoad(){ try{ var raw=localStorage.getItem(STORE_KEY); var arr=raw?JSON.parse(raw):[]; SYNC.q=arr.map(function(o){o.persist=true;return o;}); }catch(e){ SYNC.q=[]; } }
+function syncPersist(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(SYNC.q.filter(function(o){return o.persist;}).map(function(o){return {id:o.id,fn:o.fn,args:o.args,label:o.label,tries:o.tries||0};}))); }catch(e){} }
+function syncBadge(){
+  var el=document.getElementById('syncBadge'); if(!el) return;
+  var failed=SYNC.q.filter(function(o){return o.failed;}).length;
+  var pending=SYNC.q.length;
+  el.className='syncb on '+(failed?'fail':(pending?'saving':'ok'));
+  if(failed){ el.textContent='⚠ '+failed+' unsynced — retry'; }
+  else if(pending){ el.textContent='⟳ Saving '+pending+'…'; }
+  else { el.textContent='✓ Saved'; setTimeout(function(){ if(!SYNC.q.length){ el.className='syncb'; } }, 1800); }
+}
+/** Apply the change locally (caller already did), then queue the server write.
+ *  opts: {persist:bool (default true), onOk:fn(result), resolve:fn(op) to rewrite args at run time}. */
+function enqueue(fn,args,label,opts){
+  opts=opts||{};
+  var op={id:'op'+(++SYNC.seq),fn:fn,args:args,label:label,tries:0,persist:opts.persist!==false,_onOk:opts.onOk,_resolve:opts.resolve};
+  SYNC.q.push(op); syncPersist(); syncBadge(); syncPump();
+}
+function syncPump(){
+  if(SYNC.active) return;
+  var op=SYNC.q[0]; if(!op){ syncBadge(); return; }
+  if(op.failed) { syncBadge(); return; }   // wait for manual retry
+  SYNC.active=true; op.tries=(op.tries||0)+1; syncBadge();
+  var args=op._resolve?op._resolve(op):op.args;
+  api.apply(null,[op.fn].concat(args)).then(function(r){
+    SYNC.active=false;
+    if(r&&r.ok===false){ return syncFail(op, r.msg||'rejected by server'); }  // server said no
+    SYNC.q.shift(); syncPersist();
+    if(op._onOk){ try{ op._onOk(r); }catch(e){} }
+    if(!SYNC.q.length){ S.dashboard=null; }   // aggregates recompute fresh next Home visit
+    syncBadge();
+    if(!SYNC.q.length) toast('✓ All changes saved');
+    syncPump();
+  }).catch(function(e){ SYNC.active=false; syncFail(op,(e&&e.message)||'no connection'); });
+}
+function syncFail(op,msg){
+  if(op.tries<4){ syncBadge(); setTimeout(syncPump, 1200*op.tries); return; }   // auto-retry w/ backoff
+  op.failed=true; syncPersist(); syncBadge();
+  toast('⚠ Couldn’t save "'+op.label+'" ('+msg+'). Tap the ⚠ badge to retry.');
+}
+function syncRetry(){
+  var any=false; SYNC.q.forEach(function(o){ if(o.failed){ o.failed=false; o.tries=0; any=true; } });
+  if(any){ toast('Retrying…'); syncPersist(); syncPump(); }
+}
 function money(n){ n=Number(n)||0; return CUR+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function money0(n){ n=Number(n)||0; return CUR+Math.round(n).toLocaleString(); }
+function fmtLocal(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); return m?(+m[2])+'/'+(+m[3])+'/'+m[1]:''; }   // yyyy-mm-dd → M/D/YYYY
+function findDoc(kind,number){ var list=kind==='INVOICE'?S.invoices:S.quotes; return (list||[]).filter(function(x){return String(x.number)===String(number);})[0]; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 function pill(status){ var k=String(status||'').toLowerCase().replace(/[^a-z]/g,''); return '<span class="pill p-'+k+'">'+esc(status||'')+'</span>'; }
 function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},2600); }
@@ -338,8 +402,12 @@ function openContact(i){
   }
   openModal(h);
 }
-function setContactStatus(i,st){ var c=S.contacts[i]; if(!c||!c.leadRow)return; busy('Updating status…'); api('apiSetLeadStatus',c.leadRow,st).then(function(){ closeModal(); toast('✅ Status → '+st); invalidate(); loadContacts(); }); }
-function setContactFollowUp(i,iso){ var c=S.contacts[i]; if(!c||!c.leadRow)return; busy('Setting follow-up…'); api('apiSetLeadFollowUp',c.leadRow,iso).then(function(r){ if(r){c.followUp=r.followUp;c.followUpISO=r.followUpISO;} closeModal(); toast('📅 Follow-up: '+((r&&r.followUp)||'cleared')); S.dashboard=null; renderContacts(); }); }
+function setContactStatus(i,st){ var c=S.contacts[i]; if(!c||!c.leadRow)return;
+  c.leadStatus=st; closeModal(); toast('✅ Status → '+st); renderContacts();       // optimistic
+  enqueue('apiSetLeadStatus',[c.leadRow,st],'Status → '+st); }
+function setContactFollowUp(i,iso){ var c=S.contacts[i]; if(!c||!c.leadRow)return;
+  c.followUpISO=iso||''; c.followUp=iso?fmtLocal(iso):''; closeModal(); toast('📅 Follow-up: '+(c.followUp||'cleared')); renderContacts();
+  enqueue('apiSetLeadFollowUp',[c.leadRow,iso],'Follow-up '+(c.followUp||'cleared')); }
 function pickContactFollowUp(i){ var e=document.getElementById('fu_pick'); setContactFollowUp(i,e?e.value:''); }
 function openContactEdit(i){
   var c=S.contacts[i]; if(!c)return;
@@ -355,12 +423,15 @@ function openContactEdit(i){
 function saveContactEdit(i){
   var c=S.contacts[i]; if(!c)return;
   var name=val('ec_name'); if(!name){toast('Name is required');return;}
-  busy('Saving…');
-  var done=function(){ closeModal(); toast('✅ Contact updated'); invalidate(); loadContacts(); };
-  var f={name:name,phone:val('ec_phone'),email:val('ec_email')};
-  if(c.clientRow){ f.address=val('ec_address'); api('apiUpdateClient',c.clientRow,f).then(function(){ if(c.leadRow) api('apiUpdateLead',c.leadRow,{name:name,phone:f.phone,email:f.email}).then(done); else done(); }); }
-  else if(c.leadRow){ api('apiUpdateLead',c.leadRow,f).then(done); }
-  else done();
+  var phone=val('ec_phone'), email=val('ec_email'), addr=c.clientRow?val('ec_address'):c.address;
+  c.name=name; c.phone=phone; c.email=email; if(c.clientRow)c.address=addr;   // optimistic
+  closeModal(); toast('✅ Contact updated'); renderContacts();
+  if(c.clientRow){
+    enqueue('apiUpdateClient',[c.clientRow,{name:name,phone:phone,email:email,address:addr}],'Edit '+name);
+    if(c.leadRow) enqueue('apiUpdateLead',[c.leadRow,{name:name,phone:phone,email:email}],'Edit '+name);
+  } else if(c.leadRow){
+    enqueue('apiUpdateLead',[c.leadRow,{name:name,phone:phone,email:email}],'Edit '+name);
+  }
 }
 function quoteFromContact(i){ var c=S.contacts[i]; if(!c)return; closeModal(); openQuoteBuilder({name:c.name,email:c.email,phone:c.phone}); }
 
@@ -477,7 +548,9 @@ function openDoc(kind,number){
       '<button class="btn sec" onclick="editLines(\''+kind+'\','+na+')">Edit line items</button>'+btns);
   });
 }
-function setDocStatus(kind,number,status){ busy('Updating…'); api('apiUpdateDoc',kind,number,{status:status}).then(function(){ closeModal(); toast('✅ '+(kind==='INVOICE'?'Invoice':'Quote')+' → '+status); invalidate(); loadBilling(); }); }
+function setDocStatus(kind,number,status){ var d=findDoc(kind,number); if(d)d.status=status;   // optimistic
+  closeModal(); toast('✅ '+(kind==='INVOICE'?'Invoice':'Quote')+' → '+status); renderBilling();
+  enqueue('apiUpdateDoc',[kind,number,{status:status}],(kind==='INVOICE'?'Invoice':'Quote')+' #'+number+' → '+status); }
 function deleteDoc(kind,number){
   var label=(kind==='INVOICE'?'invoice':'quote')+' #'+number;
   openModal('<button class="close" onclick="closeModal()">×</button><h3>🗑️ Delete '+esc(label)+'?</h3>'+
@@ -501,7 +574,9 @@ function doApprove(number){
   busy('Approving…');
   api('apiApproveEstimate',number,iso).then(function(r){ closeModal(); if(r&&r.ok){toast('✅ Invoice #'+r.invoiceNumber+' + job scheduled '+(r.jobDate||'')); invalidate(); nav('billing');} else toast(r&&r.msg||'Failed'); });
 }
-function markPaid(number){ busy('Confirming payment…'); api('apiMarkInvoicePaid',number).then(function(){ closeModal(); toast('💰 Payment confirmed'); invalidate(); loadInvoices(); }); }
+function markPaid(number){ var d=findDoc('INVOICE',number); if(d)d.status='Paid';   // optimistic
+  closeModal(); toast('💰 Payment confirmed'); renderBilling();
+  enqueue('apiMarkInvoicePaid',[number],'Mark paid #'+number); }
 function editLines(kind,number){
   busy('Opening line items…');
   api('apiGetDocLines',number).then(function(lines){
@@ -515,8 +590,10 @@ function editLines(kind,number){
 }
 function saveLines(kind,number){
   var lines=QLINES.filter(function(l){return l.service&&Number(l.rate)>0;});
-  busy('Saving…');
-  api('apiSetDocLines',kind,number,lines).then(function(){ closeModal(); toast('✅ Line items saved'); invalidate(); kind==='INVOICE'?loadInvoices():loadQuotes(); });
+  var sub=0; lines.forEach(function(l){ sub+=(Number(l.qty)||1)*(Number(l.rate)||0); });
+  var tax=Number(S.settings.taxPct)||0; var d=findDoc(kind,number); if(d)d.amount=sub+sub*tax/100;   // optimistic total
+  closeModal(); toast('✅ Line items saved'); renderBilling();
+  enqueue('apiSetDocLines',[kind,number,lines],'Line items #'+number);
 }
 
 /* ---------------- JOBS ---------------- */
@@ -554,13 +631,20 @@ function openJob(row){
     '<div class="btnrow"><button class="btn" onclick="setJob('+row+',{paid:\'Yes\'})">Mark paid</button></div>');
 }
 function setJbDate(days){ var e=document.getElementById('jb_date'); if(e)e.value=isoOf(addDays(midnight(new Date()),days)); }
+function jobByRow(row){ return (S.jobs||[]).filter(function(x){return x.row===row;})[0]; }
 function rescheduleJob(row){
   var d=document.getElementById('jb_date'), t=document.getElementById('jb_time');
   var iso=d?d.value:''; if(!iso){toast('Pick a date');return;}
-  busy('Rescheduling…');
-  api('apiSetJob',row,{date:iso,time:(t?t.value:'')}).then(function(r){ closeModal(); toast('📅 Rescheduled to '+((r&&r.date)||iso)); invalidate(); if(CUR_SCREEN==='home')loadHome(); else loadJobs(); });
+  var j=jobByRow(row); var time=t?t.value:(j?j.time:'');
+  if(j){ j.dateISO=iso; j.date=fmtLocal(iso); j.time=time; }                 // optimistic
+  closeModal(); toast('📅 Rescheduled to '+(j?j.date:iso)); if(CUR_SCREEN==='jobs')renderJobs();
+  enqueue('apiSetJob',[row,{date:iso,time:time}],'Reschedule job');
 }
-function setJob(row,f){ busy(f.paid?'Confirming payment…':(f.status?'Updating status…':'Updating…')); api('apiSetJob',row,f).then(function(){ closeModal(); toast(f.paid?'💰 Payment confirmed':'✅ Updated'); invalidate(); if(CUR_SCREEN==='home')loadHome(); else loadJobs(); }); }
+function setJob(row,f){
+  var j=jobByRow(row); if(j){ if(f.status)j.status=f.status; if(f.paid)j.paid=f.paid; }   // optimistic
+  closeModal(); toast(f.paid?'💰 Payment confirmed':'✅ Updated'); if(CUR_SCREEN==='jobs')renderJobs();
+  enqueue('apiSetJob',[row,f], f.paid?'Job paid':'Job '+(f.status||'update'));
+}
 /** Open a job's detail from anywhere (Home may not have the jobs list loaded yet). */
 function openJobFromHome(row){
   if(S.jobs&&S.jobs.some(function(j){return j.row===row;})){ openJob(row); }
@@ -637,6 +721,9 @@ function mock(fn,args){
   return {ok:true};
 }
 
+// Warn before leaving if writes are still uploading (so a change is never silently lost).
+window.addEventListener('beforeunload', function(e){ if(SYNC.q.length){ e.preventDefault(); e.returnValue=''; return ''; } });
+syncLoad(); syncBadge(); syncPump();   // resume any writes queued in a previous session
 boot();
 </script>
 </body>
