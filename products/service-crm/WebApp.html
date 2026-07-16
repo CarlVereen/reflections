@@ -473,13 +473,26 @@ function createQuote(send){
   var client=val('q_client'); if(!client){toast('Client name required');return;}
   var lines=QLINES.filter(function(l){return l.service&&Number(l.rate)>0;});
   if(!lines.length){toast('Add a line item with a price');return;}
-  busy('Creating…');
-  api('apiCreateEstimate',{client:client,email:val('q_email'),phone:val('q_phone'),validDays:14,lines:lines})
-   .then(function(r){
-     if(!r||!r.ok){toast(r&&r.msg||'Failed');return;}
-     if(send){ busy('Sending estimate…'); api('apiSendDoc','ESTIMATE',r.number).then(function(s){ closeModal(); toast(s&&s.emailed?'📧 Estimate #'+r.number+' sent':'Estimate #'+r.number+' created (no client email)'); invalidate(); loadQuotes(); }); }
-     else { closeModal(); toast('Estimate #'+r.number+' created'); invalidate(); loadQuotes(); }
-   });
+  var sub=0; lines.forEach(function(l){ sub+=(Number(l.qty)||1)*(Number(l.rate)||0); });
+  var tax=Number(S.settings.taxPct)||0; var total=sub+sub*tax/100;
+  var payload={client:client,email:val('q_email'),phone:val('q_phone'),validDays:14,lines:lines};
+  var tempId='t'+(++SYNC.seq);
+  // Optimistic: show a placeholder estimate immediately; the real number arrives on sync.
+  var temp={_tempId:tempId,_saving:true,row:0,number:'',client:client,dateA:fmtLocal(isoOf(midnight(new Date()))),amount:total,status:'Draft'};
+  closeModal(); toast(send?'✅ Estimate saved — sending…':'✅ Estimate saved');
+  // Add the placeholder and queue the create together (so the temp exists before it can sync).
+  var go=function(){
+    S.quotes.unshift(temp); nav('billing');
+    enqueue('apiCreateEstimate',[payload],'Estimate for '+client,{persist:false,onOk:function(res){
+      if(!res||!res.ok) return;
+      var d=(S.quotes||[]).filter(function(x){return x._tempId===tempId;})[0];
+      if(d){ d.number=res.number; d._saving=false; d._tempId=null; }
+      if(CUR_SCREEN==='billing')renderBilling();
+      if(send && res.number) sendDoc('ESTIMATE',res.number);   // send once we have the real number
+    }});
+  };
+  if(S.quotes&&S.invoices){ go(); }
+  else { api('apiListBilling').then(function(r){ S.quotes=(r&&r.estimates)||[]; S.invoices=(r&&r.invoices)||[]; go(); }); }
 }
 
 /* ---------------- QUOTES list + detail ---------------- */
@@ -494,6 +507,10 @@ function loadBilling(){
   }).catch(function(e){loadFail('billingBody',e);});
 }
 function docRow(kind,d){
+  if(d._saving){   // optimistic create still uploading — not openable until it has a real number
+    return '<div class="list-item" onclick="toast(\'⏳ Still saving — one moment\')"><div class="row"><div><div class="name">'+esc(d.client)+'</div>'+
+      '<div class="meta">'+money(d.amount)+' · saving…</div></div><span class="pill p-sent">⏳ Saving</span></div></div>';
+  }
   return '<div class="list-item" onclick="openDoc(\''+kind+'\','+JSON.stringify(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
      '<div class="meta">'+money(d.amount)+' · '+esc(d.dateA||'draft')+'</div></div>'+pill(d.status)+'</div></div>';
 }
@@ -718,6 +735,9 @@ function mock(fn,args){
   if(fn==='apiListBilling')return{estimates:mock('apiListDocs',['ESTIMATE']),invoices:mock('apiListDocs',['INVOICE'])};
   if(fn==='apiListJobs')return[{row:2,date:'7/16',dateISO:'2026-07-16',client:'Dana Ruiz',service:'Full detail',time:'2pm',status:'Scheduled',price:189,paid:'No',repeat:'None'}];
   if(fn==='apiGetDocLines')return[{service:'Full detail',qty:1,rate:189}];
+  if(fn==='apiCreateEstimate')return{ok:true,number:'1099'};
+  if(fn==='apiSendDoc')return{ok:true,emailed:true,email:'client@example.com'};
+  if(fn==='apiApproveEstimate')return{ok:true,invoiceNumber:'9099',jobDate:'7/20/2026'};
   return {ok:true};
 }
 

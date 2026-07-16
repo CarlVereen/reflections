@@ -41,6 +41,25 @@ calls beat many small ones.
 - **Applied — `apiListBilling`:** the Billing screen returns estimates **and** invoices in
   one call (was two).
 
+## 3b. Optimistic UI + background write queue (why it feels instant)
+Server writes have latency, so instead of blocking on them the app applies your change to
+local state **immediately** and uploads the write in the **background**:
+- You tap "Won" / reschedule / edit / create an estimate → the screen updates at once.
+- The write goes into a **sequential FIFO queue** (so create-then-edit stays ordered) and
+  uploads behind the scenes.
+- A top-bar **sync badge** reports state: `⟳ Saving N…` → `✓ Saved`, or `⚠ N unsynced — retry`
+  on failure. Failures auto-retry with backoff, then flag loudly and keep the change queued.
+- Edits are idempotent and **persisted to `localStorage`**, so a queued write survives a
+  reload and resumes on next open. A `beforeunload` warning fires if writes are still pending.
+- **Creates** (new estimate) show a "⏳ Saving" placeholder instantly, then reconcile to the
+  real server-assigned number when the write returns. Creates are session-only (replaying a
+  create could duplicate a financial doc), covered by the unload warning.
+
+This is safe here specifically because it's a small team that never edits the same record at
+once — no concurrent edits means no merge conflicts. **Send (email/PDF), Approve, and Delete
+stay synchronous by design** — you want explicit confirmation for money/email actions.
+(Add-contact stays synchronous too: its duplicate check is a required round-trip.)
+
 ## 4. Cache fetched lists in the app; only refetch after a change
 The biggest everyday win. The app keeps each list in memory (`S.contacts`, `S.jobs`,
 `S.quotes`, `S.invoices`, `S.dashboard`). Switching tabs renders from that cache with **zero
