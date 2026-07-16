@@ -152,7 +152,10 @@ function docHtml_(ss, kind, vals, comp) {
   const numv = (vals[0] === '' || vals[0] === null) ? 'draft' : vals[0];
   const biz = getSetting_(ss, 'Business name') || 'Your Business';
   const bizPhone = getSetting_(ss, 'Business phone') || '';
-  const logo = String(getSetting_(ss, 'Company logo (data URL)') || '').trim();
+  // Prefer the Drive-hosted logo URL (renders reliably in the PDF); fall back to the data URI.
+  const logoId = String(getSetting_(ss, 'Company logo (Drive file id)') || '').trim();
+  const logo = logoId ? ('https://drive.google.com/uc?export=view&id=' + logoId)
+                      : String(getSetting_(ss, 'Company logo (data URL)') || '').trim();
   const pay = getSetting_(ss, 'Invoice payment instructions') || '';
   const payLink = String(getSetting_(ss, 'Payment link (Stripe/PayPal/Venmo — optional)') || '').trim();
   const cur = String(getSetting_(ss, 'Currency symbol') || '$').trim() || '$';
@@ -741,13 +744,47 @@ var SETTING_KEYS = {
 
 // The logo (a base64 data URL) can be large, so it is stored/read on its own rather than
 // bundled into every apiBootstrap. The Settings screen fetches it lazily.
-var LOGO_KEY = 'Company logo (data URL)';
+var LOGO_KEY = 'Company logo (data URL)';       // for the in-app preview (instant, no fetch)
+var LOGO_FILE_KEY = 'Company logo (Drive file id)';  // mirrored to Drive for reliable PDF embedding
+
 function apiGetLogo() { return { logo: String(getSetting_(ss_(), LOGO_KEY) || '') }; }
+
 function apiSaveLogo(dataUrl) {
+  const ss = ss_();
   const v = String(dataUrl || '');
-  if (v && v.slice(0, 11) !== 'data:image/') return { ok: false, msg: 'Not an image' };
-  setSetting_(ss_(), LOGO_KEY, v);
+  if (!v) {                                     // remove: clear both settings + trash the file
+    deleteLogoFile_(ss);
+    setSetting_(ss, LOGO_KEY, '');
+    setSetting_(ss, LOGO_FILE_KEY, '');
+    return { ok: true };
+  }
+  const m = /^data:(image\/(?:png|jpeg));base64,([A-Za-z0-9+/=]+)$/.exec(v);
+  if (!m) return { ok: false, msg: 'Not a PNG or JPEG image' };
+  setSetting_(ss, LOGO_KEY, v);                 // keep the data URL for the app preview
+  // Mirror to Drive so the HTML→PDF renderer can load it by URL (data URIs render unreliably
+  // in Apps Script's PDF conversion; a shared Drive image is the robust path). A logo is public
+  // by nature — it prints on every estimate/invoice — so anyone-with-link view is appropriate.
+  try {
+    const blob = Utilities.newBlob(Utilities.base64Decode(m[2]), m[1], 'logo');
+    setSetting_(ss, LOGO_FILE_KEY, writeLogoFile_(ss, blob));
+  } catch (e) {
+    setSetting_(ss, LOGO_FILE_KEY, '');         // Drive step failed → PDF falls back to data URI
+  }
   return { ok: true };
+}
+
+/** Create (replacing any previous) the single Drive logo file, shared for link-view; return id. */
+function writeLogoFile_(ss, blob) {
+  deleteLogoFile_(ss);
+  const file = DriveApp.createFile(blob).setName('ServiceProCRM-logo-' + ss.getId().slice(0, 10));
+  try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
+  return file.getId();
+}
+
+function deleteLogoFile_(ss) {
+  const id = String(getSetting_(ss, LOGO_FILE_KEY) || '').trim();
+  if (!id) return;
+  try { DriveApp.getFileById(id).setTrashed(true); } catch (e) {}
 }
 
 /** Invoice payment terms: number of days to pay after the invoice is sent.

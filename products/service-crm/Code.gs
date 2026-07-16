@@ -423,6 +423,7 @@ function buildSettings_(ss) {
     ['Starting invoice number', '9001'],
     ['Accent color', '#8f5f22'],
     ['Company logo (data URL)', ''],
+    ['Company logo (Drive file id)', ''],
     ['Mobile lead-capture form URL (auto-filled)', ''],
   ];
   sh.getRange(4, 2, rowsData.length, 2).setValues(rowsData);
