@@ -234,9 +234,11 @@ function renderHome(){
 }
 function tile(l,v){ return '<div class="tile"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>'; }
 function tileGood(l,v){ return '<div class="tile good"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>'; }
+// Surface a server error instead of leaving a screen stuck on "Loading…".
+function loadFail(el,e){ document.getElementById(el).innerHTML='<div class="empty">Couldn\'t load — '+esc(e&&e.message||e||'unknown error')+'.<br>Tap ⟳ to retry. If this persists after a code change, redeploy a new version (Deploy ▸ Manage deployments ▸ ✏️ ▸ New version).</div>'; }
 
 /* ---------------- LEADS ---------------- */
-function loadLeads(){ document.getElementById('leadsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListLeads').then(function(l){S.leads=l||[];renderLeads();}); }
+function loadLeads(){ document.getElementById('leadsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListLeads').then(function(l){S.leads=l||[];renderLeads();}).catch(function(e){loadFail('leadsBody',e);}); }
 /* ---- date helpers for the follow-up buckets ---- */
 var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function midnight(d){ var x=new Date(d); x.setHours(0,0,0,0); return x; }
@@ -423,7 +425,7 @@ function loadBilling(){
   document.getElementById('billingBody').innerHTML='<div class="spin">Loading…</div>';
   Promise.all([api('apiListDocs','ESTIMATE'),api('apiListDocs','INVOICE')]).then(function(r){
     S.quotes=r[0]||[]; S.invoices=r[1]||[]; renderBilling();
-  });
+  }).catch(function(e){loadFail('billingBody',e);});
 }
 function docRow(kind,d){
   return '<div class="list-item" onclick="openDoc(\''+kind+'\','+JSON.stringify(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
@@ -508,7 +510,7 @@ function saveLines(kind,number){
 }
 
 /* ---------------- JOBS ---------------- */
-function loadJobs(){ document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListJobs').then(function(l){S.jobs=l||[];renderJobs();}); }
+function loadJobs(){ document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListJobs').then(function(l){S.jobs=l||[];renderJobs();}).catch(function(e){loadFail('jobsBody',e);}); }
 function renderJobs(){
   if(!S.jobs.length){ document.getElementById('jobsBody').innerHTML='<div class="empty">No jobs yet. Tap + to add one.</div>'; return; }
   var h=''; S.jobs.forEach(function(j){
@@ -556,7 +558,7 @@ function openJobFromHome(row){
 }
 
 /* ---------------- CLIENTS ---------------- */
-function loadClients(){ document.getElementById('clientsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListClients').then(function(l){S.clients=l||[];renderClients();}); }
+function loadClients(){ document.getElementById('clientsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListClients').then(function(l){S.clients=l||[];renderClients();}).catch(function(e){loadFail('clientsBody',e);}); }
 function renderClients(){
   if(!S.clients.length){ document.getElementById('clientsBody').innerHTML='<div class="empty">No clients yet.</div>'; return; }
   var h=''; S.clients.forEach(function(c){

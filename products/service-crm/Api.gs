@@ -427,8 +427,10 @@ function apiListJobs() {
   const rows = valuesOf_(ss_(), TABS.JOBS);
   const out = [];
   rows.forEach(function (r, i) {
-    if (!r[1]) return;
-    out.push({ row: i + 2, date: fmtd_(r[0]), dateISO: isoOrEmpty_(r[0]), client: r[1], service: r[2] || '', time: r[3] || '',
+    // Show any row that has a client OR a date (matches what the Home screen counts),
+    // so a job can never appear on Home but be missing here.
+    if (!r[1] && !(r[0] instanceof Date)) return;
+    out.push({ row: i + 2, date: fmtd_(r[0]), dateISO: isoOrEmpty_(r[0]), client: r[1] || '(no name)', service: r[2] || '', time: r[3] || '',
       status: r[4] || 'Scheduled', price: num_(r[5]), paid: r[6] || 'No', repeat: r[10] || 'None' });
   });
   return out;
