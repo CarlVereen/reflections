@@ -68,12 +68,30 @@ version/invalidation key.
 
 ---
 
-## Capacity note (worth knowing as you grow)
-The data tabs are built with 500 formatted rows. That's plenty for a solo business for years,
-but it's not infinite. When a tab approaches its limit, add rows in the sheet (Insert ▸ Rows)
-— the app reads by actual content, so more rows just work. Deleting stuck quotes/invoices
-(Billing ▸ open a doc ▸ Delete) also frees space. If you ever run a very high volume,
-archiving paid/closed rows to a separate sheet keeps the live tabs lean and fast.
+## Archiving (built in) — the main lever for staying fast at volume
+Every read scans the live tabs, so the fewer rows they hold, the faster everything is. Use
+**⚙️ Settings ▸ Archive old paid & closed docs** (or the sheet menu **⚡ CRM ▸ Invoices &
+estimates ▸ Archive paid & closed docs**) to move:
+- **Accepted / Declined estimates** (a quote is either won → it has an invoice, or dead),
+- **Paid invoices issued *before* the current month** (this month's stay so monthly revenue
+  is exact), and
+- **all their line items** (usually the biggest tab),
+
+into `📦 Archived…` tabs. The live tabs shrink and reads speed up. Safeguards:
+- **Lifetime revenue is preserved** — archived paid totals are carried in a document
+  property and added back into the dashboard's Lifetime figure.
+- **Jobs are left live**, so each client's **Total Spent** stays correct.
+- **Idempotent** — re-running only archives newly-eligible rows; nothing is double-counted.
+- The archive is done with batched reads/writes (one `getValues` + one `setValues` per tab),
+  and it also compacts out any blank gaps left by deletes.
+
+Run it whenever the app starts to feel heavy (e.g. monthly). Archived rows stay in the
+`📦 Archived…` tabs if you ever need to look one up.
+
+## Capacity note
+The data tabs ship with 500 formatted rows. If a live tab ever approaches that after
+archiving, add rows in the sheet (Insert ▸ Rows) — the app reads by actual content, so more
+rows just work.
 
 ## Quick checklist if something feels slow
 1. Is a Sheets call inside a loop? Batch it with `getValues`/`setValues`.

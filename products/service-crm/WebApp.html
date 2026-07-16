@@ -586,8 +586,20 @@ function renderSettings(){
     '<button class="btn" onclick="saveSettings()">Save settings</button>'+
     '<h2 class="sec">Your services</h2><div class="muted" style="margin-bottom:8px">One per line — fills the Service dropdowns.</div>'+
     '<textarea id="set_services" rows="7">'+esc((S.services||[]).join('\n'))+'</textarea>'+
-    '<button class="btn sec" onclick="saveServices()">Save services</button>';
+    '<button class="btn sec" onclick="saveServices()">Save services</button>'+
+    '<h2 class="sec">Maintenance</h2>'+
+    '<div class="muted" style="margin-bottom:8px">Move accepted/declined quotes and paid invoices from before this month (plus their line items) into 📦 Archived tabs — keeps the app fast as you grow. Lifetime revenue is preserved; jobs are left alone.</div>'+
+    '<button class="btn sec" onclick="archiveNow()">📦 Archive old paid &amp; closed docs</button>';
   document.getElementById('settingsBody').innerHTML=h;
+}
+function archiveNow(){
+  busy('Archiving…');
+  api('apiArchiveClosed').then(function(r){
+    if(!r||!r.ok){toast('Failed');return;}
+    var n=(r.estimates||0)+(r.invoices||0);
+    toast(n?('📦 Archived '+r.estimates+' quotes · '+r.invoices+' invoices · '+r.lineItems+' line items'):'Nothing to archive yet');
+    invalidate(); if(CUR_SCREEN==='billing')loadBilling();
+  });
 }
 function saveSettings(){
   var keys=['businessName','ownerEmail','phone','currency','taxPct','reviewLink','payInstructions','payLink','dueDays','startEstimate','startInvoice'];

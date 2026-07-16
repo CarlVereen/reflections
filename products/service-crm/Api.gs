@@ -80,23 +80,36 @@ function nextDocNumber_(sh, startSetting, fallback) {
   return formatDocNumber_(start.prefix, maxNum + 1, start.width);
 }
 
-/** Write line items (Doc # = number) into the 🧾 Line Items tab at empty rows. */
+/** First row of a contiguous block of `count` empty rows in column `keyCol` (default 1),
+ *  scanning from row 2. Falls back to getLastRow()+1 when no gap is big enough. */
+function firstEmptyBlock_(sh, count, keyCol) {
+  keyCol = keyCol || 1;
+  const scan = Math.max(sh.getMaxRows() - 1, 1);
+  const col = sh.getRange(2, keyCol, scan, 1).getValues();
+  let run = 0;
+  for (let i = 0; i < col.length; i++) {
+    if (String(col[i][0]).trim() === '') { run++; if (run >= count) return (i - count + 1) + 2; }
+    else run = 0;
+  }
+  return sh.getLastRow() + 1;
+}
+
+/** Write line items (Doc # = number) into the 🧾 Line Items tab. Batched: all rows go into
+ *  one contiguous block with a single setValues + a single setFormulas (2 writes total,
+ *  not 2 per line). */
 function appendLineItems_(ss, number, lines) {
   const sh = ss.getSheetByName(TABS.ITEMS);
-  if (!sh || !lines || !lines.length) return;
-  const scan = Math.max(sh.getMaxRows() - 1, 1);
-  const colA = sh.getRange(2, 1, scan, 1).getValues();
-  let ptr = 0;
-  lines.forEach(function (l) {
-    const desc = String((l.service || l.desc || '')).trim();
-    if (!desc) return;
-    while (ptr < colA.length && String(colA[ptr][0]).trim() !== '') ptr++;
-    if (ptr >= colA.length) return;
-    const r = ptr + 2;
-    sh.getRange(r, 1, 1, 4).setValues([[number, desc, num_(l.qty) || 1, num_(l.rate)]]);
-    sh.getRange(r, 5).setFormula('=IF(AND($C' + r + '<>"",$D' + r + '<>""),$C' + r + '*$D' + r + ',"")');
-    colA[ptr][0] = number; ptr++;
+  if (!sh) return;
+  const clean = (lines || []).filter(function (l) { return String(l.service || l.desc || '').trim(); });
+  if (!clean.length) return;
+  const start = firstEmptyBlock_(sh, clean.length);
+  const values = clean.map(function (l) { return [number, String(l.service || l.desc).trim(), num_(l.qty) || 1, num_(l.rate)]; });
+  const formulas = clean.map(function (_, i) {
+    const r = start + i;
+    return ['=IF(AND($C' + r + '<>"",$D' + r + '<>""),$C' + r + '*$D' + r + ',"")'];
   });
+  sh.getRange(start, 1, values.length, 4).setValues(values);        // one write
+  sh.getRange(start, 5, formulas.length, 1).setFormulas(formulas);  // one write
 }
 
 /** Clear all line items rows for a given Doc #. */
@@ -271,6 +284,7 @@ function apiDashboard() {
     if (st === 'Paid') { revLife += amt; if (r[2] instanceof Date && r[2] >= monStart) revMonth += amt; }
     if (st === 'Sent' || st === 'Overdue') unpaid += amt;   // billed and still owed to you
   });
+  revLife += archivedRevenue_();   // include paid invoices that were archived off the live tab
 
   return {
     newLeads: newLeads, pipeline: pipeline, unpaid: unpaid, jobsWeek: jobsWeek, revMonth: revMonth,
@@ -675,6 +689,12 @@ function apiDeleteDoc(kind, number) {
   clearLinesForNumber_(ss, number);
   sh.getRange(row, 1, 1, 6).clearContent();
   return { ok: true };
+}
+
+/** Archive closed quotes + old paid invoices (and their line items) from the app. */
+function apiArchiveClosed() {
+  const r = archiveClosedDocs_(ss_());
+  return { ok: true, estimates: r.estimates, invoices: r.invoices, lineItems: r.lineItems };
 }
 
 /* ============================= SETTINGS ========================== */

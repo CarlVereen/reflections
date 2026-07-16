@@ -36,6 +36,7 @@ and the error and send it over.
 - [ ] **E5.** **Mark paid** → status **Paid**; the invoice drops out of **Outstanding** into the collapsed **Paid** group (tap it to expand). Go to **Home** → **Revenue** and **Lifetime** update.
 - [ ] **E6.** Re-open that invoice and **Send** again → the **total is unchanged** (tax is not applied twice). ✅
 - [ ] **E7.** Open any estimate → **Mark accepted** moves it to **Closed quotes** (keeps the record); or **Delete quote** removes it (with a confirm). Open an invoice → **Delete invoice** works the same. Use these to clear stuck/duplicate docs from old testing.
+- [ ] **E8.** Note your **Home ▸ Lifetime** figure. **Settings ▸ 📦 Archive old paid & closed docs** → confirm the toast counts; **Billing** now shows fewer Paid/Closed rows, and new `📦 Archived…` tabs hold them. Re-check **Home ▸ Lifetime** — it's **unchanged** (archived paid revenue is carried forward). Run archive again → it reports **nothing** to archive (idempotent).
 
 ## F. Jobs & Contacts (in the app)
 - [ ] **F1.** **Jobs ▸ + New job** → add a job for the client (date, price) → appears in the app **Jobs** list and the 🗓️ Jobs tab.

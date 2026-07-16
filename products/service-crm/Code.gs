@@ -28,6 +28,9 @@ const TABS = {
   INVOICES:  '💵 Invoices',
   ITEMS:     '🧾 Line Items',
   SETTINGS:  '⚙️ Settings',
+  ARCH_EST:  '📦 Archived Estimates',
+  ARCH_INV:  '📦 Archived Invoices',
+  ARCH_ITEMS:'📦 Archived Line Items',
 };
 
 // Lead statuses shown as tags in the combined Contacts view. Once a lead has a logged
@@ -83,7 +86,8 @@ function onOpen() {
     .addSubMenu(SpreadsheetApp.getUi().createMenu('Invoices & estimates')
       .addItem('📄  Create & email estimate (selected row)', 'createEstimatePdf')
       .addItem('🧾  Create & email invoice (selected row)', 'createInvoicePdf')
-      .addItem('🚩  Flag overdue invoices now', 'markOverdueInvoices'))
+      .addItem('🚩  Flag overdue invoices now', 'markOverdueInvoices')
+      .addItem('📦  Archive paid & closed docs', 'archiveClosedDocsMenu'))
     .addSubMenu(SpreadsheetApp.getUi().createMenu('Automations')
       .addItem('📧  Email me today\'s follow-ups', 'sendFollowUpDigest')
       .addItem('⭐  Send review requests for finished jobs', 'sendReviewRequests')
@@ -702,6 +706,123 @@ function lineItemsFor_(ss, docNum) {
     if (desc && qty && rate) out.push({ desc: desc, qty: qty, rate: rate });
   }
   return out;
+}
+
+/* ============================ ARCHIVING =========================== */
+/* Move closed quotes (Accepted/Declined) and OLD paid invoices — plus their line
+ * items — off the live tabs into 📦 Archived… tabs, so the live tabs stay small and
+ * fast at high volume. Lifetime revenue is preserved by carrying the archived paid
+ * total in a document property; monthly revenue is untouched because we only archive
+ * invoices issued BEFORE the current month. Jobs are left live so client Total Spent
+ * stays correct. Idempotent — re-running only archives newly-eligible rows. */
+
+function archivedRevenue_() {
+  const v = PropertiesService.getDocumentProperties().getProperty('archivedPaidRevenue');
+  return v ? (Number(v) || 0) : 0;
+}
+function addArchivedRevenue_(amt) {
+  const props = PropertiesService.getDocumentProperties();
+  props.setProperty('archivedPaidRevenue', String(archivedRevenue_() + num_(amt)));
+}
+
+function getOrCreateArchive_(ss, name, headers) {
+  let sh = ss.getSheetByName(name);
+  if (!sh) {
+    sh = ss.insertSheet(name);
+    sh.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold').setBackground('#efe9dd');
+    sh.setFrozenRows(1);
+    sh.getRange(2, 1, sh.getMaxRows() - 1, 1).setNumberFormat('@');   // keep doc #s literal
+  }
+  return sh;
+}
+
+/** Compact a values-only doc tab (Estimates/Invoices): archive rows matching test(row),
+ *  drop blank rows, and rewrite the survivors at the top. Returns the count archived. */
+function compactDocs_(ss, liveName, archName, test) {
+  const live = ss.getSheetByName(liveName);
+  if (!live || live.getLastRow() < 2) return 0;
+  const W = 6;
+  const rows = live.getRange(2, 1, live.getLastRow() - 1, W).getValues();
+  const keep = [], arch = [];
+  rows.forEach(function (r) {
+    if (String(r[0]).trim() === '') return;          // drop existing blanks (also compacts old gaps)
+    if (test(r)) arch.push(r); else keep.push(r);
+  });
+  if (!arch.length) return 0;
+  const archSh = getOrCreateArchive_(ss, archName, live.getRange(1, 1, 1, W).getValues()[0]);
+  archSh.getRange(archSh.getLastRow() + 1, 1, arch.length, W).setValues(arch);
+  live.getRange(2, 1, rows.length, W).clearContent();
+  if (keep.length) live.getRange(2, 1, keep.length, W).setValues(keep);
+  return arch.length;
+}
+
+/** Compact the Line Items tab: archive rows whose Doc # is in archivedNums, drop blanks,
+ *  rewrite survivors and re-apply the amount formula (col E) so live edits still compute. */
+function compactLineItems_(ss, archName, archivedNums) {
+  const live = ss.getSheetByName(TABS.ITEMS);
+  if (!live || live.getLastRow() < 2) return 0;
+  const rows = live.getRange(2, 1, live.getLastRow() - 1, 4).getValues();   // A–D (E is a formula)
+  const keep = [], arch = [];
+  rows.forEach(function (r) {
+    const key = String(r[0]).trim().toLowerCase();
+    if (key === '') return;
+    if (archivedNums[key]) arch.push(r); else keep.push(r);
+  });
+  if (!arch.length) return 0;
+  const archSh = getOrCreateArchive_(ss, archName, ['Doc #', 'Description', 'Qty', 'Rate']);
+  archSh.getRange(archSh.getLastRow() + 1, 1, arch.length, 4).setValues(arch);
+  live.getRange(2, 1, rows.length, 5).clearContent();
+  if (keep.length) {
+    live.getRange(2, 1, keep.length, 4).setValues(keep);
+    const formulas = keep.map(function (_, i) {
+      const r = i + 2;
+      return ['=IF(AND($C' + r + '<>"",$D' + r + '<>""),$C' + r + '*$D' + r + ',"")'];
+    });
+    live.getRange(2, 5, keep.length, 1).setFormulas(formulas);
+  }
+  return arch.length;
+}
+
+/** Core archive routine (no UI). Returns {estimates, invoices, lineItems, revenue}. */
+function archiveClosedDocs_(ss) {
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1); monthStart.setHours(0, 0, 0, 0);
+  const archivedNums = {};
+  let archivedRevenue = 0;
+
+  const estN = compactDocs_(ss, TABS.ESTIMATES, TABS.ARCH_EST, function (r) {
+    const st = String(r[5]).trim();
+    if (st === 'Accepted' || st === 'Declined') { archivedNums[String(r[0]).trim().toLowerCase()] = true; return true; }
+    return false;
+  });
+
+  const invN = compactDocs_(ss, TABS.INVOICES, TABS.ARCH_INV, function (r) {
+    const st = String(r[5]).trim(), issue = r[2];
+    if (st === 'Paid' && issue instanceof Date && issue < monthStart) {
+      archivedNums[String(r[0]).trim().toLowerCase()] = true;
+      archivedRevenue += num_(r[4]);
+      return true;
+    }
+    return false;
+  });
+
+  const liN = compactLineItems_(ss, TABS.ARCH_ITEMS, archivedNums);
+  if (archivedRevenue > 0) addArchivedRevenue_(archivedRevenue);
+  return { estimates: estN, invoices: invN, lineItems: liN, revenue: archivedRevenue };
+}
+
+/** Menu wrapper with a confirmation + summary alert. */
+function archiveClosedDocsMenu() {
+  const ui = SpreadsheetApp.getUi();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ok = ui.alert('Archive paid & closed docs',
+    'This moves Accepted/Declined estimates and paid invoices from before this month — plus their line items — into 📦 Archived tabs, to keep the live tabs fast. ' +
+    'Lifetime revenue is preserved. Jobs are left alone. Continue?', ui.ButtonSet.OK_CANCEL);
+  if (ok !== ui.Button.OK) return;
+  const r = archiveClosedDocs_(ss);
+  ui.alert('📦 Archived', 'Estimates: ' + r.estimates + '\nInvoices: ' + r.invoices + '\nLine items: ' + r.lineItems +
+    (r.revenue > 0 ? '\nRevenue carried forward: ' + (getSetting_(ss, 'Currency symbol') || '$') + r.revenue.toFixed(2) : '') +
+    '\n\nArchived rows live in the 📦 Archived… tabs.', ui.ButtonSet.OK);
 }
 
 /* ========================= AUTOMATIONS ============================ */
