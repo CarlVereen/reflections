@@ -12,7 +12,6 @@
 |---|---|---|---|---|---|
 | ☐ | **Amber Grant** | $10,000/mo | **Ashley** (51%) | Rolling monthly | Paste essay, pay $15, submit → `email_to_ashley.md` |
 | ☐ | **Galaxy Grants** | $4,250 | Either | **Jul 31, 2026** | Paste answers at hiddenstar.org → `galaxy_grant_entry.md` |
-| ☐ | **Farm Credit Young/Beginning/Small Farmer** | $20,000 | Either | **⏰ Aug 21, 2026** | Verify AZ (AgWest) eligibility, then apply — ask Claude to draft |
 | ☐ | **Venmo Small Business Grant** | $20,000 | Either | Check round | Qualifies (under $50k revenue) |
 | ☐ | **Verizon Digital Ready** | $10,000/mo | Either | Monthly Jun–Dec (one app) | Apply once at digitalready.verizonwireless.com |
 | ☐ | **NRCS EQIP (water)** | 50–90% of cost | Carl | Ongoing (ask ranking date) | Call Pima NRCS → `nrcs_call_script.md` |
@@ -44,6 +43,7 @@
 | ☐ | **AFT / FruitGuys / Xerces (pollinator)** | $5–10k | Elderberry/mulberry + habitat | Next cycles · pairs w/ water project |
 | ☐ | **AZ Water Conservation Grant Fund (WIFA)** | varies | ⭐ Ag irrigation efficiency (water system) | Check cycle · azwifa.gov |
 | ☐ | **AZ ag water-conservation TAX CREDIT** | tax credit | Money back on water-system install | Tell accountant (not an application) |
+| ☐ | **AgWest Farm Credit New Producer Grant** | $15,000 | ⭐ Beginning farmer; reuses VAPG plan | 2026 closed May 31 · **watch ~spring 2027** · verify Catalina in AgWest territory |
 | ☐ | **Tory Burch Fellows** | $5,000 + program | Ashley (women) | Annual · currently closed, watch |
 
 ## ❓ CHECK ELIGIBILITY

@@ -124,18 +124,24 @@ These supplement the tracker (`grant_tracker.md`). Each is a real fit for a
 
 # Round 3 finds (2026-07-15)
 
-## ⭐ Farm Credit Young, Beginning & Small Farmer Grant — $20,000 (DEADLINE AUG 21!)
-- **What:** NEW for 2026 — **ten $20,000 grants** for young/beginning/small farmers
-  for on-farm needs and business growth. **Both current and non-Farm-Credit
-  customers eligible.**
-- **Why you fit:** you're textbook **beginning + small farmer.** $20k is real money
-  for equipment or the value-added launch.
-- **Deadline:** **August 21, 2026, 4:00 p.m.** — the most time-sensitive item we've
-  found. 
-- **Verify:** confirm the **Arizona Farm Credit association (AgWest Farm Credit)**
-  participates / covers AZ before investing time. Then apply.
-- Source: [Farm Credit YBS grant](https://www.horizonfc.com/ybs)
-- **→ This is worth drafting NOW. Say the word and I'll write it.**
+## Farm Credit grants — CORRECTED after verification
+Two different Farm Credit associations run different programs. Getting this right
+matters — applying to the wrong-territory one is wasted effort:
+
+- **Horizon Farm Credit YBS Grant ($20k, deadline Aug 21):** ❌ **NOT eligible.**
+  You must **reside in Horizon's mid-Atlantic territory** (PA/MD/WV area). Arizona
+  is out. (This was flagged to verify — and verification killed it. Good.)
+- **AgWest Farm Credit — New Producer Grant ($15,000):** ✅ **the AZ-relevant one.**
+  AgWest serves WA/OR/ID/MT and **parts of California, Nevada, and Arizona.**
+  - One-time **$15,000** grant for new producers; **individual producers only**
+    (no nonprofits).
+  - Scored on: **application form, business plan, cash-flow budget, and essay** —
+    we already have most of this from the `vapg/` drafts. Big reuse.
+  - **Status:** 2026 window **closed May 31**; **watch for the ~spring 2027 cycle.**
+  - **Verify:** confirm Catalina/Pima County is inside AgWest's Arizona territory.
+  - Apply: [AgWest New Producer Grant](https://www.agwestfc.com/about/community-engagement/grants/new-producer-grant)
+  - **→ Perfect to pre-draft using our VAPG business plan + cash flow. Ready when
+    the 2027 window opens.**
 
 ## Venmo Small Business Grant — $20,000
 - **What:** $20,000 grants to up to 10 entrepreneurs.
