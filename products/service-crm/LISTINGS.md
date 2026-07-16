@@ -38,6 +38,7 @@ Service Pro CRM manages your leads, quotes, invoices, jobs, and clients, and aut
 ★ WHY IT BEATS A $30/MONTH APP
 • One-time price. Own it forever.
 • Runs in YOUR Google account — your data never leaves your Drive.
+• Private by design: your customer data is NEVER sent to any AI or third party.
 • Works on your phone and laptop.
 • Nothing to install — copy it and go.
 
