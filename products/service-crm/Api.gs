@@ -520,8 +520,10 @@ function apiListDocs(kind) {
   const out = [];
   rows.forEach(function (r, i) {
     if (r[0] === '' || r[0] === null) return;
+    // NOTE: don't count line items here — that meant re-reading the whole Line Items
+    // sheet once per doc (O(docs × items), quadratic). The list doesn't use the count.
     out.push({ row: i + 2, number: r[0], client: r[1] || '', dateA: fmtd_(r[2]), dateB: fmtd_(r[3]),
-      amount: num_(r[4]), status: r[5] || 'Draft', items: lineItemsFor_(ss, r[0]).length });
+      amount: num_(r[4]), status: r[5] || 'Draft' });
   });
   return out;
 }
@@ -653,6 +655,19 @@ function apiMarkInvoicePaid(number) {
   const row = findRowByNumber_(sh, number);
   if (!row) return { ok: false };
   sh.getRange(row, 6).setValue('Paid');
+  return { ok: true };
+}
+
+/** Delete a stuck/duplicate estimate or invoice: clears its row and its line items.
+ *  (Any linked job is left alone.) The row is cleared, not shifted, so numbering and
+ *  formatting stay intact. */
+function apiDeleteDoc(kind, number) {
+  const ss = ss_();
+  const sh = ss.getSheetByName(kind === 'INVOICE' ? TABS.INVOICES : TABS.ESTIMATES);
+  const row = findRowByNumber_(sh, number);
+  if (!row) return { ok: false, msg: 'Not found.' };
+  clearLinesForNumber_(ss, number);
+  sh.getRange(row, 1, 1, 6).clearContent();
   return { ok: true };
 }
 

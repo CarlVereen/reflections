@@ -49,6 +49,7 @@
   .btn:active{filter:brightness(1.1)}
   .btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line)}
   .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .btn.danger{background:#fff;color:var(--warn);border:1px solid #e6c3ba}
   .btn.sm{width:auto;display:inline-block;padding:9px 16px;font-size:13px;margin:0}
   .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
   .btnrow .btn{flex:1;margin-top:0}
@@ -449,20 +450,35 @@ function openDoc(kind,number){
   busy('Opening…');
   api('apiGetDocLines',number).then(function(lines){
     var items=(lines||[]).map(function(l){return '<div class="row" style="padding:4px 0"><span>'+esc(l.service)+' ×'+l.qty+'</span><span>'+money(l.qty*l.rate)+'</span></div>';}).join('')||'<div class="muted">No line items (uses amount '+money(d.amount)+')</div>';
+    var na=JSON.stringify(number);
     var btns='';
     if(kind==='ESTIMATE'){
-      btns='<button class="btn" onclick="sendDoc(\'ESTIMATE\','+JSON.stringify(number)+')">Send estimate</button>'+
-           '<button class="btn ghost" onclick="approve('+JSON.stringify(number)+')">Approve → create invoice</button>';
+      btns='<button class="btn" onclick="sendDoc(\'ESTIMATE\','+na+')">Send estimate</button>'+
+           '<button class="btn ghost" onclick="approve('+na+')">Approve → create invoice</button>'+
+           '<h2 class="sec">Close / remove</h2>'+
+           '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Accepted\')">Mark accepted</button>'+
+           '<button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Declined\')">Mark declined</button></div>'+
+           '<button class="btn danger" onclick="deleteDoc(\'ESTIMATE\','+na+')">Delete quote</button>';
     } else {
-      btns='<button class="btn" onclick="sendDoc(\'INVOICE\','+JSON.stringify(number)+')">Send invoice</button>'+
-           (d.status!=='Paid'?'<button class="btn sec" onclick="markPaid('+JSON.stringify(number)+')">Mark paid</button>':'');
+      btns='<button class="btn" onclick="sendDoc(\'INVOICE\','+na+')">Send invoice</button>'+
+           (d.status!=='Paid'?'<button class="btn sec" onclick="markPaid('+na+')">Mark paid</button>':'')+
+           '<button class="btn danger" onclick="deleteDoc(\'INVOICE\','+na+')">Delete invoice</button>';
     }
     openModal('<button class="close" onclick="closeModal()">×</button><h3>'+(kind==='INVOICE'?'Invoice':'Estimate')+' #'+esc(number)+'</h3>'+
       '<div class="muted">'+esc(d.client)+' · '+esc(d.status)+'</div>'+
       '<div class="card" style="margin-top:12px">'+items+'<div class="totalbar"><span>Total</span><span>'+money(d.amount)+'</span></div></div>'+
-      '<button class="btn sec" onclick="editLines(\''+kind+'\','+JSON.stringify(number)+')">Edit line items</button>'+btns);
+      '<button class="btn sec" onclick="editLines(\''+kind+'\','+na+')">Edit line items</button>'+btns);
   });
 }
+function setDocStatus(kind,number,status){ busy('Updating…'); api('apiUpdateDoc',kind,number,{status:status}).then(function(){ closeModal(); toast('✅ '+(kind==='INVOICE'?'Invoice':'Quote')+' → '+status); S.dashboard=null; loadBilling(); }); }
+function deleteDoc(kind,number){
+  var label=(kind==='INVOICE'?'invoice':'quote')+' #'+number;
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>🗑️ Delete '+esc(label)+'?</h3>'+
+    '<div class="muted" style="margin-bottom:10px">This removes the '+esc(label)+' and its line items from your CRM. It can’t be undone. Any linked job stays.</div>'+
+    '<button class="btn danger" onclick="confirmDeleteDoc(\''+kind+'\','+JSON.stringify(number)+')">Delete permanently</button>'+
+    '<button class="btn sec" onclick="openDoc(\''+kind+'\','+JSON.stringify(number)+')">Cancel</button>');
+}
+function confirmDeleteDoc(kind,number){ busy('Deleting…'); api('apiDeleteDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?'🗑️ Deleted':(r&&r.msg||'Failed')); S.dashboard=null; loadBilling(); }); }
 function sendDoc(kind,number){ busy('Building PDF…'); api('apiSendDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive (no client email)'):(r&&r.msg||'Failed')); S.dashboard=null; kind==='INVOICE'?loadInvoices():loadQuotes(); }); }
 function approve(number){
   var base=midnight(new Date());

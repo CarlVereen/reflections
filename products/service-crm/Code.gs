@@ -942,12 +942,24 @@ function parseDate_(s) {
   return isNaN(d.getTime()) ? null : d;
 }
 
-function getSetting_(ss, key) {
+// Settings are read many times per request (a single PDF pulls ~8 values). Memoize the
+// key→value map for the duration of one execution so we read the sheet once, not per key.
+var __SETTINGS_CACHE = null;
+function settingsMap_(ss) {
+  if (__SETTINGS_CACHE) return __SETTINGS_CACHE;
   const sh = ss.getSheetByName(TABS.SETTINGS);
-  if (!sh) return '';
-  const data = sh.getDataRange().getValues();
-  for (let i = 0; i < data.length; i++) if (String(data[i][1]).trim() === key) return data[i][2];
-  return '';
+  const m = {};
+  if (sh) {
+    const data = sh.getDataRange().getValues();
+    for (let i = 0; i < data.length; i++) { const k = String(data[i][1]).trim(); if (k) m[k] = data[i][2]; }
+  }
+  __SETTINGS_CACHE = m;
+  return m;
+}
+
+function getSetting_(ss, key) {
+  const m = settingsMap_(ss);
+  return (m[key] !== undefined && m[key] !== null) ? m[key] : '';
 }
 
 function setSetting_(ss, key, value) {
@@ -955,8 +967,9 @@ function setSetting_(ss, key, value) {
   if (!sh) return;
   const data = sh.getDataRange().getValues();
   for (let i = 0; i < data.length; i++) {
-    if (String(data[i][1]).trim() === key) { sh.getRange(i + 1, 3).setValue(value); return; }
+    if (String(data[i][1]).trim() === key) { sh.getRange(i + 1, 3).setValue(value); break; }
   }
+  __SETTINGS_CACHE = null;   // invalidate so later reads see the new value
 }
 
 /* ===================== MOBILE LEAD FORM =========================== */
