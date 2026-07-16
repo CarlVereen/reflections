@@ -45,6 +45,15 @@
 | ☐ | **AZ ag water-conservation TAX CREDIT** | tax credit | Money back on water-system install | Tell accountant (not an application) |
 | ☐ | **AgWest Farm Credit New Producer Grant** | $15,000 | ⭐ Beginning farmer; reuses VAPG plan | 2026 closed May 31 · **watch ~spring 2027** · verify Catalina in AgWest territory |
 | ☐ | **Tory Burch Fellows** | $5,000 + program | Ashley (women) | Annual · currently closed, watch |
+| ☐ | **National Young Farmers Coalition grant** | $5,000 | Beginning farmer, any use | Verify "young" age rule · youngfarmers.org |
+
+## 💵 CAPITAL TOOLS (not grants — cheap money if you need equipment fast)
+
+| Status | Source | Amount | Terms |
+|---|---|---|---|
+| ☐ | **Kiva** | up to $15,000 | 0% interest, crowdfunded |
+| ☐ | **Whole Foods Local Producer Loan** | up to $100,000 | Low-interest; WFM also a potential buyer |
+| ☐ | **AZ Microbusiness Loan Program** | micro | State small-business loans |
 
 ## ❓ CHECK ELIGIBILITY
 
@@ -62,6 +71,8 @@
 - **HerRise Microgrant** — targets women of color; Ashley not eligible.
 - **FedEx Small Business Grant** — program retired (ended 2024).
 - **Farm Credit East AgEnhancement / Food Co-op Farmer Fund** — other states only.
+- **Clif Family Foundation** — 501(c)(3) nonprofits only; for-profit farm not eligible.
+- **Horizon Farm Credit YBS ($20k)** — mid-Atlantic territory only.
 
 ---
 

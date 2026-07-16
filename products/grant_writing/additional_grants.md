@@ -180,10 +180,43 @@ matters — applying to the wrong-territory one is wasted effort:
 - **Farm Credit East AgEnhancement**, **The Food Co-op Farmer Fund** — regional to
   other states.
 
-## Still to mine (round 4, when you want)
-- National Young Farmers Coalition resources & land-access programs
-- Whole Foods LPLP / Whole Planet & retailer local-producer funds
-- Kiva 0% crowdfunded microloans (not a grant, but 0% capital)
-- Startup Tucson / Sun Corridor / City of Tucson & Pima County small-biz programs
-- **Sign up for the AZ Dept of Ag grant-notification email list** so new state
-  cycles come to you automatically.
+---
+
+# Round 4 finds (2026-07-15)
+
+## National Young Farmers Coalition — Young Farmer Grant — $5,000
+- **What:** **75 grants of $5,000**, usable for **any farm operation cost** (no
+  restrictions). Includes NYFC membership.
+- **Why you fit:** aimed at young/beginning farmers — you're beginning farmers
+  (2022). **Verify the "young" criteria** (some cycles set an age range) before
+  applying.
+- Apply: [youngfarmers.org/credit-and-capital](https://www.youngfarmers.org/credit-and-capital/)
+
+## CAPITAL TOOLS — not grants, but useful money (0% / low-interest)
+These aren't free money, but they're cheap capital to buy equipment without
+draining cash — worth it if a grant doesn't cover something time-sensitive.
+- **Kiva — up to $15,000 at 0% interest.** Crowdfunded microloan; you rally
+  lenders online. No interest, builds a public supporter base (good marketing
+  too). [kiva.org](https://www.kiva.org/)
+- **Whole Foods Local Producer Loan Program — up to $100,000, low-interest.** For
+  local producers expanding; applications accepted anytime. Bonus: Whole Foods is
+  a **potential wholesale buyer** for your cider/dried fruit.
+  [WFM LPLP](https://www.wholefoodsmarket.com/mission-values/local-producer-loan-program)
+- **Arizona Microbusiness Loan Program** (AZ Office of Economic Opportunity) —
+  small-business microloans. [oeo.az.gov/microbiz](https://oeo.az.gov/microbiz)
+- **Growth Partners Arizona / Community Investment Corporation** — local microloans.
+
+## Free local help (use these — they're free)
+- **City of Tucson Small Business Center** — free classes, capital navigation.
+- **Startup Tucson / Sun Corridor Inc.** — small-business support in Pima County.
+- **Pima County Public Library — Grants for Small Businesses** — free grant research help.
+
+## Checked but NOT a fit
+- **Clif Family Foundation** ($5k–50k regenerative farming, deadlines Mar 1 /
+  Aug 1): **501(c)(3) nonprofits only** — your for-profit farm isn't eligible
+  (unless working through a fiscal sponsor).
+- **Whole Foods Co-op Grow Local Food Fund** — Minnesota-based, not AZ.
+
+## Standing task (do once)
+**Sign up for the AZ Dept of Ag grant-notification email list** (agriculture.az.gov)
+so new state cycles come to you automatically — the easiest "research" there is.
