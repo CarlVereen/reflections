@@ -35,11 +35,6 @@ like an app. (You'll need to be signed into the same Google account.)
 `Deploy ▸ Manage deployments ▸` (pencil ✏️) `▸ Version: New version ▸ Deploy`. The URL
 stays the same.
 
-## Selling it / done-for-you
-The deploy step is the most technical part of setup, which is exactly why the **$149
-Done-For-You** tier is worth offering — you (the owner) deploy it for the buyer and hand
-them a working URL. For DIY buyers, this guide + the in-sheet menu link cover it.
-
 ## ⚠️ Troubleshooting: "Sorry, unable to open the file at this time" (on a computer)
 
 This Google Drive error means the app opened under the **wrong Google account** — you're

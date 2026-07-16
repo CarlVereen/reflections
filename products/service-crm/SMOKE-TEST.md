@@ -1,87 +1,79 @@
 # ✅ Smoke test — Service Pro CRM
 
-Run this once when you paste the code into a real Google account (building the
-master sheet). ~10 minutes. It exercises every feature that can only be verified
-live. Check each box; if one fails, note the step number and send it to me.
+Run this once on a real Google account after building your master. ~15 minutes. It exercises
+every feature that can only be verified live. **The app is the primary interface; a few
+automations run from the sheet's ⚡ CRM menu.** Check each box; if one fails, note the step
+and the error and send it over.
+
+> Tip: use your **own email** as the test client so the emails come back to you.
 
 ---
 
-## A. Install & build
-- [ ] **A1.** New Google Sheet → `Extensions ▸ Apps Script`. Paste **all of `Code.gs`** into `Code.gs`.
-- [ ] **A2.** Add a file → HTML → name it **`Sidebar`** → paste **all of `Sidebar.html`**. Save the project.
-- [ ] **A3.** Reload the sheet. A **⚡ CRM** menu appears at the top. *(If not: re-check the project saved.)*
-- [ ] **A4.** `⚡ CRM ▸ Set up / rebuild CRM`. Approve the Google authorization prompt (Advanced → Go to project → Allow).
-- [ ] **A5.** Confirm **7 tabs** exist in order: 🚀 Start Here, 📊 Dashboard, 🎯 Leads, 🗓️ Jobs, 👥 Clients, 💵 Invoices, ⚙️ Settings — and there is **no leftover "Sheet1"**.
-- [ ] **A6.** 🚀 Start Here shows the welcome + 5 checkboxes. 📊 Dashboard shows KPI tiles and a **revenue chart** (chart is present, not a blank box).
+## A. Build the master (sheet + code)
+- [ ] **A1.** New Google Sheet → `Extensions ▸ Apps Script`. Add **four files**: `Code.gs` (paste over the stub), `Api.gs` (new **script** file), `Sidebar` (new **HTML** file), `WebApp` (new **HTML** file). **Save.**
+- [ ] **A2.** Reload the sheet → a **⚡ CRM** menu appears → `⚡ CRM ▸ Set up / rebuild CRM` → approve the Google auth (Advanced → Go to project → Allow).
+- [ ] **A3.** Confirm **9 tabs** in order: 🚀 Start Here, 📊 Dashboard, 🎯 Leads, 🗓️ Jobs, 👥 Clients, 📄 Estimates, 💵 Invoices, 🧾 Line Items, ⚙️ Settings — **no leftover "Sheet1."** The 📊 Dashboard shows KPI tiles and a **revenue chart** (present, not a blank box).
 
-## B. Settings
-- [ ] **B1.** ⚙️ Settings is pre-filled. Set **Business name**, **Owner email** (your address), **Business phone**, **Google review link** (any real URL for testing), and **payment instructions**.
-- [ ] **B2.** In ⚙️ Settings, find **"Your services"** (column E) — a starter list is there. Add one (e.g. "Deep clean"). Then in 🎯 Leads, click a **Service** cell → the dropdown should include your new service. *(Confirms the editable list drives the in-cell dropdowns.)*
+## B. Deploy the app (see `DEPLOY.md`)
+- [ ] **B1.** `Deploy ▸ New deployment ▸ (gear) Web app` → **Execute as: Me**, **Who has access: Only myself** → **Deploy** → **Authorize**. Copy the **Web app URL** (ends in `/exec`).
+- [ ] **B2.** Open the URL → the **app loads on the Home screen** (KPI tiles, "Follow-ups due", "This week's jobs"). *(If you get a Drive "unable to open the file" error, you have multiple Google accounts — open it in an Incognito window signed into just the owner account. `⚡ CRM ▸ 📲 Open the app (get link)` shows the URL anytime.)*
 
-## C. Leads (menu + sidebar)
-- [ ] **C1.** `⚡ CRM ▸ Open Quick Actions panel` — the branded sidebar opens on the right.
-- [ ] **C2.** In the panel, add a lead (name + email = **your own email** so later tests can send to you). The **Service** field is a **dropdown** fed by your Settings list. Toast says "✅ Added…", and the row appears in 🎯 Leads with a **Next Follow-up** date (date only — no time) auto-set.
-- [ ] **C3.** In 🎯 Leads, set that lead's **Next Follow-up** to **today or earlier**. The date cell turns **red**.
-- [ ] **C4.** In the panel, click **↻ Refresh** under "Follow-ups due" — the lead now appears there.
+## C. Settings & services (in the app)
+- [ ] **C1.** App → **More ▸ Settings** → fill **Business name**, **Owner email** (your address), phone, **Currency**, **Sales tax %** (e.g. 8.25), **Google review link** (any URL), payment instructions, and a **Payment link** (any URL) → **Save settings**.
+- [ ] **C2.** Edit the **"Your services"** box (one per line) → **Save services**. The new service now appears in the app's Service dropdowns.
 
-## D. Jobs, clients & the lead→client link
-- [ ] **D1.** Click the lead's row in 🎯 Leads → `⚡ CRM ▸ Add & convert ▸ Schedule a job from selected lead`. Enter a date like **today's date in M/D/YYYY**.
-- [ ] **D2.** A row appears in 🗓️ Jobs (Status = Scheduled), the lead is marked **Won**, **and the person now appears in 👥 Clients with their email** (this is the fix — confirm the email carried over).
-- [ ] **D3.** In 🗓️ Jobs, set that job **Status = Done** and **Paid? = Yes**. In 👥 Clients, that client's **Total Spent** updates to the job price.
+## D. Leads (in the app)
+- [ ] **D1.** **Leads ▸ +** (or Home ▸ **+ Lead**) → add a lead: name + **email = your own address**, pick a **Service** from the dropdown → **Add lead**. It appears in the app list **and** in the 🎯 Leads sheet tab, with a **Next Follow-up** date (date only, no time).
+- [ ] **D2.** Tap the lead → **Call / Text** links show, status buttons work, and **Create estimate** opens the builder pre-filled with that client.
 
-## E. Invoices (PDF + currency)
-- [ ] **E1.** 💵 Invoices → add a row: invoice # (e.g. 1001), Client = the same name, an amount, dates.
-- [ ] **E2.** Click the row → `⚡ CRM ▸ Invoices ▸ Create & email invoice` → choose **Yes** to email.
-- [ ] **E3.** Check your inbox: the **PDF invoice arrives**, the header shows business name (left) and "INVOICE" (right) **side by side**, and the amount uses your currency symbol. The invoice row is now **Sent**, and a copy is in your Drive.
-- [ ] **E4.** Set an invoice's **Due Date to yesterday** and Status = **Sent**, then `⚡ CRM ▸ Invoices ▸ Flag overdue invoices` → it flips to **Overdue** (red).
+## E. Quote → Approve → Invoice → Paid — the core flow (in the app)
+- [ ] **E1.** **Quotes ▸ + New estimate** → client = your test client (email = you) → add **2 line items** (Service + Qty + Price) → watch the **running Total** update (with tax) → **Create & send**.
+- [ ] **E2.** The estimate appears in the app **Quotes** list **and** the 📄 Estimates tab; you receive an **ESTIMATE PDF** — itemized, with **subtotal + tax + total** and "Valid until".
+- [ ] **E3.** Open that estimate → **Approve → create invoice**. Confirm: estimate → **Accepted**; a 💵 **Invoice draft** appears with the **line items copied**; **and** a 🗓️ **Job (Scheduled)** was created.
+- [ ] **E4.** **Invoices** → open the draft → (optionally **Edit line items**) → **Send invoice** → you receive an **INVOICE PDF** (itemized, tax, a **Pay now** button) and status flips to **Sent**.
+- [ ] **E5.** **Mark paid** → status **Paid**; go to **Home** → **Revenue** and **Lifetime** update.
+- [ ] **E6.** Re-open that invoice and **Send** again → the **total is unchanged** (tax is not applied twice). ✅
 
-## F. Automations (emails)
-- [ ] **F1.** `⚡ CRM ▸ Automations ▸ Send review requests for finished jobs` → you (as the test client) receive the **⭐ review-request email**; the job's **Review Sent?** flips to Yes. Running it again sends **nothing** (no duplicate).
-- [ ] **F2.** `⚡ CRM ▸ Automations ▸ Email me today's follow-ups` → you receive the **🔔 follow-up digest**.
-- [ ] **F3.** In 🗓️ Jobs, add a job dated **tomorrow** for your test client (Status = Scheduled). `⚡ CRM ▸ Automations ▸ Send tomorrow's appointment reminders` → you receive the **📅 reminder**; **Reminder Sent?** flips to Yes.
-- [ ] **F4.** `⚡ CRM ▸ Automations ▸ Turn ON daily automations` → confirmation alert. Check `Extensions ▸ Apps Script ▸ Triggers` shows **3 time-based triggers**. Then **Turn OFF** → they're removed.
+## F. Jobs & Clients (in the app)
+- [ ] **F1.** **More ▸ Jobs ▸ + New job** → add a job for the client (date, price) → appears in the app **Jobs** list and the 🗓️ Jobs tab.
+- [ ] **F2.** Tap a job → set **Status = Done** and **Mark paid**. From **Home**, tapping a "this week's jobs" row opens that **same job detail**.
+- [ ] **F3.** **More ▸ Clients** → your test client shows with **Total Spent** = the sum of their paid jobs.
 
-## G. Safety guard
-- [ ] **G1.** With data now in the sheet, run `⚡ CRM ▸ Set up / rebuild CRM` again → a **warning dialog** asks before erasing. Click **No** → nothing is wiped. *(This protects real data — do not click Yes on your live sheet.)*
+## G. Automations & emails (from the sheet's ⚡ CRM menu)
+These run server-side / on triggers — not in the app.
+- [ ] **G1.** `⚡ CRM ▸ Automations ▸ Send review requests` → you (as the test client) get the **⭐ review-request email**; the job's **Review Sent? = Yes**. Run again → **nothing sent** (no duplicate).
+- [ ] **G2.** Make sure a lead's follow-up is **due today**, then `⚡ CRM ▸ Automations ▸ Email me today's follow-ups` → you get the **🔔 digest** (with a tap-to-text link). *(Also a one-click in the desktop Quick Actions panel.)*
+- [ ] **G3.** Add a job dated **tomorrow** for your client → `⚡ CRM ▸ Automations ▸ Send tomorrow's appointment reminders` → you get the **📅 reminder**; **Reminder Sent? = Yes**.
+- [ ] **G4.** Set an invoice's **Due Date = yesterday**, Status = **Sent** → `⚡ CRM ▸ Invoices & estimates ▸ Flag overdue invoices` → it flips to **Overdue**.
+- [ ] **G5.** `⚡ CRM ▸ Automations ▸ Turn ON daily automations` → confirmation. `Apps Script ▸ Triggers` shows **4 time-based triggers**. Then **Turn OFF** → all removed.
 
-## H. Estimates + itemized + tax (new)
-- [ ] **H1.** In ⚙️ Settings set **Sales tax %** (e.g. 8.25) and a **Payment link** (any URL) and **Currency symbol**.
-- [ ] **H2.** In 🧾 Line Items add 2–3 rows with the same **Doc #** (e.g. 1001), each with Description / Qty / Rate. Confirm **Line Total** auto-calculates.
-- [ ] **H3.** In 📄 Estimates add a row: Estimate # = 1001, Client = your test client, dates. Click it → `⚡ CRM ▸ Invoices & estimates ▸ Create & email estimate` → you receive an **ESTIMATE** PDF that is **itemized**, shows **subtotal + tax + total**, and says "Valid until".
-- [ ] **H4.** In 💵 Invoices add a row: Invoice # = 1001, same client. Create & email invoice → **INVOICE** PDF, itemized, with tax, a **Pay now** button (your link), marked **Sent**, Amount column updated to the total.
-- [ ] **H5.** Run Create & email invoice on the **same row again** → the total is the **same** (tax not applied twice). ✅ this verifies the no-double-tax fix.
-- [ ] **H6.** Add an invoice with **no** line items but a typed **Amount** → PDF shows a single line = that amount, no tax added.
+## H. Recurring jobs
+- [ ] **H1.** In 🗓️ Jobs, set a job **Repeat = Weekly** and **Status = Done**.
+- [ ] **H2.** `⚡ CRM ▸ Automations ▸ Roll forward finished recurring jobs` → a **new Scheduled job appears 7 days later** for the same client; the original's **Rolled? = Yes**.
+- [ ] **H3.** Run it again → **no duplicate** (idempotent).
 
-## I. Recurring jobs (new)
-- [ ] **I1.** In 🗓️ Jobs, set a job's **Repeat = Weekly** and **Status = Done**.
-- [ ] **I2.** `⚡ CRM ▸ Automations ▸ Roll forward finished recurring jobs` → a **new Scheduled job** appears **7 days later** for the same client; the original's **Rolled? = Yes**.
-- [ ] **I3.** Run it again → **no duplicate** is created (idempotent).
+## I. Google Calendar + photos (sheet menu)
+- [ ] **I1.** In 🗓️ Jobs, put a time like `2pm` on a job → click the row → `⚡ CRM ▸ Jobs ▸ Add selected job to Google Calendar` → authorize → an event appears on your Google Calendar. (No time → all-day event.)
+- [ ] **I2.** Click a job row → `⚡ CRM ▸ Jobs ▸ Create photo folder` → authorize → a shareable folder link appears in the **Photos** column.
 
-## J. Mobile lead-capture form (new)
-- [ ] **J1.** `⚡ CRM ▸ Create mobile lead-capture form` → approve any new authorization → an alert shows the **form URL** (also saved in ⚙️ Settings). A "Form Responses" tab appears.
-- [ ] **J2.** Open the form URL (on your phone ideally), submit a test lead → it appears in 🎯 **Leads** with status New and a follow-up date.
+## J. Mobile lead-capture Form
+- [ ] **J1.** `⚡ CRM ▸ Create mobile lead-capture form` → authorize → an alert shows the **form URL** (saved in ⚙️ Settings); a **"Form Responses"** tab appears.
+- [ ] **J2.** Submit a test lead via that form (on your phone) → it appears in 🎯 **Leads** (New + follow-up date) **and** in the app's **Leads** list. *(Security: try submitting a name like `=1+1` — it should stay literal text, not become a formula.)*
 
-## K. Google Calendar + photos (new)
-- [ ] **K1.** In 🗓️ Jobs, put a time like `2pm` in Scheduled Time on a job. Click that row → `⚡ CRM ▸ Jobs ▸ Add selected job to Google Calendar` → approve the Calendar authorization → an event appears on your Google Calendar (check your phone). A job with no time makes an all-day event.
-- [ ] **K2.** Click a job row → `⚡ CRM ▸ Jobs ▸ Create photo folder for selected job` → approve any Drive authorization → a shareable folder link appears in the **Photos** column; opening it shows an (empty) Drive folder you can upload to.
+## K. Safety guard
+- [ ] **K1.** With data now in the sheet, run `⚡ CRM ▸ Set up / rebuild CRM` again → a **warning** asks before erasing → click **No** → nothing is wiped.
 
-## L. The web app (deploy first — see DEPLOY.md)
-- [ ] **L1.** Confirm all four files exist in Apps Script: Code.gs, **Api.gs**, **WebApp.html**, Sidebar.html.
-- [ ] **L2.** Deploy per `DEPLOY.md` (Deploy ▸ Web app ▸ Execute as Me ▸ Only myself ▸ Authorize). Open the URL — the app loads with your Home screen (KPIs, follow-ups, this week's jobs).
-- [ ] **L3.** **Leads:** tap +, add a lead (Service is a dropdown from your list). It appears in the list and in the 🎯 Leads sheet tab.
-- [ ] **L4.** **Quote flow:** Quotes ▸ + New estimate → enter a client, add 2 line items, watch the running total (with tax) → **Create & send**. Check the 📄 Estimates tab got a numbered row and the customer (if emailed) received the PDF.
-- [ ] **L5.** **Approve:** open that estimate → **Approve → create invoice**. Confirm a 💵 Invoice draft appears (lines copied) AND a 🗓️ Job was scheduled.
-- [ ] **L6.** **Invoice:** open the invoice → optionally Edit line items → **Send invoice** → **Mark paid**. Dashboard revenue updates.
-- [ ] **L7.** Open the app **on your phone**, add to home screen, run through the same flow.
+## L. On your phone
+- [ ] **L1.** Open the app URL on your phone → **Add to Home Screen** → run the **lead → quote → approve → invoice → paid** flow again. Everything works and syncs back to the sheet.
 
 ---
 
 ## If something fails
-Note the step (e.g. "E2 — PDF didn't generate") and the exact error text from the
-Apps Script execution log (`Extensions ▸ Apps Script ▸ Executions`). Send it over and
-I'll push a fix. The two most environment-sensitive steps are **E2/E3** (HTML→PDF)
-and **A6** (chart) — check those first.
+Note the step (e.g. "E4 — invoice PDF didn't generate") and the exact error from
+`Extensions ▸ Apps Script ▸ Executions`. The most environment-sensitive steps to check first:
+**B2** (deploy / multi-account), **E2 & E4** (HTML→PDF invoices/estimates), and **A3** (chart).
 
 ## After it passes
-You have a verified master. Fulfillment: `File ▸ Make a copy` per sale → share link
-(Anyone with link ▸ Viewer) → drop that link into the delivery PDF.
+You have a verified master. Per sale: `File ▸ Make a copy` → share the master link
+(Anyone with link ▸ Viewer) → that link goes in the delivery PDF. **Each buyer deploys their
+own copy** (their own app URL) — the deploy step is theirs, done once.
