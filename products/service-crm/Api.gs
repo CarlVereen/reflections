@@ -152,6 +152,7 @@ function docHtml_(ss, kind, vals, comp) {
   const numv = (vals[0] === '' || vals[0] === null) ? 'draft' : vals[0];
   const biz = getSetting_(ss, 'Business name') || 'Your Business';
   const bizPhone = getSetting_(ss, 'Business phone') || '';
+  const logo = String(getSetting_(ss, 'Company logo (data URL)') || '').trim();
   const pay = getSetting_(ss, 'Invoice payment instructions') || '';
   const payLink = String(getSetting_(ss, 'Payment link (Stripe/PayPal/Venmo — optional)') || '').trim();
   const cur = String(getSetting_(ss, 'Currency symbol') || '$').trim() || '$';
@@ -188,7 +189,9 @@ function docHtml_(ss, kind, vals, comp) {
     ';color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:bold">Pay now</a></p>' : '';
   return '<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#1a1c1f">' +
     '<table style="width:100%;border-bottom:3px solid ' + BRAND.accent + ';margin-bottom:22px"><tr>' +
-    '<td style="padding-bottom:14px;vertical-align:top"><div style="font-size:24px;font-weight:bold">' + biz + '</div>' +
+    '<td style="padding-bottom:14px;vertical-align:top">' +
+    (logo ? '<img src="' + logo + '" style="max-height:64px;max-width:220px;margin-bottom:8px;display:block">' : '') +
+    '<div style="font-size:24px;font-weight:bold">' + biz + '</div>' +
     (bizPhone ? '<div style="color:#52565c">' + bizPhone + '</div>' : '') + '</td>' +
     '<td style="padding-bottom:14px;text-align:right;vertical-align:top">' +
     '<div style="font-size:28px;font-weight:bold;color:' + BRAND.accent + '">' + title + '</div>' +
@@ -733,7 +736,19 @@ var SETTING_KEYS = {
   dueDays: 'Invoice due (days to pay; 0 = due upon receipt)',
   startEstimate: 'Starting quote/estimate number',
   startInvoice: 'Starting invoice number',
+  accent: 'Accent color',
 };
+
+// The logo (a base64 data URL) can be large, so it is stored/read on its own rather than
+// bundled into every apiBootstrap. The Settings screen fetches it lazily.
+var LOGO_KEY = 'Company logo (data URL)';
+function apiGetLogo() { return { logo: String(getSetting_(ss_(), LOGO_KEY) || '') }; }
+function apiSaveLogo(dataUrl) {
+  const v = String(dataUrl || '');
+  if (v && v.slice(0, 11) !== 'data:image/') return { ok: false, msg: 'Not an image' };
+  setSetting_(ss_(), LOGO_KEY, v);
+  return { ok: true };
+}
 
 /** Invoice payment terms: number of days to pay after the invoice is sent.
  *  0 means "Due upon receipt" (same day). Accepts a number, "0", or text like

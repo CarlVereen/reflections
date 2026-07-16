@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <style>
   :root{
-    --accent:#8f5f22; --accent-lite:#b8823a; --dark:#1a1c1f; --ink:#1a1c1f; --soft:#f3f0ea;
+    --accent:#8f5f22; --accent-lite:#b8823a; --accent-dark:#6e4a1a; --accent-glow:rgba(143,95,34,.25); --dark:#1a1c1f; --ink:#1a1c1f; --soft:#f3f0ea;
     --line:#e4dccd; --muted:#6b6459; --good:#3f7d55; --warn:#c0492b; --bg:#faf8f4; --card:#fff;
     --blue:#2a4d80; --radius:14px;
   }
@@ -13,7 +13,7 @@
   body{font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
   .app{max-width:640px;margin:0 auto;min-height:100vh;padding-bottom:76px}
   /* top bar */
-  .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--accent),#6e4a1a);color:#fff;
+  .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;
     padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
   .topbar h1{font-size:17px;font-weight:800;letter-spacing:-.2px}
   .topbar .sub{font-size:11.5px;opacity:.85}
@@ -46,7 +46,7 @@
   .warn{background:#fff3d6;border:1px solid #e6cf9a;color:#8a6d1a;border-radius:12px;padding:11px 13px;margin-bottom:10px;font-size:12.5px;line-height:1.35}
   /* buttons */
   .btn{display:block;width:100%;border:0;border-radius:999px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;
-    background:linear-gradient(180deg,var(--accent),#6e4a1a);color:#fff;margin-top:10px;text-align:center;text-decoration:none}
+    background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:#fff;margin-top:10px;text-align:center;text-decoration:none}
   .btn:active{filter:brightness(1.1)}
   .btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line)}
   .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
@@ -57,8 +57,15 @@
   /* forms */
   label{display:block;font-weight:700;font-size:12.5px;margin:12px 0 4px;color:var(--ink)}
   input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff;font-family:inherit}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(143,95,34,.25)}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
   .two{display:flex;gap:8px}.two>div{flex:1}
+  /* fixed action button, sits just above the bottom nav */
+  .actionbar{position:fixed;left:0;right:0;bottom:54px;z-index:28;max-width:640px;margin:0 auto;
+    padding:8px 14px 10px;display:none;background:linear-gradient(180deg,rgba(250,248,244,0),var(--bg) 42%)}
+  .actionbar.on{display:block}
+  .actionbar .btn{margin-top:0}
+  /* extra bottom clearance on screens that show the fixed action button */
+  #s-contacts,#s-billing,#s-jobs{padding-bottom:60px}
   /* bottom nav */
   .nav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid var(--line);
     display:flex;max-width:640px;margin:0 auto}
@@ -86,6 +93,11 @@
   .segbtn{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 4px;font-weight:700;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
   .segbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
   .segbtn .tc{display:inline-block;margin-left:4px;font-size:10.5px;font-weight:800;opacity:.8;vertical-align:top}
+  /* appearance: color picker + swatches */
+  .colorrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+  .colorrow input[type=color]{width:46px;height:38px;padding:2px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
+  .swatches{display:flex;gap:6px;flex-wrap:wrap}
+  .sw{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
   /* sync badge (top bar) */
   .syncb{font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap;display:none}
   .syncb.on{display:inline-block}
@@ -117,13 +129,11 @@
       <button class="segbtn" data-sort="job" onclick="setContactSort('job')">Last job</button>
     </div>
     <div id="contactsBody" style="margin-top:10px"></div>
-    <button class="btn" style="margin-top:16px" onclick="openContactForm()">+ New contact</button>
   </div>
 
   <!-- BILLING (quotes + invoices in one place) -->
   <div class="screen" id="s-billing">
     <div id="billingBody"></div>
-    <button class="btn" style="margin-top:16px" onclick="openQuoteBuilder()">+ New estimate</button>
   </div>
 
   <!-- MORE -->
@@ -135,7 +145,6 @@
   <!-- JOBS -->
   <div class="screen" id="s-jobs">
     <div id="jobsBody"></div>
-    <button class="btn" style="margin-top:16px" onclick="openJobForm()">+ New job</button>
   </div>
 
   <!-- SETTINGS -->
@@ -143,6 +152,8 @@
     <div id="settingsBody"></div>
   </div>
 </div>
+
+<div class="actionbar" id="actionbar"></div>
 
 <div class="nav">
   <button class="on" data-s="home" onclick="nav('home')"><span class="i">🏠</span>Home</button>
@@ -165,7 +176,7 @@ var CUR='$';
 // Bump this whenever you paste new code, so you can confirm a deploy actually took effect:
 // it shows at the bottom of More ▸ Settings. If it doesn't match after deploying, the old
 // version is still being served (Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version).
-var BUILD='2026-07-16e';
+var BUILD='2026-07-16f';
 function api(fn){
   var args=[].slice.call(arguments,1);
   return new Promise(function(res,rej){
@@ -252,6 +263,10 @@ function nav(s){
   document.getElementById('s-'+s).classList.add('on');
   document.querySelectorAll('.nav button').forEach(function(b){ b.classList.toggle('on', b.dataset.s===s); });
   document.getElementById('screenName').textContent=TITLES[s]||'';
+  var ACT={contacts:['+ New contact','openContactForm()'],billing:['+ New estimate','openQuoteBuilder()'],jobs:['+ New job','openJobForm()']};
+  var ab=document.getElementById('actionbar'), a=ACT[s];
+  ab.innerHTML=a?'<button class="btn" onclick="'+a[1]+'">'+a[0]+'</button>':'';
+  ab.classList.toggle('on',!!a);
   window.scrollTo(0,0);
   if(s==='home')loadHome();
   if(s==='contacts')loadContacts();
@@ -265,12 +280,30 @@ function openModal(html){ document.getElementById('sheet').innerHTML=html; docum
 function closeModal(){ document.getElementById('overlay').classList.remove('on'); }
 
 /* ---------------- boot ---------------- */
+/* ---------------- theme (accent color) ---------------- */
+var ACCENT_DEFAULT='#8f5f22';
+function clamp255(n){ return Math.max(0,Math.min(255,Math.round(n))); }
+function hexRGB(hex){ var m=/^#?([0-9a-f]{6})$/i.exec(String(hex||'').trim()); if(!m)return null;
+  var n=parseInt(m[1],16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
+function toHex(c){ return '#'+[c.r,c.g,c.b].map(function(v){var s=clamp255(v).toString(16);return s.length<2?'0'+s:s;}).join(''); }
+function shade(hex,amt){ var c=hexRGB(hex); if(!c)return hex;   // amt<0 darkens toward black, >0 lightens toward white
+  var t=amt<0?0:255, p=Math.abs(amt); return toHex({r:c.r+(t-c.r)*p,g:c.g+(t-c.g)*p,b:c.b+(t-c.b)*p}); }
+function hexA(hex,a){ var c=hexRGB(hex); return c?('rgba('+c.r+','+c.g+','+c.b+','+a+')'):'rgba(143,95,34,'+a+')'; }
+function applyAccent(hex){
+  hex=(hexRGB(hex)?hex:ACCENT_DEFAULT);
+  var r=document.documentElement.style;
+  r.setProperty('--accent',hex);
+  r.setProperty('--accent-lite',shade(hex,0.28));
+  r.setProperty('--accent-dark',shade(hex,-0.28));
+  r.setProperty('--accent-glow',hexA(hex,0.25));
+}
 function boot(){
   api('apiBootstrap').then(function(b){
     if(!b||!b.ready){ document.getElementById('homeBody').innerHTML='<div class="empty">Run <b>⚡ CRM ▸ Set up / rebuild CRM</b> in the sheet first, then reload.</div>'; return; }
     S.settings=b.settings||{}; S.services=b.services||[]; S.dashboard=b.dashboard;
     S.statuses={lead:b.leadStatuses,job:b.jobStatuses,inv:b.invStatuses,est:b.estStatuses,repeat:b.repeatOpts};
     CUR=(S.settings.currency||'$').trim()||'$';
+    applyAccent(S.settings.accent);
     if(S.settings.businessName) document.getElementById('bizName').textContent=S.settings.businessName;
     renderHome();
   }).catch(function(e){ document.getElementById('homeBody').innerHTML='<div class="empty">Could not load: '+esc(e&&e.message||e)+'</div>'; });
@@ -640,9 +673,10 @@ function loadJobs(){ if(S.jobs&&S.jobs.length){renderJobs();return;} document.ge
 var JOB_TAB='today';
 function setJobTab(k){ JOB_TAB=k; renderJobs(); }
 var JOB_ORDER=['today','upcoming','completed'];
-function jobRow(j){
+function jobRow(j,pastDue){
+  var tags=(pastDue?'<span class="pill p-overdue" style="margin-right:5px">Past due</span>':'')+pill(j.status);
   return '<div class="list-item" onclick="openJob('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div>'+
-    '<div class="meta">'+esc(j.date)+(j.service?' · '+esc(j.service):'')+' · '+money0(j.price)+(j.paid==='Yes'?' · paid':'')+'</div></div>'+pill(j.status)+'</div></div>';
+    '<div class="meta">'+esc(j.date)+(j.service?' · '+esc(j.service):'')+' · '+money0(j.price)+(j.paid==='Yes'?' · paid':'')+'</div></div><div style="display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:2px">'+tags+'</div></div></div>';
 }
 function renderJobs(){
   var body=document.getElementById('jobsBody');
@@ -675,7 +709,8 @@ function renderJobs(){
   }).join('')+'</div>';
   var g=groups[JOB_TAB];
   var empty={today:'Nothing scheduled for today.',upcoming:'No upcoming jobs.',completed:'No completed jobs yet.'}[JOB_TAB];
-  var list=g.arr.length ? g.arr.map(jobRow).join('') : '<div class="empty">'+empty+'</div>';
+  var list=g.arr.length ? g.arr.map(function(j){ return jobRow(j, JOB_TAB==='today' && j.dateISO && j.dateISO<today); }).join('')
+                        : '<div class="empty">'+empty+'</div>';
   body.innerHTML=tabs+'<div style="margin-top:12px">'+list+'</div>';
 }
 function openJobForm(){
@@ -739,6 +774,14 @@ function renderSettings(){
     '<h2 class="sec">Document numbering</h2>'+
     '<div class="muted" style="margin-bottom:8px">Sets where new numbers start. Text is allowed — e.g. <b>INV-1001</b> or <b>Q-0001</b> (the number part counts up, leading zeros kept). Changing this only affects <b>new</b> documents.</div>'+
     '<div class="two"><div>'+field('Next quote/estimate #','set_startEstimate',s.startEstimate,'1001')+'</div><div>'+field('Next invoice #','set_startInvoice',s.startInvoice,'9001')+'</div></div>'+
+    '<h2 class="sec">Appearance</h2>'+
+    '<div class="muted" style="margin-bottom:6px">Accent color for buttons, tabs and the header.</div>'+
+    '<div class="colorrow"><input type="color" id="set_accent" value="'+esc(accentVal(s.accent))+'" oninput="applyAccent(this.value)">'+
+    swatches()+'<button class="btn sec sm" style="width:auto;margin:0" onclick="resetAccent()">Reset</button></div>'+
+    '<h2 class="sec">Company logo</h2>'+
+    '<div class="muted" style="margin-bottom:8px">Shown on your PDF estimates &amp; invoices. PNG or JPG — it’s resized automatically.</div>'+
+    '<div id="logoPreview">'+logoPreviewHtml()+'</div>'+
+    '<label class="btn sec" style="cursor:pointer">Choose logo…<input type="file" id="set_logoFile" accept="image/png,image/jpeg" style="display:none" onchange="onLogoPick(this)"></label>'+
     '<button class="btn" onclick="saveSettings()">Save settings</button>'+
     '<h2 class="sec">Your services</h2><div class="muted" style="margin-bottom:8px">One per line — fills the Service dropdowns.</div>'+
     '<textarea id="set_services" rows="7">'+esc((S.services||[]).join('\n'))+'</textarea>'+
@@ -748,7 +791,41 @@ function renderSettings(){
     '<button class="btn sec" onclick="archiveNow()">📦 Archive old paid &amp; closed docs</button>'+
     '<div class="muted" style="text-align:center;margin-top:18px;opacity:.7">Build '+esc(BUILD)+'</div>';
   document.getElementById('settingsBody').innerHTML=h;
+  if(S.logo===undefined) fetchLogo();     // load current logo once, then refresh only its preview
 }
+/* ---- appearance + logo helpers ---- */
+var SWATCHES=['#8f5f22','#2a6df4','#0e9f6e','#7c3aed','#e11d48','#0891b2','#c026d3','#374151'];
+function accentVal(a){ return hexRGB(a)?a:ACCENT_DEFAULT; }
+function swatches(){ return '<span class="swatches">'+SWATCHES.map(function(c){return '<button class="sw" style="background:'+c+'" title="'+c+'" onclick="pickAccent(\''+c+'\')"></button>';}).join('')+'</span>'; }
+function pickAccent(c){ var i=document.getElementById('set_accent'); if(i)i.value=c; applyAccent(c); }
+function resetAccent(){ pickAccent(ACCENT_DEFAULT); }
+function logoPreviewHtml(){
+  if(S.logo===undefined) return '<div class="muted">Loading…</div>';
+  if(S.logo) return '<img src="'+S.logo+'" style="max-height:70px;max-width:220px;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff;display:block;margin-bottom:8px">'+
+    '<button class="btn sec" onclick="removeLogo()">Remove logo</button>';
+  return '<div class="muted" style="margin-bottom:6px">No logo uploaded yet.</div>';
+}
+function paintLogoPreview(){ var el=document.getElementById('logoPreview'); if(el)el.innerHTML=logoPreviewHtml(); }
+function fetchLogo(){ api('apiGetLogo').then(function(r){ S.logo=(r&&r.logo)||''; paintLogoPreview(); }); }
+// Downscale the picked image on a canvas so the stored data URL stays small (sheet cell limit).
+function onLogoPick(input){
+  var f=input.files&&input.files[0]; if(!f)return;
+  var img=new Image();
+  img.onload=function(){
+    var max=360, w=img.width, h=img.height, sc=Math.min(1,max/Math.max(w,h));
+    var cw=Math.max(1,Math.round(w*sc)), ch=Math.max(1,Math.round(h*sc));
+    var cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+    cv.getContext('2d').drawImage(img,0,0,cw,ch);
+    var url=cv.toDataURL('image/png');
+    if(url.length>48000){ url=cv.toDataURL('image/jpeg',0.82); }   // fall back to JPEG if PNG too big
+    if(url.length>48000){ toast('That image is too large — try a smaller/simpler logo'); return; }
+    S.logo=url; paintLogoPreview();
+    busy('Saving logo…'); api('apiSaveLogo',url).then(function(){ toast('✅ Logo saved'); });
+  };
+  img.onerror=function(){ toast('Could not read that image'); };
+  var rd=new FileReader(); rd.onload=function(e){ img.src=e.target.result; }; rd.readAsDataURL(f);
+}
+function removeLogo(){ S.logo=''; paintLogoPreview(); busy('Removing…'); api('apiSaveLogo','').then(function(){ toast('Logo removed'); }); }
 function archiveNow(){
   busy('Archiving…');
   api('apiArchiveClosed').then(function(r){
@@ -759,10 +836,10 @@ function archiveNow(){
   });
 }
 function saveSettings(){
-  var keys=['businessName','ownerEmail','phone','currency','taxPct','reviewLink','payInstructions','payLink','dueDays','startEstimate','startInvoice'];
+  var keys=['businessName','ownerEmail','phone','currency','taxPct','reviewLink','payInstructions','payLink','dueDays','startEstimate','startInvoice','accent'];
   var obj={}; keys.forEach(function(k){obj[k]=val('set_'+k);});
   busy('Saving…');
-  api('apiSaveSettings',obj).then(function(){ S.settings=Object.assign(S.settings,obj); CUR=(obj.currency||'$').trim()||'$'; document.getElementById('bizName').textContent=obj.businessName||'Service Pro CRM'; toast('✅ Settings saved'); });
+  api('apiSaveSettings',obj).then(function(){ S.settings=Object.assign(S.settings,obj); CUR=(obj.currency||'$').trim()||'$'; applyAccent(obj.accent); document.getElementById('bizName').textContent=obj.businessName||'Service Pro CRM'; toast('✅ Settings saved'); });
 }
 function saveServices(){
   var arr=(val('set_services')||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);

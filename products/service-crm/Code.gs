@@ -421,6 +421,8 @@ function buildSettings_(ss) {
     ['Invoice due (days to pay; 0 = due upon receipt)', 14],
     ['Starting quote/estimate number', '1001'],
     ['Starting invoice number', '9001'],
+    ['Accent color', '#8f5f22'],
+    ['Company logo (data URL)', ''],
     ['Mobile lead-capture form URL (auto-filled)', ''],
   ];
   sh.getRange(4, 2, rowsData.length, 2).setValues(rowsData);
@@ -1101,8 +1103,17 @@ function setSetting_(ss, key, value) {
   const sh = ss.getSheetByName(TABS.SETTINGS);
   if (!sh) return;
   const data = sh.getDataRange().getValues();
+  let found = false;
   for (let i = 0; i < data.length; i++) {
-    if (String(data[i][1]).trim() === key) { sh.getRange(i + 1, 3).setValue(value); break; }
+    if (String(data[i][1]).trim() === key) { sh.getRange(i + 1, 3).setValue(value); found = true; break; }
+  }
+  // Append the key/value below the existing settings if it doesn't exist yet, so new settings
+  // (e.g. Accent color, Company logo) persist on sheets built before they were introduced —
+  // no destructive rebuild required. Uses column B (key) / C (value), matching settingsMap_.
+  if (!found) {
+    const row = sh.getLastRow() + 1;
+    sh.getRange(row, 2).setValue(key);
+    sh.getRange(row, 3).setValue(value);
   }
   __SETTINGS_CACHE = null;   // invalidate so later reads see the new value
 }
