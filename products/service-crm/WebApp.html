@@ -346,13 +346,13 @@ function openLead(row){
     '<div class="two" style="margin-top:8px"><div><input type="date" id="fu_pick" value="'+esc(l.followUpISO||'')+'"></div><div><button class="btn sec" onclick="pickFollowUp('+row+')">Set date</button></div></div>'+
     '<h2 class="sec">Set status</h2><div class="btnrow" style="flex-wrap:wrap">'+actions+'</div>');
 }
-function setLeadStatus(row,st){ api('apiSetLeadStatus',row,st).then(function(){ closeModal(); toast('Status → '+st); S.dashboard=null; loadLeads(); }); }
+function setLeadStatus(row,st){ busy('Updating status…'); api('apiSetLeadStatus',row,st).then(function(){ closeModal(); toast('✅ Status → '+st); S.dashboard=null; loadLeads(); }); }
 function setFollowUp(row,iso){
-  busy('Saving…');
+  busy('Setting follow-up…');
   api('apiSetLeadFollowUp',row,iso).then(function(r){
     var l=S.leads.filter(function(x){return x.row===row;})[0];
     if(l&&r){ l.followUp=r.followUp; l.followUpISO=r.followUpISO; }
-    closeModal(); toast('Follow-up: '+((r&&r.followUp)||'cleared')); S.dashboard=null; renderLeads();
+    closeModal(); toast('📅 Follow-up: '+((r&&r.followUp)||'cleared')); S.dashboard=null; renderLeads();
   });
 }
 function pickFollowUp(row){ var e=document.getElementById('fu_pick'); setFollowUp(row,e?e.value:''); }
@@ -416,7 +416,7 @@ function createQuote(send){
   api('apiCreateEstimate',{client:client,email:val('q_email'),phone:val('q_phone'),validDays:14,lines:lines})
    .then(function(r){
      if(!r||!r.ok){toast(r&&r.msg||'Failed');return;}
-     if(send){ api('apiSendDoc','ESTIMATE',r.number).then(function(s){ closeModal(); toast(s&&s.emailed?'📧 Estimate #'+r.number+' sent':'Estimate #'+r.number+' created (no client email)'); S.dashboard=null; loadQuotes(); }); }
+     if(send){ busy('Sending estimate…'); api('apiSendDoc','ESTIMATE',r.number).then(function(s){ closeModal(); toast(s&&s.emailed?'📧 Estimate #'+r.number+' sent':'Estimate #'+r.number+' created (no client email)'); S.dashboard=null; loadQuotes(); }); }
      else { closeModal(); toast('Estimate #'+r.number+' created'); loadQuotes(); }
    });
 }
@@ -454,6 +454,7 @@ function renderDocs(el,list,kind){
 function openDoc(kind,number){
   var list=kind==='INVOICE'?S.invoices:S.quotes;
   var d=list.filter(function(x){return String(x.number)===String(number);})[0]; if(!d)return;
+  busy('Opening…');
   api('apiGetDocLines',number).then(function(lines){
     var items=(lines||[]).map(function(l){return '<div class="row" style="padding:4px 0"><span>'+esc(l.service)+' ×'+l.qty+'</span><span>'+money(l.qty*l.rate)+'</span></div>';}).join('')||'<div class="muted">No line items (uses amount '+money(d.amount)+')</div>';
     var btns='';
@@ -472,8 +473,9 @@ function openDoc(kind,number){
 }
 function sendDoc(kind,number){ busy('Building PDF…'); api('apiSendDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive (no client email)'):(r&&r.msg||'Failed')); S.dashboard=null; kind==='INVOICE'?loadInvoices():loadQuotes(); }); }
 function approve(number){ busy('Approving…'); api('apiApproveEstimate',number).then(function(r){ closeModal(); if(r&&r.ok){toast('✅ Invoice #'+r.invoiceNumber+' draft + job created'); S.dashboard=null; nav('invoices');} else toast(r&&r.msg||'Failed'); }); }
-function markPaid(number){ api('apiMarkInvoicePaid',number).then(function(){ closeModal(); toast('💰 Marked paid'); S.dashboard=null; loadInvoices(); }); }
+function markPaid(number){ busy('Confirming payment…'); api('apiMarkInvoicePaid',number).then(function(){ closeModal(); toast('💰 Payment confirmed'); S.dashboard=null; loadInvoices(); }); }
 function editLines(kind,number){
+  busy('Opening line items…');
   api('apiGetDocLines',number).then(function(lines){
     QLINES=(lines&&lines.length)?lines.map(function(l){return {service:l.service,qty:l.qty,rate:l.rate};}):[{service:'',qty:1,rate:''}];
     openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit line items · #'+esc(number)+'</h3>'+
@@ -486,7 +488,7 @@ function editLines(kind,number){
 function saveLines(kind,number){
   var lines=QLINES.filter(function(l){return l.service&&Number(l.rate)>0;});
   busy('Saving…');
-  api('apiSetDocLines',kind,number,lines).then(function(){ closeModal(); toast('Line items saved'); kind==='INVOICE'?loadInvoices():loadQuotes(); });
+  api('apiSetDocLines',kind,number,lines).then(function(){ closeModal(); toast('✅ Line items saved'); kind==='INVOICE'?loadInvoices():loadQuotes(); });
 }
 
 /* ---------------- JOBS ---------------- */
@@ -519,7 +521,7 @@ function openJob(row){
     (S.statuses.job||[]).map(function(st){return '<button class="btn sm sec" onclick="setJob('+row+',{status:\''+st+'\'})">'+st+'</button>';}).join(' ')+'</div>'+
     '<div class="btnrow"><button class="btn" onclick="setJob('+row+',{paid:\'Yes\'})">Mark paid</button></div>');
 }
-function setJob(row,f){ api('apiSetJob',row,f).then(function(){ closeModal(); toast('Updated'); S.dashboard=null; if(CUR_SCREEN==='home')loadHome(); else loadJobs(); }); }
+function setJob(row,f){ busy(f.paid?'Confirming payment…':(f.status?'Updating status…':'Updating…')); api('apiSetJob',row,f).then(function(){ closeModal(); toast(f.paid?'💰 Payment confirmed':'✅ Updated'); S.dashboard=null; if(CUR_SCREEN==='home')loadHome(); else loadJobs(); }); }
 /** Open a job's detail from anywhere (Home may not have the jobs list loaded yet). */
 function openJobFromHome(row){
   if(S.jobs&&S.jobs.some(function(j){return j.row===row;})){ openJob(row); }
@@ -588,11 +590,12 @@ function saveSettings(){
   var keys=['businessName','ownerEmail','phone','currency','taxPct','reviewLink','payInstructions','payLink','startEstimate','startInvoice'];
   var obj={}; keys.forEach(function(k){obj[k]=val('set_'+k);});
   busy('Saving…');
-  api('apiSaveSettings',obj).then(function(){ S.settings=Object.assign(S.settings,obj); CUR=(obj.currency||'$').trim()||'$'; document.getElementById('bizName').textContent=obj.businessName||'Service Pro CRM'; toast('Settings saved'); });
+  api('apiSaveSettings',obj).then(function(){ S.settings=Object.assign(S.settings,obj); CUR=(obj.currency||'$').trim()||'$'; document.getElementById('bizName').textContent=obj.businessName||'Service Pro CRM'; toast('✅ Settings saved'); });
 }
 function saveServices(){
   var arr=(val('set_services')||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);
-  api('apiSaveServices',arr).then(function(){ S.services=arr; toast('Services saved'); });
+  busy('Saving services…');
+  api('apiSaveServices',arr).then(function(){ S.services=arr; toast('✅ Services saved'); });
 }
 
 /* ---------------- form helpers ---------------- */
