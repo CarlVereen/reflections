@@ -29,6 +29,7 @@
   .tile .l{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
   .tile .v{font-size:26px;font-weight:800;color:var(--ink);margin-top:4px;letter-spacing:-.5px}
   .tile.good .v{color:var(--good)}
+  .tile .hint{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.2}
   /* cards & lists */
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:10px}
   .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -218,9 +219,9 @@ function renderHome(){
   var d=S.dashboard; if(!d){ return; }
   var h='';
   h+='<div class="tiles">'+
-     tile('New leads · 7d',d.newLeads)+tile('Open pipeline',money0(d.pipeline))+
+     tile('New leads · 7d',d.newLeads)+tile('Unpaid',money0(d.unpaid||0),'invoices sent, not paid')+
      tile('Jobs this week',d.jobsWeek)+tile('Revenue · mo',money0(d.revMonth))+'</div>';
-  h+='<div class="tiles" style="margin-top:10px">'+tileGood('Win rate',d.winRate+'%')+tileGood('Lifetime',money0(d.revLife))+'</div>';
+  h+='<div class="tiles" style="margin-top:10px">'+tileGood('Win rate',d.winRate+'%','of leads marked Won vs Lost')+tileGood('Lifetime',money0(d.revLife))+'</div>';
   h+='<div class="btnrow"><button class="btn" onclick="openLeadForm()">+ Lead</button><button class="btn" onclick="openQuoteBuilder()">+ Estimate</button></div>';
   h+='<h2 class="sec">🔔 Follow-ups due</h2>';
   if(d.followUps&&d.followUps.length){ d.followUps.forEach(function(f){
@@ -232,8 +233,9 @@ function renderHome(){
   }); } else h+='<div class="empty">No jobs scheduled this week</div>';
   document.getElementById('homeBody').innerHTML=h;
 }
-function tile(l,v){ return '<div class="tile"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>'; }
-function tileGood(l,v){ return '<div class="tile good"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>'; }
+function tileHint(h){ return h?'<div class="hint">'+esc(h)+'</div>':''; }
+function tile(l,v,h){ return '<div class="tile"><div class="l">'+l+'</div><div class="v">'+v+'</div>'+tileHint(h)+'</div>'; }
+function tileGood(l,v,h){ return '<div class="tile good"><div class="l">'+l+'</div><div class="v">'+v+'</div>'+tileHint(h)+'</div>'; }
 // Surface a server error instead of leaving a screen stuck on "Loading…".
 function loadFail(el,e){ document.getElementById(el).innerHTML='<div class="empty">Couldn\'t load — '+esc(e&&e.message||e||'unknown error')+'.<br>Tap ⟳ to retry. If this persists after a code change, redeploy a new version (Deploy ▸ Manage deployments ▸ ✏️ ▸ New version).</div>'; }
 
@@ -639,7 +641,7 @@ function serviceSelect(id){ return '<label>Service</label><select id="'+id+'"><o
 function mock(fn,args){
   if(fn==='apiBootstrap')return{ready:true,settings:{businessName:'Meridian Detailing',currency:'$',taxPct:8.25},services:['Full detail','Interior clean','Ceramic coat'],
     leadStatuses:['New','Contacted','Quoted','Won','Lost'],jobStatuses:['Scheduled','In Progress','Done','Cancelled'],invStatuses:['Draft','Sent','Paid','Overdue'],estStatuses:['Draft','Sent','Accepted','Declined'],repeatOpts:['None','Weekly','Biweekly','Monthly'],
-    dashboard:{newLeads:14,pipeline:8450,jobsWeek:9,revMonth:6320,winRate:62,revLife:41900,followUps:[{name:'Marcus Bell',phone:'(555) 203-8871',status:'Quoted',due:'7/12'},{name:'Priya Shah',phone:'(555) 661-2049',status:'Contacted',due:'7/14'}],weekJobs:[{row:2,date:'7/16',client:'Dana Ruiz',service:'Full detail',status:'Scheduled'}]}};
+    dashboard:{newLeads:14,pipeline:8450,unpaid:1240,jobsWeek:9,revMonth:6320,winRate:62,revLife:41900,followUps:[{name:'Marcus Bell',phone:'(555) 203-8871',status:'Quoted',due:'7/12'},{name:'Priya Shah',phone:'(555) 661-2049',status:'Contacted',due:'7/14'}],weekJobs:[{row:2,date:'7/16',client:'Dana Ruiz',service:'Full detail',status:'Scheduled'}]}};
   if(fn==='apiDashboard')return mock('apiBootstrap').dashboard;
   if(fn==='apiListLeads')return[{row:2,name:'Marcus Bell',phone:'(555) 203-8871',email:'',service:'Full detail',value:189,status:'Quoted',followUp:'7/12',followUpISO:'2026-07-12'},{row:3,name:'Priya Shah',phone:'(555) 661-2049',email:'p@x.com',service:'Interior clean',value:120,status:'New',followUp:'7/17',followUpISO:'2026-07-17'}];
   if(fn==='apiListDocs')return args[0]==='INVOICE'?[{row:2,number:9001,client:'Dana Ruiz',dateA:'7/15',dateB:'7/29',amount:431.92,status:'Draft',items:3}]:[{row:2,number:1001,client:'Marcus Bell',dateA:'7/14',dateB:'7/28',amount:204.62,status:'Sent',items:2}];

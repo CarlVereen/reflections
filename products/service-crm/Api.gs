@@ -261,13 +261,15 @@ function apiDashboard() {
     if (d >= wkStart && d < wkEnd && r[4] !== 'Cancelled') { jobsWeek++; weekJobs.push({ row: i + 2, date: fmtd_(d), client: r[1], service: r[2] || '', status: r[4] || '' }); }
   });
 
-  let revMonth = 0, revLife = 0;
+  let revMonth = 0, revLife = 0, unpaid = 0;
   invs.forEach(function (r) {
-    if (r[5] === 'Paid') { revLife += num_(r[4]); if (r[2] instanceof Date && r[2] >= monStart) revMonth += num_(r[4]); }
+    const st = r[5], amt = num_(r[4]);
+    if (st === 'Paid') { revLife += amt; if (r[2] instanceof Date && r[2] >= monStart) revMonth += amt; }
+    if (st === 'Sent' || st === 'Overdue') unpaid += amt;   // billed and still owed to you
   });
 
   return {
-    newLeads: newLeads, pipeline: pipeline, jobsWeek: jobsWeek, revMonth: revMonth,
+    newLeads: newLeads, pipeline: pipeline, unpaid: unpaid, jobsWeek: jobsWeek, revMonth: revMonth,
     winRate: (won + lost) ? Math.round(won / (won + lost) * 100) : 0, revLife: revLife,
     followUps: followUps, weekJobs: weekJobs,
   };
