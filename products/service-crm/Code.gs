@@ -455,6 +455,23 @@ function buildStartHere_(ss) {
   });
   sh.getRange(r + 1, 3).setValue('Need help? ⚡ CRM ▸ About / help — or reply to your purchase receipt anytime.')
     .setFontColor(BRAND.accent2).setFontWeight('bold');
+
+  // Your data & privacy
+  let p = r + 3;
+  sh.getRange(p, 3).setValue('🛡️  Your data & privacy').setFontSize(14).setFontWeight('bold').setFontColor(BRAND.header);
+  sh.getRange(p + 1, 3).setValue('Your customer data stays inside YOUR own Google account. It is NEVER sent to any AI or third party, and no one else — not even the seller — can see it.')
+    .setWrap(true).setVerticalAlignment('top').setFontSize(11); sh.setRowHeight(p + 1, 34);
+  const privacy = [
+    'Keep this sheet private — do NOT share it with "anyone with the link." Need a helper? Add them as a named editor, then remove them when done.',
+    'Deploy your app as "Only myself" (not "Anyone"). Double-check a client\'s email before you send, and that the Owner email in ⚙️ Settings is yours.',
+    'Job photo folders are shared "anyone with the link" — only put job photos there, and only send that link to that customer.',
+    'To honor a delete request: remove the customer\'s rows and their PDFs. Keep tax-required invoices (or just anonymize the name on them).',
+  ];
+  let q = p + 2;
+  privacy.forEach(function (t) {
+    sh.getRange(q, 3).setValue('•  ' + t).setWrap(true).setVerticalAlignment('top').setFontSize(10.5).setFontColor('#52565c');
+    sh.setRowHeight(q, 32); q += 1;
+  });
 }
 
 function reorderTabs_(ss, order) {
