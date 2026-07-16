@@ -10,10 +10,11 @@
  *************************************************************************/
 
 function doGet() {
+  // Note: no ALLOWALL X-Frame-Options — the default keeps other sites from framing
+  // the app (clickjacking protection). The app is opened directly, not embedded.
   return HtmlService.createHtmlOutputFromFile('WebApp')
     .setTitle('Service Pro CRM')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1');
 }
 
 /* ----------------------------- helpers ---------------------------- */
@@ -122,7 +123,7 @@ function docHtml_(ss, kind, vals, comp) {
   if (comp.items.length) {
     comp.items.forEach(function (it) {
       const lt = it.qty * it.rate;
-      rowsHtml += '<tr><td style="padding:9px;border-bottom:1px solid #eee">' + it.desc + '</td>' +
+      rowsHtml += '<tr><td style="padding:9px;border-bottom:1px solid #eee">' + escHtml_(it.desc) + '</td>' +
         '<td style="padding:9px;border-bottom:1px solid #eee;text-align:center">' + it.qty + '</td>' +
         '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(it.rate) + '</td>' +
         '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(lt) + '</td></tr>';
@@ -152,7 +153,7 @@ function docHtml_(ss, kind, vals, comp) {
     '<div style="font-size:28px;font-weight:bold;color:' + BRAND.accent + '">' + title + '</div>' +
     '<div style="color:#52565c">#' + numv + '</div></td></tr></table>' +
     '<table style="width:100%;margin-bottom:20px"><tr>' +
-    '<td><b>' + (isInv ? 'Bill to' : 'Prepared for') + ':</b><br>' + vals[1] + (email ? '<br>' + email : '') + '</td>' +
+    '<td><b>' + (isInv ? 'Bill to' : 'Prepared for') + ':</b><br>' + escHtml_(vals[1]) + (email ? '<br>' + escHtml_(email) : '') + '</td>' +
     '<td style="text-align:right"><b>Issued:</b> ' + fmtD(vals[2]) + '<br><b>' + dateBLabel + ':</b> ' + fmtD(vals[3]) + '</td></tr></table>' +
     '<table style="width:100%;border-collapse:collapse;margin-bottom:6px">' +
     '<tr style="background:#1a1c1f;color:#fff"><th style="text-align:left;padding:9px">Description</th>' +
@@ -176,7 +177,7 @@ function docEmail_(ss, kind, vals, pdf, email) {
   const payLink = String(getSetting_(ss, 'Payment link (Stripe/PayPal/Venmo — optional)') || '').trim();
   const numv = (vals[0] === '' || vals[0] === null) ? '' : vals[0];
   MailApp.sendEmail({ to: email, subject: niceKind_(kind) + ' #' + numv + ' from ' + biz,
-    htmlBody: 'Hi ' + String(vals[1]).split(' ')[0] + ',<br><br>Please find your ' + kind.toLowerCase() + ' attached. ' +
+    htmlBody: 'Hi ' + escHtml_(String(vals[1]).split(' ')[0]) + ',<br><br>Please find your ' + kind.toLowerCase() + ' attached. ' +
       (isInv && payLink ? 'Pay online here: ' + payLink + '<br>' : '') + (isInv && pay ? pay : '') +
       '<br><br>Thank you!<br>' + biz, attachments: [pdf] });
 }

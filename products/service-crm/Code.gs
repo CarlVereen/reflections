@@ -147,6 +147,13 @@ function buildCRM() {
   buildLineItems_(ss);
   buildDashboard_(ss);
   buildStartHere_(ss);
+  // SECURITY: plain-text format on free-text columns → blocks formula/CSV injection.
+  textFormat_(ss.getSheetByName(TABS.LEADS), [2, 3, 4, 6, 10]);   // Name, Phone, Email, Service, Notes
+  textFormat_(ss.getSheetByName(TABS.CLIENTS), [1, 2, 3, 4, 7]);  // Name, Phone, Email, Address, Notes
+  textFormat_(ss.getSheetByName(TABS.JOBS), [2, 3, 4, 10]);       // Client, Service, Time, Notes
+  textFormat_(ss.getSheetByName(TABS.ESTIMATES), [2]);           // Client
+  textFormat_(ss.getSheetByName(TABS.INVOICES), [2]);            // Client
+  textFormat_(ss.getSheetByName(TABS.ITEMS), [2]);               // Description
   reorderTabs_(ss, [TABS.START, TABS.DASH, TABS.LEADS, TABS.JOBS, TABS.CLIENTS,
                     TABS.ESTIMATES, TABS.INVOICES, TABS.ITEMS, TABS.SETTINGS]);
   // Remove the leftover default sheet created with a new spreadsheet.
@@ -193,6 +200,22 @@ function suggestRange_(sh, col, range, firstRow, numRows) {
 /** The editable services range in the Settings tab (E3:E32) — drives every Service dropdown. */
 function servicesRange_(ss) {
   return ss.getSheetByName(TABS.SETTINGS).getRange('E3:E32');
+}
+
+/** SECURITY: force free-text columns to plain-text format so a value starting with
+ *  = + - @ (e.g. from the public lead Form) can't become a live formula
+ *  (=IMPORTXML/=HYPERLINK CSV-injection). Applies to the whole column. */
+function textFormat_(sh, cols) {
+  if (!sh) return;
+  const n = Math.max(sh.getMaxRows() - 1, 1);
+  cols.forEach(function (c) { sh.getRange(2, c, n, 1).setNumberFormat('@'); });
+}
+
+/** SECURITY: HTML-escape a value before putting it into an email/PDF HTML body. */
+function escHtml_(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+  });
 }
 
 function buildLeads_(ss) {
@@ -675,8 +698,8 @@ function sendFollowUpDigest() {
       ? '<a href="sms:' + digits + '?&body=' + encodeURIComponent('Hi ' + String(d.name).split(' ')[0] + ", it's " + biz + ' following up — ') + '" style="color:' + BRAND.accent2 + ';font-weight:bold">Text ›</a>'
       : '—';
     html += '<tr style="background:' + (i % 2 ? BRAND.soft : '#fff') + '">' +
-      '<td style="padding:8px">' + d.name + '</td><td style="padding:8px">' + (d.phone || '—') + '</td>' +
-      '<td style="padding:8px">' + d.due + '</td><td style="padding:8px">' + d.status + '</td>' +
+      '<td style="padding:8px">' + escHtml_(d.name) + '</td><td style="padding:8px">' + (escHtml_(d.phone) || '—') + '</td>' +
+      '<td style="padding:8px">' + escHtml_(d.due) + '</td><td style="padding:8px">' + escHtml_(d.status) + '</td>' +
       '<td style="padding:8px">' + smsCell + '</td></tr>';
   });
   html += '</table><p style="color:#52565c;font-size:13px">On your phone, tap "Text ›" to message a lead. Update their status in the CRM after you reach out.</p></div>';
@@ -704,9 +727,9 @@ function sendReviewRequests() {
     if (!client || row[4] !== 'Done' || row[6] !== 'Yes' || row[7] === 'Yes') continue;
     const email = emailByName[client.toLowerCase()];
     if (!email) { noEmail++; continue; }
-    const svc = String(row[2] || 'your recent service').trim();
+    const svc = escHtml_(String(row[2] || 'your recent service').trim());
     const html = '<div style="font-family:Arial,sans-serif;max-width:520px;color:#1a1c1f">' +
-      '<p>Hi ' + client.split(' ')[0] + ',</p><p>Thank you for choosing <b>' + biz + '</b> for ' + svc +
+      '<p>Hi ' + escHtml_(client.split(' ')[0]) + ',</p><p>Thank you for choosing <b>' + escHtml_(biz) + '</b> for ' + svc +
       '. It was a pleasure!</p><p>If you were happy, a quick Google review helps other local folks find us (30 seconds):</p>' +
       '<p style="text-align:center;margin:26px 0"><a href="' + link + '" style="background:' + BRAND.accent2 +
       ';color:#fff;text-decoration:none;padding:13px 26px;border-radius:999px;font-weight:bold">⭐ Leave a review</a></p>' +
@@ -739,11 +762,11 @@ function remindUpcomingJobs() {
     if (d.getTime() !== tomorrow.getTime()) continue;
     const email = emailByName[String(row[1]).trim().toLowerCase()];
     if (!email) continue;
-    const when = Utilities.formatDate(new Date(row[0]), tz, 'EEEE, MMM d') + (row[3] ? ' at ' + row[3] : '');
+    const when = Utilities.formatDate(new Date(row[0]), tz, 'EEEE, MMM d') + (row[3] ? ' at ' + escHtml_(row[3]) : '');
     MailApp.sendEmail({ to: email, subject: '📅 Reminder: your appointment with ' + biz,
-      htmlBody: '<div style="font-family:Arial,sans-serif;color:#1a1c1f"><p>Hi ' + String(row[1]).split(' ')[0] + ',</p>' +
-      '<p>Just a friendly reminder of your upcoming appointment with <b>' + biz + '</b>:</p>' +
-      '<p style="font-size:16px"><b>' + when + '</b>' + (row[2] ? '<br>' + row[2] : '') + '</p>' +
+      htmlBody: '<div style="font-family:Arial,sans-serif;color:#1a1c1f"><p>Hi ' + escHtml_(String(row[1]).split(' ')[0]) + ',</p>' +
+      '<p>Just a friendly reminder of your upcoming appointment with <b>' + escHtml_(biz) + '</b>:</p>' +
+      '<p style="font-size:16px"><b>' + when + '</b>' + (row[2] ? '<br>' + escHtml_(row[2]) : '') + '</p>' +
       '<p>Questions or need to reschedule? ' + (bizPhone ? 'Call us at ' + bizPhone + '.' : 'Just reply to this email.') +
       '</p><p>See you then!<br>' + biz + '</p></div>' });
     jobs.getRange(r + 1, 9).setValue('Yes'); sent++; Utilities.sleep(250);

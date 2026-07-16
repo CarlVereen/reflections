@@ -19,7 +19,9 @@ deploy once; after that you just open the URL.
 4. Set:
    - **Description:** `CRM app` (anything)
    - **Execute as:** **Me**
-   - **Who has access:** **Only myself**
+   - **Who has access:** **Only myself** ← ⚠️ **security-critical.** This keeps your CRM
+     private to you. Do **not** choose "Anyone" — that would let anyone with the link read
+     your customer data and act as you. (See `SECURITY.md`.)
 5. Click **Deploy**, then **Authorize access** and allow (same one-time approval).
 6. Copy the **Web app URL** (ends in `/exec`). That's your app.
 
