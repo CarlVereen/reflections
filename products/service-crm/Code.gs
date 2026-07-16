@@ -507,11 +507,25 @@ function addLead() {
   addLeadCore_(name, phone, '', service, valueStr);
 }
 
+/** Non-destructive migration: ensure the Leads sheet has an "Address" column (K) without a
+ *  rebuild. Idempotent — safe to call on every app load; does nothing once the header exists.
+ *  Preserves all existing data (only adds a header + text-formats the empty column). */
+function ensureLeadsAddressColumn_(ss) {
+  const sh = ss.getSheetByName(TABS.LEADS);
+  if (!sh) return;
+  if (String(sh.getRange(1, 11).getValue()).trim() === 'Address') return;
+  sh.getRange(1, 10).copyTo(sh.getRange(1, 11), SpreadsheetApp.CopyPasteType.PASTE_FORMAT, false); // match header style
+  sh.getRange(1, 11).setValue('Address');
+  sh.getRange(2, 11, Math.max(sh.getMaxRows() - 1, 1), 1).setNumberFormat('@');  // keep literal
+  sh.setColumnWidth(11, 220);
+}
+
 /** Shared by menu + sidebar. Returns a status string. Address (col 11) is optional. */
 function addLeadCore_(name, phone, email, service, valueStr, address) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sh = ss.getSheetByName(TABS.LEADS);
   if (!sh) return 'Run setup first (⚡ CRM ▸ Set up / rebuild CRM).';
+  ensureLeadsAddressColumn_(ss);
   if (!name || !String(name).trim()) return 'A name is required.';
   const value = valueStr ? Number(String(valueStr).replace(/[^0-9.]/g, '')) : '';
   const days = Number(getSetting_(ss, 'Default follow-up (days after new lead)')) || 2;

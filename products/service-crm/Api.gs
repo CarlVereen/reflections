@@ -228,6 +228,7 @@ function docEmail_(ss, kind, vals, pdf, email) {
 function apiBootstrap() {
   const ss = ss_();
   if (!ss.getSheetByName(TABS.LEADS)) return { ready: false };
+  ensureLeadsAddressColumn_(ss);   // non-destructive: adds the Address column on older sheets
   return {
     ready: true,
     settings: apiGetSettings(),
