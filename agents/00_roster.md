@@ -7,6 +7,21 @@ orchestrates them per newsletter; the specialists do the focused work.
 
 Each agent below lists: **Role · Inputs · Tools · Outputs · Hands off to.**
 
+> **Implementation status:** these roles are now built as real, individually-editable
+> assembly-line agents in `.claude/agents/nl-*.md`, connected by the packet contract in
+> `agents/PIPELINE.md`. Mapping (conceptual role → built agent file):
+> - Market Analyst → folded into **nl-launcher** (one-time setup) + **nl-analyst** (ongoing)
+> - Editorial Planner → **nl-planner** · Research → **nl-researcher** · Fact-Checker →
+>   **nl-factchecker** · Writer → **nl-writer** · Editor → **nl-copyeditor** · Quality
+>   Gate → **nl-quality-gate** · Publisher → **nl-publisher** · Growth → **nl-growth** ·
+>   Monetization → **nl-monetizer** · Analytics → **nl-analyst**
+> - Managing Editor (orchestrator) → the **line manager** = the top-level assistant that
+>   sequences the stations (station agents don't spawn other station agents).
+>
+> This roster is the design rationale; the `.claude/agents/` files are the live agents you
+> edit to adjust a station. Edit one file to change one station — nothing else breaks as
+> long as the packet contract holds.
+
 ---
 
 ## 0. Managing Editor (Orchestrator)
