@@ -22,10 +22,11 @@ and the error and send it over.
 - [ ] **C1.** App → **More ▸ Settings** → fill **Business name**, **Owner email** (your address), phone, **Currency**, **Sales tax %** (e.g. 8.25), **Google review link** (any URL), payment instructions, and a **Payment link** (any URL). Set **Invoice due (days to pay)** (e.g. `7`, or `0` for "Due upon receipt"). Under **Document numbering**, optionally set a custom **Next quote/estimate #** (e.g. `Q-2001`) and **Next invoice #** (e.g. `INV-5001`) → **Save settings**.
 - [ ] **C2.** Edit the **"Your services"** box (one per line) → **Save services**. The new service now appears in the app's Service dropdowns.
 
-## D. Leads (in the app)
-- [ ] **D1.** **Leads ▸ +** (or Home ▸ **+ Lead**) → add a lead: name + **email = your own address**, pick a **Service** from the dropdown → **Add lead**. It appears in the app list **and** in the 🎯 Leads sheet tab, with a **Next Follow-up** date (date only, no time).
-- [ ] **D2.** Tap the lead → **Call / Text** links show, status buttons work, and **Create estimate** opens the builder pre-filled with that client.
-- [ ] **D3.** **Add a second lead re-using the same email or phone** → a **⚠️ Possible duplicate** prompt lists the match; **Cancel** stops it, **Add anyway** still adds it (warn, not block).
+## D. Contacts (leads + clients, in the app)
+- [ ] **D1.** **Contacts ▸ +** (or Home ▸ **+ Contact**) → add a contact: name + **email = your own address**, pick a **Service** → **Add contact**. It appears in the **Contacts** list (tagged **New**) **and** in the 🎯 Leads sheet tab with a **Next Follow-up** date.
+- [ ] **D2.** Tap the contact → **Call / Text** links show, **New / Quoted / Declined / Lost** status buttons work, follow-up reschedule works, and **Create estimate** opens the builder pre-filled.
+- [ ] **D3.** **Add a second contact re-using the same email or phone** → a **⚠️ Possible duplicate** prompt lists the match; **Cancel** stops it, **Add anyway** still adds it (warn, not block).
+- [ ] **D4.** Toggle the **Name / Last job** sort. A contact who has a logged job shows their **last job date** (green) instead of a status; sorting by **Last job** puts the most-recently-served first.
 
 ## E. Quote → Approve → Invoice → Paid — the core flow (in the app)
 - [ ] **E1.** **Billing ▸ + New estimate** → client = your test client (email = you) → add **2 line items** (Service + Qty + Price) → watch the **running Total** update (with tax) → **Create & send**.
@@ -35,10 +36,10 @@ and the error and send it over.
 - [ ] **E5.** **Mark paid** → status **Paid**; the invoice drops out of **Outstanding** into the collapsed **Paid** group (tap it to expand). Go to **Home** → **Revenue** and **Lifetime** update.
 - [ ] **E6.** Re-open that invoice and **Send** again → the **total is unchanged** (tax is not applied twice). ✅
 
-## F. Jobs & Clients (in the app)
+## F. Jobs & Contacts (in the app)
 - [ ] **F1.** **Jobs ▸ + New job** → add a job for the client (date, price) → appears in the app **Jobs** list and the 🗓️ Jobs tab.
 - [ ] **F2.** Tap a job → **Reschedule** to a new date (it moves in the list), set **Status = Done** and **Mark paid**. From **Home**, tapping a "this week's jobs" row opens that **same job detail**.
-- [ ] **F3.** **More ▸ Clients** → your test client shows with **Total Spent** = the sum of their paid jobs.
+- [ ] **F3.** **Contacts** → your test client now shows a green **last job date** tag; open them → **Last job … · N jobs · Total spent** = the sum of their paid jobs.
 
 ## G. Automations & emails (from the sheet's ⚡ CRM menu)
 These run server-side / on triggers — not in the app.

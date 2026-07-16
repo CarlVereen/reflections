@@ -30,7 +30,10 @@ const TABS = {
   SETTINGS:  '⚙️ Settings',
 };
 
-const LEAD_STATUSES = ['New', 'Contacted', 'Quoted', 'Won', 'Lost'];
+// Lead statuses shown as tags in the combined Contacts view. Once a lead has a logged
+// job they're a client and the app shows their last job date instead of a status.
+// ('Contacted'/'Won' are legacy values still tolerated on older sheets.)
+const LEAD_STATUSES = ['New', 'Quoted', 'Declined', 'Lost'];
 const JOB_STATUSES  = ['Scheduled', 'In Progress', 'Done', 'Cancelled'];
 const INV_STATUSES  = ['Draft', 'Sent', 'Paid', 'Overdue'];
 const EST_STATUSES  = ['Draft', 'Sent', 'Accepted', 'Declined'];
@@ -236,7 +239,7 @@ function buildLeads_(ss) {
   const statusRange = sh.getRange(2, 8, rows, 1);
   const rules = [];
   const c = (t, bg) => SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo(t).setBackground(bg).setRanges([statusRange]).build();
-  rules.push(c('New', '#e8eef7'), c('Contacted', '#fff3d6'), c('Quoted', '#ffe4c4'), c('Won', '#d8efdf'), c('Lost', '#f5d9d3'));
+  rules.push(c('New', '#e8eef7'), c('Contacted', '#fff3d6'), c('Quoted', '#ffe4c4'), c('Won', '#d8efdf'), c('Declined', '#f5d9d3'), c('Lost', '#f0d3cd'));
   rules.push(SpreadsheetApp.newConditionalFormatRule()
     .whenFormulaSatisfied('=AND($I2<>"",$I2<TODAY(),$H2<>"Won",$H2<>"Lost")')
     .setBackground('#f5d9d3').setFontColor(BRAND.warn).setRanges([sh.getRange(2, 9, rows, 1)]).build());
@@ -545,7 +548,7 @@ function sidebarFollowUps() {
   const out = [];
   for (let i = 1; i < data.length; i++) {
     const [, name, phone, , , , , status, follow] = data[i];
-    if (!name || status === 'Won' || status === 'Lost' || !(follow instanceof Date)) continue;
+    if (!name || status === 'Won' || status === 'Lost' || status === 'Declined' || !(follow instanceof Date)) continue;
     const f = new Date(follow); f.setHours(0, 0, 0, 0);
     if (f <= today) out.push({ name: name, phone: phone || '', status: status,
       due: Utilities.formatDate(f, Session.getScriptTimeZone(), 'M/d') });

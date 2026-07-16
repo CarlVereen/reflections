@@ -239,27 +239,31 @@ function apiDashboard() {
   const jobs = valuesOf_(ss, TABS.JOBS);
   const invs = valuesOf_(ss, TABS.INVOICES);
 
-  let newLeads = 0, pipeline = 0, won = 0, lost = 0;
+  const dead = function (s) { return s === 'Won' || s === 'Lost' || s === 'Declined'; };
+  let newLeads = 0, pipeline = 0, lost = 0;
   const followUps = [];
   leads.forEach(function (r) {
     if (!r[1]) return;
     const added = r[0], status = r[7], follow = r[8];
     if (added instanceof Date && added >= new Date(today.getTime() - 7 * 864e5)) newLeads++;
-    if (status !== 'Won' && status !== 'Lost' && status !== '') pipeline += num_(r[6]);
-    if (status === 'Won') won++;
-    if (status === 'Lost') lost++;
-    if (status !== 'Won' && status !== 'Lost' && follow instanceof Date) {
+    if (!dead(status) && status !== '') pipeline += num_(r[6]);
+    if (status === 'Lost' || status === 'Declined') lost++;   // said no / don't contact
+    if (!dead(status) && follow instanceof Date) {
       const f = new Date(follow); f.setHours(0, 0, 0, 0);
       if (f <= today) followUps.push({ name: r[1], phone: r[2] || '', status: status, due: fmtd_(f) });
     }
   });
 
+  // "Won" under the new model = someone who became a client with a logged job.
+  const wonClients = {};
   let jobsWeek = 0; const weekJobs = [];
   jobs.forEach(function (r, i) {
+    if (r[1]) wonClients[String(r[1]).trim().toLowerCase()] = true;
     if (!(r[0] instanceof Date)) return;
     const d = new Date(r[0]); d.setHours(0, 0, 0, 0);
     if (d >= wkStart && d < wkEnd && r[4] !== 'Cancelled') { jobsWeek++; weekJobs.push({ row: i + 2, date: fmtd_(d), client: r[1], service: r[2] || '', status: r[4] || '' }); }
   });
+  const won = Object.keys(wonClients).length;
 
   let revMonth = 0, revLife = 0, unpaid = 0;
   invs.forEach(function (r) {
@@ -279,6 +283,55 @@ function valuesOf_(ss, tab) {
   const sh = ss.getSheetByName(tab);
   if (!sh || sh.getLastRow() < 2) return [];
   return sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();
+}
+
+/* ========================= CONTACTS (leads + clients) ============= */
+
+/** One combined list of everyone — leads and clients merged & deduped by name —
+ *  each with their lead status, last job date, total spent, and edit rows.
+ *  The app shows a status tag (New/Quoted/Declined/Lost) until they have a logged
+ *  job, then shows their last job date instead. */
+function apiListContacts() {
+  const ss = ss_();
+  const map = {};
+  const keyOf = function (name) { return String(name || '').trim().toLowerCase(); };
+  const get = function (name) {
+    const k = keyOf(name); if (!k) return null;
+    if (!map[k]) map[k] = { key: k, name: String(name).trim(), phone: '', email: '', address: '',
+      leadRow: 0, clientRow: 0, leadStatus: '', followUp: '', followUpISO: '',
+      lastJobISO: '', lastJobDate: '', jobCount: 0, totalSpent: 0 };
+    return map[k];
+  };
+
+  valuesOf_(ss, TABS.LEADS).forEach(function (r, i) {   // [added,name,phone,email,src,svc,val,status,follow,notes]
+    if (!r[1]) return;
+    const c = get(r[1]); if (!c) return;
+    c.leadRow = i + 2;
+    if (!c.phone && r[2]) c.phone = String(r[2]);
+    if (!c.email && r[3]) c.email = String(r[3]);
+    c.leadStatus = r[7] || 'New';
+    c.followUp = fmtd_(r[8]); c.followUpISO = isoOrEmpty_(r[8]);
+  });
+
+  valuesOf_(ss, TABS.CLIENTS).forEach(function (r, i) { // [name,phone,email,address,firstJob,totalSpent,notes]
+    if (!r[0]) return;
+    const c = get(r[0]); if (!c) return;
+    c.clientRow = i + 2;
+    if (r[1]) c.phone = String(r[1]);
+    if (r[2]) c.email = String(r[2]);
+    if (r[3]) c.address = String(r[3]);
+    c.totalSpent = num_(r[5]);
+  });
+
+  valuesOf_(ss, TABS.JOBS).forEach(function (r) {       // last job date per client name
+    if (!r[1] || !(r[0] instanceof Date)) return;
+    const c = get(r[1]); if (!c) return;
+    c.jobCount++;
+    const iso = isoOrEmpty_(r[0]);
+    if (iso && iso > c.lastJobISO) { c.lastJobISO = iso; c.lastJobDate = fmtd_(r[0]); }
+  });
+
+  return Object.keys(map).map(function (k) { return map[k]; });
 }
 
 /* ============================== LEADS ============================= */
