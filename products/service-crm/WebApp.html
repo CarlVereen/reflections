@@ -161,7 +161,10 @@
 
 <script>
 /* ---------------- state + api ---------------- */
-var S={settings:{},services:[],dashboard:null,contacts:[],jobs:[],quotes:[],invoices:[],statuses:{}};
+// List caches start null = "not loaded yet". Once fetched they hold an array (even if
+// empty), so revisiting a tab renders instantly with no server round-trip. A mutation
+// calls invalidate() to null them so the next visit refetches. (See loadX + invalidate.)
+var S={settings:{},services:[],dashboard:null,contacts:null,jobs:null,quotes:null,invoices:null,statuses:{}};
 var CUR='$';
 function api(fn){
   var args=[].slice.call(arguments,1);
@@ -214,7 +217,10 @@ function boot(){
     renderHome();
   }).catch(function(e){ document.getElementById('homeBody').innerHTML='<div class="empty">Could not load: '+esc(e&&e.message||e)+'</div>'; });
 }
-function refreshAll(){ busy('Refreshing…'); S.dashboard=null; boot(); nav(CUR_SCREEN); }
+// Drop all cached lists so the next view refetches. Call after any change that writes
+// to the sheet (add/edit/delete/status/approve/pay/reschedule).
+function invalidate(){ S.dashboard=null; S.contacts=null; S.jobs=null; S.quotes=null; S.invoices=null; }
+function refreshAll(){ busy('Refreshing…'); invalidate(); boot(); nav(CUR_SCREEN); }
 
 /* ---------------- HOME ---------------- */
 function loadHome(){ if(!S.dashboard){ api('apiDashboard').then(function(d){S.dashboard=d;renderHome();}); } else renderHome(); }
@@ -243,7 +249,7 @@ function tileGood(l,v,h){ return '<div class="tile good"><div class="l">'+l+'</d
 function loadFail(el,e){ document.getElementById(el).innerHTML='<div class="empty">Couldn\'t load — '+esc(e&&e.message||e||'unknown error')+'.<br>Tap ⟳ to retry. If this persists after a code change, redeploy a new version (Deploy ▸ Manage deployments ▸ ✏️ ▸ New version).</div>'; }
 
 /* ---------------- CONTACTS (leads + clients merged) ---------------- */
-function loadContacts(){ document.getElementById('contactsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListContacts').then(function(l){S.contacts=l||[];S.contacts.forEach(function(c,i){c._i=i;});renderContacts();}).catch(function(e){loadFail('contactsBody',e);}); }
+function loadContacts(){ if(S.contacts){renderContacts();return;} document.getElementById('contactsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListContacts').then(function(l){S.contacts=l||[];S.contacts.forEach(function(c,i){c._i=i;});renderContacts();}).catch(function(e){loadFail('contactsBody',e);}); }
 /* ---- date helpers (follow-up + job reschedule) ---- */
 function midnight(d){ var x=new Date(d); x.setHours(0,0,0,0); return x; }
 function addDays(d,n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
@@ -293,7 +299,7 @@ function submitLead(force){
   var p=Object.assign({},PENDING_LEAD,{force:!!force});
   api('apiAddLead',p).then(function(r){
     if(r&&r.dup&&!force){ confirmDupLead(r); return; }
-    PENDING_LEAD=null; closeModal(); toast('✅ Contact added'); S.dashboard=null; loadContacts();
+    PENDING_LEAD=null; closeModal(); toast('✅ Contact added'); invalidate(); loadContacts();
   });
 }
 function confirmDupLead(r){
@@ -332,7 +338,7 @@ function openContact(i){
   }
   openModal(h);
 }
-function setContactStatus(i,st){ var c=S.contacts[i]; if(!c||!c.leadRow)return; busy('Updating status…'); api('apiSetLeadStatus',c.leadRow,st).then(function(){ closeModal(); toast('✅ Status → '+st); S.dashboard=null; loadContacts(); }); }
+function setContactStatus(i,st){ var c=S.contacts[i]; if(!c||!c.leadRow)return; busy('Updating status…'); api('apiSetLeadStatus',c.leadRow,st).then(function(){ closeModal(); toast('✅ Status → '+st); invalidate(); loadContacts(); }); }
 function setContactFollowUp(i,iso){ var c=S.contacts[i]; if(!c||!c.leadRow)return; busy('Setting follow-up…'); api('apiSetLeadFollowUp',c.leadRow,iso).then(function(r){ if(r){c.followUp=r.followUp;c.followUpISO=r.followUpISO;} closeModal(); toast('📅 Follow-up: '+((r&&r.followUp)||'cleared')); S.dashboard=null; renderContacts(); }); }
 function pickContactFollowUp(i){ var e=document.getElementById('fu_pick'); setContactFollowUp(i,e?e.value:''); }
 function openContactEdit(i){
@@ -350,7 +356,7 @@ function saveContactEdit(i){
   var c=S.contacts[i]; if(!c)return;
   var name=val('ec_name'); if(!name){toast('Name is required');return;}
   busy('Saving…');
-  var done=function(){ closeModal(); toast('✅ Contact updated'); S.dashboard=null; loadContacts(); };
+  var done=function(){ closeModal(); toast('✅ Contact updated'); invalidate(); loadContacts(); };
   var f={name:name,phone:val('ec_phone'),email:val('ec_email')};
   if(c.clientRow){ f.address=val('ec_address'); api('apiUpdateClient',c.clientRow,f).then(function(){ if(c.leadRow) api('apiUpdateLead',c.leadRow,{name:name,phone:f.phone,email:f.email}).then(done); else done(); }); }
   else if(c.leadRow){ api('apiUpdateLead',c.leadRow,f).then(done); }
@@ -400,8 +406,8 @@ function createQuote(send){
   api('apiCreateEstimate',{client:client,email:val('q_email'),phone:val('q_phone'),validDays:14,lines:lines})
    .then(function(r){
      if(!r||!r.ok){toast(r&&r.msg||'Failed');return;}
-     if(send){ busy('Sending estimate…'); api('apiSendDoc','ESTIMATE',r.number).then(function(s){ closeModal(); toast(s&&s.emailed?'📧 Estimate #'+r.number+' sent':'Estimate #'+r.number+' created (no client email)'); S.dashboard=null; loadQuotes(); }); }
-     else { closeModal(); toast('Estimate #'+r.number+' created'); loadQuotes(); }
+     if(send){ busy('Sending estimate…'); api('apiSendDoc','ESTIMATE',r.number).then(function(s){ closeModal(); toast(s&&s.emailed?'📧 Estimate #'+r.number+' sent':'Estimate #'+r.number+' created (no client email)'); invalidate(); loadQuotes(); }); }
+     else { closeModal(); toast('Estimate #'+r.number+' created'); invalidate(); loadQuotes(); }
    });
 }
 
@@ -410,9 +416,10 @@ function createQuote(send){
 function loadQuotes(){ loadBilling(); }
 function loadInvoices(){ loadBilling(); }
 function loadBilling(){
+  if(S.quotes&&S.invoices){renderBilling();return;}
   document.getElementById('billingBody').innerHTML='<div class="spin">Loading…</div>';
-  Promise.all([api('apiListDocs','ESTIMATE'),api('apiListDocs','INVOICE')]).then(function(r){
-    S.quotes=r[0]||[]; S.invoices=r[1]||[]; renderBilling();
+  api('apiListBilling').then(function(r){
+    S.quotes=(r&&r.estimates)||[]; S.invoices=(r&&r.invoices)||[]; renderBilling();
   }).catch(function(e){loadFail('billingBody',e);});
 }
 function docRow(kind,d){
@@ -470,7 +477,7 @@ function openDoc(kind,number){
       '<button class="btn sec" onclick="editLines(\''+kind+'\','+na+')">Edit line items</button>'+btns);
   });
 }
-function setDocStatus(kind,number,status){ busy('Updating…'); api('apiUpdateDoc',kind,number,{status:status}).then(function(){ closeModal(); toast('✅ '+(kind==='INVOICE'?'Invoice':'Quote')+' → '+status); S.dashboard=null; loadBilling(); }); }
+function setDocStatus(kind,number,status){ busy('Updating…'); api('apiUpdateDoc',kind,number,{status:status}).then(function(){ closeModal(); toast('✅ '+(kind==='INVOICE'?'Invoice':'Quote')+' → '+status); invalidate(); loadBilling(); }); }
 function deleteDoc(kind,number){
   var label=(kind==='INVOICE'?'invoice':'quote')+' #'+number;
   openModal('<button class="close" onclick="closeModal()">×</button><h3>🗑️ Delete '+esc(label)+'?</h3>'+
@@ -478,8 +485,8 @@ function deleteDoc(kind,number){
     '<button class="btn danger" onclick="confirmDeleteDoc(\''+kind+'\','+JSON.stringify(number)+')">Delete permanently</button>'+
     '<button class="btn sec" onclick="openDoc(\''+kind+'\','+JSON.stringify(number)+')">Cancel</button>');
 }
-function confirmDeleteDoc(kind,number){ busy('Deleting…'); api('apiDeleteDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?'🗑️ Deleted':(r&&r.msg||'Failed')); S.dashboard=null; loadBilling(); }); }
-function sendDoc(kind,number){ busy('Building PDF…'); api('apiSendDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive (no client email)'):(r&&r.msg||'Failed')); S.dashboard=null; kind==='INVOICE'?loadInvoices():loadQuotes(); }); }
+function confirmDeleteDoc(kind,number){ busy('Deleting…'); api('apiDeleteDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?'🗑️ Deleted':(r&&r.msg||'Failed')); invalidate(); loadBilling(); }); }
+function sendDoc(kind,number){ busy('Building PDF…'); api('apiSendDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive (no client email)'):(r&&r.msg||'Failed')); invalidate(); kind==='INVOICE'?loadInvoices():loadQuotes(); }); }
 function approve(number){
   var base=midnight(new Date());
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Approve &amp; schedule</h3>'+
@@ -492,9 +499,9 @@ function setApDate(days){ var e=document.getElementById('ap_date'); if(e)e.value
 function doApprove(number){
   var e=document.getElementById('ap_date'); var iso=e?e.value:'';
   busy('Approving…');
-  api('apiApproveEstimate',number,iso).then(function(r){ closeModal(); if(r&&r.ok){toast('✅ Invoice #'+r.invoiceNumber+' + job scheduled '+(r.jobDate||'')); S.dashboard=null; nav('billing');} else toast(r&&r.msg||'Failed'); });
+  api('apiApproveEstimate',number,iso).then(function(r){ closeModal(); if(r&&r.ok){toast('✅ Invoice #'+r.invoiceNumber+' + job scheduled '+(r.jobDate||'')); invalidate(); nav('billing');} else toast(r&&r.msg||'Failed'); });
 }
-function markPaid(number){ busy('Confirming payment…'); api('apiMarkInvoicePaid',number).then(function(){ closeModal(); toast('💰 Payment confirmed'); S.dashboard=null; loadInvoices(); }); }
+function markPaid(number){ busy('Confirming payment…'); api('apiMarkInvoicePaid',number).then(function(){ closeModal(); toast('💰 Payment confirmed'); invalidate(); loadInvoices(); }); }
 function editLines(kind,number){
   busy('Opening line items…');
   api('apiGetDocLines',number).then(function(lines){
@@ -509,11 +516,11 @@ function editLines(kind,number){
 function saveLines(kind,number){
   var lines=QLINES.filter(function(l){return l.service&&Number(l.rate)>0;});
   busy('Saving…');
-  api('apiSetDocLines',kind,number,lines).then(function(){ closeModal(); toast('✅ Line items saved'); kind==='INVOICE'?loadInvoices():loadQuotes(); });
+  api('apiSetDocLines',kind,number,lines).then(function(){ closeModal(); toast('✅ Line items saved'); invalidate(); kind==='INVOICE'?loadInvoices():loadQuotes(); });
 }
 
 /* ---------------- JOBS ---------------- */
-function loadJobs(){ document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListJobs').then(function(l){S.jobs=l||[];renderJobs();}).catch(function(e){loadFail('jobsBody',e);}); }
+function loadJobs(){ if(S.jobs){renderJobs();return;} document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListJobs').then(function(l){S.jobs=l||[];renderJobs();}).catch(function(e){loadFail('jobsBody',e);}); }
 function renderJobs(){
   if(!S.jobs.length){ document.getElementById('jobsBody').innerHTML='<div class="empty">No jobs yet. Tap + to add one.</div>'; return; }
   var h=''; S.jobs.forEach(function(j){
@@ -532,7 +539,7 @@ function openJobForm(){
 function saveJob(){
   var client=val('j_client'); if(!client){toast('Client required');return;} busy('Adding…');
   api('apiAddJob',{client:client,date:val('j_date'),time:val('j_time'),service:val('j_service'),price:val('j_price'),repeat:val('j_repeat')})
-   .then(function(){ closeModal(); toast('Job added'); S.dashboard=null; loadJobs(); });
+   .then(function(){ closeModal(); toast('Job added'); invalidate(); loadJobs(); });
 }
 function openJob(row){
   var j=S.jobs.filter(function(x){return x.row===row;})[0]; if(!j)return;
@@ -551,9 +558,9 @@ function rescheduleJob(row){
   var d=document.getElementById('jb_date'), t=document.getElementById('jb_time');
   var iso=d?d.value:''; if(!iso){toast('Pick a date');return;}
   busy('Rescheduling…');
-  api('apiSetJob',row,{date:iso,time:(t?t.value:'')}).then(function(r){ closeModal(); toast('📅 Rescheduled to '+((r&&r.date)||iso)); S.dashboard=null; if(CUR_SCREEN==='home')loadHome(); else loadJobs(); });
+  api('apiSetJob',row,{date:iso,time:(t?t.value:'')}).then(function(r){ closeModal(); toast('📅 Rescheduled to '+((r&&r.date)||iso)); invalidate(); if(CUR_SCREEN==='home')loadHome(); else loadJobs(); });
 }
-function setJob(row,f){ busy(f.paid?'Confirming payment…':(f.status?'Updating status…':'Updating…')); api('apiSetJob',row,f).then(function(){ closeModal(); toast(f.paid?'💰 Payment confirmed':'✅ Updated'); S.dashboard=null; if(CUR_SCREEN==='home')loadHome(); else loadJobs(); }); }
+function setJob(row,f){ busy(f.paid?'Confirming payment…':(f.status?'Updating status…':'Updating…')); api('apiSetJob',row,f).then(function(){ closeModal(); toast(f.paid?'💰 Payment confirmed':'✅ Updated'); invalidate(); if(CUR_SCREEN==='home')loadHome(); else loadJobs(); }); }
 /** Open a job's detail from anywhere (Home may not have the jobs list loaded yet). */
 function openJobFromHome(row){
   if(S.jobs&&S.jobs.some(function(j){return j.row===row;})){ openJob(row); }
@@ -611,7 +618,8 @@ function mock(fn,args){
     {key:'priya shah',name:'Priya Shah',phone:'(555) 661-2049',email:'p@x.com',leadRow:3,clientRow:0,leadStatus:'New',followUp:'',followUpISO:'',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0},
     {key:'nils croft',name:'Nils Croft',phone:'(555) 200-1188',email:'',leadRow:5,clientRow:0,leadStatus:'Declined',followUp:'',followUpISO:'',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0},
     {key:'dana ruiz',name:'Dana Ruiz',phone:'(555) 442-9910',email:'dana@x.com',address:'12 Oak St',leadRow:0,clientRow:2,leadStatus:'',followUp:'',followUpISO:'',lastJobISO:'2026-07-10',lastJobDate:'7/10/2026',jobCount:3,totalSpent:588}];
-  if(fn==='apiListDocs')return args[0]==='INVOICE'?[{row:2,number:9001,client:'Dana Ruiz',dateA:'7/15',dateB:'7/29',amount:431.92,status:'Draft',items:3}]:[{row:2,number:1001,client:'Marcus Bell',dateA:'7/14',dateB:'7/28',amount:204.62,status:'Sent',items:2}];
+  if(fn==='apiListDocs')return args[0]==='INVOICE'?[{row:2,number:9001,client:'Dana Ruiz',dateA:'7/15',dateB:'7/29',amount:431.92,status:'Draft'}]:[{row:2,number:1001,client:'Marcus Bell',dateA:'7/14',dateB:'7/28',amount:204.62,status:'Sent'}];
+  if(fn==='apiListBilling')return{estimates:mock('apiListDocs',['ESTIMATE']),invoices:mock('apiListDocs',['INVOICE'])};
   if(fn==='apiListJobs')return[{row:2,date:'7/16',dateISO:'2026-07-16',client:'Dana Ruiz',service:'Full detail',time:'2pm',status:'Scheduled',price:189,paid:'No',repeat:'None'}];
   if(fn==='apiGetDocLines')return[{service:'Full detail',qty:1,rate:189}];
   return {ok:true};

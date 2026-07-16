@@ -505,10 +505,10 @@ function apiSetJob(row, fields) {
   const sh = ss_().getSheetByName(TABS.JOBS);
   if (fields.status) sh.getRange(row, 5).setValue(fields.status);
   if (fields.paid) sh.getRange(row, 7).setValue(fields.paid);
-  if (fields.date !== undefined) { const d = toLocalDate_(fields.date); if (d) sh.getRange(row, 1).setValue(d); }
+  let d = null;
+  if (fields.date !== undefined) { d = toLocalDate_(fields.date); if (d) sh.getRange(row, 1).setValue(d); }
   if (fields.time !== undefined) sh.getRange(row, 4).setValue(fields.time);
-  const nd = sh.getRange(row, 1).getValue();
-  return { ok: true, date: (nd instanceof Date) ? fmtd_(nd) : '', dateISO: (nd instanceof Date) ? isoOrEmpty_(nd) : '' };
+  return { ok: true, date: d ? fmtd_(d) : '', dateISO: d ? isoOrEmpty_(d) : '' };  // no re-read
 }
 
 /* ====================== ESTIMATES & INVOICES ===================== */
@@ -526,6 +526,12 @@ function apiListDocs(kind) {
       amount: num_(r[4]), status: r[5] || 'Draft' });
   });
   return out;
+}
+
+/** Both lists in ONE round-trip — the Billing screen used to make two google.script.run
+ *  calls (estimates + invoices); this halves the latency. */
+function apiListBilling() {
+  return { estimates: apiListDocs('ESTIMATE'), invoices: apiListDocs('INVOICE') };
 }
 
 function apiGetDocLines(number) {
