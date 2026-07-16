@@ -8,26 +8,26 @@ Etsy SEO (front-load keywords in titles, 13 tags each, keyword-rich first lines)
 ## LISTING 1 — Universal (flagship)
 
 **Title (140 char max — Etsy weights the first words):**
-`Service Business CRM Google Sheets Template | Client Job Lead Tracker, Invoice + Review Automation, Small Business, No Monthly Fee`
+`Service Business CRM App for Google | Lead Job Client Tracker, Estimates + Invoices, Review Automation, Runs on Your Phone, No Monthly Fee`
 
 **Price:** $69 · **Type:** Digital download · **Files:** 1 PDF (delivery link)
 
 **Tags (13):**
-`google sheets crm`, `small business crm`, `client tracker`, `lead tracker`,
-`job scheduler`, `service business`, `invoice template`, `contractor crm`,
-`crm template`, `business planner`, `customer tracker`, `no subscription`,
-`spreadsheet template`
+`crm app`, `google sheets crm`, `small business crm`, `client tracker`, `lead tracker`,
+`job scheduler`, `service business`, `invoice app`, `contractor crm`,
+`estimate invoice`, `customer tracker`, `no subscription`, `spreadsheet template`
 
 **Description:**
 ```
-Run your whole service business from ONE Google Sheet — no apps, no monthly fees, own it forever.
+Run your whole service business from a real APP on your phone — that lives in YOUR OWN Google account. No monthly fees. Own it forever. Your data never leaves your Drive.
 
-Service Pro CRM tracks your leads, jobs, clients, and invoices, and automatically emails follow-up reminders, appointment reminders, and Google review requests for you.
+Service Pro CRM manages your leads, quotes, invoices, jobs, and clients, and automatically emails follow-up reminders, appointment reminders, and Google review requests for you.
 
 ★ WHAT'S INSIDE
+• A real mobile web app (add it to your phone's home screen) backed by your own Google Sheet
+• Quote → Approve → Invoice → Paid flow: build an estimate in seconds, one tap turns an approved estimate into an invoice draft + a scheduled job
 • Live dashboard — new leads, pipeline value, revenue, win rate + revenue chart
 • Lead pipeline — color-coded, with follow-up dates that turn red when overdue
-• Quick Actions panel — add leads & fire off emails without touching the grid
 • Branded PDF estimates AND invoices — itemized, with sales tax and a "Pay now" button
 • Recurring jobs — weekly/biweekly/monthly visits roll forward automatically
 • Automatic Google-review requests — more 5-star reviews = more jobs
@@ -42,21 +42,21 @@ Service Pro CRM tracks your leads, jobs, clients, and invoices, and automaticall
 • Nothing to install — copy it and go.
 
 ★ HOW IT WORKS
-After purchase you get a PDF with a link. Click "Make a copy" and it's yours — private and editable. A 5-minute quick-start guide is included.
+After purchase you get a PDF with a link. Click "Make a copy" and the whole CRM is yours — private and editable, in your own Google Drive. A step-by-step guide is included.
 
 ★ PLEASE READ BEFORE BUYING (so it's a great fit)
-This is a Google Sheets system, not a mobile app. Set it up, send estimates/invoices,
-and do data entry from a computer; the automatic reminder & review emails then run on
-their own. Customer messages go by EMAIL (a tap-to-text link is included for you on
-mobile). Customers pay you through your own payment link (Stripe/PayPal/Venmo) shown as
-a "Pay now" button — there's no built-in card processing inside the sheet. Best for solo
-owners who want to organize leads, quote, invoice, never miss a follow-up, and get more
-Google reviews — without a monthly fee.
+It's a real app you run on your phone and computer — but because it lives inside YOUR OWN
+Google account, setup has TWO one-time steps done on a computer (about 10 minutes total,
+guide included): (1) copy the sheet and approve a normal "Google hasn't verified this app"
+screen — that's expected since it's your own copy; and (2) turn on the app (a few clicks to
+"deploy" it — the guide walks you through it). After that, you just open your app link.
 
-Setup takes about 5 minutes and includes a one-time Google approval step — you'll see a
-normal "Google hasn't verified this app" screen (because it runs in YOUR account, not
-ours); the included guide shows the exact clicks. Prefer not to DIY? Grab the Done-For-You
-setup option and we'll do it all for you.
+Customer messages are sent by EMAIL (a tap-to-text link is included for you on mobile) —
+there's no built-in texting from a business number. Customers pay through your own payment
+link (Stripe/PayPal/Venmo) shown as a "Pay now" button — no built-in card processing.
+
+Not comfortable with the setup? Grab the Done-For-You option and we'll build and turn on
+your app for you — you just start using it.
 
 Perfect for: cleaners, landscapers, lawn care, detailers, contractors, handymen, HVAC, pool & pest techs, movers, trainers, and any service pro.
 
@@ -112,6 +112,37 @@ Don't want to set it up yourself? I'll brand your CRM with your business name an
 
 ---
 
+## Gumroad listings (same product, second storefront)
+
+Gumroad has no listing fee and no ID/KYC hoops — good as a second storefront and the link
+you drop into community posts. The Etsy copy works as-is; Gumroad has no tags, so lead with
+the title and a punchy summary.
+
+**Product name:** `Service Pro CRM — CRM App for Service Businesses (Google · No Monthly Fee)`
+
+**Summary (top of page):**
+```
+A real CRM app for cleaners, landscapers, contractors & service pros — leads, quotes, invoices, jobs, clients, and automatic Google-review requests. Runs in your OWN Google account, on your phone. One-time price, no subscription, own it forever.
+```
+
+**Description:** reuse the Etsy description body above (the ★ WHAT'S INSIDE + WHY IT BEATS
+A $30/MONTH APP + PLEASE READ sections).
+
+**Price:** $69 (or $49 launch). Make separate Gumroad products for the **$149 Done-For-You**
+tier and the **Cleaning / Lawn Care** editions if you want them.
+
+**Content / delivery:** upload the **Start-Here PDF** (the delivery file containing your copy
+link) as the product file — buyers download it after paying, then click the copy link inside.
+(Gumroad also has "Redirect after purchase," but the PDF is safer: it carries the setup +
+deploy steps.)
+
+**Cover images:** the same shots from `assets/` — lead with `webapp-home.png`.
+
+**Fees:** ~10% + card processing, no listing fee. **Traffic:** Gumroad brings none on its
+own — drop your Gumroad link in the community posts below.
+
+---
+
 ## Launch posts (you paste, I wrote)
 
 Use these in relevant Facebook groups / subreddits (r/smallbusiness, r/cleaningbusiness,
@@ -119,7 +150,7 @@ r/lawncare, r/Entrepreneur). Post as a helpful share, not a hard sell. Space the
 
 **Facebook groups:**
 ```
-Built a simple CRM that lives entirely in a Google Sheet for service businesses — tracks leads/jobs/clients, sends invoices as PDFs, and auto-emails Google review requests after each job. No monthly fee, runs in your own Google account. Made it because the $30/mo apps felt like overkill. Happy to share the link if anyone wants it 👇
+Built a CRM app for service businesses that runs in your OWN Google account — leads, quotes, invoices, jobs, and automatic Google-review requests, right on your phone. No monthly fee, your data stays in your Drive. Made it because the $30-50/mo apps felt like overkill. Happy to share the link if anyone wants it 👇
 ```
 
 **Reddit (value-first, link in comment):**
@@ -129,12 +160,14 @@ I kept losing track of follow-ups and forgetting to ask happy customers for revi
 
 ---
 
-## ⏳ When you're back at a computer (your 15 minutes)
+## ✅ Launch checklist (both platforms)
 
-1. Go to **etsy.com/sell** → open shop (name idea: `ServiceProTools`).
-2. Connect **Etsy Payments** + verify ID. Set currency USD.
-3. Create/choose a **Google account** for the master sheet → tell me which.
-4. **Reply with your shop name.**
-
-Then I take over: build the master sheet + delivery PDF, publish all 3 listings with
-the screenshots and the copy above, and hand you the community posts. Live same day.
+See `PACKAGE.md` for the full playbook. Short version:
+1. **Build the master** (once) — `README.md` + `DEPLOY.md`, verify with `SMOKE-TEST.md`.
+   Share it "Anyone with link ▸ Viewer" → that's your **copy link**.
+2. **Make the delivery PDF** — put the copy link into `delivery-template.html`, print to PDF.
+3. **Etsy:** open shop → Etsy Payments + ID → new **digital** listing → upload the delivery
+   PDF → paste the title/tags/description above → add images from `assets/` (lead with
+   `webapp-home.png`) → publish.
+4. **Gumroad:** new product → price → upload the same delivery PDF → cover images → publish.
+5. Drop your links in the community posts above. Space them out; reply, don't hard-sell.
