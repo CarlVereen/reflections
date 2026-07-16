@@ -155,7 +155,7 @@ function buildCRM() {
   buildDashboard_(ss);
   buildStartHere_(ss);
   // SECURITY: plain-text format on free-text columns → blocks formula/CSV injection.
-  textFormat_(ss.getSheetByName(TABS.LEADS), [2, 3, 4, 6, 10]);   // Name, Phone, Email, Service, Notes
+  textFormat_(ss.getSheetByName(TABS.LEADS), [2, 3, 4, 6, 10, 11]); // Name, Phone, Email, Service, Notes, Address
   textFormat_(ss.getSheetByName(TABS.CLIENTS), [1, 2, 3, 4, 7]);  // Name, Phone, Email, Address, Notes
   textFormat_(ss.getSheetByName(TABS.JOBS), [2, 3, 4, 10]);       // Client, Service, Time, Notes
   textFormat_(ss.getSheetByName(TABS.ESTIMATES), [1, 2]);        // Estimate #, Client
@@ -227,7 +227,7 @@ function escHtml_(s) {
 
 function buildLeads_(ss) {
   const sh = getOrCreate_(ss, TABS.LEADS);
-  const headers = ['Date Added', 'Name', 'Phone', 'Email', 'Source', 'Service', 'Est. Value', 'Status', 'Next Follow-up', 'Notes'];
+  const headers = ['Date Added', 'Name', 'Phone', 'Email', 'Source', 'Service', 'Est. Value', 'Status', 'Next Follow-up', 'Notes', 'Address'];
   header_(sh, headers);
   sh.setColumnWidths(1, headers.length, 130);
   sh.setColumnWidth(2, 160); sh.setColumnWidth(10, 260);
@@ -507,8 +507,8 @@ function addLead() {
   addLeadCore_(name, phone, '', service, valueStr);
 }
 
-/** Shared by menu + sidebar. Returns a status string. */
-function addLeadCore_(name, phone, email, service, valueStr) {
+/** Shared by menu + sidebar. Returns a status string. Address (col 11) is optional. */
+function addLeadCore_(name, phone, email, service, valueStr, address) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sh = ss.getSheetByName(TABS.LEADS);
   if (!sh) return 'Run setup first (⚡ CRM ▸ Set up / rebuild CRM).';
@@ -516,13 +516,13 @@ function addLeadCore_(name, phone, email, service, valueStr) {
   const value = valueStr ? Number(String(valueStr).replace(/[^0-9.]/g, '')) : '';
   const days = Number(getSetting_(ss, 'Default follow-up (days after new lead)')) || 2;
   const follow = new Date(); follow.setDate(follow.getDate() + days); follow.setHours(0, 0, 0, 0); // date only — no time
-  sh.appendRow([new Date(), name, phone || '', email || '', 'Other', service || '', value, 'New', follow, '']);
+  sh.appendRow([new Date(), name, phone || '', email || '', 'Other', service || '', value, 'New', follow, '', address || '']);
   return '✅ Added "' + name + '" — follow-up set for ' + Utilities.formatDate(follow, Session.getScriptTimeZone(), 'M/d') + '.';
 }
 
 /** Called from the sidebar. */
 function sidebarAddLead(form) {
-  const msg = addLeadCore_(form.name, form.phone, form.email, form.service, form.value);
+  const msg = addLeadCore_(form.name, form.phone, form.email, form.service, form.value, form.address);
   SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(SpreadsheetApp.getActiveSpreadsheet().getSheetByName(TABS.LEADS));
   return msg;
 }

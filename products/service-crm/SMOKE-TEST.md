@@ -23,8 +23,8 @@ and the error and send it over.
 - [ ] **C2.** Edit the **"Your services"** box (one per line) → **Save services**. The new service now appears in the app's Service dropdowns.
 
 ## D. Contacts (leads + clients, in the app)
-- [ ] **D1.** **Contacts ▸ +** (or Home ▸ **+ Contact**) → add a contact: name + **email = your own address**, pick a **Service** → **Add contact**. It appears in the **Contacts** list (tagged **New**) **and** in the 🎯 Leads sheet tab with a **Next Follow-up** date.
-- [ ] **D2.** Tap the contact → **Call / Text** links show, **New / Quoted / Declined / Lost** status buttons work, follow-up reschedule works, and **Create estimate** opens the builder pre-filled.
+- [ ] **D1.** **Contacts ▸ +** (or Home ▸ **+ Contact**) → add a contact with **name, phone, email (= your own), address, and Service** → **Add contact**. It appears in the **Contacts** list (tagged **New**) **and** in the 🎯 Leads sheet tab (Address in the new col K) with a **Next Follow-up** date.
+- [ ] **D2.** Tap the contact → **Call / Text** links show, address + service show, **New / Quoted / Declined / Lost** status buttons work, follow-up reschedule works, and **Create estimate** opens the builder pre-filled. After they have a quote/invoice/upcoming job, the detail shows an **Active** section (tap a quote/invoice → opens it in Billing).
 - [ ] **D3.** **Add a second contact re-using the same email or phone** → a **⚠️ Possible duplicate** prompt lists the match; **Cancel** stops it, **Add anyway** still adds it (warn, not block).
 - [ ] **D4.** Toggle the **Name / Last job** sort. A contact who has a logged job shows their **last job date** (green) instead of a status; sorting by **Last job** puts the most-recently-served first.
 

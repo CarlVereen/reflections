@@ -179,7 +179,7 @@ var CUR='$';
 // Bump this whenever you paste new code, so you can confirm a deploy actually took effect:
 // it shows at the bottom of More ▸ Settings. If it doesn't match after deploying, the old
 // version is still being served (Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version).
-var BUILD='2026-07-16b';
+var BUILD='2026-07-16c';
 function api(fn){
   var args=[].slice.call(arguments,1);
   return new Promise(function(res,rej){
@@ -358,13 +358,15 @@ function renderContacts(){
 function openContactForm(){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New contact</h3>'+
     field('Name *','ld_name','','Jane Smith')+ '<div class="two"><div>'+field('Phone','ld_phone','','(555) 123-4567')+'</div><div>'+field('Est. value','ld_value','','250')+'</div></div>'+
-    field('Email','ld_email','','jane@email.com')+ serviceSelect('ld_service')+
+    field('Email','ld_email','','jane@email.com')+
+    field('Address','ld_address','','123 Main St, City')+
+    serviceSelect('ld_service')+
     '<button class="btn" onclick="saveLead()">Add contact</button>');
 }
 var PENDING_LEAD=null;
 function saveLead(){
   var name=val('ld_name'); if(!name){toast('Name is required');return;}
-  PENDING_LEAD={name:name,phone:val('ld_phone'),email:val('ld_email'),service:val('ld_service'),value:val('ld_value')};
+  PENDING_LEAD={name:name,phone:val('ld_phone'),email:val('ld_email'),address:val('ld_address'),service:val('ld_service'),value:val('ld_value')};
   submitLead(false);
 }
 function submitLead(force){
@@ -399,6 +401,12 @@ function openContact(i){
   var h='<button class="close" onclick="closeModal()">×</button><h3>'+esc(c.name)+' '+contactPill(c)+'</h3>'+info+
     (tel?'<div class="btnrow"><a class="btn sec" href="tel:'+tel+'">Call</a><a class="btn sec" href="sms:'+tel+'">Text</a></div>':'')+
     '<div class="btnrow"><button class="btn" onclick="quoteFromContact('+i+')">Create estimate</button><button class="btn sec" onclick="openContactEdit('+i+')">Edit</button></div>';
+  // Active: upcoming job + open quotes/invoices for this contact
+  var act='';
+  if(c.nextJobDate) act+='<div class="list-item"><div class="row"><div><div class="name">📅 Upcoming job</div><div class="meta">'+esc(c.nextJobDate)+(c.nextJobService?' · '+esc(c.nextJobService):'')+'</div></div><span class="pill p-scheduled">Scheduled</span></div></div>';
+  (c.quotes||[]).forEach(function(q){ act+='<div class="list-item" onclick="openDocFromContact(\'ESTIMATE\','+JSON.stringify(q.number)+')"><div class="row"><div><div class="name">Quote #'+esc(q.number)+'</div><div class="meta">'+money(q.amount)+'</div></div>'+pill(q.status)+'</div></div>'; });
+  (c.invoices||[]).forEach(function(v){ act+='<div class="list-item" onclick="openDocFromContact(\'INVOICE\','+JSON.stringify(v.number)+')"><div class="row"><div><div class="name">Invoice #'+esc(v.number)+'</div><div class="meta">'+money(v.amount)+'</div></div>'+pill(v.status)+'</div></div>'; });
+  if(act) h+='<h2 class="sec">Active</h2>'+act;
   if(c.leadRow){
     var base=midnight(new Date());
     var quick=[['Today',isoOf(base)],['Tomorrow',isoOf(addDays(base,1))],['+3 days',isoOf(addDays(base,3))],['Next Mon',isoOf(nextMonday(base))],['+1 week',isoOf(addDays(base,7))]];
@@ -421,11 +429,10 @@ function setContactFollowUp(i,iso){ var c=S.contacts[i]; if(!c||!c.leadRow)retur
 function pickContactFollowUp(i){ var e=document.getElementById('fu_pick'); setContactFollowUp(i,e?e.value:''); }
 function openContactEdit(i){
   var c=S.contacts[i]; if(!c)return;
-  var addr=c.clientRow?field('Address','ec_address',c.address,'123 Main St'):'';
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit contact</h3>'+
     field('Name *','ec_name',c.name,'Jane Smith')+
     '<div class="two"><div>'+field('Phone','ec_phone',c.phone,'(555) 123-4567')+'</div><div>'+field('Email','ec_email',c.email,'jane@email.com')+'</div></div>'+
-    addr+
+    field('Address','ec_address',c.address,'123 Main St, City')+
     (c.clientRow?'<div class="muted" style="margin-top:8px">Renaming also updates their jobs, estimates & invoices.</div>':'')+
     '<button class="btn" onclick="saveContactEdit('+i+')">Save changes</button>'+
     '<button class="btn sec" onclick="openContact('+i+')">Cancel</button>');
@@ -433,17 +440,23 @@ function openContactEdit(i){
 function saveContactEdit(i){
   var c=S.contacts[i]; if(!c)return;
   var name=val('ec_name'); if(!name){toast('Name is required');return;}
-  var phone=val('ec_phone'), email=val('ec_email'), addr=c.clientRow?val('ec_address'):c.address;
-  c.name=name; c.phone=phone; c.email=email; if(c.clientRow)c.address=addr;   // optimistic
+  var phone=val('ec_phone'), email=val('ec_email'), addr=val('ec_address');
+  c.name=name; c.phone=phone; c.email=email; c.address=addr;   // optimistic
   closeModal(); toast('✅ Contact updated'); renderContacts();
+  var f={name:name,phone:phone,email:email,address:addr};
   if(c.clientRow){
-    enqueue('apiUpdateClient',[c.clientRow,{name:name,phone:phone,email:email,address:addr}],'Edit '+name);
-    if(c.leadRow) enqueue('apiUpdateLead',[c.leadRow,{name:name,phone:phone,email:email}],'Edit '+name);
+    enqueue('apiUpdateClient',[c.clientRow,f],'Edit '+name);
+    if(c.leadRow) enqueue('apiUpdateLead',[c.leadRow,f],'Edit '+name);
   } else if(c.leadRow){
-    enqueue('apiUpdateLead',[c.leadRow,{name:name,phone:phone,email:email}],'Edit '+name);
+    enqueue('apiUpdateLead',[c.leadRow,f],'Edit '+name);
   }
 }
 function quoteFromContact(i){ var c=S.contacts[i]; if(!c)return; closeModal(); openQuoteBuilder({name:c.name,email:c.email,phone:c.phone}); }
+function openDocFromContact(kind,number){
+  var go=function(){ nav('billing'); openDoc(kind,number); };
+  if(S.quotes&&S.invoices){ go(); }
+  else { busy('Opening…'); api('apiListBilling').then(function(r){ S.quotes=(r&&r.estimates)||[]; S.invoices=(r&&r.invoices)||[]; go(); }); }
+}
 
 /* ---------------- QUOTE BUILDER ---------------- */
 var QLINES=[];
@@ -753,10 +766,10 @@ function mock(fn,args){
     dashboard:{newLeads:14,pipeline:8450,unpaid:1240,jobsWeek:9,revMonth:6320,winRate:62,revLife:41900,followUps:[{name:'Marcus Bell',phone:'(555) 203-8871',status:'Quoted',due:'7/12'},{name:'Priya Shah',phone:'(555) 661-2049',status:'Contacted',due:'7/14'}],weekJobs:[{row:2,date:'7/16',client:'Dana Ruiz',service:'Full detail',status:'Scheduled'}]}};
   if(fn==='apiDashboard')return mock('apiBootstrap').dashboard;
   if(fn==='apiListContacts')return[
-    {key:'marcus bell',name:'Marcus Bell',phone:'(555) 203-8871',email:'',leadRow:2,clientRow:0,leadStatus:'Quoted',followUp:'7/17/2026',followUpISO:'2026-07-17',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0},
-    {key:'priya shah',name:'Priya Shah',phone:'(555) 661-2049',email:'p@x.com',leadRow:3,clientRow:0,leadStatus:'New',followUp:'',followUpISO:'',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0},
-    {key:'nils croft',name:'Nils Croft',phone:'(555) 200-1188',email:'',leadRow:5,clientRow:0,leadStatus:'Declined',followUp:'',followUpISO:'',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0},
-    {key:'dana ruiz',name:'Dana Ruiz',phone:'(555) 442-9910',email:'dana@x.com',address:'12 Oak St',leadRow:0,clientRow:2,leadStatus:'',followUp:'',followUpISO:'',lastJobISO:'2026-07-10',lastJobDate:'7/10/2026',jobCount:3,totalSpent:588}];
+    {key:'marcus bell',name:'Marcus Bell',phone:'(555) 203-8871',email:'',address:'',service:'Full detail',leadRow:2,clientRow:0,leadStatus:'Quoted',followUp:'7/17/2026',followUpISO:'2026-07-17',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0,nextJobDate:'',nextJobService:'',quotes:[{number:'1001',amount:204.62,status:'Sent'}],invoices:[]},
+    {key:'priya shah',name:'Priya Shah',phone:'(555) 661-2049',email:'p@x.com',address:'',service:'Interior clean',leadRow:3,clientRow:0,leadStatus:'New',followUp:'',followUpISO:'',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0,nextJobDate:'',nextJobService:'',quotes:[],invoices:[]},
+    {key:'nils croft',name:'Nils Croft',phone:'(555) 200-1188',email:'',address:'',service:'',leadRow:5,clientRow:0,leadStatus:'Declined',followUp:'',followUpISO:'',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0,nextJobDate:'',nextJobService:'',quotes:[],invoices:[]},
+    {key:'dana ruiz',name:'Dana Ruiz',phone:'(555) 442-9910',email:'dana@x.com',address:'12 Oak St',service:'Full detail',leadRow:0,clientRow:2,leadStatus:'',followUp:'',followUpISO:'',lastJobISO:'2026-07-10',lastJobDate:'7/10/2026',jobCount:3,totalSpent:588,nextJobDate:'7/20/2026',nextJobService:'Full detail',quotes:[],invoices:[{number:'9002',amount:156.60,status:'Sent'}]}];
   if(fn==='apiListDocs')return args[0]==='INVOICE'?[{row:2,number:9001,client:'Dana Ruiz',dateA:'7/15',dateB:'7/29',amount:431.92,status:'Draft'}]:[{row:2,number:1001,client:'Marcus Bell',dateA:'7/14',dateB:'7/28',amount:204.62,status:'Sent'}];
   if(fn==='apiListBilling')return{estimates:mock('apiListDocs',['ESTIMATE']),invoices:mock('apiListDocs',['INVOICE'])};
   if(fn==='apiListJobs')return[{row:2,date:'7/16',dateISO:'2026-07-16',client:'Dana Ruiz',service:'Full detail',time:'2pm',status:'Scheduled',price:189,paid:'No',repeat:'None'}];

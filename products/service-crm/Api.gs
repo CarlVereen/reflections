@@ -311,18 +311,22 @@ function apiListContacts() {
   const keyOf = function (name) { return String(name || '').trim().toLowerCase(); };
   const get = function (name) {
     const k = keyOf(name); if (!k) return null;
-    if (!map[k]) map[k] = { key: k, name: String(name).trim(), phone: '', email: '', address: '',
+    if (!map[k]) map[k] = { key: k, name: String(name).trim(), phone: '', email: '', address: '', service: '',
       leadRow: 0, clientRow: 0, leadStatus: '', followUp: '', followUpISO: '',
-      lastJobISO: '', lastJobDate: '', jobCount: 0, totalSpent: 0 };
+      lastJobISO: '', lastJobDate: '', jobCount: 0, totalSpent: 0,
+      nextJobISO: '', nextJobDate: '', nextJobService: '', quotes: [], invoices: [] };
     return map[k];
   };
+  const todayISO = isoOrEmpty_(new Date());
 
-  valuesOf_(ss, TABS.LEADS).forEach(function (r, i) {   // [added,name,phone,email,src,svc,val,status,follow,notes]
+  valuesOf_(ss, TABS.LEADS).forEach(function (r, i) {   // [added,name,phone,email,src,svc,val,status,follow,notes,address]
     if (!r[1]) return;
     const c = get(r[1]); if (!c) return;
     c.leadRow = i + 2;
     if (!c.phone && r[2]) c.phone = String(r[2]);
     if (!c.email && r[3]) c.email = String(r[3]);
+    if (!c.service && r[5]) c.service = String(r[5]);
+    if (!c.address && r[10]) c.address = String(r[10]);
     c.leadStatus = r[7] || 'New';
     c.followUp = fmtd_(r[8]); c.followUpISO = isoOrEmpty_(r[8]);
   });
@@ -337,12 +341,27 @@ function apiListContacts() {
     c.totalSpent = num_(r[5]);
   });
 
-  valuesOf_(ss, TABS.JOBS).forEach(function (r) {       // last job date per client name
+  valuesOf_(ss, TABS.JOBS).forEach(function (r) {       // last job + next upcoming job per client
     if (!r[1] || !(r[0] instanceof Date)) return;
     const c = get(r[1]); if (!c) return;
     c.jobCount++;
-    const iso = isoOrEmpty_(r[0]);
+    const iso = isoOrEmpty_(r[0]), status = r[4];
     if (iso && iso > c.lastJobISO) { c.lastJobISO = iso; c.lastJobDate = fmtd_(r[0]); }
+    if (iso && iso >= todayISO && status !== 'Done' && status !== 'Cancelled' && (!c.nextJobISO || iso < c.nextJobISO)) {
+      c.nextJobISO = iso; c.nextJobDate = fmtd_(r[0]); c.nextJobService = r[2] || '';
+    }
+  });
+
+  valuesOf_(ss, TABS.ESTIMATES).forEach(function (r) {  // active quotes (Draft/Sent) per client
+    if (!r[1]) return;
+    const c = get(r[1]); if (!c) return;
+    if (r[5] === 'Draft' || r[5] === 'Sent') c.quotes.push({ number: r[0], amount: num_(r[4]), status: r[5] });
+  });
+
+  valuesOf_(ss, TABS.INVOICES).forEach(function (r) {   // active invoices (unpaid) per client
+    if (!r[1]) return;
+    const c = get(r[1]); if (!c) return;
+    if (r[5] && r[5] !== 'Paid') c.invoices.push({ number: r[0], amount: num_(r[4]), status: r[5] });
   });
 
   return Object.keys(map).map(function (k) { return map[k]; });
@@ -369,7 +388,7 @@ function apiAddLead(form) {
     const dupes = findContactDupes_(ss, form.email, form.phone, 0);
     if (dupes.length) return { ok: false, dup: true, dupes: dupes };
   }
-  const msg = addLeadCore_(form.name, form.phone, form.email, form.service, form.value);
+  const msg = addLeadCore_(form.name, form.phone, form.email, form.service, form.value, form.address);
   return { ok: msg.indexOf('✅') === 0, msg: msg };
 }
 
@@ -438,6 +457,7 @@ function apiUpdateLead(row, f) {
   if (f.email !== undefined) sh.getRange(row, 4).setValue(f.email);
   if (f.service !== undefined) sh.getRange(row, 6).setValue(f.service);
   if (f.value !== undefined) sh.getRange(row, 7).setValue(f.value === '' ? '' : num_(f.value));
+  if (f.address !== undefined) sh.getRange(row, 11).setValue(f.address);
   return { ok: true };
 }
 
