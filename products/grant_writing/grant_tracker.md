@@ -87,6 +87,13 @@ closer to a "yes," and each application reuses answers from the last.
 
 ## Details & drafts
 - Application steps: `START_HERE_how_to_apply.md`
+- Ready-to-send monthly apps: `monthly_applications_bundle.md`
 - New grants (full details): `additional_grants.md`
-- Big grant drafts: `vapg/`
+- Big grant drafts: `vapg/`, `big_apps/`
+- Equipment/budget worksheet: `equipment_budget_worksheet.md`
 - Farm profile (private): `clients/howards_orchard.json`
+
+## 📊 Google Sheets version
+`grant_tracker.csv` (this same tracker) and `equipment_budget_worksheet.csv`
+import straight into Google Sheets: **File → Import → Upload → the .csv →
+"Insert new sheet(s)."** Then share with Ashley.

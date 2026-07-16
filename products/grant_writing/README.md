@@ -19,6 +19,13 @@ Everything for finding and applying to grants for **Howard's Orchard LLC**
 | [email_to_ashley.md](email_to_ashley.md) | Email to send Ashley the Amber Grant + plan |
 | [nrcs_call_script.md](nrcs_call_script.md) | Phone script for the NRCS water/EQIP call |
 
+## 📊 Google Sheets–ready (import these)
+| File | What it is |
+|---|---|
+| [grant_tracker.csv](grant_tracker.csv) | The tracker as a CSV — import into Google Sheets, share with Ashley |
+| [equipment_budget_worksheet.csv](equipment_budget_worksheet.csv) | Equipment/budget worksheet as a CSV |
+| [equipment_budget_worksheet.md](equipment_budget_worksheet.md) | Same worksheet, readable — fill in "Your quote" to finish the big applications |
+
 ## 🏆 Big applications (pre-drafted, reuse the same materials)
 | File | For |
 |---|---|
