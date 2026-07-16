@@ -92,17 +92,25 @@ Notion (editorial DB / idea backlog), Google Drive (deliverables), GitHub (this 
 the system's source of truth). Email *sending to a list still needs a real ESP* — Gmail
 is not a bulk sender.
 
-## Roadmap (staged — don't boil the ocean)
+## Roadmap — "Content 5, paid 1-first" (chosen rollout)
 
-- **Stage 0 — Decide & set up (1 newsletter):** confirm the start niche (#1 or #2);
-  operator creates ESP + payment accounts; run `workflows/50_infrastructure_setup.md`.
-- **Stage 1 — Prove the content pipeline:** build the minimum tools (`fetch_url`,
-  `web_search`, `fact_source_check`, `render_email`, `send_newsletter`); ship 4–8 weekly
-  issues; stand up the lead magnet + archive.
-- **Stage 2 — First revenue:** turn on the fastest money model for that niche (affiliate/
-  product), then its primary model; measure with `track_metrics`.
-- **Stage 3 — Replicate:** clone the working pipeline to newsletter #2, then #3–5,
-  reusing the same agents and tools with new niche parameters.
+The decision (see `strategy/rollout.md` for the reasoning): **run the free/no-spend work
+for all 5 newsletters in parallel from the start; stagger only the paid infrastructure,
+turning it on for the lead newsletter first and fast-following the rest within days once
+the pipeline is proven.** The gap between paid launches is a validation gate, not a queue.
+
+- **Stage 0 — Free work, all 5 in parallel (no spend):** build the no-cost tools
+  (`fetch_url`, `fact_source_check`, `link_check`, `rss_ingest`); seed idea backlogs for
+  all 5; draft a proof-of-concept issue for the lead niche through the full
+  research→verify→write pipeline to prove it end-to-end before any money is spent.
+- **Stage 1 — Paid infra for the lead newsletter (#1 or #2):** operator creates ESP +
+  payment + domain; run `workflows/50_infrastructure_setup.md`; ship the first real
+  issues + lead magnet + archive.
+- **Stage 2 — First revenue on the lead:** turn on its fastest money model
+  (affiliate/product), then its primary model; measure with `track_metrics`.
+- **Stage 3 — Fast-follow the other 4 (days, not months):** once the pipeline is proven,
+  flip on paid infrastructure for #2–5, reusing the same known-good agents and tools with
+  new niche parameters. Their content/backlogs are already running from Stage 0.
 - **Stage 4 — Portfolio management:** weekly review (workflow 40.5); grow winners, pause
   or kill non-performers honestly.
 

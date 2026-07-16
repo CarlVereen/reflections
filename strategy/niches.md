@@ -126,10 +126,10 @@ Newsletters* (indexed summaries **[directional]**): investing newsletters carry 
 | 4 | Vertical AI (acct) | Affiliate + products | Moderate (no direct comp) | Very high |
 | 5 | Housing data | Low-price sub + affiliate | Strong but low-ticket | High |
 
-**Recommendation: do not launch all 5 at once.** Start with **#1 GovCon** or **#2
-Biotech** — both pair high-intent buyers, clean public-data pipelines an agent can own,
-and existing paid comps: the two shortest paths from zero to a first paying customer.
-Prove the pipeline on one, then replicate. See `NEWSLETTER_SYSTEM.md` → roadmap.
+**Rollout (decided):** "Content 5, paid 1-first" — run content for all 5 in parallel;
+stand up *paid* infrastructure for a lead newsletter first, then fast-follow the rest.
+Lead = **#1 GovCon** or **#2 Biotech** (strongest WTP evidence, cleanest public-data
+pipeline). See `strategy/rollout.md` and `NEWSLETTER_SYSTEM.md` → roadmap.
 
 ## Rejected niches (why)
 - **Generic AI news / broad consumer (travel, food, lifestyle):** saturated and/or
