@@ -176,7 +176,7 @@ var CUR='$';
 // Bump this whenever you paste new code, so you can confirm a deploy actually took effect:
 // it shows at the bottom of More ▸ Settings. If it doesn't match after deploying, the old
 // version is still being served (Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version).
-var BUILD='2026-07-16f';
+var BUILD='2026-07-16g';
 function api(fn){
   var args=[].slice.call(arguments,1);
   return new Promise(function(res,rej){
@@ -328,9 +328,13 @@ function renderHome(){
     h+='<div class="list-item"><div class="row"><div><div class="name">'+esc(f.name)+'</div><div class="meta">'+esc(f.phone||'—')+' · due '+esc(f.due)+'</div></div>'+pill(f.status)+'</div></div>';
   }); } else h+='<div class="empty">All caught up 🎉</div>';
   h+='<h2 class="sec">📅 This week\'s jobs</h2>';
-  if(d.weekJobs&&d.weekJobs.length){ d.weekJobs.forEach(function(j){
-    h+='<div class="list-item" onclick="openJobFromHome('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div><div class="meta">'+esc(j.date)+' · '+esc(j.service||'')+'</div></div>'+pill(j.status)+'</div></div>';
-  }); } else h+='<div class="empty">No jobs scheduled this week</div>';
+  // Server already returns active jobs this week, soonest first. Filter again defensively so a
+  // stale deployment can't surface completed/cancelled jobs here.
+  var wj=(d.weekJobs||[]).filter(function(j){ return j.status!=='Done'&&j.status!=='Cancelled'; });
+  if(wj.length){ wj.forEach(function(j){
+    var meta=esc(j.date)+(j.time?' · '+esc(j.time):'')+(j.service?' · '+esc(j.service):'');
+    h+='<div class="list-item" onclick="openJobFromHome('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div><div class="meta">'+meta+'</div></div>'+pill(j.status)+'</div></div>';
+  }); } else h+='<div class="empty">No active jobs this week</div>';
   document.getElementById('homeBody').innerHTML=h;
 }
 function tileHint(h){ return h?'<div class="hint">'+esc(h)+'</div>':''; }

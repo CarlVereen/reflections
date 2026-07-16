@@ -248,6 +248,18 @@ function apiBootstrap() {
   };
 }
 
+/** Parse a free-text scheduled time ("2pm", "10:30am", "14:00") to minutes past midnight,
+ *  for sorting. Blank/unparseable sorts after timed jobs on the same day. */
+function jobTimeMin_(s) {
+  s = String(s || '').trim().toLowerCase();
+  const m = s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);
+  if (!m) return 24 * 60 + 1;
+  let h = parseInt(m[1], 10); const min = m[2] ? parseInt(m[2], 10) : 0;
+  if (m[3] === 'pm' && h < 12) h += 12;
+  if (m[3] === 'am' && h === 12) h = 0;
+  return h * 60 + min;
+}
+
 function apiDashboard() {
   const ss = ss_();
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -276,13 +288,21 @@ function apiDashboard() {
 
   // "Won" under the new model = someone who became a client with a logged job.
   const wonClients = {};
-  let jobsWeek = 0; const weekJobs = [];
+  const weekJobs = [];
   jobs.forEach(function (r, i) {
     if (r[1]) wonClients[String(r[1]).trim().toLowerCase()] = true;
     if (!(r[0] instanceof Date)) return;
     const d = new Date(r[0]); d.setHours(0, 0, 0, 0);
-    if (d >= wkStart && d < wkEnd && r[4] !== 'Cancelled') { jobsWeek++; weekJobs.push({ row: i + 2, date: fmtd_(d), client: r[1], service: r[2] || '', status: r[4] || '' }); }
+    const st = r[4] || '';
+    // Home shows only ACTIVE jobs this week — completed (Done) and Cancelled are excluded.
+    if (d >= wkStart && d < wkEnd && st !== 'Cancelled' && st !== 'Done') {
+      weekJobs.push({ row: i + 2, date: fmtd_(d), time: r[3] || '', client: r[1], service: r[2] || '', status: st,
+        _d: d.getTime(), _t: jobTimeMin_(r[3]) });
+    }
   });
+  weekJobs.sort(function (a, b) { return a._d - b._d || a._t - b._t; });   // soonest first, by date then time
+  weekJobs.forEach(function (j) { delete j._d; delete j._t; });
+  const jobsWeek = weekJobs.length;
   const won = Object.keys(wonClients).length;
 
   let revMonth = 0, revLife = 0, unpaid = 0;
