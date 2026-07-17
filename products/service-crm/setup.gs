@@ -50,10 +50,11 @@ function DB_seedServices_() {
 
 function DB_seedSettings_(ss) {
   var rows = [
-    ['Business name', ''], ['Owner email', ''], ['Business phone', ''],
+    ['Business name', ''], ['Owner email', ''], ['Business phone', ''], ['Business address', ''],
     ['Currency symbol', '$'], ['Sales tax %', 0], ['Default follow-up (days)', 2],
     ['Google review link', ''], ['Invoice payment instructions', ''], ['Payment link', ''],
-    ['Invoice due (days)', 14], ['Company logo (data URL)', ''], ['Accent color', '#8f5f22'],
+    ['Invoice due (days)', 14], ['Estimate starting number', 1001], ['Invoice starting number', 9001],
+    ['Company logo (data URL)', ''], ['Accent color', '#8f5f22'],
   ];
   ss.getSheetByName(SCHEMA.Settings.sheet).getRange(2, 1, rows.length, 2).setValues(rows);
   DB_invalidate_('Settings');

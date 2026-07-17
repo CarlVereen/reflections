@@ -233,7 +233,7 @@ function API_doc_(kind) { return DOC[kind] || DOC.ESTIMATE; }
 function API_docView_(kind, d, nameOf) {
   var D = API_doc_(kind);
   return { kind: kind, id: d[D.pk], clientId: d.ClientID, client: (nameOf || API_clientNameMap_())[d.ClientID] || '',
-    jobId: d.JobID || '', total: API_num_(d.Total), status: d.Status,
+    jobId: d.JobID || '', subtotal: API_num_(d.Subtotal), tax: API_num_(d.Tax), total: API_num_(d.Total), status: d.Status,
     issueDate: API_fmtD_(d.IssueDate), issueISO: API_iso_(d.IssueDate),
     dateB: API_fmtD_(d[D.dateB]), dateBISO: API_iso_(d[D.dateB]) };
 }
@@ -377,7 +377,9 @@ function API_docHtml_(kind, d, client, items) {
   var isReceipt = isInv && API_invoiceTermsDays_() === 0;
   var dateBLabel = isInv ? 'Due' : 'Valid until';
   var dateBVal = isReceipt ? 'Upon receipt' : fmtD(isInv ? d.DueDate : d.ValidUntil);
-  var totalRow = '<tr><td colspan="3" style="padding:9px;text-align:right;font-weight:bold">' + (isInv ? 'Total Due' : 'Estimated Total') +
+  var taxCell = function (label, val) { return '<tr><td colspan="3" style="padding:6px 9px;text-align:right">' + label + '</td><td style="padding:6px 9px;text-align:right">' + API_money_(val) + '</td></tr>'; };
+  var taxRows = (API_num_(d.Tax) > 0) ? (taxCell('Subtotal', d.Subtotal) + taxCell('Tax', d.Tax)) : '';
+  var totalRow = taxRows + '<tr><td colspan="3" style="padding:9px;text-align:right;font-weight:bold">' + (isInv ? 'Total Due' : 'Estimated Total') +
     '</td><td style="padding:9px;text-align:right;font-weight:bold;font-size:18px;color:' + accent + '">' + API_money_(d.Total) + '</td></tr>';
   var payBtn = (isInv && payLink) ? '<p style="text-align:center;margin:22px 0"><a href="' + payLink + '" style="background:' + accent + ';color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:bold">Pay now</a></p>' : '';
   return '<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#1a1c1f">' +
@@ -409,15 +411,25 @@ function API_docEmail_(kind, id, client, pdf, email) {
 
 /* ============================ Settings + logo ============================ */
 
-var SETTINGS_KEYS = ['Business name', 'Owner email', 'Business phone', 'Currency symbol', 'Sales tax %',
-  'Default follow-up (days)', 'Google review link', 'Invoice payment instructions', 'Payment link',
-  'Invoice due (days)', 'Accent color'];
+var SETTINGS_KEYS = ['Business name', 'Owner email', 'Business phone', 'Business address', 'Currency symbol',
+  'Sales tax %', 'Default follow-up (days)', 'Google review link', 'Invoice payment instructions',
+  'Payment link', 'Invoice due (days)', 'Accent color'];
+// Numbering is owner-facing config, but the live counter lives in _meta (Script-owned, collision-safe).
+var NUMBER_KEYS = { 'Estimate starting number': 'Estimates', 'Invoice starting number': 'Invoices' };
 var LOGO_DATA_KEY = 'Company logo (data URL)';
 var LOGO_FILE_KEY = 'Company logo (Drive file id)';
 
-function apiGetSettings() { var o = {}; SETTINGS_KEYS.forEach(function (k) { o[k] = settingGet(k); }); return o; }
+function apiGetSettings() {
+  var o = {};
+  SETTINGS_KEYS.forEach(function (k) { o[k] = settingGet(k); });
+  Object.keys(NUMBER_KEYS).forEach(function (k) { o[k] = DB_getCounter_(NUMBER_KEYS[k]); });   // live next number
+  return o;
+}
 function apiSaveSettings(obj) {
   SETTINGS_KEYS.forEach(function (k) { if (obj[k] !== undefined) settingSet(k, obj[k]); });
+  Object.keys(NUMBER_KEYS).forEach(function (k) {
+    if (obj[k] !== undefined) { var n = DB_setCounter_(NUMBER_KEYS[k], parseInt(obj[k], 10)); settingSet(k, n); }
+  });
   return { ok: true };
 }
 function apiGetLogo() { return { logo: String(settingGet(LOGO_DATA_KEY) || '') }; }

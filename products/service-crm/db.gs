@@ -52,6 +52,8 @@ var SCHEMA = {
     { n: 'IssueDate',     t: 'date' },
     { n: 'ValidUntil',    t: 'date' },
     { n: 'Status',        t: 'enum', values: ['Draft', 'Sent', 'Accepted', 'Declined'], default: 'Draft' },
+    { n: 'Subtotal',      t: 'money', cache: true, default: 0 },
+    { n: 'Tax',           t: 'money', cache: true, default: 0 },
     { n: 'Total',         t: 'money', cache: true, default: 0 },
     { n: 'Archived',      t: 'bool', default: false },
     { n: 'CreatedAt',     t: 'datetime', auto: 'create' },
@@ -64,6 +66,8 @@ var SCHEMA = {
     { n: 'IssueDate',     t: 'date' },
     { n: 'DueDate',       t: 'date' },
     { n: 'Status',        t: 'enum', values: ['Draft', 'Sent', 'Paid', 'Overdue'], default: 'Draft' },
+    { n: 'Subtotal',      t: 'money', cache: true, default: 0 },
+    { n: 'Tax',           t: 'money', cache: true, default: 0 },
     { n: 'Total',         t: 'money', cache: true, default: 0 },
     { n: 'Archived',      t: 'bool', default: false },
     { n: 'CreatedAt',     t: 'datetime', auto: 'create' },
@@ -90,7 +94,7 @@ var SCHEMA = {
     { n: 'CreatedAt',     t: 'datetime', auto: 'create' },
     { n: 'UpdatedAt',     t: 'datetime', auto: 'update' },
   ]},
-  Settings: { sheet: 'Settings', keyValue: true, cols: [
+  Settings: { sheet: 'Business Settings', keyValue: true, cols: [
     { n: 'Key',   t: 'text' },
     { n: 'Value', t: 'text' },
   ]},
@@ -192,6 +196,30 @@ function DB_reserveIds_(entity, count) {
   });
 }
 function nextId(entity) { return DB_reserveIds_(entity, 1)[0]; }
+
+/** Read an entity's next ID number from _meta. */
+function DB_getCounter_(entity) {
+  var vals = DB_values_('_meta');
+  for (var i = 1; i < vals.length; i++) if (String(vals[i][0]) === entity) return Number(vals[i][2]);
+  return null;
+}
+/** Set an entity's next ID number, but never below the current one (can't reissue used numbers).
+ *  Lets the owner jump numbering forward from Business Settings; returns the effective value. */
+function DB_setCounter_(entity, n) {
+  return DB_withLock_(function () {
+    var sh = DB_sheet_('_meta'), data = sh.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === entity) {
+        var cur = Number(data[i][2]);
+        var req = Math.floor(Number(n));
+        var next = Math.max(cur, isFinite(req) ? req : cur);
+        sh.getRange(i + 1, 3).setValue(next); DB_invalidate_('_meta');
+        return next;
+      }
+    }
+    return null;
+  });
+}
 
 /* ============================ validation ============================ */
 
@@ -296,11 +324,17 @@ function query(table, criteria) {
 
 /* ============================ Script-owned caches ============================ */
 
-/** Estimates.Total / Invoices.Total = sum of live LineItem.LineTotal for that doc. */
+function DB_round2_(n) { return Math.round((Number(n) || 0) * 100) / 100; }
+
+/** Recompute a doc's Script-owned money cache from its live line items + the Sales tax % setting:
+ *  Subtotal = Σ LineTotal, Tax = Subtotal × tax%, Total = Subtotal + Tax. Returns Total. */
 function recalcDocTotal(docType, docId) {
   var items = query('LineItems', function (li) { return li.DocType === docType && String(li.DocID) === String(docId); });
-  var total = items.reduce(function (s, li) { return s + (Number(li.LineTotal) || 0); }, 0);
-  update(docType === 'Invoice' ? 'Invoices' : 'Estimates', docId, { Total: total });
+  var subtotal = DB_round2_(items.reduce(function (s, li) { return s + (Number(li.LineTotal) || 0); }, 0));
+  var taxPct = Number(settingGet('Sales tax %')) || 0;
+  var tax = DB_round2_(subtotal * taxPct / 100);
+  var total = DB_round2_(subtotal + tax);
+  update(docType === 'Invoice' ? 'Invoices' : 'Estimates', docId, { Subtotal: subtotal, Tax: tax, Total: total });
   return total;
 }
 /** Clients.LifetimeSpent = sum of Total across that client's PAID, live invoices. */
