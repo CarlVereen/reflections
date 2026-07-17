@@ -41,6 +41,13 @@ Resume note for picking this back up after a context clear. **Everything below i
 - **Next when resuming:** confirm the live deploy worked — run `setupDatabase()`, walk one flow
   (Client→Estimate→Approve→Invoice→Paid), and send one test invoice with a logo (PDF check). Then offer
   to merge the branch → master if the owner wants it on the default branch.
+- **🔜 TOP NEXT TASK (owner asked):** the app "loads between pages." Make `WebApp.html` **local-first with
+  `localStorage`**: (1) persist `S.*` (clients/jobs/billing/services/settings/dashboard) + the sync queue
+  to `localStorage`; (2) on boot render instantly from local, then refresh in the background; (3) replace
+  the broad `invalidate()` (nulls all caches → full reload on next nav) with in-place cache updates.
+  Collisions are NOT a concern (single owner, slow-changing data). The leftover `STORE='crm2_sync'`
+  constant is currently unused. NOTE: branch tip moved to `e7f6ced` outside this session — re-read the
+  current `WebApp.html` before editing.
 
 
 - **Repo / branch:** `carlvereen/reflections` · branch `claude/revenue-idea-2k-pj7f90`
