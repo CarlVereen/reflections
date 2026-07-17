@@ -2,6 +2,23 @@
 
 Resume note for picking this back up after a context clear. **Everything below is committed & pushed.**
 
+## ⏸ RESUME HERE (2026-07-17, end of session — deploy in progress)
+- **Status:** code complete + all 4 reviews fixed (111 sandbox tests green). Owner is **deploying to the
+  live Apps Script project now.**
+- **⚠️ IMPORTANT — everything is on branch `claude/revenue-idea-2k-pj7f90`, NOT `master`.** The repo's
+  default branch is `master` and does **not** contain the rebuild. GitHub shows `master` by default, so
+  `db.gs` and `setup.gs` (the two NEW files) look "missing" unless you switch the branch dropdown to
+  `claude/revenue-idea-2k-pj7f90`. Not merged to master; no PR opened yet (owner may want one).
+- **What tripped us up:** owner ran Set-up and got `ReferenceError: SCHEMA is not defined` — cause was
+  copying files from `master` (old app) and missing `db.gs` (where `var SCHEMA` lives). Fix = paste **all
+  6 files from the branch**: `db.gs`, `setup.gs`, `Api.gs`, `Code.gs`, `WebApp.html`, `Sidebar.html`
+  (+ `appsscript.json`). In the Apps Script file list they show as `db`, `setup`, `Api`, `Code`, `WebApp`,
+  `Sidebar`.
+- **Next when resuming:** confirm the live deploy worked — run `setupDatabase()`, walk one flow
+  (Client→Estimate→Approve→Invoice→Paid), and send one test invoice with a logo (PDF check). Then offer
+  to merge the branch → master if the owner wants it on the default branch.
+
+
 - **Repo / branch:** `carlvereen/reflections` · branch `claude/revenue-idea-2k-pj7f90`
 - **As of commit:** `8154e6d` (UX review fixes). Working tree clean, level with origin.
 - **Date:** 2026-07-17
