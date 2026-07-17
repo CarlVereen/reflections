@@ -118,3 +118,36 @@ rows just work.
 3. Can two `google.script.run` calls become one server function? Bundle them.
 4. Did a new list view get added without caching? Give it an `S.*` cache + `invalidate()`.
 5. Redeploy a **new version** after code changes, or you're testing the old one.
+
+---
+
+## Local-first rearchitecture (2026-07-17)
+
+The web app is now **local-first**. `doGet()` inlines the ENTIRE dataset into the page (via an
+`HtmlService` template + a `<script type="application/json" id="__BOOT__">` block), so the app opens
+with **zero `google.script.run` round trips**. After boot, the browser owns the live state: every read
+(navigating, opening a client/invoice, its line items, the price book, the dashboard) is served from
+memory — no server call. The dashboard is recomputed client-side (`computeDashboard()`), never fetched.
+
+**Why:** measured on-device latency was ~3.9s **per** `google.script.run` call, independent of data
+size — so the win is eliminating the calls, not speeding them up.
+
+**Server JSON hot store.** The boot payload is persisted to a Drive file `crm-data.json` (chosen over
+`CacheService`/`PropertiesService` because 3,000 records exceed the 500 KB Properties cap). `doGet`
+serves that file directly; it is rebuilt from Sheets only when a change the app did *not* make marks it
+stale. Google Sheets remains the durable source of truth — any drift self-heals on the next rebuild.
+
+**Reverse sync (Sheets → JSON) — the deliberate exception to the "no server cache" rule above.** A
+change made outside the app sets a stale flag, so the next open rebuilds the JSON from Sheets:
+- a manual sheet edit (installable `onEdit` — does NOT fire on the app's own `setValues`);
+- a mobile lead-form submission (`onFormSubmit`);
+- the daily automations (`markOverdueInvoices`, `rollForwardRecurringJobs`, `remindUpcomingJobs`,
+  `sendReviewRequests`) call `DATA_markStale_()` when they change data.
+Single-writer is what makes serving a cached snapshot safe — there are no concurrent editors to go stale
+against within a session, and ⟳ / reload force a fresh rebuild on demand.
+
+**Writes stay optimistic.** Edits apply locally instantly and upload in the background (FIFO queue,
+retry, durable across reload). A newly created record carries a temp id until the server assigns the
+real one; `remapPending()` rewrites any queued dependent write (estimate→client, invoice→estimate) to
+the real id the moment it arrives — this is the fix for the "pick a valid client" race where creating an
+estimate right after a client used to fail.

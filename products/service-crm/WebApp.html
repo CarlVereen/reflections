@@ -111,10 +111,17 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
 
+<!-- Local-first boot payload: the whole dataset, inlined by doGet() so the app opens with ZERO server
+     round trips. Server-rendered via HtmlService template; a raw '{}' when served statically/in preview. -->
+<script type="application/json" id="__BOOT__"><?!= boot ?></script>
 <script>
-var BUILD='2026-07-17e-perf-instrumentation';
+var BUILD='2026-07-17f-localfirst';
 var BOOT_T0=(window.performance&&performance.now)?0:Date.now();   // browser paint→script start baseline (perf.now is page-relative)
 var BOOT_MS=null;                                                  // filled once boot() finishes hydrating
+// The inlined dataset (see the #__BOOT__ data block). Parsed once; null if served statically or on a
+// parse failure, in which case boot() falls back to the old apiBootstrap round trip.
+var BOOT=null;
+try{ var _bt=document.getElementById('__BOOT__'); if(_bt){ var _raw=(_bt.textContent||'').trim(); if(_raw && _raw!=='{}') BOOT=JSON.parse(_raw); } }catch(e){ BOOT=null; }
 /* ================= perf instrumentation (Stage 0) =================
    Times every google.script.run round trip so we can SEE where the seconds go on the real device
    instead of guessing. Toggle verbose logging with ?perf=1 or localStorage crm_perf=1.
@@ -130,7 +137,7 @@ function perfReadout(){ var n=PERF.calls.length, sum=0; PERF.calls.forEach(funct
   var kb=null; try{ var b=localStorage.getItem(CACHE_KEY); if(b)kb=Math.round(b.length/1024); }catch(e){}
   return (BOOT_MS!=null?('boot '+BOOT_MS+'ms · '):'')+n+' api calls'+(n?' · avg '+Math.round(sum/n)+'ms':'')+(kb!=null?' · cache '+kb+'KB':''); }
 /* ================= state + api ================= */
-var S = { settings:{}, services:[], enums:{}, dashboard:null, clients:null, jobs:null, billing:null, logo:undefined };
+var S = { settings:{}, services:[], servicesAll:[], enums:{}, dashboard:null, clients:null, jobs:null, billing:null, lineItems:{}, logo:undefined };
 var CUR='$';
 
 /* ================= local save (localStorage snapshot of the dataset) =================
@@ -138,7 +145,7 @@ var CUR='$';
    On boot we hydrate S from this snapshot and paint immediately, THEN refresh from the
    server in the background. Best-effort only — every access is guarded so private-mode,
    quota, or a corrupt blob can never break the app; the server stays the source of truth. */
-var CACHE_KEY='crm2_cache', CACHE_VER='1';   // bump CACHE_VER whenever the shape of S changes → auto-invalidates old blobs
+var CACHE_KEY='crm2_cache', CACHE_VER='2';   // bump CACHE_VER whenever the shape of S changes → auto-invalidates old blobs
 var _cacheT=null;
 function lsAvail(){ try{ var k='__crmt'; localStorage.setItem(k,'1'); localStorage.removeItem(k); return true; }catch(e){ return false; } }
 var LS_OK=lsAvail();
@@ -148,8 +155,8 @@ function saveCache(now){
   var flush=function(){
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({
       v:CACHE_VER, at:Date.now(),
-      settings:S.settings, services:S.services, enums:S.enums,
-      dashboard:S.dashboard, clients:S.clients, jobs:S.jobs, billing:S.billing, logo:S.logo
+      settings:S.settings, services:S.services, servicesAll:S.servicesAll, enums:S.enums,
+      dashboard:S.dashboard, clients:S.clients, jobs:S.jobs, billing:S.billing, lineItems:S.lineItems, logo:S.logo
     })); }catch(e){ /* quota / serialize failure — cache is best-effort, ignore */ }
   };
   clearTimeout(_cacheT);
@@ -161,13 +168,15 @@ function loadCache(){
   try{
     var raw=localStorage.getItem(CACHE_KEY); if(!raw) return false;
     var c=JSON.parse(raw); if(!c || c.v!==CACHE_VER) return false;
-    if(c.settings)  S.settings=c.settings;
-    if(c.services)  S.services=c.services;
-    if(c.enums)     S.enums=c.enums;
+    if(c.settings)    S.settings=c.settings;
+    if(c.services)    S.services=c.services;
+    if(c.servicesAll) S.servicesAll=c.servicesAll;
+    if(c.enums)       S.enums=c.enums;
     if(c.dashboard!==undefined) S.dashboard=c.dashboard;
     if(c.clients!==undefined)   S.clients=c.clients;
     if(c.jobs!==undefined)      S.jobs=c.jobs;
     if(c.billing!==undefined)   S.billing=c.billing;
+    if(c.lineItems!==undefined) S.lineItems=c.lineItems;
     if(c.logo!==undefined)      S.logo=c.logo;
     return !!(S.settings && Object.keys(S.settings).length);
   }catch(e){ return false; }
@@ -186,6 +195,16 @@ function api(fn){
 /* ---------- optimistic sync engine (writes apply locally, upload in background) ---------- */
 var SYNC={q:[],active:false,seq:0}, STORE='crm2_sync', _restoredQueue=false;
 function enqueue(fn,args,label,opts){ opts=opts||{}; SYNC.q.push({id:'op'+(++SYNC.seq),fn:fn,args:args,label:label,tries:0,_onOk:opts.onOk,_onFail:opts.onFail}); persistQueue(); syncBadge(); syncPump(); }
+/* Temp-ID resolution — the fix for "pick a valid client". A record created optimistically carries a
+   local temp id (tmp…) until the server assigns the real one. When that real id arrives, rewrite every
+   still-queued op's args so a dependent write (estimate→client, invoice→estimate) references the REAL id
+   instead of the temp that the server has never heard of. Args are JSON → a scoped string swap is safe
+   because temp ids ('tmp7') are unique and never collide with real ids ('CL-0002'). */
+function remapPending(tempId,realId){
+  if(!tempId||!realId||tempId===realId) return;
+  SYNC.q.forEach(function(op){ try{ op.args=JSON.parse(JSON.stringify(op.args).split(tempId).join(realId)); }catch(e){} });
+  persistQueue();
+}
 /* ---- durable write queue: survives reload/close mid-sync ----
    Only the replayable fields are stored (fn/args/label/tries); the optimistic-reconcile callbacks
    are functions and can't serialize. After a restored queue drains we do one authoritative refresh
@@ -242,6 +261,9 @@ function fmtMDfromISO(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||'
 function svcName(id){ var s=(S.services||[]).filter(function(x){return x.id===id;})[0]; return s?s.name:''; }
 function svcRate(id){ var s=(S.services||[]).filter(function(x){return x.id===id;})[0]; return s?s.rate:0; }
 function invalidate(){ S.dashboard=null; S.clients=null; S.jobs=null; S.billing=null; _fresh={}; }
+// A record that hasn't been assigned its real server id yet (still uploading). Synchronous server
+// actions (send PDF, archive) can't run against these; queued/optimistic actions can (they remap).
+function isTemp(id){ return String(id||'').indexOf('tmp')===0; }
 
 /* ================= stale-while-revalidate reads =================
    Screens paint from cache instantly, then quietly refresh from the server. Two guardrails keep
@@ -260,7 +282,7 @@ function bgRefresh(key,fn,args,apply){
   }).catch(function(){});                // background refresh is best-effort; cache already painted
 }
 /** After a restored write queue drains, drop optimistic temps and re-read authoritative data. */
-function reconcileAfterRestore(){ invalidate(); nav(CUR_SCREEN); }
+function reconcileAfterRestore(){ api('apiRefresh').then(function(b){ if(b&&b.ready){ hydrateFromSnapshot(b); applyBootChrome(); nav(CUR_SCREEN); } }).catch(function(){}); }
 
 /* ================= theme ================= */
 var ACCENT_DEFAULT='#8f5f22';
@@ -273,16 +295,31 @@ function applyAccent(h){ h=hexRGB(h)?h:ACCENT_DEFAULT; var r=document.documentEl
 
 /* ================= boot + nav ================= */
 function boot(skipCache){
-  // 1) Paint instantly from the local save if we have one (no network wait).
-  //    skipCache=true (manual ⟳) forces a clean server refresh instead of re-hydrating stale data.
+  // 1) Local-first: hydrate the ENTIRE dataset from the inlined payload — zero server round trips.
+  if(!skipCache && BOOT && BOOT.ready){
+    hydrateFromSnapshot(BOOT);
+    if(BOOT_MS==null)BOOT_MS=Math.round(_now()-BOOT_T0);
+    applyBootChrome(); renderHome();
+    return;
+  }
+  // 2) Fallback (static serve / standalone preview / __BOOT__ parse failure / manual refresh):
+  //    paint from the local cache, then do the legacy apiBootstrap round trip.
   var hadCache=!skipCache && loadCache();
   if(hadCache){ if(BOOT_MS==null)BOOT_MS=Math.round(_now()-BOOT_T0); applyBootChrome(); renderHome(); }
-  // 2) Refresh from the server in the background and re-persist.
   api('apiBootstrap').then(function(b){
     if(!b||!b.ready){ if(!hadCache) document.getElementById('homeBody').innerHTML='<div class="empty">Run <b>⚡ CRM ▸ Set up / rebuild database</b> in the sheet first, then reload.</div>'; return; }
     S.settings=b.settings||{}; S.services=b.services||[]; S.enums=b.enums||{}; S.dashboard=b.dashboard;
     if(BOOT_MS==null)BOOT_MS=Math.round(_now()-BOOT_T0); _fresh.home=Date.now(); applyBootChrome(); renderHome(); saveCache();
   }).catch(function(e){ if(!hadCache) document.getElementById('homeBody').innerHTML='<div class="empty">Could not load: '+esc(e&&e.message||e)+'</div>'; });
+}
+/** Load a full server snapshot (from __BOOT__ or a manual refresh) into S and mark everything fresh. */
+function hydrateFromSnapshot(b){
+  S.settings=b.settings||{}; S.services=b.services||[]; S.servicesAll=b.servicesAll||b.services||[];
+  S.enums=b.enums||{}; S.dashboard=b.dashboard;
+  S.clients=b.clients||[]; S.jobs=b.jobs||[]; S.billing=b.billing||{estimates:[],invoices:[]};
+  S.lineItems=b.lineItems||{}; if(b.logo!==undefined)S.logo=b.logo;
+  var t=b.at||Date.now(); _fresh={home:t,clients:t,jobs:t,billing:t};
+  saveCache();
 }
 /** Apply the settings-driven chrome (currency, accent, business name) from current S.settings. */
 function applyBootChrome(){
@@ -303,16 +340,46 @@ function nav(s){
   window.scrollTo(0,0);
   if(s==='home')loadHome(); if(s==='clients')loadClients(); if(s==='jobs')loadJobs(); if(s==='billing')loadBilling(); if(s==='settings')renderSettings();
 }
-function refreshAll(){ busy('Refreshing…'); invalidate(); boot(true); nav(CUR_SCREEN); }
+// ⟳ : one call that rebuilds the server JSON from Sheets (picks up hand edits / lead form / automations)
+// and replaces the whole in-memory dataset. Guarded so a refresh never clobbers pending optimistic writes.
+function refreshAll(){
+  if(SYNC.q.length){ toast('Finishing saves…'); return; }
+  busy('Refreshing…');
+  api('apiRefresh').then(function(b){ if(!b||!b.ready){ toast('Couldn\'t refresh'); return; }
+    hydrateFromSnapshot(b); applyBootChrome(); nav(CUR_SCREEN); toast('✓ Up to date'); })
+    .catch(function(){ toast('Couldn\'t refresh'); }); }
 
 /* ================= HOME ================= */
-function loadHome(){
-  if(S.dashboard){ renderHome(); bgRefresh('home','apiDashboard',[],function(d){ S.dashboard=d; if(CUR_SCREEN==='home')renderHome(); }); }
-  else api('apiDashboard').then(function(d){ S.dashboard=d; _fresh.home=Date.now(); saveCache(); renderHome(); });
+// The dashboard is DERIVED from the in-memory dataset (S) — recomputed locally, never fetched. That
+// keeps Home instant and always consistent with the optimistic edits the user just made.
+function loadHome(){ S.dashboard=computeDashboard(); renderHome(); }
+function _isoDate(s){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s||'')); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
+function computeDashboard(){
+  var clients=S.clients||[], jobs=S.jobs||[], b=S.billing||{}, ests=b.estimates||[], invs=b.invoices||[];
+  var today=midnight(new Date());
+  var wkStart=new Date(today); wkStart.setDate(wkStart.getDate()-wkStart.getDay());
+  var wkEnd=new Date(wkStart); wkEnd.setDate(wkEnd.getDate()+7);
+  var monStart=new Date(today.getFullYear(),today.getMonth(),1), weekAgo=addDays(today,-7);
+  var nn=function(x){return Number(x)||0;};
+  var newLeads=clients.filter(function(c){ var d=_isoDate(c.createdISO); return c.status==='Lead'&&d&&d>=weekAgo; }).length;
+  var pipeline=ests.filter(function(e){return e.status==='Draft'||e.status==='Sent';}).reduce(function(s,e){return s+nn(e.total);},0);
+  var unpaid=invs.filter(function(i){return i.status==='Sent'||i.status==='Overdue';}).reduce(function(s,i){return s+nn(i.total);},0);
+  var revMonth=invs.filter(function(i){ var d=_isoDate(i.issueISO); return i.status==='Paid'&&d&&d>=monStart; }).reduce(function(s,i){return s+nn(i.total);},0);
+  var revLife=invs.filter(function(i){return i.status==='Paid';}).reduce(function(s,i){return s+nn(i.total);},0);
+  var won=clients.filter(function(c){return c.status==='Active'||c.status==='Inactive';}).length;
+  var lost=clients.filter(function(c){return c.status==='Lost';}).length;
+  var followUps=clients.filter(function(c){ var d=_isoDate(c.followUpISO); return (c.status==='Lead'||c.status==='Active')&&d&&d<=today; })
+    .sort(function(a,b){return String(a.followUpISO).localeCompare(String(b.followUpISO));})
+    .map(function(c){return {id:c.id,name:c.name,phone:c.phone,status:c.status,due:c.followUp||fmtMDfromISO(c.followUpISO)};});
+  var weekJobs=jobs.filter(function(j){ var d=_isoDate(j.dateISO); return j.status==='Scheduled'&&d&&d>=wkStart&&d<wkEnd; })
+    .sort(function(a,b){return String(a.dateISO).localeCompare(String(b.dateISO));})
+    .map(function(j){return {id:j.id,client:j.client,date:j.date,time:j.time,service:j.service,status:j.status};});
+  return { newLeads:newLeads, pipeline:pipeline, unpaid:unpaid, jobsWeek:weekJobs.length, revMonth:revMonth,
+    winRate:(won+lost)?Math.round(won/(won+lost)*100):0, revLife:revLife, followUps:followUps, weekJobs:weekJobs };
 }
 function tile(l,v,h,g){ return '<div class="tile'+(g?' good':'')+'"><div class="l">'+l+'</div><div class="v">'+v+'</div>'+(h?'<div class="hint">'+esc(h)+'</div>':'')+'</div>'; }
 function renderHome(){
-  var d=S.dashboard; if(!d){ document.getElementById('homeBody').innerHTML='<div class="spin">Loading…</div>'; return; }
+  var d=S.dashboard||(S.dashboard=computeDashboard());
   var h='<div class="tiles">'+tile('New leads · 7d',d.newLeads)+tile('Unpaid',money0(d.unpaid),'billed, not paid')+
     tile('Jobs this week',d.jobsWeek)+tile('Revenue · mo',money0(d.revMonth))+'</div>'+
     '<div class="tiles" style="margin-top:10px">'+tile('Win rate',d.winRate+'%','clients won vs lost',1)+tile('Lifetime',money0(d.revLife),'',1)+'</div>';
@@ -330,9 +397,9 @@ function renderHome(){
 
 /* ================= CLIENTS ================= */
 function loadClients(){
-  if(S.clients){ renderClients(); bgRefresh('clients','apiListClients',[],function(l){ S.clients=l||[]; if(CUR_SCREEN==='clients')renderClients(); }); return; }
+  if(S.clients){ renderClients(); return; }   // always present from the boot payload → instant
   document.getElementById('clientsBody').innerHTML='<div class="spin">Loading…</div>';
-  api('apiListClients').then(function(l){ S.clients=l||[]; _fresh.clients=Date.now(); saveCache(); renderClients(); }).catch(function(e){ document.getElementById('clientsBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
+  api('apiListClients').then(function(l){ S.clients=l||[]; saveCache(); renderClients(); }).catch(function(e){ document.getElementById('clientsBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
 function renderClients(){
   var q=(document.getElementById('clientSearch').value||'').toLowerCase();
   var list=(S.clients||[]).filter(function(c){ return !q || (c.name+' '+c.phone+' '+c.email).toLowerCase().indexOf(q)>-1; })
@@ -372,7 +439,7 @@ function archiveClient(id){ var c=clientById(id);
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Archive '+esc((c||{}).name||'this client')+'?</h3>'+
     '<div class="muted" style="margin-bottom:10px">They\'ll be hidden from your lists (kept in the sheet — restorable).</div>'+
     '<button class="btn danger" onclick="confirmArchiveClient('+jarg(id)+')">Archive</button><button class="btn sec" onclick="openClient('+jarg(id)+')">Cancel</button>'); }
-function confirmArchiveClient(id){ busy('Archiving…'); api('apiArchiveClient',id).then(function(r){
+function confirmArchiveClient(id){ if(isTemp(id)){ toast('⏳ Finishing save — try again in a moment'); return; } busy('Archiving…'); api('apiArchiveClient',id).then(function(r){
   if(r&&r.ok){ if(S.clients)S.clients=S.clients.filter(function(c){return c.id!==id;}); closeModal(); toast('🗑️ Archived'); renderClients(); }
   else toast((r&&r.msg)||'Could not archive'); }).catch(function(e){ toast('⚠ '+(e&&e.message||e)); }); }
 function openClientForm(){
@@ -396,7 +463,7 @@ function saveClient(cb){
   var temp={id:'tmp'+(++SYNC.seq),_saving:true,name:name,phone:form.phone,email:form.email,address:form.address,status:form.status,source:form.source,followUp:'',followUpISO:'',lifetime:0,nextJob:null,openEstimate:null,unpaidInvoice:null};
   S.clients=S.clients||[]; S.clients.push(temp); closeModal(); toast('✅ Client added'); if(CUR_SCREEN==='clients')renderClients();
   enqueue('apiCreateClient',[form],'Client '+name,{
-    onOk:function(r){ if(r&&r.id){ temp.id=r.id; temp._saving=false; if(r.client)Object.assign(temp,r.client); if(CUR_SCREEN==='clients')renderClients(); if(cb)cb(r.id); } },
+    onOk:function(r){ if(r&&r.id){ var old=temp.id; temp.id=r.id; temp._saving=false; remapPending(old,r.id); if(r.client)Object.assign(temp,r.client); if(CUR_SCREEN==='clients')renderClients(); if(cb)cb(r.id); } },
     onFail:function(){ if(S.clients)S.clients=S.clients.filter(function(x){return x!==temp;}); if(CUR_SCREEN==='clients')renderClients(); }});
 }
 function openClientEdit(id){
@@ -437,9 +504,9 @@ function _pickChoose(id){ var cb=pickClient._cb; closeModal(); if(cb)cb(id); }
 var JOB_TAB='today', JOB_ORDER=['today','upcoming','completed'];
 function setJobTab(k){ JOB_TAB=k; renderJobs(); }
 function loadJobs(){
-  if(S.jobs){ renderJobs(); bgRefresh('jobs','apiListJobs',[],function(l){ S.jobs=l||[]; if(CUR_SCREEN==='jobs')renderJobs(); }); return; }
+  if(S.jobs){ renderJobs(); return; }
   document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>';
-  api('apiListJobs').then(function(l){ S.jobs=l||[]; _fresh.jobs=Date.now(); saveCache(); renderJobs(); }).catch(function(){ document.getElementById('jobsBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
+  api('apiListJobs').then(function(l){ S.jobs=l||[]; saveCache(); renderJobs(); }).catch(function(){ document.getElementById('jobsBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
 function jobById(id){ return (S.jobs||[]).filter(function(j){return j.id===id;})[0]; }
 function jobRow(j,pastDue){ var tags=(pastDue?'<span class="pill p-pastdue" style="margin-right:5px">Past due</span>':'')+pill(j.status);
   return '<div class="list-item" onclick="openJob('+jarg(j.id)+')"><div class="row"><div><div class="name">'+esc(j.client||'')+'</div><div class="meta">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+(j.service?' · '+esc(j.service):'')+'</div></div><div style="display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end">'+tags+'</div></div></div>'; }
@@ -473,11 +540,11 @@ function saveJob(){
   var temp={id:'tmp'+(++SYNC.seq),_saving:true,clientId:clientId,client:(clientById(clientId)||{}).name||'',serviceId:serviceId,service:svcName(serviceId),date:form.date,dateISO:form.date,time:form.time,status:'Scheduled',recurring:form.recurring};
   S.jobs=S.jobs||[]; S.jobs.push(temp); S.dashboard=null; closeModal(); toast('✅ Job added'); if(CUR_SCREEN==='jobs')renderJobs();
   enqueue('apiCreateJob',[form],'Job',{
-    onOk:function(r){ if(r&&r.id){ temp.id=r.id; temp._saving=false; if(r.job)Object.assign(temp,r.job); if(CUR_SCREEN==='jobs')renderJobs(); } },
+    onOk:function(r){ if(r&&r.id){ var old=temp.id; temp.id=r.id; temp._saving=false; remapPending(old,r.id); if(r.job)Object.assign(temp,r.job); if(CUR_SCREEN==='jobs')renderJobs(); } },
     onFail:function(){ if(S.jobs)S.jobs=S.jobs.filter(function(x){return x!==temp;}); S.dashboard=null; if(CUR_SCREEN==='jobs')renderJobs(); }});
 }
 function openJob(id){
-  var j=jobById(id); if(!j)return; if(j._saving){ toast('⏳ Still saving…'); return; }
+  var j=jobById(id); if(!j)return;   // temps are viewable/editable now — status & reschedule queue and remap
   var statusBtns=(S.enums.jobStatus||[]).map(function(st){ return '<button class="btn sm sec" onclick="setJobStatus('+jarg(id)+',\''+st+'\')">'+st+'</button>'; }).join(' ');
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(j.client||'')+'</h3>'+
     '<div class="muted">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+' · '+esc(j.service||'')+' · '+esc(j.recurring||'None')+'</div>'+
@@ -493,7 +560,7 @@ function archiveJob(id){ var j=jobById(id);
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Archive this job?</h3>'+
     '<div class="muted" style="margin-bottom:10px">'+esc((j||{}).client||'')+' · '+esc((j||{}).date||'')+' — hidden from your lists (kept in the sheet).</div>'+
     '<button class="btn danger" onclick="confirmArchiveJob('+jarg(id)+')">Archive</button><button class="btn sec" onclick="openJob('+jarg(id)+')">Cancel</button>'); }
-function confirmArchiveJob(id){ busy('Archiving…'); api('apiArchiveJob',id).then(function(r){
+function confirmArchiveJob(id){ if(isTemp(id)){ toast('⏳ Finishing save — try again in a moment'); return; } busy('Archiving…'); api('apiArchiveJob',id).then(function(r){
   if(r&&r.ok){ if(S.jobs)S.jobs=S.jobs.filter(function(j){return j.id!==id;}); closeModal(); toast('🗑️ Archived'); S.dashboard=null; renderJobs(); }
   else toast((r&&r.msg)||'Could not archive'); }).catch(function(e){ toast('⚠ '+(e&&e.message||e)); }); }
 
@@ -501,13 +568,9 @@ function confirmArchiveJob(id){ busy('Archiving…'); api('apiArchiveJob',id).th
 var BILL_TAB='quotes', BILL_ORDER=['quotes','outstanding','paid','closedq'];
 function setBillTab(k){ BILL_TAB=k; renderBilling(); }
 function loadBilling(){
-  if(S.billing){ renderBilling(); bgRefresh('billing','apiListBilling',[],function(r){
-      var pe=((S.billing&&S.billing.estimates)||[]).filter(function(e){return e._saving;});
-      var pi=((S.billing&&S.billing.invoices)||[]).filter(function(i){return i._saving;});
-      r.estimates=(r.estimates||[]).concat(pe); r.invoices=(r.invoices||[]).concat(pi);
-      S.billing=r; if(CUR_SCREEN==='billing')renderBilling(); }); return; }
+  if(S.billing){ renderBilling(); return; }
   document.getElementById('billingBody').innerHTML='<div class="spin">Loading…</div>';
-  api('apiListBilling').then(function(r){ S.billing=r||{estimates:[],invoices:[]}; _fresh.billing=Date.now(); saveCache(); renderBilling(); }).catch(function(){ document.getElementById('billingBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
+  api('apiListBilling').then(function(r){ S.billing=r||{estimates:[],invoices:[]}; saveCache(); renderBilling(); }).catch(function(){ document.getElementById('billingBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
 // Pull the authoritative billing list from the server but keep any still-uploading (optimistic) temps on top.
 function refreshBilling(){ return api('apiListBilling').then(function(fresh){ if(!fresh)return;
   var pe=((S.billing&&S.billing.estimates)||[]).filter(function(e){return e._saving;});
@@ -515,6 +578,13 @@ function refreshBilling(){ return api('apiListBilling').then(function(fresh){ if
   fresh.estimates=(fresh.estimates||[]).concat(pe); fresh.invoices=(fresh.invoices||[]).concat(pi);
   S.billing=fresh; saveCache(); if(CUR_SCREEN==='billing')renderBilling(); }).catch(function(){}); }
 function docById(kind,id){ var arr=kind==='INVOICE'?(S.billing.invoices||[]):(S.billing.estimates||[]); return arr.filter(function(d){return d.id===id;})[0]; }
+/* Line items live in memory (S.lineItems, keyed "Invoice|ID" / "Estimate|ID"), so opening a document
+   is instant — no per-open round trip. Fall back to the server only on a cache miss. */
+function docLinesKey(kind,id){ return (kind==='INVOICE'?'Invoice':'Estimate')+'|'+id; }
+function localLines(kind,id){ var a=S.lineItems&&S.lineItems[docLinesKey(kind,id)]; return a?a.slice():null; }
+function setLocalLines(kind,id,items){ if(!S.lineItems)S.lineItems={}; S.lineItems[docLinesKey(kind,id)]=(items||[]).slice(); }
+function reKeyLines(kind,oldId,newId){ if(!S.lineItems)return; var ok=docLinesKey(kind,oldId),nk=docLinesKey(kind,newId); if(S.lineItems[ok]){ S.lineItems[nk]=S.lineItems[ok]; delete S.lineItems[ok]; } }
+function lineRowsHtml(items){ return (items&&items.length)?items.map(function(it){ return '<div class="row" style="padding:4px 0"><span>'+esc(it.description)+' ×'+it.qty+'</span><span>'+money(it.lineTotal)+'</span></div>'; }).join(''):'<div class="muted">No line items.</div>'; }
 function docRow(kind,d){ return '<div class="list-item" onclick="openDoc(\''+kind+'\','+jarg(d.id)+')"><div class="row"><div><div class="name">'+esc(d.id)+' · '+esc(d.client||'')+'</div><div class="meta">'+money(d.total)+(d.issueDate?' · '+esc(d.issueDate):'')+'</div></div>'+pill(d.status)+'</div></div>'; }
 function renderBilling(){
   var b=S.billing||{estimates:[],invoices:[]}; var q=b.estimates||[], iv=b.invoices||[];
@@ -529,7 +599,6 @@ function renderBilling(){
 }
 function openDoc(kind,id,_retried){
   var d=docById(kind,id);
-  if(d&&d._saving){ toast('⏳ Still saving — one moment…'); return; }   // temp (optimistic) doc: lines not on the server yet
   if(!d){ // may be on another screen — fetch once, but never loop if it's gone (archived/deleted)
     if(_retried){ toast('That document is no longer available'); return; }
     api('apiListBilling').then(function(r){ S.billing=r; openDoc(kind,id,true); }).catch(function(){ toast('Couldn\'t load that document'); });
@@ -551,23 +620,30 @@ function openDoc(kind,id,_retried){
   }
   var totals='<div class="subline"><span>Subtotal</span><span>'+money(d.subtotal)+'</span></div>'+(d.tax>0?'<div class="subline"><span>Tax</span><span>'+money(d.tax)+'</span></div>':'')+'<div class="totalbar"><span>Total</span><span>'+money(d.total)+'</span></div>';
   var dateBit=d.dateB?' · '+(kind==='INVOICE'?'due ':'valid to ')+esc(d.dateB):'';
+  var items=localLines(kind,id);   // from memory — no round trip
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+(kind==='INVOICE'?'Invoice':'Estimate')+' '+esc(id)+'</h3>'+
     '<div class="muted">'+esc(d.client||'')+' · '+esc(d.status)+(d.issueDate?' · '+esc(d.issueDate):'')+dateBit+'</div>'+
-    '<div class="card" style="margin-top:12px"><div id="'+itemsId+'"><div class="muted">Loading items…</div></div>'+totals+'</div>'+
+    '<div class="card" style="margin-top:12px"><div id="'+itemsId+'">'+(items!=null?lineRowsHtml(items):'<div class="muted">Loading items…</div>')+'</div>'+totals+'</div>'+
     '<button class="btn sec" onclick="editLines(\''+kind+'\','+na+')">Edit line items</button>'+btns);
-  api('apiGetDocLines',kind,id).then(function(items){ var el=document.getElementById(itemsId); if(!el)return;
-    el.innerHTML=(items&&items.length)?items.map(function(it){ return '<div class="row" style="padding:4px 0"><span>'+esc(it.description)+' ×'+it.qty+'</span><span>'+money(it.lineTotal)+'</span></div>'; }).join(''):'<div class="muted">No line items.</div>'; });
+  if(items==null){ api('apiGetDocLines',kind,id).then(function(fetched){ var el=document.getElementById(itemsId); if(!el)return;
+    setLocalLines(kind,id,fetched); el.innerHTML=lineRowsHtml(fetched); }); }   // cache miss only
 }
 function setDocStatus(kind,id,st){ var d=docById(kind,id); if(d)d.status=st; closeModal(); toast('✅ '+st);
-  if(kind==='INVOICE'){ S.dashboard=null; S.clients=null; }   // paid status feeds lifetime + dashboard
+  if(kind==='INVOICE'){ S.dashboard=null; }   // paid status feeds the (locally recomputed) dashboard
   renderBilling(); enqueue('apiUpdateDoc',[kind,id,{status:st}],'Status '+st); }
-function markPaid(id){ var d=docById('INVOICE',id); if(d)d.status='Paid'; closeModal(); toast('💰 Paid'); S.dashboard=null; S.clients=null; renderBilling(); enqueue('apiMarkInvoicePaid',[id],'Mark paid'); }
+function markPaid(id){ var d=docById('INVOICE',id); if(d)d.status='Paid'; closeModal(); toast('💰 Paid'); S.dashboard=null; renderBilling(); enqueue('apiMarkInvoicePaid',[id],'Mark paid'); }
 function deleteDoc(kind,id){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Delete '+esc(id)+'?</h3><div class="muted" style="margin-bottom:10px">This archives the '+(kind==='INVOICE'?'invoice':'quote')+' and its line items.</div>'+
     '<button class="btn danger" onclick="confirmDelete(\''+kind+'\','+jarg(id)+')">Delete</button><button class="btn sec" onclick="openDoc(\''+kind+'\','+jarg(id)+')">Cancel</button>');
 }
-function confirmDelete(kind,id){ var arr=kind==='INVOICE'?'invoices':'estimates'; if(S.billing&&S.billing[arr])S.billing[arr]=S.billing[arr].filter(function(d){return d.id!==id;}); S.dashboard=null; S.clients=null; closeModal(); toast('🗑️ Deleted'); renderBilling(); enqueue('apiDeleteDoc',[kind,id],'Delete doc'); }
-function sendDoc(kind,id){ busy('Building PDF…'); api('apiSendDoc',kind,id).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive'):(r&&r.msg||'Failed')); invalidate(); loadBilling(); }).catch(function(e){ toast('⚠ Send failed: '+(e&&e.message||e)); }); }
+function confirmDelete(kind,id){ var arr=kind==='INVOICE'?'invoices':'estimates'; if(S.billing&&S.billing[arr])S.billing[arr]=S.billing[arr].filter(function(d){return d.id!==id;}); S.dashboard=null; delete (S.lineItems||{})[docLinesKey(kind,id)]; closeModal(); toast('🗑️ Deleted'); renderBilling(); enqueue('apiDeleteDoc',[kind,id],'Delete doc'); }
+function sendDoc(kind,id){
+  if(isTemp(id)){ toast('⏳ Finishing save — try again in a moment'); return; }
+  busy('Building PDF…');
+  api('apiSendDoc',kind,id).then(function(r){ closeModal();
+    if(r&&r.ok){ var d=docById(kind,id); if(d&&d.status==='Draft')d.status='Sent'; renderBilling(); toast(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive'); }
+    else toast((r&&r.msg)||'Failed');
+  }).catch(function(e){ toast('⚠ Send failed: '+(e&&e.message||e)); }); }
 function approveEstimate(id){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Approve &amp; schedule</h3><div class="muted" style="margin-bottom:10px">Accepts the quote, creates a draft invoice (dated today) and schedules a job.</div>'+
     '<label>Job date</label><input type="date" id="ap_date" value="'+isoOf(midnight(new Date()))+'">'+
@@ -576,16 +652,20 @@ function approveEstimate(id){
 function doApprove(id){
   var iso=val('ap_date'); var est=docById('ESTIMATE',id);
   if(!est){ toast('Estimate not found'); return; }
-  if(est._saving){ toast('⏳ Still saving the estimate — try again in a moment'); return; }
-  var prev=est.status; est.status='Accepted';   // apply locally first
-  var inv={kind:'INVOICE',id:'tmp'+(++SYNC.seq),_saving:true,clientId:est.clientId,client:est.client,subtotal:est.subtotal,tax:est.tax,total:est.total,status:'Draft',issueDate:fmtMD()};
+  var prev=est.status; est.status='Accepted';   // apply locally first (works even if the estimate is still a temp)
+  var inv={kind:'INVOICE',id:'tmp'+(++SYNC.seq),_saving:true,clientId:est.clientId,client:est.client,taxRate:est.taxRate,subtotal:est.subtotal,tax:est.tax,total:est.total,status:'Draft',issueDate:fmtMD()};
   S.billing=S.billing||{estimates:[],invoices:[]}; S.billing.invoices=S.billing.invoices||[]; S.billing.invoices.push(inv);
+  var estLines=localLines('ESTIMATE',id); if(estLines) setLocalLines('INVOICE',inv.id,estLines);   // invoice inherits the quoted lines
   var jt=null;
   if(S.jobs){ jt={id:'tmp'+(++SYNC.seq),_saving:true,clientId:est.clientId,client:est.client,serviceId:'',service:'',date:fmtMDfromISO(iso),dateISO:iso,time:'',status:'Scheduled',recurring:'None'}; S.jobs.push(jt); }
-  S.dashboard=null; S.clients=null;
-  closeModal(); toast('✅ Approving — invoice + job scheduled'); nav('billing');   // navigate immediately
+  var c=clientById(est.clientId); if(c&&c.status==='Lead')c.status='Active';   // approval promotes the client
+  S.dashboard=null;
+  closeModal(); toast('✅ Approving — invoice + job scheduled'); nav('billing'); saveCache();
   enqueue('apiApproveEstimate',[id,iso],'Approve estimate',{   // Sheets write runs in the background
-    onOk:function(r){ inv.id=(r&&r.invoiceId)||inv.id; inv._saving=false; if(jt){ jt.id=(r&&r.jobId)||jt.id; jt._saving=false; } refreshBilling(); },
+    onOk:function(r){
+      if(r&&r.invoiceId){ var oi=inv.id; reKeyLines('INVOICE',oi,r.invoiceId); inv.id=r.invoiceId; remapPending(oi,r.invoiceId); } inv._saving=false;
+      if(jt&&r&&r.jobId){ var oj=jt.id; jt.id=r.jobId; remapPending(oj,r.jobId); } if(jt)jt._saving=false;
+      if(CUR_SCREEN==='billing')renderBilling(); saveCache(); },
     onFail:function(){ est.status=prev; if(S.billing&&S.billing.invoices)S.billing.invoices=S.billing.invoices.filter(function(x){return x!==inv;}); if(jt&&S.jobs)S.jobs=S.jobs.filter(function(x){return x!==jt;}); if(CUR_SCREEN==='billing')renderBilling(); }});
 }
 
@@ -638,37 +718,46 @@ function saveEstimate(clientId){
   if(!lines.length){ toast('Add a line item'); return; }
   var sub=0; QLINES.forEach(function(l){ if(l.serviceId&&Number(l.qty)>0)sub+=Number(l.qty)*lineRate(l); });
   var trate=Number(S.settings['Sales tax %'])||0, tax=Math.round(sub*trate)/100, total=sub+tax;
-  var temp={kind:'ESTIMATE',id:'tmp'+(++SYNC.seq),_saving:true,clientId:clientId,client:(clientById(clientId)||{}).name||'',subtotal:sub,tax:tax,total:total,status:'Draft',issueDate:fmtMD()};
+  var temp={kind:'ESTIMATE',id:'tmp'+(++SYNC.seq),_saving:true,clientId:clientId,client:(clientById(clientId)||{}).name||'',taxRate:trate,subtotal:sub,tax:tax,total:total,status:'Draft',issueDate:fmtMD()};
   S.billing=S.billing||{estimates:[],invoices:[]}; S.billing.estimates=S.billing.estimates||[]; S.billing.estimates.push(temp);
-  S.dashboard=null; closeModal(); toast('✅ Estimate created'); nav('billing'); refreshBilling();
+  var disp=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(function(l){ var rate=lineRate(l); return { serviceId:l.serviceId, description:svcName(l.serviceId), qty:Number(l.qty), rate:rate, lineTotal:Math.round(Number(l.qty)*rate*100)/100 }; });
+  setLocalLines('ESTIMATE',temp.id,disp);   // so opening the new estimate shows its lines instantly
+  S.dashboard=null; closeModal(); toast('✅ Estimate created'); nav('billing'); renderBilling(); saveCache();
   enqueue('apiCreateEstimate',[{clientId:clientId,validDays:14,lines:lines}],'Estimate',{   // Sheets write runs in the background
-    onOk:function(r){ temp.id=(r&&r.id)||temp.id; temp._saving=false; refreshBilling(); },
+    onOk:function(r){ if(r&&r.id&&r.id!==temp.id){ var old=temp.id; reKeyLines('ESTIMATE',old,r.id); temp.id=r.id; remapPending(old,r.id); } temp._saving=false; if(CUR_SCREEN==='billing')renderBilling(); saveCache(); },
     onFail:function(){ if(S.billing&&S.billing.estimates)S.billing.estimates=S.billing.estimates.filter(function(x){return x!==temp;}); if(CUR_SCREEN==='billing')renderBilling(); }});
 }
 function editLines(kind,id){
-  busy('Opening…');
-  api('apiGetDocLines',kind,id).then(function(items){
+  var open=function(items){
     QLINES=(items&&items.length)?items.map(function(it){return {serviceId:it.serviceId,qty:it.qty,rate:it.rate,_re:true};}):[{serviceId:'',qty:1,rate:''}];
     openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit line items · '+esc(id)+'</h3>'+
       '<div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
       qTotalsHtml()+
       '<button class="btn" onclick="saveLines(\''+kind+'\','+jarg(id)+')">Save</button>');
     renderQLines();
-  });
+  };
+  var items=localLines(kind,id);
+  if(items!=null){ open(items); }                                       // from memory — instant
+  else { busy('Opening…'); api('apiGetDocLines',kind,id).then(open); }  // cache miss only
 }
+// Optimistic: apply the new lines + recomputed totals locally, then upload once in the background.
 function saveLines(kind,id){
-  var lines=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(qlineToPayload);
-  busy('Saving…'); closeModal();
-  api('apiSetDocLines',kind,id,lines).then(function(){ toast('✅ Line items saved'); invalidate(); loadBilling(); }).catch(function(e){ toast('⚠ Save failed: '+(e&&e.message||e)); });
+  var valid=function(l){ return l.serviceId&&Number(l.qty)>0; };
+  var payload=QLINES.filter(valid).map(qlineToPayload);
+  var disp=QLINES.filter(valid).map(function(l){ var rate=lineRate(l); return { serviceId:l.serviceId, description:svcName(l.serviceId), qty:Number(l.qty), rate:rate, lineTotal:Math.round(Number(l.qty)*rate*100)/100 }; });
+  setLocalLines(kind,id,disp);
+  var d=docById(kind,id);
+  if(d){ var sub=disp.reduce(function(s,x){return s+x.lineTotal;},0); var tr=Number(d.taxRate)||0; var tax=Math.round(sub*tr)/100;
+    d.subtotal=sub; d.tax=tax; d.total=Math.round((sub+tax)*100)/100; S.dashboard=null; }
+  closeModal(); toast('✅ Line items saved'); renderBilling();
+  enqueue('apiSetDocLines',[kind,id,payload],'Edit lines');
 }
 
 /* ================= PRICE BOOK (services) ================= */
 var PB=[];
-function openPriceBook(){ busy('Loading price book…');
-  api('apiListServices',false).then(function(list){
-    PB=(list||[]).map(function(s){ return {id:s.id,name:s.name,rate:s.rate,active:s.active!==false,_orig:s.name+'|'+s.rate}; });
-    renderPriceBook();
-  }).catch(function(e){ toast('⚠ '+(e&&e.message||e)); }); }
+function openPriceBook(){   // from memory (S.servicesAll) — no round trip
+  PB=(S.servicesAll||S.services||[]).map(function(s){ return {id:s.id,name:s.name,rate:s.rate,active:s.active!==false,_orig:s.name+'|'+s.rate}; });
+  renderPriceBook(); }
 function renderPriceBook(){
   var rows=PB.map(function(s,i){
     return '<div class="liwrap"><input placeholder="Service name" value="'+esc(s.name)+'" oninput="PB['+i+'].name=this.value">'+
@@ -691,8 +780,8 @@ function savePriceBook(){
     if(s.id){ if((s.name+'|'+s.rate)!==s._orig && name) ops.push(api('apiUpdateService',s.id,{name:name,rate:rate})); }
     else if(name){ ops.push(api('apiCreateService',{name:name,rate:rate,active:true})); } });
   busy('Saving price book…'); closeModal();
-  Promise.all(ops).then(function(){ return api('apiListServices',true); })
-    .then(function(list){ if(list)S.services=list; saveCache(); toast('✅ Price book saved'); })
+  Promise.all(ops).then(function(){ return api('apiListServices',false); })
+    .then(function(list){ if(list){ S.servicesAll=list; S.services=list.filter(function(s){return s.active!==false;}); } saveCache(); toast('✅ Price book saved'); })
     .catch(function(e){ toast('⚠ '+(e&&e.message||e)); });
 }
 
@@ -735,6 +824,7 @@ function removeLogo(){ S.logo=''; paintLogo(); busy('Removing…'); api('apiSave
 /* ================= preview mock (standalone, no google.script.run) ================= */
 function mock(fn,a){
   if(fn==='apiBootstrap')return {ready:true,settings:{'Business name':'Meridian Detailing','Currency symbol':'$','Accent color':'#8f5f22','Sales tax %':8},services:[{id:'SVC-01',name:'Consultation',rate:90,active:true},{id:'SVC-02',name:'Standard service',rate:150,active:true}],enums:{clientStatus:['Lead','Active','Inactive','Lost'],jobStatus:['Scheduled','Done','Cancelled'],estStatus:['Draft','Sent','Accepted','Declined'],invStatus:['Draft','Sent','Paid','Overdue'],recurring:['None','Weekly','Monthly','Quarterly','Annual']},dashboard:mock('apiDashboard')};
+  if(fn==='apiRefresh'||fn==='apiSnapshot'){ var b=mock('apiBootstrap'); b.servicesAll=mock('apiListServices'); b.clients=mock('apiListClients'); b.jobs=mock('apiListJobs'); b.billing=mock('apiListBilling'); b.lineItems={}; b.logo=''; b.at=Date.now(); return b; }
   if(fn==='apiDashboard')return {newLeads:2,unpaid:162,jobsWeek:1,revMonth:0,winRate:60,revLife:0,followUps:[{id:'CL-0001',name:'Ada Buyer',phone:'(555) 111',status:'Lead',due:'7/16'}],weekJobs:[{id:'JOB-00001',client:'Ada Buyer',date:'7/17',time:'2pm',service:'Standard service',status:'Scheduled'}]};
   if(fn==='apiListClients')return [{id:'CL-0001',name:'Ada Buyer',phone:'(555) 111',email:'ada@x.com',address:'',status:'Active',source:'Web',followUp:'',followUpISO:'',lifetime:0,nextJob:{id:'JOB-00001',date:'7/17',service:'Standard service'},openEstimate:{id:'EST-1001',total:390},unpaidInvoice:null}];
   if(fn==='apiListJobs')return [{id:'JOB-00001',clientId:'CL-0001',client:'Ada Buyer',serviceId:'SVC-02',service:'Standard service',date:'7/17',dateISO:isoOf(midnight(new Date())),time:'2pm',status:'Scheduled',recurring:'None'}];

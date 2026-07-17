@@ -81,3 +81,17 @@ Note the step (e.g. "E4 — invoice PDF didn't generate") and the exact error fr
 You have a verified master. Per sale: `File ▸ Make a copy` → share the master link
 (Anyone with link ▸ Viewer) → that link goes in the delivery PDF. **Each buyer deploys their
 own copy** (their own app URL) — the deploy step is theirs, done once.
+
+---
+
+## M. Local-first speed + optimistic writes (2026-07-17 build)
+1. Open **More ▸ Business Settings**, scroll to the bottom: the **⏱** readout should show a low
+   **boot** time and **0 api calls** right after opening. Navigate Home→Clients→Jobs→Billing, open a
+   client, open an invoice, open the price book — the api-call count should **stay at 0** (all reads are
+   local). It only ticks up when you *write*.
+2. **The race:** add a new client, then IMMEDIATELY (before the "✓ Saved" badge) create an estimate for
+   that client, then Approve → invoice + job, then Mark paid. Every step should register instantly and
+   NONE should say "pick a valid client." Reload — all records are really there with real IDs.
+3. **Reverse sync:** hand-edit a client's name in the Google Sheet, then reload the app → the edit
+   appears (the stale flag rebuilt the JSON). Same after a lead comes in via the mobile form.
+4. Tap ⟳ any time → one `apiRefresh` call, data refreshes from Sheets.

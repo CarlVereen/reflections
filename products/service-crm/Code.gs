@@ -89,6 +89,7 @@ function markOverdueInvoices() {
   query('Invoices', { Status: 'Sent' }).forEach(function (iv) {
     if (iv.DueDate instanceof Date && iv.DueDate < today) { update('Invoices', iv.InvoiceID, { Status: 'Overdue' }); n++; }
   });
+  if (n) DATA_markStale_();   // data changed outside the app → next open rebuilds the JSON
   return n;
 }
 
@@ -107,6 +108,7 @@ function rollForwardRecurringJobs() {
     insert('Jobs', { ClientID: j.ClientID, ServiceID: j.ServiceID, JobDate: next, Status: 'Scheduled', Recurring: j.Recurring, Notes: 'Recurring visit' });
     made++;
   });
+  if (made) DATA_markStale_();
   return made;
 }
 
@@ -147,6 +149,7 @@ function remindUpcomingJobs() {
         '<p>See you then!<br>' + API_esc_(biz) + '</p></div>' });
     update('Jobs', j.JobID, { ReminderSent: true }); sent++;
   });
+  if (sent) DATA_markStale_();
   return sent;
 }
 
@@ -166,6 +169,7 @@ function sendReviewRequests() {
         '<p>Thanks again,<br>' + API_esc_(biz) + '</p></div>' });
     update('Jobs', j.JobID, { ReviewSent: true }); sent++;
   });
+  if (sent) DATA_markStale_();
   return { ok: true, sent: sent, noEmail: noEmail };
 }
 
@@ -222,7 +226,12 @@ function onFormSubmit(e) {
     Status: 'Lead', Source: 'Web form', Notes: pick('what do you need?', 'notes', 'message', 'details'),
     NextFollowUp: API_addDays_(API_today_(), days),
   });
+  DATA_markStale_();   // lead came in outside the app → next open rebuilds the JSON
 }
+
+/** Manual sheet edits (NOT the app's own programmatic writes, which never fire this) mark the JSON
+ *  stale so the next app open rebuilds it from Sheets. Simple trigger — installs automatically on save. */
+function onEdit(e) { try { DATA_markStale_(); } catch (err) {} }
 
 /* ============================ sidebar server helpers ============================ */
 // The Quick Actions sidebar (Sidebar.html) reuses the app API for reads/writes.

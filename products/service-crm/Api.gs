@@ -7,9 +7,16 @@
  */
 
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile('WebApp')
+  var t = HtmlService.createTemplateFromFile('WebApp');
+  t.boot = API_escapeForScript_(JSON.stringify(DATA_forBoot_()));   // inlined into the page → zero boot round trips
+  return t.evaluate()
     .setTitle('Service Pro CRM')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1');
+}
+// Make a JSON string safe to embed raw inside a <script> element: escape '<' (kills </script>, <!--,
+// <script breakout) and the two line terminators that are legal in JSON but not in a JS string literal.
+function API_escapeForScript_(s) {
+  return String(s).replace(/</g, '\\u003c').replace(new RegExp(String.fromCharCode(0x2028), 'g'), '\\u2028').replace(new RegExp(String.fromCharCode(0x2029), 'g'), '\\u2029');
 }
 
 /* ============================ small helpers ============================ */
@@ -73,6 +80,79 @@ function apiBootstrap() {
   };
 }
 
+/* ============================ local-first snapshot + Drive JSON store ============================
+   The complete dataset, assembled once, is the app's boot payload. It lives in a Drive file
+   (crm-data.json) that doGet inlines into the page, so the app opens with ZERO google.script.run
+   round trips. Google Sheets stays the durable source of truth; the JSON is rebuilt from it whenever
+   a change the app did NOT make (manual sheet edit, lead form, daily automation) marks it stale. */
+
+var DATA_FILE_NAME = 'crm-data.json';
+var DATA_PROP_FILEID = 'crm_data_file_id';
+var DATA_PROP_STALE = 'crm_data_stale';
+
+// All line items grouped by "DocType|DocID" → a document's lines become an O(1) in-memory lookup.
+function API_allLineItemsByDoc_() {
+  var out = {};
+  getAll('LineItems').forEach(function (li) {
+    var key = li.DocType + '|' + li.DocID;
+    (out[key] || (out[key] = [])).push({
+      id: li.LineItemID, serviceId: li.ServiceID, description: li.Description,
+      qty: API_num_(li.Qty), rate: API_num_(li.Rate), lineTotal: API_num_(li.LineTotal)
+    });
+  });
+  return out;
+}
+
+// The complete dataset the browser hydrates from. Reuses the SAME view builders as the per-screen
+// endpoints, so every shape is identical to what the front-end already expects.
+function apiSnapshot_() {
+  if (!SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SCHEMA.Clients.sheet)) return { ready: false };
+  return {
+    ready: true,
+    settings: apiGetSettings(),
+    services: apiListServices(true),      // active-only (pickers)
+    servicesAll: apiListServices(false),  // full list (price book) — removes a round trip
+    enums: API_enums_(),
+    dashboard: apiDashboard(),
+    clients: apiListClients(),
+    jobs: apiListJobs(),
+    billing: apiListBilling(),
+    lineItems: API_allLineItemsByDoc_(),
+    logo: String(settingGet(LOGO_DATA_KEY) || ''),
+    at: Date.now()
+  };
+}
+
+/* ---- Drive JSON file: the hot store. DriveApp scope is already granted (logo + PDF use it). ---- */
+function DATA_props_() { return PropertiesService.getScriptProperties(); }
+function DATA_file_() {
+  var props = DATA_props_(), id = props.getProperty(DATA_PROP_FILEID);
+  if (id) { try { var f = DriveApp.getFileById(id); if (!f.isTrashed()) return f; } catch (e) {} }
+  var it = DriveApp.getFilesByName(DATA_FILE_NAME);                 // adopt an existing file if one is there
+  if (it.hasNext()) { var ex = it.next(); props.setProperty(DATA_PROP_FILEID, ex.getId()); return ex; }
+  var nf = DriveApp.createFile(DATA_FILE_NAME, '{}', 'application/json');
+  props.setProperty(DATA_PROP_FILEID, nf.getId());
+  return nf;
+}
+function DATA_readObj_() { try { return JSON.parse(DATA_file_().getBlob().getDataAsString() || 'null'); } catch (e) { return null; } }
+function DATA_writeObj_(obj) { DATA_file_().setContent(JSON.stringify(obj)); }
+function DATA_rebuild_() { var obj = apiSnapshot_(); DATA_writeObj_(obj); DATA_clearStale_(); return obj; }
+
+/* ---- stale flag: set by any mutation the app didn't originate; consumed by doGet ---- */
+function DATA_markStale_() { try { DATA_props_().setProperty(DATA_PROP_STALE, '1'); } catch (e) {} }
+function DATA_isStale_() { return DATA_props_().getProperty(DATA_PROP_STALE) === '1'; }
+function DATA_clearStale_() { try { DATA_props_().deleteProperty(DATA_PROP_STALE); } catch (e) {} }
+
+// The snapshot for the page: rebuild from Sheets if stale or missing/invalid, else serve the file as-is.
+function DATA_forBoot_() {
+  if (!DATA_isStale_()) { var obj = DATA_readObj_(); if (obj && obj.ready) return obj; }
+  return DATA_rebuild_();
+}
+
+// Manual refresh (⟳) / post-restore reconcile: force a rebuild from Sheets so external changes
+// (hand edits, lead form, automations) are pulled in, and return the fresh snapshot to the client.
+function apiRefresh() { return DATA_rebuild_(); }
+
 function apiDashboard() {
   var today = API_today_();
   var wkStart = new Date(today); wkStart.setDate(wkStart.getDate() - wkStart.getDay());
@@ -132,6 +212,7 @@ function API_clientView_(c, ctx) {
     id: c.ClientID, name: c.Name, phone: c.Phone, email: c.Email, address: c.Address,
     status: c.Status, source: c.Source, notes: c.Notes,
     followUp: API_fmtD_(c.NextFollowUp), followUpISO: API_iso_(c.NextFollowUp),
+    createdISO: API_iso_(c.CreatedAt),   // lets the client recompute the "new leads (7d)" tile with no round trip
     lifetime: API_num_(c.LifetimeSpent),
     nextJob: upcoming ? { id: upcoming.JobID, date: API_fmtD_(upcoming.JobDate), service: upcoming.ServiceName } : null,
     openEstimate: openEst ? { id: openEst.EstimateID, total: API_num_(openEst.Total) } : null,
