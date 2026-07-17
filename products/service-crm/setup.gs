@@ -28,7 +28,7 @@ function DB_buildTable_(ss, table) {
     else if (c.t === 'datetime') col.setNumberFormat('yyyy-mm-dd hh:mm:ss');
     else if (c.t === 'money') col.setNumberFormat('$#,##0.00');
     else if (c.t === 'number') col.setNumberFormat('0.##');
-    else if (c.t === 'bool') col.insertCheckboxes();
+    else if (c.t === 'bool') col.setDataValidation(SpreadsheetApp.newDataValidation().requireCheckbox().build());   // checkbox UI WITHOUT writing FALSE into every blank row (which would inflate getLastRow and push writes ~1000 rows down)
     else if (c.t === 'enum') col.setDataValidation(
       SpreadsheetApp.newDataValidation().requireValueInList(c.values, true).setAllowInvalid(false).build());
   });

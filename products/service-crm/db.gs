@@ -299,10 +299,18 @@ function insertMany(table, inputs) {
     });
     var rows = recs.map(function (r) { return DB_objToRow_(table, r); });
     var sh = DB_sheet_(table);
-    sh.getRange(sh.getLastRow() + 1, 1, rows.length, rows[0].length).setValues(rows);
+    sh.getRange(DB_firstEmptyRow_(table), 1, rows.length, rows[0].length).setValues(rows);
     DB_invalidate_(table);
     return recs;
   });
+}
+/** First writable row = one past the last row whose PK (col A) is non-empty. Uses the data, not
+ *  getLastRow(), so stray formatting/checkbox rows never push new records down the sheet. Header is
+ *  row 1, so an empty tab returns 2. Rows are append-only + soft-deleted, so data stays contiguous. */
+function DB_firstEmptyRow_(table) {
+  var vals = DB_values_(table), lastRow = 1;
+  for (var i = 1; i < vals.length; i++) if (vals[i][0] !== '' && vals[i][0] != null) lastRow = i + 1;
+  return lastRow + 1;
 }
 /** Adopt a client-provided id: if it's free, advance the entity counter past it and use it; if it
  *  collides (a lead form / automation grabbed that number first), fall back to a freshly reserved id. */
