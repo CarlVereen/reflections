@@ -256,9 +256,13 @@ function setClientStatus(id,st){ var c=clientById(id); if(c)c.status=st; closeMo
   enqueue('apiSetClientStatus',[id,st],'Status '+st); }
 function setClientFollowUp(id){ var iso=val('cf_date'); var c=clientById(id); if(c){ c.followUpISO=iso; c.followUp=iso; } closeModal(); toast('📅 Follow-up set');
   enqueue('apiSetClientFollowUp',[id,iso],'Follow-up'); }
-function archiveClient(id){ busy('Archiving…'); api('apiArchiveClient',id).then(function(r){
+function archiveClient(id){ var c=clientById(id);
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>Archive '+esc((c||{}).name||'this client')+'?</h3>'+
+    '<div class="muted" style="margin-bottom:10px">They\'ll be hidden from your lists (kept in the sheet — restorable).</div>'+
+    '<button class="btn danger" onclick="confirmArchiveClient('+jarg(id)+')">Archive</button><button class="btn sec" onclick="openClient('+jarg(id)+')">Cancel</button>'); }
+function confirmArchiveClient(id){ busy('Archiving…'); api('apiArchiveClient',id).then(function(r){
   if(r&&r.ok){ if(S.clients)S.clients=S.clients.filter(function(c){return c.id!==id;}); closeModal(); toast('🗑️ Archived'); renderClients(); }
-  else toast((r&&r.msg)||'Could not archive'); }); }
+  else toast((r&&r.msg)||'Could not archive'); }).catch(function(e){ toast('⚠ '+(e&&e.message||e)); }); }
 function openClientForm(){
   saveClient._force=false;   // start each new-client form with a clean duplicate-confirm state
   var opts=(S.enums.clientStatus||['Lead']).map(function(s){return '<option'+(s==='Lead'?' selected':'')+'>'+s+'</option>';}).join('');
@@ -301,6 +305,7 @@ function saveClientEdit(id){
 
 /* ================= client picker ================= */
 function pickClient(cb){
+  if(!S.clients){ busy('Loading clients…'); api('apiListClients').then(function(l){ S.clients=l||[]; pickClient(cb); }).catch(function(){ toast('Couldn\'t load clients'); }); return; }
   var rows=(S.clients||[]).slice().sort(function(a,b){return a.name.localeCompare(b.name);}).map(function(c){
     return '<div class="list-item" onclick="_pickChoose('+jarg(c.id)+')"><div class="row"><div><div class="name">'+esc(c.name)+'</div><div class="meta">'+esc(c.phone||c.email||'')+'</div></div>'+pill(c.status)+'</div></div>';
   }).join('')||'<div class="empty">No clients yet.</div>';
@@ -370,9 +375,13 @@ function openJob(id){
 function setJobStatus(id,st){ var j=jobById(id); if(j)j.status=st; closeModal(); toast('✅ '+st); S.dashboard=null; renderJobs(); enqueue('apiUpdateJob',[id,{Status:st}],'Job '+st); }
 function rescheduleJob(id){ var iso=val('jb_date'), t=val('jb_time'); var j=jobById(id); if(j){ j.dateISO=iso; j.date=iso; j.time=t; } closeModal(); toast('📅 Rescheduled'); S.dashboard=null; renderJobs();
   enqueue('apiUpdateJob',[id,{date:iso,time:t}],'Reschedule'); }
-function archiveJob(id){ busy('Archiving…'); api('apiArchiveJob',id).then(function(r){
+function archiveJob(id){ var j=jobById(id);
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>Archive this job?</h3>'+
+    '<div class="muted" style="margin-bottom:10px">'+esc((j||{}).client||'')+' · '+esc((j||{}).date||'')+' — hidden from your lists (kept in the sheet).</div>'+
+    '<button class="btn danger" onclick="confirmArchiveJob('+jarg(id)+')">Archive</button><button class="btn sec" onclick="openJob('+jarg(id)+')">Cancel</button>'); }
+function confirmArchiveJob(id){ busy('Archiving…'); api('apiArchiveJob',id).then(function(r){
   if(r&&r.ok){ if(S.jobs)S.jobs=S.jobs.filter(function(j){return j.id!==id;}); closeModal(); toast('🗑️ Archived'); S.dashboard=null; renderJobs(); }
-  else toast((r&&r.msg)||'Could not archive'); }); }
+  else toast((r&&r.msg)||'Could not archive'); }).catch(function(e){ toast('⚠ '+(e&&e.message||e)); }); }
 
 /* ================= BILLING ================= */
 var BILL_TAB='quotes', BILL_ORDER=['quotes','outstanding','paid','closedq'];
@@ -400,26 +409,31 @@ function openDoc(kind,id,_retried){
     return; }
   var itemsId='items_'+String(id).replace(/[^A-Za-z0-9]/g,'');
   var na=jarg(id);
-  var btns='';
+  // Full status control so any mis-status (incl. an accidental "Paid") is one tap to correct.
+  var enums=kind==='INVOICE'?(S.enums.invStatus||[]):(S.enums.estStatus||[]);
+  var statusRow='<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+enums.map(function(st){
+    return '<button class="btn sm '+(st===d.status?'':'sec')+'" onclick="setDocStatus(\''+kind+'\','+na+',\''+st+'\')">'+st+'</button>'; }).join(' ')+'</div>';
+  var btns;
   if(kind==='ESTIMATE'){
     btns='<button class="btn" onclick="sendDoc(\'ESTIMATE\','+na+')">Send estimate</button>'+
-      '<button class="btn ghost" onclick="approveEstimate('+na+')">Approve → invoice + job</button>'+
-      '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Accepted\')">Mark accepted</button><button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Declined\')">Mark declined</button></div>'+
+      '<button class="btn ghost" onclick="approveEstimate('+na+')">Approve → invoice + job</button>'+statusRow+
       '<button class="btn danger" onclick="deleteDoc(\'ESTIMATE\','+na+')">Delete quote</button>';
   } else {
-    btns='<button class="btn" onclick="sendDoc(\'INVOICE\','+na+')">Send invoice</button>'+
-      (d.status!=='Paid'?'<button class="btn sec" onclick="markPaid('+na+')">Mark paid</button>':'')+
+    btns='<button class="btn" onclick="sendDoc(\'INVOICE\','+na+')">Send invoice</button>'+statusRow+
       '<button class="btn danger" onclick="deleteDoc(\'INVOICE\','+na+')">Delete invoice</button>';
   }
   var totals='<div class="subline"><span>Subtotal</span><span>'+money(d.subtotal)+'</span></div>'+(d.tax>0?'<div class="subline"><span>Tax</span><span>'+money(d.tax)+'</span></div>':'')+'<div class="totalbar"><span>Total</span><span>'+money(d.total)+'</span></div>';
+  var dateBit=d.dateB?' · '+(kind==='INVOICE'?'due ':'valid to ')+esc(d.dateB):'';
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+(kind==='INVOICE'?'Invoice':'Estimate')+' '+esc(id)+'</h3>'+
-    '<div class="muted">'+esc(d.client||'')+' · '+esc(d.status)+(d.issueDate?' · '+esc(d.issueDate):'')+'</div>'+
+    '<div class="muted">'+esc(d.client||'')+' · '+esc(d.status)+(d.issueDate?' · '+esc(d.issueDate):'')+dateBit+'</div>'+
     '<div class="card" style="margin-top:12px"><div id="'+itemsId+'"><div class="muted">Loading items…</div></div>'+totals+'</div>'+
     '<button class="btn sec" onclick="editLines(\''+kind+'\','+na+')">Edit line items</button>'+btns);
   api('apiGetDocLines',kind,id).then(function(items){ var el=document.getElementById(itemsId); if(!el)return;
     el.innerHTML=(items&&items.length)?items.map(function(it){ return '<div class="row" style="padding:4px 0"><span>'+esc(it.description)+' ×'+it.qty+'</span><span>'+money(it.lineTotal)+'</span></div>'; }).join(''):'<div class="muted">No line items.</div>'; });
 }
-function setDocStatus(kind,id,st){ var d=docById(kind,id); if(d)d.status=st; closeModal(); toast('✅ '+st); renderBilling(); enqueue('apiUpdateDoc',[kind,id,{status:st}],'Doc '+st); }
+function setDocStatus(kind,id,st){ var d=docById(kind,id); if(d)d.status=st; closeModal(); toast('✅ '+st);
+  if(kind==='INVOICE'){ S.dashboard=null; S.clients=null; }   // paid status feeds lifetime + dashboard
+  renderBilling(); enqueue('apiUpdateDoc',[kind,id,{status:st}],'Status '+st); }
 function markPaid(id){ var d=docById('INVOICE',id); if(d)d.status='Paid'; closeModal(); toast('💰 Paid'); S.dashboard=null; S.clients=null; renderBilling(); enqueue('apiMarkInvoicePaid',[id],'Mark paid'); }
 function deleteDoc(kind,id){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Delete '+esc(id)+'?</h3><div class="muted" style="margin-bottom:10px">This archives the '+(kind==='INVOICE'?'invoice':'quote')+' and its line items.</div>'+
@@ -442,10 +456,13 @@ function estimateBuilder(clientId){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New estimate</h3>'+
     '<div class="muted">Client: <b>'+esc((clientById(clientId)||{}).name||clientId)+'</b></div>'+
     '<h2 class="sec">Line items</h2><div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
-    '<div class="totalbar"><span>Subtotal</span><span id="q_total"></span></div>'+
+    qTotalsHtml()+
     '<button class="btn" onclick="saveEstimate('+jarg(clientId)+')">Create estimate</button>');
   renderQLines();
 }
+function qTotalsHtml(){ return '<div class="subline"><span>Subtotal</span><span id="q_sub"></span></div>'+
+  '<div class="subline"><span id="q_taxlbl">Tax</span><span id="q_tax"></span></div>'+
+  '<div class="totalbar"><span>Total</span><span id="q_total"></span></div>'; }
 function lineServiceSelect(i,sel){
   return '<select onchange="QLINES['+i+'].serviceId=this.value;calcQ()"><option value="">Service…</option>'+
     (S.services||[]).map(function(s){return '<option value="'+esc(s.id)+'"'+(s.id===sel?' selected':'')+'>'+esc(s.name)+' · '+money(s.rate)+'</option>';}).join('')+'</select>';
@@ -460,7 +477,13 @@ function renderQLines(){
 }
 function addQLine(){ QLINES.push({serviceId:'',qty:1}); renderQLines(); }
 function delQLine(i){ QLINES.splice(i,1); if(!QLINES.length)QLINES.push({serviceId:'',qty:1}); renderQLines(); }
-function calcQ(){ var sub=0; QLINES.forEach(function(l){ sub+=(Number(l.qty)||0)*svcRate(l.serviceId); }); document.getElementById('q_total').textContent=money(sub); }
+function calcQ(){
+  var sub=0; QLINES.forEach(function(l){ sub+=(Number(l.qty)||0)*svcRate(l.serviceId); });
+  var rate=Number(S.settings['Sales tax %'])||0, tax=Math.round(sub*rate)/100, total=sub+tax;
+  var set=function(id,v){ var e=document.getElementById(id); if(e)e.textContent=money(v); };
+  set('q_sub',sub); set('q_tax',tax); set('q_total',total);
+  var lbl=document.getElementById('q_taxlbl'); if(lbl)lbl.textContent='Tax'+(rate?' ('+rate+'%)':'');
+}
 function saveEstimate(clientId){
   var lines=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(function(l){return {serviceId:l.serviceId,qty:Number(l.qty)};});
   if(!lines.length){ toast('Add a line item'); return; }
@@ -473,7 +496,7 @@ function editLines(kind,id){
     QLINES=(items&&items.length)?items.map(function(it){return {serviceId:it.serviceId,qty:it.qty};}):[{serviceId:'',qty:1}];
     openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit line items · '+esc(id)+'</h3>'+
       '<div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
-      '<div class="totalbar"><span>Subtotal</span><span id="q_total"></span></div>'+
+      qTotalsHtml()+
       '<button class="btn" onclick="saveLines(\''+kind+'\','+jarg(id)+')">Save</button>');
     renderQLines();
   });
