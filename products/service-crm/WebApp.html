@@ -112,7 +112,23 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
 <div class="toast" id="toast"></div>
 
 <script>
-var BUILD='2026-07-17d-swr+durablequeue';
+var BUILD='2026-07-17e-perf-instrumentation';
+var BOOT_T0=(window.performance&&performance.now)?0:Date.now();   // browser paint→script start baseline (perf.now is page-relative)
+var BOOT_MS=null;                                                  // filled once boot() finishes hydrating
+/* ================= perf instrumentation (Stage 0) =================
+   Times every google.script.run round trip so we can SEE where the seconds go on the real device
+   instead of guessing. Toggle verbose logging with ?perf=1 or localStorage crm_perf=1.
+   crmPerf() prints a per-call summary; the Settings screen shows a live one-line readout. */
+function _now(){ return (window.performance&&performance.now)?performance.now():Date.now(); }
+var PERF={ calls:[], on:false };
+try{ PERF.on=/[?&]perf=1/.test(location.search)||localStorage.getItem('crm_perf')==='1'; }catch(e){}
+function perfLog(fn,ms,ok){ PERF.calls.push({fn:fn,ms:Math.round(ms),ok:ok,at:Date.now()}); if(PERF.calls.length>300)PERF.calls.shift();
+  if(PERF.on&&window.console)console.log('[api]',fn,Math.round(ms)+'ms',ok?'ok':'ERR'); }
+function crmPerf(){ var m={}; PERF.calls.forEach(function(c){ var a=m[c.fn]||(m[c.fn]={n:0,sum:0,max:0}); a.n++; a.sum+=c.ms; a.max=Math.max(a.max,c.ms); });
+  Object.keys(m).forEach(function(k){ m[k].avg=Math.round(m[k].sum/m[k].n); }); if(window.console&&console.table)console.table(m); return m; }
+function perfReadout(){ var n=PERF.calls.length, sum=0; PERF.calls.forEach(function(c){sum+=c.ms;});
+  var kb=null; try{ var b=localStorage.getItem(CACHE_KEY); if(b)kb=Math.round(b.length/1024); }catch(e){}
+  return (BOOT_MS!=null?('boot '+BOOT_MS+'ms · '):'')+n+' api calls'+(n?' · avg '+Math.round(sum/n)+'ms':'')+(kb!=null?' · cache '+kb+'KB':''); }
 /* ================= state + api ================= */
 var S = { settings:{}, services:[], enums:{}, dashboard:null, clients:null, jobs:null, billing:null, logo:undefined };
 var CUR='$';
@@ -159,9 +175,11 @@ function loadCache(){
 function clearCache(){ if(LS_OK){ try{ localStorage.removeItem(CACHE_KEY); }catch(e){} } }
 function api(fn){
   var args=[].slice.call(arguments,1);
+  var t0=_now();
   return new Promise(function(res,rej){
-    if(typeof google==='undefined'||!google.script||!google.script.run){ return res(mock(fn,args)); }
-    var r=google.script.run.withSuccessHandler(res).withFailureHandler(function(e){rej(e);});
+    var fin=function(ok,v){ perfLog(fn,_now()-t0,ok); (ok?res:rej)(v); };
+    if(typeof google==='undefined'||!google.script||!google.script.run){ return fin(true,mock(fn,args)); }
+    var r=google.script.run.withSuccessHandler(function(v){fin(true,v);}).withFailureHandler(function(e){fin(false,e);});
     r[fn].apply(r,args);
   });
 }
@@ -258,12 +276,12 @@ function boot(skipCache){
   // 1) Paint instantly from the local save if we have one (no network wait).
   //    skipCache=true (manual ⟳) forces a clean server refresh instead of re-hydrating stale data.
   var hadCache=!skipCache && loadCache();
-  if(hadCache){ applyBootChrome(); renderHome(); }
+  if(hadCache){ if(BOOT_MS==null)BOOT_MS=Math.round(_now()-BOOT_T0); applyBootChrome(); renderHome(); }
   // 2) Refresh from the server in the background and re-persist.
   api('apiBootstrap').then(function(b){
     if(!b||!b.ready){ if(!hadCache) document.getElementById('homeBody').innerHTML='<div class="empty">Run <b>⚡ CRM ▸ Set up / rebuild database</b> in the sheet first, then reload.</div>'; return; }
     S.settings=b.settings||{}; S.services=b.services||[]; S.enums=b.enums||{}; S.dashboard=b.dashboard;
-    _fresh.home=Date.now(); applyBootChrome(); renderHome(); saveCache();
+    if(BOOT_MS==null)BOOT_MS=Math.round(_now()-BOOT_T0); _fresh.home=Date.now(); applyBootChrome(); renderHome(); saveCache();
   }).catch(function(e){ if(!hadCache) document.getElementById('homeBody').innerHTML='<div class="empty">Could not load: '+esc(e&&e.message||e)+'</div>'; });
 }
 /** Apply the settings-driven chrome (currency, accent, business name) from current S.settings. */
@@ -694,7 +712,8 @@ function renderSettings(){
     '<h2 class="sec">Company logo</h2><div class="muted" style="margin-bottom:8px">Shown on PDF estimates &amp; invoices.</div><div id="logoPreview">'+logoPreviewHtml()+'</div>'+
     '<label class="btn sec" style="cursor:pointer">Choose logo…<input type="file" id="set_logoFile" accept="image/png,image/jpeg" style="display:none" onchange="onLogoPick(this)"></label>'+
     '<button class="btn" onclick="saveSettings()">Save settings</button>'+
-    '<div class="muted" style="text-align:center;margin-top:18px;opacity:.7">Build '+esc(BUILD)+'</div>';
+    '<div class="muted" style="text-align:center;margin-top:18px;opacity:.7">Build '+esc(BUILD)+'</div>'+
+    '<div class="muted" style="text-align:center;margin-top:4px;opacity:.7;font-size:11px" onclick="crmPerf()">⏱ '+esc(perfReadout())+'</div>';
   document.getElementById('settingsBody').innerHTML=h;
   if(S.logo===undefined) fetchLogo();
 }
