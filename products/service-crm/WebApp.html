@@ -115,7 +115,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
      round trips. Server-rendered via HtmlService template; a raw '{}' when served statically/in preview. -->
 <script type="application/json" id="__BOOT__"><?!= boot ?></script>
 <script>
-var BUILD='2026-07-17f-localfirst';
+var BUILD='2026-07-17g-clientids';
 var BOOT_T0=(window.performance&&performance.now)?0:Date.now();   // browser paint→script start baseline (perf.now is page-relative)
 var BOOT_MS=null;                                                  // filled once boot() finishes hydrating
 // The inlined dataset (see the #__BOOT__ data block). Parsed once; null if served statically or on a
@@ -137,7 +137,7 @@ function perfReadout(){ var n=PERF.calls.length, sum=0; PERF.calls.forEach(funct
   var kb=null; try{ var b=localStorage.getItem(CACHE_KEY); if(b)kb=Math.round(b.length/1024); }catch(e){}
   return (BOOT_MS!=null?('boot '+BOOT_MS+'ms · '):'')+n+' api calls'+(n?' · avg '+Math.round(sum/n)+'ms':'')+(kb!=null?' · cache '+kb+'KB':''); }
 /* ================= state + api ================= */
-var S = { settings:{}, services:[], servicesAll:[], enums:{}, dashboard:null, clients:null, jobs:null, billing:null, lineItems:{}, logo:undefined };
+var S = { settings:{}, services:[], servicesAll:[], enums:{}, dashboard:null, clients:null, jobs:null, billing:null, lineItems:{}, counters:{}, logo:undefined };
 var CUR='$';
 
 /* ================= local save (localStorage snapshot of the dataset) =================
@@ -145,7 +145,7 @@ var CUR='$';
    On boot we hydrate S from this snapshot and paint immediately, THEN refresh from the
    server in the background. Best-effort only — every access is guarded so private-mode,
    quota, or a corrupt blob can never break the app; the server stays the source of truth. */
-var CACHE_KEY='crm2_cache', CACHE_VER='2';   // bump CACHE_VER whenever the shape of S changes → auto-invalidates old blobs
+var CACHE_KEY='crm2_cache', CACHE_VER='3';   // bump CACHE_VER whenever the shape of S changes → auto-invalidates old blobs
 var _cacheT=null;
 function lsAvail(){ try{ var k='__crmt'; localStorage.setItem(k,'1'); localStorage.removeItem(k); return true; }catch(e){ return false; } }
 var LS_OK=lsAvail();
@@ -156,7 +156,7 @@ function saveCache(now){
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({
       v:CACHE_VER, at:Date.now(),
       settings:S.settings, services:S.services, servicesAll:S.servicesAll, enums:S.enums,
-      dashboard:S.dashboard, clients:S.clients, jobs:S.jobs, billing:S.billing, lineItems:S.lineItems, logo:S.logo
+      dashboard:S.dashboard, clients:S.clients, jobs:S.jobs, billing:S.billing, lineItems:S.lineItems, counters:S.counters, logo:S.logo
     })); }catch(e){ /* quota / serialize failure — cache is best-effort, ignore */ }
   };
   clearTimeout(_cacheT);
@@ -177,6 +177,7 @@ function loadCache(){
     if(c.jobs!==undefined)      S.jobs=c.jobs;
     if(c.billing!==undefined)   S.billing=c.billing;
     if(c.lineItems!==undefined) S.lineItems=c.lineItems;
+    if(c.counters)              S.counters=c.counters;
     if(c.logo!==undefined)      S.logo=c.logo;
     return !!(S.settings && Object.keys(S.settings).length);
   }catch(e){ return false; }
@@ -205,6 +206,18 @@ function remapPending(tempId,realId){
   SYNC.q.forEach(function(op){ try{ op.args=JSON.parse(JSON.stringify(op.args).split(tempId).join(realId)); }catch(e){} });
   persistQueue();
 }
+/* Client-side sequential IDs. Single-writer means the app can assign the next real CL/EST/INV number
+   itself (seeded from the boot counters) — no round trip, no "temp" placeholder, invoice numbers stay
+   sequential. The server adopts the id if it's free and only hands back a corrected one on a rare
+   collision (a lead form / automation grabbed that number), which advanceCounter + remapPending absorb.
+   Falls back to a tmp id (server assigns + remaps) if no counter is available. */
+function padNum(n,w){ n=String(n); while(n.length<w) n='0'+n; return n; }
+function nextLocalId(entity){
+  var c=S.counters&&S.counters[entity];
+  if(!c||!c.prefix) return 'tmp'+(++SYNC.seq);
+  var id=c.prefix+'-'+padNum(c.next,c.pad||0); c.next++; return id;
+}
+function advanceCounter(entity,id){ var c=S.counters&&S.counters[entity]; if(!c)return; var n=parseInt(String(id).replace(/^.*?-/,''),10); if(isFinite(n)&&n+1>c.next)c.next=n+1; }
 /* ---- durable write queue: survives reload/close mid-sync ----
    Only the replayable fields are stored (fn/args/label/tries); the optimistic-reconcile callbacks
    are functions and can't serialize. After a restored queue drains we do one authoritative refresh
@@ -317,7 +330,7 @@ function hydrateFromSnapshot(b){
   S.settings=b.settings||{}; S.services=b.services||[]; S.servicesAll=b.servicesAll||b.services||[];
   S.enums=b.enums||{}; S.dashboard=b.dashboard;
   S.clients=b.clients||[]; S.jobs=b.jobs||[]; S.billing=b.billing||{estimates:[],invoices:[]};
-  S.lineItems=b.lineItems||{}; if(b.logo!==undefined)S.logo=b.logo;
+  S.lineItems=b.lineItems||{}; S.counters=b.counters||{}; if(b.logo!==undefined)S.logo=b.logo;
   var t=b.at||Date.now(); _fresh={home:t,clients:t,jobs:t,billing:t};
   saveCache();
 }
@@ -348,6 +361,14 @@ function refreshAll(){
   api('apiRefresh').then(function(b){ if(!b||!b.ready){ toast('Couldn\'t refresh'); return; }
     hydrateFromSnapshot(b); applyBootChrome(); nav(CUR_SCREEN); toast('✓ Up to date'); })
     .catch(function(){ toast('Couldn\'t refresh'); }); }
+// Re-render whatever screen is currently showing. A mutation reached from Home's week-jobs / follow-ups
+// must refresh HOME (recomputing the dashboard), not the jobs/clients screen it "belongs" to.
+function rerender(){
+  if(CUR_SCREEN==='home'){ S.dashboard=computeDashboard(); renderHome(); }
+  else if(CUR_SCREEN==='jobs'){ renderJobs(); }
+  else if(CUR_SCREEN==='clients'){ renderClients(); }
+  else if(CUR_SCREEN==='billing'){ renderBilling(); }
+}
 
 /* ================= HOME ================= */
 // The dashboard is DERIVED from the in-memory dataset (S) — recomputed locally, never fetched. That
@@ -431,17 +452,17 @@ function openClient(id){
     '<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+statusBtns+'</div>'+
     '<div class="btnrow"><button class="btn sec" onclick="openClientEdit('+jarg(id)+')">Edit</button><button class="btn danger" onclick="archiveClient('+jarg(id)+')">Archive</button></div>');
 }
-function setClientStatus(id,st){ var c=clientById(id); if(c)c.status=st; closeModal(); toast('✅ Status → '+st); renderClients();
+function setClientStatus(id,st){ var c=clientById(id); if(c)c.status=st; closeModal(); toast('✅ Status → '+st); S.dashboard=null; rerender();
   enqueue('apiSetClientStatus',[id,st],'Status '+st); }
-function setClientFollowUp(id){ var iso=val('cf_date'); var c=clientById(id); if(c){ c.followUpISO=iso; c.followUp=iso; } closeModal(); toast('📅 Follow-up set');
+function setClientFollowUp(id){ var iso=val('cf_date'); var c=clientById(id); if(c){ c.followUpISO=iso; c.followUp=iso?fmtMDfromISO(iso):''; } closeModal(); toast('📅 Follow-up set'); S.dashboard=null; rerender();
   enqueue('apiSetClientFollowUp',[id,iso],'Follow-up'); }
 function archiveClient(id){ var c=clientById(id);
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Archive '+esc((c||{}).name||'this client')+'?</h3>'+
     '<div class="muted" style="margin-bottom:10px">They\'ll be hidden from your lists (kept in the sheet — restorable).</div>'+
     '<button class="btn danger" onclick="confirmArchiveClient('+jarg(id)+')">Archive</button><button class="btn sec" onclick="openClient('+jarg(id)+')">Cancel</button>'); }
-function confirmArchiveClient(id){ if(isTemp(id)){ toast('⏳ Finishing save — try again in a moment'); return; } busy('Archiving…'); api('apiArchiveClient',id).then(function(r){
-  if(r&&r.ok){ if(S.clients)S.clients=S.clients.filter(function(c){return c.id!==id;}); closeModal(); toast('🗑️ Archived'); renderClients(); }
-  else toast((r&&r.msg)||'Could not archive'); }).catch(function(e){ toast('⚠ '+(e&&e.message||e)); }); }
+function confirmArchiveClient(id){ var c=clientById(id); if(!c)return;   // optimistic: remove now, queue the write, roll back on rejection
+  if(S.clients)S.clients=S.clients.filter(function(x){return x!==c;}); closeModal(); toast('🗑️ Archived'); S.dashboard=null; rerender();
+  enqueue('apiArchiveClient',[id],'Archive '+(c.name||'client'),{ onFail:function(msg){ S.clients.push(c); S.dashboard=null; rerender(); toast('⚠ '+(msg||'Could not archive')); } }); }
 function openClientForm(){
   saveClient._force=false;   // start each new-client form with a clean duplicate-confirm state
   var opts=(S.enums.clientStatus||['Lead']).map(function(s){return '<option'+(s==='Lead'?' selected':'')+'>'+s+'</option>';}).join('');
@@ -460,10 +481,11 @@ function saveClient(cb){
   var dup=localDupClients(form.email,form.phone);
   if(dup.length && !saveClient._force){ saveClient._force=true; toast('⚠ Possible duplicate: '+dup[0].name+' — tap Add again to confirm'); return; }
   saveClient._force=false;
-  var temp={id:'tmp'+(++SYNC.seq),_saving:true,name:name,phone:form.phone,email:form.email,address:form.address,status:form.status,source:form.source,followUp:'',followUpISO:'',lifetime:0,nextJob:null,openEstimate:null,unpaidInvoice:null};
-  S.clients=S.clients||[]; S.clients.push(temp); closeModal(); toast('✅ Client added'); if(CUR_SCREEN==='clients')renderClients();
+  var id=nextLocalId('Clients'); form.id=id;   // real CL id now — no temp, no waiting on the server
+  var temp={id:id,_saving:true,name:name,phone:form.phone,email:form.email,address:form.address,status:form.status,source:form.source,followUp:'',followUpISO:'',lifetime:0,nextJob:null,openEstimate:null,unpaidInvoice:null};
+  S.clients=S.clients||[]; S.clients.push(temp); closeModal(); toast('✅ Client added'); if(CUR_SCREEN==='clients')renderClients(); saveCache();
   enqueue('apiCreateClient',[form],'Client '+name,{
-    onOk:function(r){ if(r&&r.id){ var old=temp.id; temp.id=r.id; temp._saving=false; remapPending(old,r.id); if(r.client)Object.assign(temp,r.client); if(CUR_SCREEN==='clients')renderClients(); if(cb)cb(r.id); } },
+    onOk:function(r){ temp._saving=false; if(r&&r.id&&r.id!==id){ remapPending(id,r.id); advanceCounter('Clients',r.id); temp.id=r.id; } if(r&&r.client)Object.assign(temp,r.client); if(CUR_SCREEN==='clients')renderClients(); saveCache(); if(cb)cb(temp.id); },
     onFail:function(){ if(S.clients)S.clients=S.clients.filter(function(x){return x!==temp;}); if(CUR_SCREEN==='clients')renderClients(); }});
 }
 function openClientEdit(id){
@@ -479,7 +501,7 @@ function saveClientEdit(id){
   var c=clientById(id); if(!c)return; var name=val('ec_name'); if(!name){toast('Name required');return;}
   var patch={Name:name,Phone:val('ec_phone'),Email:val('ec_email'),Address:val('ec_address'),Source:val('ec_source')};
   c.name=name; c.phone=patch.Phone; c.email=patch.Email; c.address=patch.Address; c.source=patch.Source;
-  closeModal(); toast('✅ Updated'); renderClients(); enqueue('apiUpdateClient',[id,patch],'Edit '+name);
+  closeModal(); toast('✅ Updated'); rerender(); enqueue('apiUpdateClient',[id,patch],'Edit '+name);
 }
 
 /* ================= client picker ================= */
@@ -538,10 +560,10 @@ function saveJob(){
   var serviceId=val('nj_service'); if(!serviceId){toast('Pick a service');return;}
   var form={clientId:clientId,serviceId:serviceId,date:val('nj_date'),time:val('nj_time'),recurring:val('nj_recurring')||'None'};
   var temp={id:'tmp'+(++SYNC.seq),_saving:true,clientId:clientId,client:(clientById(clientId)||{}).name||'',serviceId:serviceId,service:svcName(serviceId),date:form.date,dateISO:form.date,time:form.time,status:'Scheduled',recurring:form.recurring};
-  S.jobs=S.jobs||[]; S.jobs.push(temp); S.dashboard=null; closeModal(); toast('✅ Job added'); if(CUR_SCREEN==='jobs')renderJobs();
+  S.jobs=S.jobs||[]; S.jobs.push(temp); S.dashboard=null; closeModal(); toast('✅ Job added'); rerender(); saveCache();
   enqueue('apiCreateJob',[form],'Job',{
-    onOk:function(r){ if(r&&r.id){ var old=temp.id; temp.id=r.id; temp._saving=false; remapPending(old,r.id); if(r.job)Object.assign(temp,r.job); if(CUR_SCREEN==='jobs')renderJobs(); } },
-    onFail:function(){ if(S.jobs)S.jobs=S.jobs.filter(function(x){return x!==temp;}); S.dashboard=null; if(CUR_SCREEN==='jobs')renderJobs(); }});
+    onOk:function(r){ if(r&&r.id){ var old=temp.id; temp.id=r.id; temp._saving=false; remapPending(old,r.id); if(r.job)Object.assign(temp,r.job); rerender(); saveCache(); } },
+    onFail:function(){ if(S.jobs)S.jobs=S.jobs.filter(function(x){return x!==temp;}); S.dashboard=null; rerender(); }});
 }
 function openJob(id){
   var j=jobById(id); if(!j)return;   // temps are viewable/editable now — status & reschedule queue and remap
@@ -553,16 +575,16 @@ function openJob(id){
     '<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+statusBtns+'</div>'+
     '<button class="btn danger" onclick="archiveJob('+jarg(id)+')">Archive job</button>');
 }
-function setJobStatus(id,st){ var j=jobById(id); if(j)j.status=st; closeModal(); toast('✅ '+st); S.dashboard=null; renderJobs(); enqueue('apiUpdateJob',[id,{Status:st}],'Job '+st); }
-function rescheduleJob(id){ var iso=val('jb_date'), t=val('jb_time'); var j=jobById(id); if(j){ j.dateISO=iso; j.date=iso; j.time=t; } closeModal(); toast('📅 Rescheduled'); S.dashboard=null; renderJobs();
+function setJobStatus(id,st){ var j=jobById(id); if(j)j.status=st; closeModal(); toast('✅ '+st); S.dashboard=null; rerender(); enqueue('apiUpdateJob',[id,{Status:st}],'Job '+st); }
+function rescheduleJob(id){ var iso=val('jb_date'), t=val('jb_time'); var j=jobById(id); if(j){ j.dateISO=iso; j.date=iso; j.time=t; } closeModal(); toast('📅 Rescheduled'); S.dashboard=null; rerender();
   enqueue('apiUpdateJob',[id,{date:iso,time:t}],'Reschedule'); }
 function archiveJob(id){ var j=jobById(id);
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Archive this job?</h3>'+
     '<div class="muted" style="margin-bottom:10px">'+esc((j||{}).client||'')+' · '+esc((j||{}).date||'')+' — hidden from your lists (kept in the sheet).</div>'+
     '<button class="btn danger" onclick="confirmArchiveJob('+jarg(id)+')">Archive</button><button class="btn sec" onclick="openJob('+jarg(id)+')">Cancel</button>'); }
-function confirmArchiveJob(id){ if(isTemp(id)){ toast('⏳ Finishing save — try again in a moment'); return; } busy('Archiving…'); api('apiArchiveJob',id).then(function(r){
-  if(r&&r.ok){ if(S.jobs)S.jobs=S.jobs.filter(function(j){return j.id!==id;}); closeModal(); toast('🗑️ Archived'); S.dashboard=null; renderJobs(); }
-  else toast((r&&r.msg)||'Could not archive'); }).catch(function(e){ toast('⚠ '+(e&&e.message||e)); }); }
+function confirmArchiveJob(id){ var j=jobById(id); if(!j)return;   // optimistic: remove now, queue the write, roll back on rejection
+  if(S.jobs)S.jobs=S.jobs.filter(function(x){return x!==j;}); closeModal(); toast('🗑️ Archived'); S.dashboard=null; rerender();
+  enqueue('apiArchiveJob',[id],'Archive job',{ onFail:function(msg){ S.jobs.push(j); S.dashboard=null; rerender(); toast('⚠ '+(msg||'Could not archive')); } }); }
 
 /* ================= BILLING ================= */
 var BILL_TAB='quotes', BILL_ORDER=['quotes','outstanding','paid','closedq'];
@@ -630,15 +652,15 @@ function openDoc(kind,id,_retried){
 }
 function setDocStatus(kind,id,st){ var d=docById(kind,id); if(d)d.status=st; closeModal(); toast('✅ '+st);
   if(kind==='INVOICE'){ S.dashboard=null; }   // paid status feeds the (locally recomputed) dashboard
-  renderBilling(); enqueue('apiUpdateDoc',[kind,id,{status:st}],'Status '+st); }
-function markPaid(id){ var d=docById('INVOICE',id); if(d)d.status='Paid'; closeModal(); toast('💰 Paid'); S.dashboard=null; renderBilling(); enqueue('apiMarkInvoicePaid',[id],'Mark paid'); }
+  rerender(); enqueue('apiUpdateDoc',[kind,id,{status:st}],'Status '+st); }
+function markPaid(id){ var d=docById('INVOICE',id); if(d)d.status='Paid'; closeModal(); toast('💰 Paid'); S.dashboard=null; rerender(); enqueue('apiMarkInvoicePaid',[id],'Mark paid'); }
 function deleteDoc(kind,id){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Delete '+esc(id)+'?</h3><div class="muted" style="margin-bottom:10px">This archives the '+(kind==='INVOICE'?'invoice':'quote')+' and its line items.</div>'+
     '<button class="btn danger" onclick="confirmDelete(\''+kind+'\','+jarg(id)+')">Delete</button><button class="btn sec" onclick="openDoc(\''+kind+'\','+jarg(id)+')">Cancel</button>');
 }
-function confirmDelete(kind,id){ var arr=kind==='INVOICE'?'invoices':'estimates'; if(S.billing&&S.billing[arr])S.billing[arr]=S.billing[arr].filter(function(d){return d.id!==id;}); S.dashboard=null; delete (S.lineItems||{})[docLinesKey(kind,id)]; closeModal(); toast('🗑️ Deleted'); renderBilling(); enqueue('apiDeleteDoc',[kind,id],'Delete doc'); }
+function confirmDelete(kind,id){ var arr=kind==='INVOICE'?'invoices':'estimates'; if(S.billing&&S.billing[arr])S.billing[arr]=S.billing[arr].filter(function(d){return d.id!==id;}); S.dashboard=null; delete (S.lineItems||{})[docLinesKey(kind,id)]; closeModal(); toast('🗑️ Deleted'); rerender(); enqueue('apiDeleteDoc',[kind,id],'Delete doc'); }
 function sendDoc(kind,id){
-  if(isTemp(id)){ toast('⏳ Finishing save — try again in a moment'); return; }
+  var doc=docById(kind,id); if((doc&&doc._saving)||isTemp(id)){ toast('⏳ Finishing save — try again in a moment'); return; }   // PDF needs the record on the server
   busy('Building PDF…');
   api('apiSendDoc',kind,id).then(function(r){ closeModal();
     if(r&&r.ok){ var d=docById(kind,id); if(d&&d.status==='Draft')d.status='Sent'; renderBilling(); toast(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive'); }
@@ -652,18 +674,20 @@ function approveEstimate(id){
 function doApprove(id){
   var iso=val('ap_date'); var est=docById('ESTIMATE',id);
   if(!est){ toast('Estimate not found'); return; }
-  var prev=est.status; est.status='Accepted';   // apply locally first (works even if the estimate is still a temp)
-  var inv={kind:'INVOICE',id:'tmp'+(++SYNC.seq),_saving:true,clientId:est.clientId,client:est.client,taxRate:est.taxRate,subtotal:est.subtotal,tax:est.tax,total:est.total,status:'Draft',issueDate:fmtMD()};
+  var prev=est.status; est.status='Accepted';   // apply locally first
+  var invId=nextLocalId('Invoices');   // real INV number now — shows immediately, never renumbers
+  var inv={kind:'INVOICE',id:invId,_saving:true,clientId:est.clientId,client:est.client,taxRate:est.taxRate,subtotal:est.subtotal,tax:est.tax,total:est.total,status:'Draft',issueDate:fmtMD()};
   S.billing=S.billing||{estimates:[],invoices:[]}; S.billing.invoices=S.billing.invoices||[]; S.billing.invoices.push(inv);
-  var estLines=localLines('ESTIMATE',id); if(estLines) setLocalLines('INVOICE',inv.id,estLines);   // invoice inherits the quoted lines
+  var estLines=localLines('ESTIMATE',id); if(estLines) setLocalLines('INVOICE',invId,estLines);   // invoice inherits the quoted lines
   var jt=null;
   if(S.jobs){ jt={id:'tmp'+(++SYNC.seq),_saving:true,clientId:est.clientId,client:est.client,serviceId:'',service:'',date:fmtMDfromISO(iso),dateISO:iso,time:'',status:'Scheduled',recurring:'None'}; S.jobs.push(jt); }
   var c=clientById(est.clientId); if(c&&c.status==='Lead')c.status='Active';   // approval promotes the client
   S.dashboard=null;
   closeModal(); toast('✅ Approving — invoice + job scheduled'); nav('billing'); saveCache();
-  enqueue('apiApproveEstimate',[id,iso],'Approve estimate',{   // Sheets write runs in the background
+  enqueue('apiApproveEstimate',[id,iso,null,{invoiceId:invId}],'Approve estimate',{   // Sheets write runs in the background
     onOk:function(r){
-      if(r&&r.invoiceId){ var oi=inv.id; reKeyLines('INVOICE',oi,r.invoiceId); inv.id=r.invoiceId; remapPending(oi,r.invoiceId); } inv._saving=false;
+      inv._saving=false;
+      if(r&&r.invoiceId&&r.invoiceId!==invId){ reKeyLines('INVOICE',invId,r.invoiceId); remapPending(invId,r.invoiceId); advanceCounter('Invoices',r.invoiceId); inv.id=r.invoiceId; }
       if(jt&&r&&r.jobId){ var oj=jt.id; jt.id=r.jobId; remapPending(oj,r.jobId); } if(jt)jt._saving=false;
       if(CUR_SCREEN==='billing')renderBilling(); saveCache(); },
     onFail:function(){ est.status=prev; if(S.billing&&S.billing.invoices)S.billing.invoices=S.billing.invoices.filter(function(x){return x!==inv;}); if(jt&&S.jobs)S.jobs=S.jobs.filter(function(x){return x!==jt;}); if(CUR_SCREEN==='billing')renderBilling(); }});
@@ -718,13 +742,14 @@ function saveEstimate(clientId){
   if(!lines.length){ toast('Add a line item'); return; }
   var sub=0; QLINES.forEach(function(l){ if(l.serviceId&&Number(l.qty)>0)sub+=Number(l.qty)*lineRate(l); });
   var trate=Number(S.settings['Sales tax %'])||0, tax=Math.round(sub*trate)/100, total=sub+tax;
-  var temp={kind:'ESTIMATE',id:'tmp'+(++SYNC.seq),_saving:true,clientId:clientId,client:(clientById(clientId)||{}).name||'',taxRate:trate,subtotal:sub,tax:tax,total:total,status:'Draft',issueDate:fmtMD()};
+  var id=nextLocalId('Estimates');   // real EST number now — stays fixed, so approving it never says "not found"
+  var temp={kind:'ESTIMATE',id:id,_saving:true,clientId:clientId,client:(clientById(clientId)||{}).name||'',taxRate:trate,subtotal:sub,tax:tax,total:total,status:'Draft',issueDate:fmtMD()};
   S.billing=S.billing||{estimates:[],invoices:[]}; S.billing.estimates=S.billing.estimates||[]; S.billing.estimates.push(temp);
   var disp=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(function(l){ var rate=lineRate(l); return { serviceId:l.serviceId, description:svcName(l.serviceId), qty:Number(l.qty), rate:rate, lineTotal:Math.round(Number(l.qty)*rate*100)/100 }; });
-  setLocalLines('ESTIMATE',temp.id,disp);   // so opening the new estimate shows its lines instantly
+  setLocalLines('ESTIMATE',id,disp);   // so opening the new estimate shows its lines instantly
   S.dashboard=null; closeModal(); toast('✅ Estimate created'); nav('billing'); renderBilling(); saveCache();
-  enqueue('apiCreateEstimate',[{clientId:clientId,validDays:14,lines:lines}],'Estimate',{   // Sheets write runs in the background
-    onOk:function(r){ if(r&&r.id&&r.id!==temp.id){ var old=temp.id; reKeyLines('ESTIMATE',old,r.id); temp.id=r.id; remapPending(old,r.id); } temp._saving=false; if(CUR_SCREEN==='billing')renderBilling(); saveCache(); },
+  enqueue('apiCreateEstimate',[{id:id,clientId:clientId,validDays:14,lines:lines}],'Estimate',{   // Sheets write runs in the background
+    onOk:function(r){ temp._saving=false; if(r&&r.id&&r.id!==id){ reKeyLines('ESTIMATE',id,r.id); remapPending(id,r.id); advanceCounter('Estimates',r.id); temp.id=r.id; } if(CUR_SCREEN==='billing')renderBilling(); saveCache(); },
     onFail:function(){ if(S.billing&&S.billing.estimates)S.billing.estimates=S.billing.estimates.filter(function(x){return x!==temp;}); if(CUR_SCREEN==='billing')renderBilling(); }});
 }
 function editLines(kind,id){

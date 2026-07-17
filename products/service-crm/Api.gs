@@ -118,9 +118,17 @@ function apiSnapshot_() {
     jobs: apiListJobs(),
     billing: apiListBilling(),
     lineItems: API_allLineItemsByDoc_(),
+    counters: API_counters_(),   // lets the client assign the next real CL/EST/INV number itself
     logo: String(settingGet(LOGO_DATA_KEY) || ''),
     at: Date.now()
   };
+}
+
+// Current ID counters from _meta, so the client can generate the next sequential id with no round trip.
+function API_counters_() {
+  var out = {}, vals = DB_values_('_meta');
+  for (var i = 1; i < vals.length; i++) if (vals[i][0]) out[String(vals[i][0])] = { prefix: String(vals[i][1]), next: Number(vals[i][2]), pad: Number(vals[i][3]) };
+  return out;
 }
 
 /* ---- Drive JSON file: the hot store. DriveApp scope is already granted (logo + PDF use it). ---- */
@@ -239,6 +247,7 @@ function apiCreateClient(form) {
   if (!form || !String(form.name || '').trim()) return { ok: false, msg: 'A name is required.' };
   var days = API_num_(settingGet('Default follow-up (days)')) || 2;
   var c = insert('Clients', {
+    _id: form.id || '',   // client-assigned CL id (adopted if free, reassigned on collision)
     Name: form.name, Phone: form.phone || '', Email: form.email || '', Address: form.address || '',
     Status: form.status || 'Lead', Source: form.source || '', Notes: form.notes || '',
     NextFollowUp: API_addDays_(API_today_(), days),
@@ -361,6 +370,7 @@ function apiCreateEstimate(form) {
   if (!lines.length) return { ok: false, msg: 'Add at least one line item.' };
   var today = API_today_();
   var e = insert('Estimates', {
+    _id: form.id || '',   // client-assigned EST id
     ClientID: form.clientId, IssueDate: today,
     ValidUntil: API_addDays_(today, API_num_(form.validDays) || 14), Status: 'Draft',
     TaxRate: API_num_(settingGet('Sales tax %')),   // snapshot the tax rate at creation
@@ -391,8 +401,10 @@ function apiUpdateDoc(kind, id, fields) {
   return { ok: true };
 }
 
-/** Accept an estimate → create a Job + a draft Invoice (dated now), copying the quoted lines. */
-function apiApproveEstimate(estimateId, jobDateIso, jobServiceId) {
+/** Accept an estimate → create a Job + a draft Invoice (dated now), copying the quoted lines.
+ *  `ids` (optional) carries client-assigned {invoiceId, jobId} so the invoice number is instant. */
+function apiApproveEstimate(estimateId, jobDateIso, jobServiceId, ids) {
+  ids = ids || {};
   var est = getById('Estimates', estimateId);
   if (!est) return { ok: false, msg: 'Estimate not found.' };
   var estLines = query('LineItems', function (li) { return li.DocType === 'Estimate' && String(li.DocID) === String(estimateId); });
@@ -402,10 +414,12 @@ function apiApproveEstimate(estimateId, jobDateIso, jobServiceId) {
   var today = API_today_();
   var svcForJob = jobServiceId || estLines[0].ServiceID;   // one job for the primary service
   var job = insert('Jobs', {
+    _id: ids.jobId || '',
     ClientID: est.ClientID, ServiceID: svcForJob,
     JobDate: API_parseDate_(jobDateIso) || today, Status: 'Scheduled', Recurring: 'None',
   });
   var inv = insert('Invoices', {
+    _id: ids.invoiceId || '',
     ClientID: est.ClientID, JobID: job.JobID, EstimateID: estimateId, IssueDate: today,
     DueDate: API_addDays_(today, API_invoiceTermsDays_()), Status: 'Draft',
     TaxRate: API_num_(est.TaxRate),   // bill at the tax rate that was quoted

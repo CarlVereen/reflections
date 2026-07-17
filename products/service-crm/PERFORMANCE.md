@@ -151,3 +151,16 @@ retry, durable across reload). A newly created record carries a temp id until th
 real one; `remapPending()` rewrites any queued dependent write (estimate→client, invoice→estimate) to
 the real id the moment it arrives — this is the fix for the "pick a valid client" race where creating an
 estimate right after a client used to fail.
+
+## Client-assigned sequential IDs (2026-07-17, build g)
+
+Because there is one writer, the app assigns the next real `CL-`/`EST-`/`INV-` number itself (seeded from
+the `_meta` counters carried in the boot payload), so a new record shows its **final** number instantly —
+no "temp16" placeholder, and the number never changes out from under an open screen (which previously
+broke Edit / Approve / "pick a valid client" when the server renumbered mid-action). The server
+(`db.gs` `insertMany` / `DB_useProvidedId_`) adopts a provided id if it's free (advancing the counter)
+and only hands back a corrected id on the rare collision with a lead-form/automation row; the client
+absorbs that via `remapPending` + `advanceCounter`. Line-item and job ids stay server-assigned (never
+user-visible). Archiving is now optimistic (queued, rolled back on server rejection) so it is never
+blocked by a background save. Mutations re-render the *current* screen via `rerender()`, so acting on
+a Home week-job / follow-up updates Home (and its locally-recomputed dashboard) immediately.

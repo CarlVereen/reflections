@@ -283,19 +283,33 @@ function DB_prepareInsert_(table, input, id, now) {
   return rec;
 }
 
-/** Insert many rows in one setValues; reserves all IDs in one _meta bump. Returns inserted objects. */
+/** Insert many rows in one setValues. Rows without a client-supplied `_id` get IDs reserved from _meta
+ *  (one bump); rows WITH `_id` adopt that id (single-writer client-side numbering). Returns inserted objects. */
 function insertMany(table, inputs) {
   if (!inputs.length) return [];
   return DB_withLock_(function () {
-    var ids = DB_reserveIds_(SCHEMA[table].entity, inputs.length);
-    var now = new Date();
-    var recs = inputs.map(function (inp, i) { return DB_prepareInsert_(table, inp, ids[i], now); });
+    var need = 0; inputs.forEach(function (inp) { if (!inp._id) need++; });
+    var reserved = need ? DB_reserveIds_(SCHEMA[table].entity, need) : [];
+    var ri = 0, now = new Date();
+    var recs = inputs.map(function (inp) {
+      var id = inp._id ? DB_useProvidedId_(table, inp._id) : reserved[ri++];
+      return DB_prepareInsert_(table, inp, id, now);
+    });
     var rows = recs.map(function (r) { return DB_objToRow_(table, r); });
     var sh = DB_sheet_(table);
     sh.getRange(sh.getLastRow() + 1, 1, rows.length, rows[0].length).setValues(rows);
     DB_invalidate_(table);
     return recs;
   });
+}
+/** Adopt a client-provided id: if it's free, advance the entity counter past it and use it; if it
+ *  collides (a lead form / automation grabbed that number first), fall back to a freshly reserved id. */
+function DB_useProvidedId_(table, id) {
+  id = String(id);
+  if (getById(table, id)) return DB_reserveIds_(SCHEMA[table].entity, 1)[0];
+  var num = parseInt(id.replace(/^.*?-/, ''), 10);
+  if (isFinite(num)) DB_setCounter_(SCHEMA[table].entity, num + 1);
+  return id;
 }
 function insert(table, input) { return insertMany(table, [input])[0]; }
 

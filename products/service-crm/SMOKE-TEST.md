@@ -95,3 +95,10 @@ own copy** (their own app URL) — the deploy step is theirs, done once.
 3. **Reverse sync:** hand-edit a client's name in the Google Sheet, then reload the app → the edit
    appears (the stale flag rebuilt the JSON). Same after a lead comes in via the mobile form.
 4. Tap ⟳ any time → one `apiRefresh` call, data refreshes from Sheets.
+
+## N. Client-assigned numbers + instant actions (build g)
+1. New client → shows a real `CL-` id immediately; open it and Edit works right away (no dead button).
+2. New estimate → real `EST-` number immediately; Approve it right away → real `INV-` number, no
+   "estimate not found" / "pick a valid client". Numbers never change while a screen is open.
+3. From **Home**, mark a week-job Done → it leaves the Home list immediately (no ~30s wait).
+4. Archive a just-created client/job → removes instantly, never "finishing save, try again."
