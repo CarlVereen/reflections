@@ -37,6 +37,9 @@ var SERVER = {
   apiUpdateClient:function(id,p){ var c=Q.clients.filter(function(x){return x.id===id;})[0]; if(c)Object.keys(p).forEach(function(k){c[k.toLowerCase()]=p[k];}); return {ok:true}; },
   apiArchiveClient:function(id){ Q.clients=Q.clients.filter(function(x){return x.id!==id;}); return {ok:true}; },
   apiListServices:function(){ return Q.services; },
+  apiUpdateService:function(id,p){ var s=Q.services.filter(function(x){return x.id===id;})[0]; if(s){ if(p.name!==undefined)s.name=p.name; if(p.rate!==undefined)s.rate=p.rate; } return {ok:true}; },
+  apiCreateService:function(f){ var id='SVC-'+String(Q.services.length+1).padStart(2,'0'); Q.services.push({id:id,name:f.name,rate:f.rate||0,active:true}); return {ok:true,id:id}; },
+  apiArchiveService:function(id){ Q.services=Q.services.filter(function(x){return x.id!==id;}); return {ok:true}; },
   apiListJobs:function(){ return Q.jobs.map(function(j){return {id:j.id,clientId:j.clientId,client:nameOf(j.clientId),serviceId:j.serviceId,service:j.service,date:j.date,dateISO:j.dateISO,time:j.time,status:j.status,recurring:j.recurring};}); },
   apiCreateJob:function(f){ var id='JOB-'+String(Q.seq.JOB++).padStart(5,'0'); var svc=Q.services.filter(function(s){return s.id===f.serviceId;})[0]; var j={id:id,clientId:f.clientId,serviceId:f.serviceId,service:svc?svc.name:'',date:f.date,dateISO:f.date,time:f.time||'',status:'Scheduled',recurring:f.recurring||'None'}; Q.jobs.push(j); return {ok:true,id:id,job:j}; },
   apiUpdateJob:function(id,p){ var j=Q.jobs.filter(function(x){return x.id===id;})[0]; if(j){ if(p.Status)j.status=p.Status; if(p.date){j.dateISO=p.date;j.date=p.date;} if(p.time!==undefined)j.time=p.time; } return {ok:true}; },
@@ -158,6 +161,28 @@ window.google={script:{run:(function(){function make(){var s=null,f=null;var r={
   const ghosts = await page.evaluate(()=> (S.jobs||[]).filter(j=>j._saving).length);
   ok(midCount===jobsBefore+1, 'B3: temp job appears optimistically');
   ok(afterCount===jobsBefore && ghosts===0, 'B3: temp job rolled back after server rejection (no stuck _saving)');
+
+  console.log('=== line-item price override + optimistic create ===');
+  await page.evaluate(()=>{ estimateBuilder('CL-0001'); });
+  await page.waitForTimeout(70);
+  // pick a service, set qty 3 and OVERRIDE the price to 200/ea (the old UI had no price field at all)
+  await page.evaluate(()=>{ QLINES=[{serviceId:'SVC-02',qty:3,rate:200,_re:true}]; renderQLines(); window.__served=[]; saveEstimate('CL-0001'); });
+  const tempNow = await page.evaluate(()=> ((S.billing&&S.billing.estimates)||[]).filter(e=>e._saving).length);
+  ok(tempNow>=1, 'optimistic: a temp estimate appears immediately, before the server responds');
+  await page.waitForTimeout(LAT+300);
+  const s4 = await served();
+  const est2 = s4.find(x=>x.indexOf('apiCreateEstimate')===0);
+  ok(!!est2 && /"rate":200/.test(est2), 'the per-line price override is sent to the server as rate: '+(est2||'—'));
+  const ghosts2 = await page.evaluate(()=> ((S.billing&&S.billing.estimates)||[]).filter(e=>e._saving).length);
+  ok(ghosts2===0, 'temp estimate reconciles after the server confirms (no stuck _saving)');
+
+  console.log('=== price book (service default prices) ===');
+  await page.evaluate(()=>{ window.__served=[]; openPriceBook(); });
+  await page.waitForTimeout(LAT+150);
+  ok(/Price book/.test(await txt('#sheet')), 'price book modal opens and lists services');
+  await page.evaluate(()=>{ PB[0].rate=175; window.__served=[]; savePriceBook(); });
+  await page.waitForTimeout(LAT+250);
+  ok((await served()).some(x=>x.indexOf('apiUpdateService')===0 && /175/.test(x)), 'editing a default price calls apiUpdateService with the new rate');
 
   console.log('\nJS ERRORS: '+(errs.length?JSON.stringify(errs):'none'));
   console.log('=== RESULT: '+pass+' passed, '+fail+' failed'+(errs.length?' (+JS errors!)':'')+' ===');

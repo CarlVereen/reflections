@@ -43,8 +43,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
 .segbtn{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 4px;font-weight:700;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
 .segbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .segbtn .tc{font-size:10.5px;font-weight:800;opacity:.8;margin-left:4px}
-.lirow{display:flex;gap:6px;align-items:center;margin-bottom:6px}.lirow select{flex:2}.lirow input{flex:1;min-width:0}
-.lirow .x{flex:0 0 auto;width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--warn);cursor:pointer}
+.liwrap{border:1px solid var(--line);border-radius:12px;padding:8px;margin-bottom:8px;background:var(--card)}
+.liwrap .r2{display:flex;gap:6px;align-items:flex-end;margin-top:6px}.liwrap .r2 .fld{flex:1;min-width:0}
+.liwrap .r2 .fld label{margin:0 0 3px}
+.liwrap .x{flex:0 0 auto;width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--warn);cursor:pointer}
 .totalbar{display:flex;justify-content:space-between;font-weight:800;font-size:17px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
 .subline{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-top:6px}
 .actionbar{position:fixed;left:0;right:0;bottom:54px;z-index:28;max-width:640px;margin:0 auto;padding:8px 14px 10px;display:none;
@@ -90,6 +92,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
 
   <div class="screen" id="s-more">
     <h2 class="sec">More</h2>
+    <div class="list-item" onclick="openPriceBook()"><div class="row"><div><div class="name">🧾 Price book</div><div class="meta">Default prices for your services (auto-fill estimates)</div></div><span>›</span></div></div>
     <div class="list-item" onclick="nav('settings')"><div class="row"><div><div class="name">⚙️ Business Settings</div><div class="meta">Profile, tax, payment, numbering, brand</div></div><span>›</span></div></div>
   </div>
 
@@ -109,7 +112,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
 <div class="toast" id="toast"></div>
 
 <script>
-var BUILD='2026-07-17a-rebuild';
+var BUILD='2026-07-17b-lineprice+optimistic';
 /* ================= state + api ================= */
 var S = { settings:{}, services:[], enums:{}, dashboard:null, clients:null, jobs:null, billing:null, logo:undefined };
 var CUR='$';
@@ -159,6 +162,8 @@ function closeModal(){ document.getElementById('overlay').classList.remove('on')
 function midnight(d){ var x=new Date(d); x.setHours(0,0,0,0); return x; }
 function addDays(d,n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
 function isoOf(d){ var m=d.getMonth()+1,day=d.getDate(); return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(day<10?'0':'')+day; }
+function fmtMD(d){ d=d?new Date(d):new Date(); return (d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear(); }
+function fmtMDfromISO(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||'')); return m?((+m[2])+'/'+(+m[3])+'/'+m[1]):fmtMD(); }
 function svcName(id){ var s=(S.services||[]).filter(function(x){return x.id===id;})[0]; return s?s.name:''; }
 function svcRate(id){ var s=(S.services||[]).filter(function(x){return x.id===id;})[0]; return s?s.rate:0; }
 function invalidate(){ S.dashboard=null; S.clients=null; S.jobs=null; S.billing=null; }
@@ -388,6 +393,12 @@ var BILL_TAB='quotes', BILL_ORDER=['quotes','outstanding','paid','closedq'];
 function setBillTab(k){ BILL_TAB=k; renderBilling(); }
 function loadBilling(){ if(S.billing){ renderBilling(); return; } document.getElementById('billingBody').innerHTML='<div class="spin">Loading…</div>';
   api('apiListBilling').then(function(r){ S.billing=r||{estimates:[],invoices:[]}; renderBilling(); }).catch(function(){ document.getElementById('billingBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
+// Pull the authoritative billing list from the server but keep any still-uploading (optimistic) temps on top.
+function refreshBilling(){ return api('apiListBilling').then(function(fresh){ if(!fresh)return;
+  var pe=((S.billing&&S.billing.estimates)||[]).filter(function(e){return e._saving;});
+  var pi=((S.billing&&S.billing.invoices)||[]).filter(function(i){return i._saving;});
+  fresh.estimates=(fresh.estimates||[]).concat(pe); fresh.invoices=(fresh.invoices||[]).concat(pi);
+  S.billing=fresh; if(CUR_SCREEN==='billing')renderBilling(); }).catch(function(){}); }
 function docById(kind,id){ var arr=kind==='INVOICE'?(S.billing.invoices||[]):(S.billing.estimates||[]); return arr.filter(function(d){return d.id===id;})[0]; }
 function docRow(kind,d){ return '<div class="list-item" onclick="openDoc(\''+kind+'\','+jarg(d.id)+')"><div class="row"><div><div class="name">'+esc(d.id)+' · '+esc(d.client||'')+'</div><div class="meta">'+money(d.total)+(d.issueDate?' · '+esc(d.issueDate):'')+'</div></div>'+pill(d.status)+'</div></div>'; }
 function renderBilling(){
@@ -403,6 +414,7 @@ function renderBilling(){
 }
 function openDoc(kind,id,_retried){
   var d=docById(kind,id);
+  if(d&&d._saving){ toast('⏳ Still saving — one moment…'); return; }   // temp (optimistic) doc: lines not on the server yet
   if(!d){ // may be on another screen — fetch once, but never loop if it's gone (archived/deleted)
     if(_retried){ toast('That document is no longer available'); return; }
     api('apiListBilling').then(function(r){ S.billing=r; openDoc(kind,id,true); }).catch(function(){ toast('Couldn\'t load that document'); });
@@ -446,13 +458,27 @@ function approveEstimate(id){
     '<label>Job date</label><input type="date" id="ap_date" value="'+isoOf(midnight(new Date()))+'">'+
     '<button class="btn" onclick="doApprove('+jarg(id)+')">Approve → invoice + job</button>');
 }
-function doApprove(id){ var iso=val('ap_date'); busy('Approving…'); api('apiApproveEstimate',id,iso).then(function(r){ closeModal(); if(r&&r.ok){ toast('✅ Invoice '+r.invoiceId+' + job scheduled'); invalidate(); nav('billing'); } else toast(r&&r.msg||'Failed'); }).catch(function(e){ closeModal(); toast('⚠ Approve failed: '+(e&&e.message||e)); }); }
+function doApprove(id){
+  var iso=val('ap_date'); var est=docById('ESTIMATE',id);
+  if(!est){ toast('Estimate not found'); return; }
+  if(est._saving){ toast('⏳ Still saving the estimate — try again in a moment'); return; }
+  var prev=est.status; est.status='Accepted';   // apply locally first
+  var inv={kind:'INVOICE',id:'tmp'+(++SYNC.seq),_saving:true,clientId:est.clientId,client:est.client,subtotal:est.subtotal,tax:est.tax,total:est.total,status:'Draft',issueDate:fmtMD()};
+  S.billing=S.billing||{estimates:[],invoices:[]}; S.billing.invoices=S.billing.invoices||[]; S.billing.invoices.push(inv);
+  var jt=null;
+  if(S.jobs){ jt={id:'tmp'+(++SYNC.seq),_saving:true,clientId:est.clientId,client:est.client,serviceId:'',service:'',date:fmtMDfromISO(iso),dateISO:iso,time:'',status:'Scheduled',recurring:'None'}; S.jobs.push(jt); }
+  S.dashboard=null; S.clients=null;
+  closeModal(); toast('✅ Approving — invoice + job scheduled'); nav('billing');   // navigate immediately
+  enqueue('apiApproveEstimate',[id,iso],'Approve estimate',{   // Sheets write runs in the background
+    onOk:function(r){ inv.id=(r&&r.invoiceId)||inv.id; inv._saving=false; if(jt){ jt.id=(r&&r.jobId)||jt.id; jt._saving=false; } refreshBilling(); },
+    onFail:function(){ est.status=prev; if(S.billing&&S.billing.invoices)S.billing.invoices=S.billing.invoices.filter(function(x){return x!==inv;}); if(jt&&S.jobs)S.jobs=S.jobs.filter(function(x){return x!==jt;}); if(CUR_SCREEN==='billing')renderBilling(); }});
+}
 
 /* ---- line-item builder (create estimate + edit lines) ---- */
 var QLINES=[];
 function startEstimate(clientId){ if(clientId){ estimateBuilder(clientId); } else { pickClient(function(id){ estimateBuilder(id); }); } }
 function estimateBuilder(clientId){
-  QLINES=[{serviceId:'',qty:1}];
+  QLINES=[{serviceId:'',qty:1,rate:''}];
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New estimate</h3>'+
     '<div class="muted">Client: <b>'+esc((clientById(clientId)||{}).name||clientId)+'</b></div>'+
     '<h2 class="sec">Line items</h2><div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
@@ -463,37 +489,51 @@ function estimateBuilder(clientId){
 function qTotalsHtml(){ return '<div class="subline"><span>Subtotal</span><span id="q_sub"></span></div>'+
   '<div class="subline"><span id="q_taxlbl">Tax</span><span id="q_tax"></span></div>'+
   '<div class="totalbar"><span>Total</span><span id="q_total"></span></div>'; }
-function lineServiceSelect(i,sel){
-  return '<select onchange="QLINES['+i+'].serviceId=this.value;calcQ()"><option value="">Service…</option>'+
-    (S.services||[]).map(function(s){return '<option value="'+esc(s.id)+'"'+(s.id===sel?' selected':'')+'>'+esc(s.name)+' · '+money(s.rate)+'</option>';}).join('')+'</select>';
-}
+/** Effective per-unit price for a line: the typed override if present, else the service's default. */
+function lineRate(l){ return (l&&l.rate!==''&&l.rate!=null)?Number(l.rate):svcRate(l&&l.serviceId); }
+/** Picking a service auto-fills its default price (unless the owner has already typed an override). */
+function onQLineService(i,v){ var l=QLINES[i]; l.serviceId=v; if(!l._re){ var r=svcRate(v); l.rate=r?r:''; } renderQLines(); }
+function qlineToPayload(l){ var o={serviceId:l.serviceId,qty:Number(l.qty)}; if(l.rate!==''&&l.rate!=null)o.rate=Number(l.rate); return o; }
 function renderQLines(){
   document.getElementById('qlines').innerHTML=QLINES.map(function(l,i){
-    return '<div class="lirow">'+lineServiceSelect(i,l.serviceId)+
-      '<input type="number" inputmode="decimal" placeholder="Qty" value="'+(l.qty||'')+'" oninput="QLINES['+i+'].qty=this.value;calcQ()">'+
-      '<button class="x" onclick="delQLine('+i+')">×</button></div>';
+    return '<div class="liwrap">'+
+      '<select onchange="onQLineService('+i+',this.value)"><option value="">Service…</option>'+
+        (S.services||[]).map(function(s){return '<option value="'+esc(s.id)+'"'+(s.id===l.serviceId?' selected':'')+'>'+esc(s.name)+(s.rate?' · '+money(s.rate):'')+'</option>';}).join('')+
+      '</select>'+
+      '<div class="r2">'+
+        '<div class="fld"><label>Qty</label><input type="number" inputmode="decimal" min="0" step="1" placeholder="1" value="'+(l.qty!=null?esc(l.qty):'')+'" oninput="QLINES['+i+'].qty=this.value;calcQ()"></div>'+
+        '<div class="fld"><label>Price ea.</label><input type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="'+(l.rate!==''&&l.rate!=null?esc(l.rate):'')+'" oninput="QLINES['+i+'].rate=this.value;QLINES['+i+']._re=true;calcQ()"></div>'+
+        '<button class="x" onclick="delQLine('+i+')">×</button>'+
+      '</div>'+
+    '</div>';
   }).join('');
   calcQ();
 }
-function addQLine(){ QLINES.push({serviceId:'',qty:1}); renderQLines(); }
-function delQLine(i){ QLINES.splice(i,1); if(!QLINES.length)QLINES.push({serviceId:'',qty:1}); renderQLines(); }
+function addQLine(){ QLINES.push({serviceId:'',qty:1,rate:''}); renderQLines(); }
+function delQLine(i){ QLINES.splice(i,1); if(!QLINES.length)QLINES.push({serviceId:'',qty:1,rate:''}); renderQLines(); }
 function calcQ(){
-  var sub=0; QLINES.forEach(function(l){ sub+=(Number(l.qty)||0)*svcRate(l.serviceId); });
+  var sub=0; QLINES.forEach(function(l){ sub+=(Number(l.qty)||0)*lineRate(l); });
   var rate=Number(S.settings['Sales tax %'])||0, tax=Math.round(sub*rate)/100, total=sub+tax;
   var set=function(id,v){ var e=document.getElementById(id); if(e)e.textContent=money(v); };
   set('q_sub',sub); set('q_tax',tax); set('q_total',total);
   var lbl=document.getElementById('q_taxlbl'); if(lbl)lbl.textContent='Tax'+(rate?' ('+rate+'%)':'');
 }
 function saveEstimate(clientId){
-  var lines=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(function(l){return {serviceId:l.serviceId,qty:Number(l.qty)};});
+  var lines=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(qlineToPayload);
   if(!lines.length){ toast('Add a line item'); return; }
-  busy('Creating…'); closeModal();
-  api('apiCreateEstimate',{clientId:clientId,validDays:14,lines:lines}).then(function(r){ if(r&&r.ok){ toast('✅ Estimate '+r.id+' created'); invalidate(); nav('billing'); } else toast(r&&r.msg||'Failed'); }).catch(function(e){ toast('⚠ Create failed: '+(e&&e.message||e)); });
+  var sub=0; QLINES.forEach(function(l){ if(l.serviceId&&Number(l.qty)>0)sub+=Number(l.qty)*lineRate(l); });
+  var trate=Number(S.settings['Sales tax %'])||0, tax=Math.round(sub*trate)/100, total=sub+tax;
+  var temp={kind:'ESTIMATE',id:'tmp'+(++SYNC.seq),_saving:true,clientId:clientId,client:(clientById(clientId)||{}).name||'',subtotal:sub,tax:tax,total:total,status:'Draft',issueDate:fmtMD()};
+  S.billing=S.billing||{estimates:[],invoices:[]}; S.billing.estimates=S.billing.estimates||[]; S.billing.estimates.push(temp);
+  S.dashboard=null; closeModal(); toast('✅ Estimate created'); nav('billing'); refreshBilling();
+  enqueue('apiCreateEstimate',[{clientId:clientId,validDays:14,lines:lines}],'Estimate',{   // Sheets write runs in the background
+    onOk:function(r){ temp.id=(r&&r.id)||temp.id; temp._saving=false; refreshBilling(); },
+    onFail:function(){ if(S.billing&&S.billing.estimates)S.billing.estimates=S.billing.estimates.filter(function(x){return x!==temp;}); if(CUR_SCREEN==='billing')renderBilling(); }});
 }
 function editLines(kind,id){
   busy('Opening…');
   api('apiGetDocLines',kind,id).then(function(items){
-    QLINES=(items&&items.length)?items.map(function(it){return {serviceId:it.serviceId,qty:it.qty};}):[{serviceId:'',qty:1}];
+    QLINES=(items&&items.length)?items.map(function(it){return {serviceId:it.serviceId,qty:it.qty,rate:it.rate,_re:true};}):[{serviceId:'',qty:1,rate:''}];
     openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit line items · '+esc(id)+'</h3>'+
       '<div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
       qTotalsHtml()+
@@ -502,9 +542,43 @@ function editLines(kind,id){
   });
 }
 function saveLines(kind,id){
-  var lines=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(function(l){return {serviceId:l.serviceId,qty:Number(l.qty)};});
+  var lines=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(qlineToPayload);
   busy('Saving…'); closeModal();
   api('apiSetDocLines',kind,id,lines).then(function(){ toast('✅ Line items saved'); invalidate(); loadBilling(); }).catch(function(e){ toast('⚠ Save failed: '+(e&&e.message||e)); });
+}
+
+/* ================= PRICE BOOK (services) ================= */
+var PB=[];
+function openPriceBook(){ busy('Loading price book…');
+  api('apiListServices',false).then(function(list){
+    PB=(list||[]).map(function(s){ return {id:s.id,name:s.name,rate:s.rate,active:s.active!==false,_orig:s.name+'|'+s.rate}; });
+    renderPriceBook();
+  }).catch(function(e){ toast('⚠ '+(e&&e.message||e)); }); }
+function renderPriceBook(){
+  var rows=PB.map(function(s,i){
+    return '<div class="liwrap"><input placeholder="Service name" value="'+esc(s.name)+'" oninput="PB['+i+'].name=this.value">'+
+      '<div class="r2"><div class="fld"><label>Default price</label><input type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="'+(s.rate!=null&&s.rate!==''?esc(s.rate):'')+'" oninput="PB['+i+'].rate=this.value"></div>'+
+      '<button class="x" title="Remove" onclick="delPBRow('+i+')">×</button></div></div>';
+  }).join('')||'<div class="muted">No services yet — add one below.</div>';
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>Price book</h3>'+
+    '<div class="muted" style="margin-bottom:8px">Set a default price for each service. These auto-fill when you build an estimate — you can still change the price on any estimate.</div>'+
+    '<div id="pbrows">'+rows+'</div>'+
+    '<button class="btn sec sm" style="margin-top:6px" onclick="addPBRow()">+ Add service</button>'+
+    '<button class="btn" onclick="savePriceBook()">Save price book</button>');
+}
+function addPBRow(){ PB.push({id:'',name:'',rate:'',active:true}); renderPriceBook(); }
+function delPBRow(i){ var s=PB[i]; PB.splice(i,1);
+  if(s&&s.id){ busy('Removing…'); api('apiArchiveService',s.id).then(function(){ toast('🗑️ Removed'); S.services=(S.services||[]).filter(function(x){return x.id!==s.id;}); }); }
+  renderPriceBook(); }
+function savePriceBook(){
+  var ops=[];
+  PB.forEach(function(s){ var name=String(s.name||'').trim(); var rate=Number(s.rate)||0;
+    if(s.id){ if((s.name+'|'+s.rate)!==s._orig && name) ops.push(api('apiUpdateService',s.id,{name:name,rate:rate})); }
+    else if(name){ ops.push(api('apiCreateService',{name:name,rate:rate,active:true})); } });
+  busy('Saving price book…'); closeModal();
+  Promise.all(ops).then(function(){ return api('apiListServices',true); })
+    .then(function(list){ if(list)S.services=list; toast('✅ Price book saved'); })
+    .catch(function(e){ toast('⚠ '+(e&&e.message||e)); });
 }
 
 /* ================= SETTINGS ================= */
@@ -550,6 +624,7 @@ function mock(fn,a){
   if(fn==='apiListJobs')return [{id:'JOB-00001',clientId:'CL-0001',client:'Ada Buyer',serviceId:'SVC-02',service:'Standard service',date:'7/17',dateISO:isoOf(midnight(new Date())),time:'2pm',status:'Scheduled',recurring:'None'}];
   if(fn==='apiListBilling')return {estimates:[{kind:'ESTIMATE',id:'EST-1001',clientId:'CL-0001',client:'Ada Buyer',subtotal:390,tax:31.2,total:421.2,status:'Draft',issueDate:'7/16'}],invoices:[]};
   if(fn==='apiGetDocLines')return [{id:'LI-000001',serviceId:'SVC-01',description:'Consultation',qty:1,rate:90,lineTotal:90},{id:'LI-000002',serviceId:'SVC-02',description:'Standard service',qty:2,rate:150,lineTotal:300}];
+  if(fn==='apiListServices')return [{id:'SVC-01',name:'Consultation',rate:90,active:true},{id:'SVC-02',name:'Standard service',rate:150,active:true},{id:'SVC-03',name:'Emergency call',rate:0,active:true}];
   if(fn==='apiGetLogo')return {logo:''};
   if(fn==='apiCreateClient')return {ok:true,id:'CL-0002',client:{id:'CL-0002',name:(a[0]||{}).name,status:(a[0]||{}).status||'Lead'}};
   if(fn==='apiCreateJob')return {ok:true,id:'JOB-00002'};

@@ -2,6 +2,30 @@
 
 Resume note for picking this back up after a context clear. **Everything below is committed & pushed.**
 
+## ⏸ RESUME HERE (2026-07-17b — line-item pricing + optimistic sync)
+- **Live deploy confirmed working** by owner (db.gs + setup.gs were the missing pieces; SCHEMA error gone).
+- **This session fixed two owner-reported issues in the live app (front-end only — WebApp.html):**
+  1. **Estimate line items were stuck at $0 with no way to set a price.** The builder now has an
+     editable **"Price ea."** field per line that auto-fills from the service's default and is
+     overridable per estimate. The override is sent to the server as `rate` (backend `API_insertLines_`
+     already honored it). Same field added to **Edit line items**.
+  2. **New "Price book" screen** (More ▸ 🧾 Price book) to set default prices for services so they
+     auto-fill estimates — uses the existing `apiListServices/apiCreateService/apiUpdateService/apiArchiveService`.
+  3. **Create estimate + Approve are now optimistic** (was a blocking round-trip → slow nav). They write
+     to local state, navigate instantly ("Estimate created" / "Approving…"), and queue the Sheets write
+     in the background via the existing `enqueue` engine (with rollback on failure). Same pattern as
+     clients/jobs. New `refreshBilling()` reconciles server truth while keeping in-flight temps.
+- **⚠️ To deploy this: re-paste ONLY `WebApp.html`** into the Apps Script project (file shows as `WebApp`).
+  No `.gs` changes — db.gs/setup.gs/Api.gs are unchanged, so no re-run of setup and no new web deployment
+  needed (just save the file; hard-refresh the web app). BUILD tag is now `2026-07-17b-lineprice+optimistic`.
+- **Tests:** 116 assertions green (db 38 · api 39 · code 15 · web 24). `node tests/webtest.js` covers the
+  price override, optimistic temp + reconcile, and price-book save.
+- **Note on $0 defaults:** `setup.gs` still seeds the 5 services with `DefaultRate: 0` by design (rates are
+  business-specific). The owner sets them once via the new Price book, or overrides per line.
+
+---
+
+
 ## ⏸ RESUME HERE (2026-07-17, end of session — deploy in progress)
 - **Status:** code complete + all 4 reviews fixed (111 sandbox tests green). Owner is **deploying to the
   live Apps Script project now.**
