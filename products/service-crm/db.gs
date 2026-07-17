@@ -144,7 +144,9 @@ function DB_withLock_(fn) {
 // Reads are intentionally lock-free (single-owner CRM); only writes take the script lock, and each
 // execution reads a fresh snapshot, so there is no cross-execution lost-update within the lock.
 var _DB_cache = {};
-function DB_invalidate_(table) { delete _DB_cache[SCHEMA[table].sheet]; }
+// Dropping a table's read-cache means the app just changed data → the Drive snapshot is now behind
+// Sheets, so flag it for rebuild on the next open (keeps a fresh reopen from needing a manual ⟳).
+function DB_invalidate_(table) { delete _DB_cache[SCHEMA[table].sheet]; if (typeof DATA_markStale_ === 'function') DATA_markStale_(); }
 function DB_values_(table) {
   var key = SCHEMA[table].sheet;
   if (!_DB_cache[key]) _DB_cache[key] = DB_sheet_(table).getDataRange().getValues();
