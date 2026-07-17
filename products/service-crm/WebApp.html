@@ -112,10 +112,51 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
 <div class="toast" id="toast"></div>
 
 <script>
-var BUILD='2026-07-17b-lineprice+optimistic';
+var BUILD='2026-07-17d-swr+durablequeue';
 /* ================= state + api ================= */
 var S = { settings:{}, services:[], enums:{}, dashboard:null, clients:null, jobs:null, billing:null, logo:undefined };
 var CUR='$';
+
+/* ================= local save (localStorage snapshot of the dataset) =================
+   The whole point: reads no longer wait on the network for the app to become usable.
+   On boot we hydrate S from this snapshot and paint immediately, THEN refresh from the
+   server in the background. Best-effort only — every access is guarded so private-mode,
+   quota, or a corrupt blob can never break the app; the server stays the source of truth. */
+var CACHE_KEY='crm2_cache', CACHE_VER='1';   // bump CACHE_VER whenever the shape of S changes → auto-invalidates old blobs
+var _cacheT=null;
+function lsAvail(){ try{ var k='__crmt'; localStorage.setItem(k,'1'); localStorage.removeItem(k); return true; }catch(e){ return false; } }
+var LS_OK=lsAvail();
+/** Persist the dataset. Debounced (coalesces bursts); pass true to flush synchronously (page hide). */
+function saveCache(now){
+  if(!LS_OK) return;
+  var flush=function(){
+    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({
+      v:CACHE_VER, at:Date.now(),
+      settings:S.settings, services:S.services, enums:S.enums,
+      dashboard:S.dashboard, clients:S.clients, jobs:S.jobs, billing:S.billing, logo:S.logo
+    })); }catch(e){ /* quota / serialize failure — cache is best-effort, ignore */ }
+  };
+  clearTimeout(_cacheT);
+  if(now) flush(); else _cacheT=setTimeout(flush, 400);
+}
+/** Hydrate S from the last snapshot. Returns true if a usable dataset was loaded. */
+function loadCache(){
+  if(!LS_OK) return false;
+  try{
+    var raw=localStorage.getItem(CACHE_KEY); if(!raw) return false;
+    var c=JSON.parse(raw); if(!c || c.v!==CACHE_VER) return false;
+    if(c.settings)  S.settings=c.settings;
+    if(c.services)  S.services=c.services;
+    if(c.enums)     S.enums=c.enums;
+    if(c.dashboard!==undefined) S.dashboard=c.dashboard;
+    if(c.clients!==undefined)   S.clients=c.clients;
+    if(c.jobs!==undefined)      S.jobs=c.jobs;
+    if(c.billing!==undefined)   S.billing=c.billing;
+    if(c.logo!==undefined)      S.logo=c.logo;
+    return !!(S.settings && Object.keys(S.settings).length);
+  }catch(e){ return false; }
+}
+function clearCache(){ if(LS_OK){ try{ localStorage.removeItem(CACHE_KEY); }catch(e){} } }
 function api(fn){
   var args=[].slice.call(arguments,1);
   return new Promise(function(res,rej){
@@ -125,28 +166,44 @@ function api(fn){
   });
 }
 /* ---------- optimistic sync engine (writes apply locally, upload in background) ---------- */
-var SYNC={q:[],active:false,seq:0}, STORE='crm2_sync';
-function enqueue(fn,args,label,opts){ opts=opts||{}; SYNC.q.push({id:'op'+(++SYNC.seq),fn:fn,args:args,label:label,tries:0,_onOk:opts.onOk,_onFail:opts.onFail}); syncBadge(); syncPump(); }
+var SYNC={q:[],active:false,seq:0}, STORE='crm2_sync', _restoredQueue=false;
+function enqueue(fn,args,label,opts){ opts=opts||{}; SYNC.q.push({id:'op'+(++SYNC.seq),fn:fn,args:args,label:label,tries:0,_onOk:opts.onOk,_onFail:opts.onFail}); persistQueue(); syncBadge(); syncPump(); }
+/* ---- durable write queue: survives reload/close mid-sync ----
+   Only the replayable fields are stored (fn/args/label/tries); the optimistic-reconcile callbacks
+   are functions and can't serialize. After a restored queue drains we do one authoritative refresh
+   (reconcileAfterRestore) so any leftover optimistic temps are replaced by real server records. */
+function persistQueue(){ if(!LS_OK) return;
+  try{ localStorage.setItem(STORE, JSON.stringify(SYNC.q.map(function(o){ return {id:o.id,fn:o.fn,args:o.args,label:o.label,tries:o.tries,failed:!!o.failed}; }))); }catch(e){} }
+function restoreQueue(){ if(!LS_OK) return;
+  try{ var raw=localStorage.getItem(STORE); if(!raw) return; var arr=JSON.parse(raw);
+    if(arr && arr.length){ SYNC.q=arr; _restoredQueue=true;
+      arr.forEach(function(o){ o.failed=false; o.tries=0; var n=parseInt(String(o.id).replace(/\D/g,''),10)||0; if(n>SYNC.seq) SYNC.seq=n; });   // clear stuck state, avoid id collisions
+    } }catch(e){} }
 function syncPump(){
   if(SYNC.active)return; var op=SYNC.q[0]; if(!op){ syncBadge(); return; } if(op.failed){ syncBadge(); return; }
   SYNC.active=true; op.tries++; syncBadge();
   api.apply(null,[op.fn].concat(op.args)).then(function(r){
     SYNC.active=false;
     if(r&&r.ok===false){ return syncFail(op, r.msg||'rejected', true); }   // server said no → terminal, don't retry
-    SYNC.q.shift(); if(op._onOk){ try{op._onOk(r);}catch(e){} }
-    if(!SYNC.q.length){ S.dashboard=null; } syncBadge(); syncPump();
+    SYNC.q.shift(); persistQueue(); if(op._onOk){ try{op._onOk(r);}catch(e){} }
+    if(!SYNC.q.length){ S.dashboard=null; saveCache();                                // queue drained → snapshot the settled dataset
+      if(_restoredQueue){ _restoredQueue=false; reconcileAfterRestore(); } }          // replayed a restored queue → pull authoritative data
+    else saveCache();
+    syncBadge(); syncPump();
   }).catch(function(e){ SYNC.active=false; syncFail(op,(e&&e.message)||'no connection'); });
 }
 function syncFail(op,msg,terminal){
   if(!terminal && op.tries<4){ syncBadge(); setTimeout(syncPump,1200*op.tries); return; }   // transient → back off + retry
-  if(op._onFail){ try{op._onFail(msg);}catch(e){} SYNC.q.shift(); syncBadge(); toast('⚠ '+op.label+' undone ('+msg+')'); syncPump(); return; }  // roll back + unblock
-  op.failed=true; syncBadge(); toast('⚠ Couldn’t save "'+op.label+'" ('+msg+')');   // keep for manual retry
+  if(op._onFail){ try{op._onFail(msg);}catch(e){} SYNC.q.shift(); persistQueue(); syncBadge(); toast('⚠ '+op.label+' undone ('+msg+')'); syncPump(); return; }  // roll back + unblock
+  op.failed=true; persistQueue(); syncBadge(); toast('⚠ Couldn’t save "'+op.label+'" ('+msg+')');   // keep for manual retry
 }
-function syncRetry(){ var any=false; SYNC.q.forEach(function(o){ if(o.failed){o.failed=false;o.tries=0;any=true;} }); if(any){ toast('Retrying…'); syncPump(); } }
+function syncRetry(){ var any=false; SYNC.q.forEach(function(o){ if(o.failed){o.failed=false;o.tries=0;any=true;} }); if(any){ persistQueue(); toast('Retrying…'); syncPump(); } }
 function syncBadge(){ var el=document.getElementById('syncBadge'); var failed=SYNC.q.filter(function(o){return o.failed;}).length;
   if(failed){ el.className='syncb on fail'; el.textContent='⚠ Retry'; } else if(SYNC.q.length){ el.className='syncb on saving'; el.textContent='⟳ Saving'; }
   else { el.textContent='✓ Saved'; setTimeout(function(){ if(!SYNC.q.length) el.className='syncb'; },1500); } }
-window.addEventListener('beforeunload', function(e){ if(SYNC.q.length){ e.preventDefault(); e.returnValue=''; } });
+window.addEventListener('beforeunload', function(e){ saveCache(true); if(SYNC.q.length){ e.preventDefault(); e.returnValue=''; } });
+// Mobile browsers often skip beforeunload; visibilitychange is the reliable "app is going away" signal.
+document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='hidden') saveCache(true); });
 
 /* ================= helpers ================= */
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
@@ -166,7 +223,26 @@ function fmtMD(d){ d=d?new Date(d):new Date(); return (d.getMonth()+1)+'/'+d.get
 function fmtMDfromISO(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||'')); return m?((+m[2])+'/'+(+m[3])+'/'+m[1]):fmtMD(); }
 function svcName(id){ var s=(S.services||[]).filter(function(x){return x.id===id;})[0]; return s?s.name:''; }
 function svcRate(id){ var s=(S.services||[]).filter(function(x){return x.id===id;})[0]; return s?s.rate:0; }
-function invalidate(){ S.dashboard=null; S.clients=null; S.jobs=null; S.billing=null; }
+function invalidate(){ S.dashboard=null; S.clients=null; S.jobs=null; S.billing=null; _fresh={}; }
+
+/* ================= stale-while-revalidate reads =================
+   Screens paint from cache instantly, then quietly refresh from the server. Two guardrails keep
+   the optimistic write model intact:
+     • never refresh while writes are pending (SYNC.q) — local state is ahead of the server;
+     • if a write lands mid-fetch, discard the fetched result rather than regress the local edit.
+   A short freshness window throttles refetch when tabbing quickly between screens. */
+var FRESH_MS=20000, _fresh={};
+function stale(key){ return !_fresh[key] || (Date.now()-_fresh[key])>FRESH_MS; }
+function bgRefresh(key,fn,args,apply){
+  if(SYNC.q.length) return;              // local is ahead of server → don't overwrite
+  if(!stale(key)) return;                // refreshed recently
+  api.apply(null,[fn].concat(args||[])).then(function(r){
+    if(r==null || SYNC.q.length) return; // a write queued mid-flight → keep optimistic state
+    apply(r); _fresh[key]=Date.now(); saveCache();
+  }).catch(function(){});                // background refresh is best-effort; cache already painted
+}
+/** After a restored write queue drains, drop optimistic temps and re-read authoritative data. */
+function reconcileAfterRestore(){ invalidate(); nav(CUR_SCREEN); }
 
 /* ================= theme ================= */
 var ACCENT_DEFAULT='#8f5f22';
@@ -178,15 +254,23 @@ function applyAccent(h){ h=hexRGB(h)?h:ACCENT_DEFAULT; var r=document.documentEl
   r.setProperty('--accent',h); r.setProperty('--accent-lite',shade(h,.28)); r.setProperty('--accent-dark',shade(h,-.28)); r.setProperty('--accent-glow',hexA(h,.25)); }
 
 /* ================= boot + nav ================= */
-function boot(){
+function boot(skipCache){
+  // 1) Paint instantly from the local save if we have one (no network wait).
+  //    skipCache=true (manual ⟳) forces a clean server refresh instead of re-hydrating stale data.
+  var hadCache=!skipCache && loadCache();
+  if(hadCache){ applyBootChrome(); renderHome(); }
+  // 2) Refresh from the server in the background and re-persist.
   api('apiBootstrap').then(function(b){
-    if(!b||!b.ready){ document.getElementById('homeBody').innerHTML='<div class="empty">Run <b>⚡ CRM ▸ Set up / rebuild database</b> in the sheet first, then reload.</div>'; return; }
+    if(!b||!b.ready){ if(!hadCache) document.getElementById('homeBody').innerHTML='<div class="empty">Run <b>⚡ CRM ▸ Set up / rebuild database</b> in the sheet first, then reload.</div>'; return; }
     S.settings=b.settings||{}; S.services=b.services||[]; S.enums=b.enums||{}; S.dashboard=b.dashboard;
-    CUR=String(S.settings['Currency symbol']||'$').trim()||'$';
-    applyAccent(S.settings['Accent color']);
-    if(S.settings['Business name']) document.getElementById('bizName').textContent=S.settings['Business name'];
-    renderHome();
-  }).catch(function(e){ document.getElementById('homeBody').innerHTML='<div class="empty">Could not load: '+esc(e&&e.message||e)+'</div>'; });
+    _fresh.home=Date.now(); applyBootChrome(); renderHome(); saveCache();
+  }).catch(function(e){ if(!hadCache) document.getElementById('homeBody').innerHTML='<div class="empty">Could not load: '+esc(e&&e.message||e)+'</div>'; });
+}
+/** Apply the settings-driven chrome (currency, accent, business name) from current S.settings. */
+function applyBootChrome(){
+  CUR=String(S.settings['Currency symbol']||'$').trim()||'$';
+  applyAccent(S.settings['Accent color']);
+  if(S.settings['Business name']) document.getElementById('bizName').textContent=S.settings['Business name'];
 }
 var CUR_SCREEN='home';
 var TITLES={home:'Home',clients:'Clients',jobs:'Jobs',billing:'Billing',more:'More',settings:'Business Settings'};
@@ -201,10 +285,13 @@ function nav(s){
   window.scrollTo(0,0);
   if(s==='home')loadHome(); if(s==='clients')loadClients(); if(s==='jobs')loadJobs(); if(s==='billing')loadBilling(); if(s==='settings')renderSettings();
 }
-function refreshAll(){ busy('Refreshing…'); invalidate(); boot(); nav(CUR_SCREEN); }
+function refreshAll(){ busy('Refreshing…'); invalidate(); boot(true); nav(CUR_SCREEN); }
 
 /* ================= HOME ================= */
-function loadHome(){ if(!S.dashboard){ api('apiDashboard').then(function(d){S.dashboard=d;renderHome();}); } else renderHome(); }
+function loadHome(){
+  if(S.dashboard){ renderHome(); bgRefresh('home','apiDashboard',[],function(d){ S.dashboard=d; if(CUR_SCREEN==='home')renderHome(); }); }
+  else api('apiDashboard').then(function(d){ S.dashboard=d; _fresh.home=Date.now(); saveCache(); renderHome(); });
+}
 function tile(l,v,h,g){ return '<div class="tile'+(g?' good':'')+'"><div class="l">'+l+'</div><div class="v">'+v+'</div>'+(h?'<div class="hint">'+esc(h)+'</div>':'')+'</div>'; }
 function renderHome(){
   var d=S.dashboard; if(!d){ document.getElementById('homeBody').innerHTML='<div class="spin">Loading…</div>'; return; }
@@ -224,8 +311,10 @@ function renderHome(){
 }
 
 /* ================= CLIENTS ================= */
-function loadClients(){ if(S.clients){ renderClients(); return; } document.getElementById('clientsBody').innerHTML='<div class="spin">Loading…</div>';
-  api('apiListClients').then(function(l){ S.clients=l||[]; renderClients(); }).catch(function(e){ document.getElementById('clientsBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
+function loadClients(){
+  if(S.clients){ renderClients(); bgRefresh('clients','apiListClients',[],function(l){ S.clients=l||[]; if(CUR_SCREEN==='clients')renderClients(); }); return; }
+  document.getElementById('clientsBody').innerHTML='<div class="spin">Loading…</div>';
+  api('apiListClients').then(function(l){ S.clients=l||[]; _fresh.clients=Date.now(); saveCache(); renderClients(); }).catch(function(e){ document.getElementById('clientsBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
 function renderClients(){
   var q=(document.getElementById('clientSearch').value||'').toLowerCase();
   var list=(S.clients||[]).filter(function(c){ return !q || (c.name+' '+c.phone+' '+c.email).toLowerCase().indexOf(q)>-1; })
@@ -329,8 +418,10 @@ function _pickChoose(id){ var cb=pickClient._cb; closeModal(); if(cb)cb(id); }
 /* ================= JOBS ================= */
 var JOB_TAB='today', JOB_ORDER=['today','upcoming','completed'];
 function setJobTab(k){ JOB_TAB=k; renderJobs(); }
-function loadJobs(){ if(S.jobs){ renderJobs(); return; } document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>';
-  api('apiListJobs').then(function(l){ S.jobs=l||[]; renderJobs(); }).catch(function(){ document.getElementById('jobsBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
+function loadJobs(){
+  if(S.jobs){ renderJobs(); bgRefresh('jobs','apiListJobs',[],function(l){ S.jobs=l||[]; if(CUR_SCREEN==='jobs')renderJobs(); }); return; }
+  document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>';
+  api('apiListJobs').then(function(l){ S.jobs=l||[]; _fresh.jobs=Date.now(); saveCache(); renderJobs(); }).catch(function(){ document.getElementById('jobsBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
 function jobById(id){ return (S.jobs||[]).filter(function(j){return j.id===id;})[0]; }
 function jobRow(j,pastDue){ var tags=(pastDue?'<span class="pill p-pastdue" style="margin-right:5px">Past due</span>':'')+pill(j.status);
   return '<div class="list-item" onclick="openJob('+jarg(j.id)+')"><div class="row"><div><div class="name">'+esc(j.client||'')+'</div><div class="meta">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+(j.service?' · '+esc(j.service):'')+'</div></div><div style="display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end">'+tags+'</div></div></div>'; }
@@ -391,14 +482,20 @@ function confirmArchiveJob(id){ busy('Archiving…'); api('apiArchiveJob',id).th
 /* ================= BILLING ================= */
 var BILL_TAB='quotes', BILL_ORDER=['quotes','outstanding','paid','closedq'];
 function setBillTab(k){ BILL_TAB=k; renderBilling(); }
-function loadBilling(){ if(S.billing){ renderBilling(); return; } document.getElementById('billingBody').innerHTML='<div class="spin">Loading…</div>';
-  api('apiListBilling').then(function(r){ S.billing=r||{estimates:[],invoices:[]}; renderBilling(); }).catch(function(){ document.getElementById('billingBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
+function loadBilling(){
+  if(S.billing){ renderBilling(); bgRefresh('billing','apiListBilling',[],function(r){
+      var pe=((S.billing&&S.billing.estimates)||[]).filter(function(e){return e._saving;});
+      var pi=((S.billing&&S.billing.invoices)||[]).filter(function(i){return i._saving;});
+      r.estimates=(r.estimates||[]).concat(pe); r.invoices=(r.invoices||[]).concat(pi);
+      S.billing=r; if(CUR_SCREEN==='billing')renderBilling(); }); return; }
+  document.getElementById('billingBody').innerHTML='<div class="spin">Loading…</div>';
+  api('apiListBilling').then(function(r){ S.billing=r||{estimates:[],invoices:[]}; _fresh.billing=Date.now(); saveCache(); renderBilling(); }).catch(function(){ document.getElementById('billingBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
 // Pull the authoritative billing list from the server but keep any still-uploading (optimistic) temps on top.
 function refreshBilling(){ return api('apiListBilling').then(function(fresh){ if(!fresh)return;
   var pe=((S.billing&&S.billing.estimates)||[]).filter(function(e){return e._saving;});
   var pi=((S.billing&&S.billing.invoices)||[]).filter(function(i){return i._saving;});
   fresh.estimates=(fresh.estimates||[]).concat(pe); fresh.invoices=(fresh.invoices||[]).concat(pi);
-  S.billing=fresh; if(CUR_SCREEN==='billing')renderBilling(); }).catch(function(){}); }
+  S.billing=fresh; saveCache(); if(CUR_SCREEN==='billing')renderBilling(); }).catch(function(){}); }
 function docById(kind,id){ var arr=kind==='INVOICE'?(S.billing.invoices||[]):(S.billing.estimates||[]); return arr.filter(function(d){return d.id===id;})[0]; }
 function docRow(kind,d){ return '<div class="list-item" onclick="openDoc(\''+kind+'\','+jarg(d.id)+')"><div class="row"><div><div class="name">'+esc(d.id)+' · '+esc(d.client||'')+'</div><div class="meta">'+money(d.total)+(d.issueDate?' · '+esc(d.issueDate):'')+'</div></div>'+pill(d.status)+'</div></div>'; }
 function renderBilling(){
@@ -577,7 +674,7 @@ function savePriceBook(){
     else if(name){ ops.push(api('apiCreateService',{name:name,rate:rate,active:true})); } });
   busy('Saving price book…'); closeModal();
   Promise.all(ops).then(function(){ return api('apiListServices',true); })
-    .then(function(list){ if(list)S.services=list; toast('✅ Price book saved'); })
+    .then(function(list){ if(list)S.services=list; saveCache(); toast('✅ Price book saved'); })
     .catch(function(e){ toast('⚠ '+(e&&e.message||e)); });
 }
 
@@ -606,11 +703,11 @@ function saveSettings(){
   var obj={}; document.querySelectorAll('#settingsBody input[data-k]').forEach(function(el){ obj[el.dataset.k]=el.value.trim(); });
   obj['Accent color']=document.getElementById('set_accent').value;
   busy('Saving…');
-  api('apiSaveSettings',obj).then(function(){ Object.assign(S.settings,obj); CUR=String(obj['Currency symbol']||'$').trim()||'$'; applyAccent(obj['Accent color']); document.getElementById('bizName').textContent=obj['Business name']||'Service Pro CRM'; toast('✅ Settings saved'); });
+  api('apiSaveSettings',obj).then(function(){ Object.assign(S.settings,obj); CUR=String(obj['Currency symbol']||'$').trim()||'$'; applyAccent(obj['Accent color']); document.getElementById('bizName').textContent=obj['Business name']||'Service Pro CRM'; saveCache(); toast('✅ Settings saved'); });
 }
 function logoPreviewHtml(){ if(S.logo===undefined)return '<div class="muted">Loading…</div>'; if(S.logo)return '<img src="'+S.logo+'" style="max-height:70px;max-width:220px;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff;display:block;margin-bottom:8px"><button class="btn sec" onclick="removeLogo()">Remove logo</button>'; return '<div class="muted" style="margin-bottom:6px">No logo yet.</div>'; }
 function paintLogo(){ var el=document.getElementById('logoPreview'); if(el)el.innerHTML=logoPreviewHtml(); }
-function fetchLogo(){ api('apiGetLogo').then(function(r){ S.logo=(r&&r.logo)||''; paintLogo(); }); }
+function fetchLogo(){ api('apiGetLogo').then(function(r){ S.logo=(r&&r.logo)||''; saveCache(); paintLogo(); }); }
 function onLogoPick(input){ var f=input.files&&input.files[0]; if(!f)return; var img=new Image();
   img.onload=function(){ var max=360,w=img.width,h=img.height,sc=Math.min(1,max/Math.max(w,h)); var cw=Math.round(w*sc),ch=Math.round(h*sc); var cv=document.createElement('canvas'); cv.width=cw;cv.height=ch; cv.getContext('2d').drawImage(img,0,0,cw,ch); var url=cv.toDataURL('image/png'); if(url.length>48000)url=cv.toDataURL('image/jpeg',.82); if(url.length>48000){toast('Image too large');return;} S.logo=url; paintLogo(); busy('Saving logo…'); api('apiSaveLogo',url).then(function(){toast('✅ Logo saved');}); };
   img.onerror=function(){toast('Could not read image');}; var rd=new FileReader(); rd.onload=function(e){img.src=e.target.result;}; rd.readAsDataURL(f); }
@@ -632,6 +729,7 @@ function mock(fn,a){
   if(fn==='apiApproveEstimate')return {ok:true,invoiceId:'INV-9001',jobId:'JOB-00003'};
   return {ok:true};
 }
+restoreQueue(); if(SYNC.q.length){ syncBadge(); syncPump(); }   // resume any writes that were mid-flight when the app last closed
 boot();
 </script>
 </body>
