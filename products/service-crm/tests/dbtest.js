@@ -56,7 +56,7 @@ const SpreadsheetApp = {
   newDataValidation: ()=>{ const dv={_list:null}; return { requireValueInList:(l)=>{dv._list=l; return this_dv();}, }; },
 };
 // chainable data validation builder
-function this_dv(){ const dv={_list:null}; const api={ requireValueInList:(l)=>{dv._list=l; return api;}, setAllowInvalid:()=>api, build:()=>({list:dv._list}) }; return api; }
+function this_dv(){ const dv={_list:null,_checkbox:false}; const api={ requireValueInList:(l)=>{dv._list=l; return api;}, requireCheckbox:()=>{dv._checkbox=true; return api;}, setAllowInvalid:()=>api, build:()=>({list:dv._list,checkbox:dv._checkbox}) }; return api; }
 SpreadsheetApp.newDataValidation = ()=>this_dv();
 const LockService = { getScriptLock: ()=>({ waitLock:()=>true, releaseLock:()=>true, tryLock:()=>true }) };
 
@@ -82,7 +82,7 @@ ok(rep.tables._meta.hidden===true, '_meta hidden');
 ok(rep.seededServices===5, 'seeded 5 services (got '+rep.seededServices+')');
 // checkboxes + dropdowns recorded
 const clientsSheet = SS.getSheetByName('Clients');
-ok(clientsSheet.colFmt[11]==='checkbox', 'Clients.Archived is a checkbox');
+ok(!!clientsSheet.colValid[11] && clientsSheet.colValid[11].checkbox===true, 'Clients.Archived is a checkbox');
 ok(!!clientsSheet.colValid[6], 'Clients.Status has a dropdown');
 ok(clientsSheet.colFmt[9]==='$#,##0.00', 'Clients.LifetimeSpent has currency format');
 ok(clientsSheet.colFmt[1]==='@', 'Clients.ClientID is plaintext');

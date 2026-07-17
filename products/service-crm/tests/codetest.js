@@ -31,7 +31,7 @@ class SS0 { constructor(){ this.sheets=[]; this.active=null; }
   insertSheet(n){ const s=new Sheet(n); this.sheets.push(s); this.active=s; return s; }
   deleteSheet(s){ this.sheets=this.sheets.filter(x=>x!==s); } setActiveSheet(s){ this.active=s; return s; } moveActiveSheet(){} getId(){ return 'F'; } }
 const SS = new SS0();
-function dv(){ const o={}; const api={ requireValueInList:l=>{o.l=l; return api;}, setAllowInvalid:()=>api, build:()=>o }; return api; }
+function dv(){ const o={}; const api={ requireValueInList:l=>{o.l=l; return api;}, requireCheckbox:()=>api, setAllowInvalid:()=>api, build:()=>o }; return api; }
 const SpreadsheetApp = { getActiveSpreadsheet:()=>SS, newDataValidation:dv, getUi:()=>({ alert:()=>1, ButtonSet:{OK:1,OK_CANCEL:2}, Button:{OK:1}, createMenu:()=>({addItem(){return this;},addSeparator(){return this;},addSubMenu(){return this;},addToUi(){}}) }) };
 const LockService = { getScriptLock:()=>({ waitLock:()=>1, releaseLock:()=>1 }) };
 const Session = { getScriptTimeZone:()=>'America/New_York', getActiveUser:()=>({ getEmail:()=>'owner@biz.com' }) };

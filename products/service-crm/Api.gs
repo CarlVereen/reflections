@@ -287,6 +287,65 @@ function apiArchiveService(id) { softDelete('Services', id); return { ok: true }
 
 /* ============================ Jobs ============================ */
 
+/** Owner toggle: 'yes' (default) syncs jobs to the owner's own Google Calendar. Anything that reads
+ *  as off ('no'/'false'/'off'/blank-when-explicitly-set) skips it — a buyer who declined the Calendar
+ *  permission just leaves it off and no CalendarApp call is ever made. */
+function API_calSyncOn_() {
+  var raw = settingGet('Sync jobs to Google Calendar');
+  if (raw === '' || raw == null) return true;   // unset → default on (matches seed)
+  var v = String(raw).trim().toLowerCase();
+  return !(v === 'no' || v === 'false' || v === 'off' || v === '0' || v === 'n');
+}
+/** JobDate + free-text ScheduledTime → { start: Date, timed: bool }. No/blank time = all-day event. */
+function API_jobStart_(job) {
+  var d = job.JobDate; if (!(d instanceof Date)) return null;
+  var start = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  var mins = API_timeMin_(job.ScheduledTime);   // 1441 = blank/unparseable → treat as all-day
+  var timed = mins < 1441;
+  if (timed) { start.setHours(0, 0, 0, 0); start.setMinutes(mins); }
+  return { start: start, timed: timed };
+}
+/** Mirror one job to the owner's Google Calendar (create / update / delete the SAME event by id).
+ *  Best-effort: any Calendar error (missing scope, deleted event, quota) is swallowed so a job write
+ *  never fails because of the calendar. Stores/clears Jobs.CalendarEventID to stay idempotent. */
+function API_syncJobCalendar_(jobId) {
+  try {
+    if (typeof CalendarApp === 'undefined') return;   // service unavailable (e.g. test sandbox) → no-op
+    if (!API_calSyncOn_()) return;
+    var job = getById('Jobs', jobId); if (!job) return;
+    var cal = CalendarApp.getDefaultCalendar(); if (!cal) return;
+    var existing = null;
+    if (job.CalendarEventID) { try { existing = cal.getEventById(job.CalendarEventID); } catch (e) { existing = null; } }
+
+    // A cancelled or archived job should NOT hold a calendar slot — remove the event and forget its id.
+    if (job.Archived || job.Status === 'Cancelled') {
+      if (existing) existing.deleteEvent();
+      if (job.CalendarEventID) update('Jobs', jobId, { CalendarEventID: '' });
+      return;
+    }
+
+    var s = API_jobStart_(job); if (!s) return;
+    var client = getById('Clients', job.ClientID) || {};
+    var title = (client.Name || 'Job') + ' — ' + (job.ServiceName || 'Service');
+    var loc = client.Address || '';
+    var desc = 'Service Pro CRM · job ' + job.JobID + (job.Notes ? '\n' + job.Notes : '');
+    var durH = Number(settingGet('Default job duration (hours)')) || 1;
+    var end = new Date(s.start.getTime() + durH * 3600000);
+
+    if (existing) {
+      existing.setTitle(title).setLocation(loc).setDescription(desc);
+      if (s.timed) existing.setTime(s.start, end); else existing.setAllDayDate(s.start);
+    } else {
+      var ev = s.timed ? cal.createEvent(title, s.start, end, { location: loc, description: desc })
+                       : cal.createAllDayEvent(title, s.start, { location: loc, description: desc });
+      update('Jobs', jobId, { CalendarEventID: ev.getId() });
+    }
+  } catch (err) {
+    // Never surface a calendar failure to the caller — the job itself already saved.
+    try { console.warn('Calendar sync skipped for ' + jobId + ': ' + err); } catch (e2) {}
+  }
+}
+
 function API_jobView_(j, nameOf) {
   return { id: j.JobID, clientId: j.ClientID, client: (nameOf || API_clientNameMap_())[j.ClientID] || '',
     serviceId: j.ServiceID, service: j.ServiceName, date: API_fmtD_(j.JobDate), dateISO: API_iso_(j.JobDate),
@@ -305,6 +364,7 @@ function apiCreateJob(form) {
     JobDate: API_parseDate_(form.date) || API_today_(), ScheduledTime: form.time || '',
     Status: form.status || 'Scheduled', Recurring: form.recurring || 'None', Notes: form.notes || '',
   });
+  API_syncJobCalendar_(j.JobID);
   return { ok: true, id: j.JobID, job: API_jobView_(j) };
 }
 function apiUpdateJob(id, patch) {
@@ -316,12 +376,13 @@ function apiUpdateJob(id, patch) {
   if (patch.serviceId !== undefined) a.ServiceID = patch.serviceId;
   if (patch.time !== undefined) a.ScheduledTime = patch.time;
   var j = update('Jobs', id, a);
+  API_syncJobCalendar_(j.JobID);
   return { ok: true, job: API_jobView_(j) };
 }
 function apiArchiveJob(id) {
   var refs = DB_countRefs_('Invoices', 'JobID', id);
   if (refs) return { ok: false, msg: 'This job is linked to ' + refs + ' active invoice(s). Archive the invoice first.' };
-  softDelete('Jobs', id); return { ok: true };
+  softDelete('Jobs', id); API_syncJobCalendar_(id); return { ok: true };
 }
 
 /* ============================ Estimates / Invoices + line items ============================ */
@@ -416,7 +477,8 @@ function apiApproveEstimate(estimateId, jobDateIso, jobServiceId, ids) {
   var job = insert('Jobs', {
     _id: ids.jobId || '',
     ClientID: est.ClientID, ServiceID: svcForJob,
-    JobDate: API_parseDate_(jobDateIso) || today, Status: 'Scheduled', Recurring: 'None',
+    JobDate: API_parseDate_(jobDateIso) || today, ScheduledTime: ids.jobTime || '',
+    Status: 'Scheduled', Recurring: 'None',
   });
   var inv = insert('Invoices', {
     _id: ids.invoiceId || '',
@@ -430,6 +492,7 @@ function apiApproveEstimate(estimateId, jobDateIso, jobServiceId, ids) {
   }));
   recalcDocTotal('Invoice', inv.InvoiceID);
   var c = getById('Clients', est.ClientID); if (c && c.Status === 'Lead') update('Clients', est.ClientID, { Status: 'Active' });
+  API_syncJobCalendar_(job.JobID);
   return { ok: true, invoiceId: inv.InvoiceID, jobId: job.JobID, jobDate: API_fmtD_(job.JobDate) };
 }
 
@@ -523,10 +586,11 @@ function API_docEmail_(kind, id, client, pdf, email) {
 
 var SETTINGS_KEYS = ['Business name', 'Owner email', 'Business phone', 'Business address', 'Currency symbol',
   'Sales tax %', 'Default follow-up (days)', 'Google review link', 'Invoice payment instructions',
-  'Payment link', 'Invoice due (days)', 'Accent color'];
+  'Payment link', 'Invoice due (days)', 'Accent color',
+  'Sync jobs to Google Calendar', 'Default job duration (hours)'];
 // Numbering is owner-facing config, but the live counter lives in _meta (Script-owned, collision-safe).
 var NUMBER_KEYS = { 'Estimate starting number': 'Estimates', 'Invoice starting number': 'Invoices' };
-var NUMERIC_SETTINGS = { 'Sales tax %': 1, 'Invoice due (days)': 1, 'Default follow-up (days)': 1 };
+var NUMERIC_SETTINGS = { 'Sales tax %': 1, 'Invoice due (days)': 1, 'Default follow-up (days)': 1, 'Default job duration (hours)': 1 };
 var LOGO_DATA_KEY = 'Company logo (data URL)';
 var LOGO_FILE_KEY = 'Company logo (Drive file id)';
 

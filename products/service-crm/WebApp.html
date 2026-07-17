@@ -38,7 +38,7 @@ h2.sec{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--
 label{display:block;font-weight:700;font-size:12.5px;margin:12px 0 4px}
 input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff;font-family:inherit}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
-.two{display:flex;gap:8px}.two>div{flex:1}
+.two{display:flex;gap:8px}.two>div{flex:1;min-width:0}
 .seg{display:flex;gap:6px;margin-top:8px}
 .segbtn{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 4px;font-weight:700;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
 .segbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -115,7 +115,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
      round trips. Server-rendered via HtmlService template; a raw '{}' when served statically/in preview. -->
 <script type="application/json" id="__BOOT__"><?!= boot ?></script>
 <script>
-var BUILD='2026-07-17i-noblankrows';
+var BUILD='2026-07-17j-schedule-time+calendar+maps';
 var BOOT_T0=(window.performance&&performance.now)?0:Date.now();   // browser paint→script start baseline (perf.now is page-relative)
 var BOOT_MS=null;                                                  // filled once boot() finishes hydrating
 // The inlined dataset (see the #__BOOT__ data block). Parsed once; null if served statically or on a
@@ -436,7 +436,9 @@ function clientById(id){ return (S.clients||[]).filter(function(c){return c.id==
 function openClient(id){
   var c=clientById(id); if(!c)return;
   var tel=String(c.phone||'').replace(/[^0-9+]/g,'');
-  var info='<div class="muted">'+esc(c.phone||'—')+(c.email?' · '+esc(c.email):'')+'</div>'+(c.address?'<div class="muted">'+esc(c.address)+'</div>':'');
+  var maps=c.address?('https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(c.address)):'';
+  var info='<div class="muted">'+esc(c.phone||'—')+(c.email?' · '+esc(c.email):'')+'</div>'+
+    (c.address?'<div class="muted"><a href="'+esc(maps)+'" target="_blank" rel="noopener">'+esc(c.address)+'</a></div>':'');
   var m=[]; if(c.lifetime) m.push(money0(c.lifetime)+' lifetime'); if(c.source) m.push('via '+esc(c.source)); if(c.followUp) m.push('follow-up '+esc(c.followUp));
   if(m.length) info+='<div class="muted" style="margin-top:2px">'+m.join(' · ')+'</div>';
   var badges='';
@@ -445,7 +447,7 @@ function openClient(id){
   if(c.unpaidInvoice) badges+='<div class="list-item" onclick="openDoc(\'INVOICE\','+jarg(c.unpaidInvoice.id)+')"><div class="row"><div><div class="name">💵 Unpaid invoice</div><div class="meta">'+esc(c.unpaidInvoice.id)+' · '+money(c.unpaidInvoice.total)+' · '+esc(c.unpaidInvoice.status)+'</div></div><span>›</span></div></div>';
   var statusBtns=(S.enums.clientStatus||[]).map(function(st){ return '<button class="btn sm sec" onclick="setClientStatus('+jarg(id)+',\''+st+'\')">'+st+'</button>'; }).join(' ');
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(c.name)+' '+pill(c.status)+'</h3>'+info+
-    (tel?'<div class="btnrow"><a class="btn sec" href="tel:'+tel+'">Call</a><a class="btn sec" href="sms:'+tel+'">Text</a></div>':'')+
+    ((tel||maps)?'<div class="btnrow">'+(tel?'<a class="btn sec" href="tel:'+tel+'">Call</a><a class="btn sec" href="sms:'+tel+'">Text</a>':'')+(maps?'<a class="btn sec" href="'+esc(maps)+'" target="_blank" rel="noopener">🧭 Directions</a>':'')+'</div>':'')+
     (badges?'<h2 class="sec">Activity</h2>'+badges:'')+
     '<div class="btnrow"><button class="btn" onclick="startEstimate('+jarg(id)+')">Create estimate</button><button class="btn sec" onclick="openJobForm('+jarg(id)+')">New job</button></div>'+
     '<h2 class="sec">Follow-up</h2><div class="two"><div><input type="date" id="cf_date" value="'+esc(c.followUpISO||'')+'"></div><div><button class="btn sec" onclick="setClientFollowUp('+jarg(id)+')">Set date</button></div></div>'+
@@ -668,11 +670,11 @@ function sendDoc(kind,id){
   }).catch(function(e){ toast('⚠ Send failed: '+(e&&e.message||e)); }); }
 function approveEstimate(id){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Approve &amp; schedule</h3><div class="muted" style="margin-bottom:10px">Accepts the quote, creates a draft invoice (dated today) and schedules a job.</div>'+
-    '<label>Job date</label><input type="date" id="ap_date" value="'+isoOf(midnight(new Date()))+'">'+
+    '<div class="two"><div><label>Job date</label><input type="date" id="ap_date" value="'+isoOf(midnight(new Date()))+'"></div><div><label>Time</label><input id="ap_time" placeholder="2pm"></div></div>'+
     '<button class="btn" onclick="doApprove('+jarg(id)+')">Approve → invoice + job</button>');
 }
 function doApprove(id){
-  var iso=val('ap_date'); var est=docById('ESTIMATE',id);
+  var iso=val('ap_date'), tm=val('ap_time'); var est=docById('ESTIMATE',id);
   if(!est){ toast('Estimate not found'); return; }
   var prev=est.status; est.status='Accepted';   // apply locally first
   var invId=nextLocalId('Invoices');   // real INV number now — shows immediately, never renumbers
@@ -680,11 +682,11 @@ function doApprove(id){
   S.billing=S.billing||{estimates:[],invoices:[]}; S.billing.invoices=S.billing.invoices||[]; S.billing.invoices.push(inv);
   var estLines=localLines('ESTIMATE',id); if(estLines) setLocalLines('INVOICE',invId,estLines);   // invoice inherits the quoted lines
   var jt=null;
-  if(S.jobs){ jt={id:'tmp'+(++SYNC.seq),_saving:true,clientId:est.clientId,client:est.client,serviceId:'',service:'',date:fmtMDfromISO(iso),dateISO:iso,time:'',status:'Scheduled',recurring:'None'}; S.jobs.push(jt); }
+  if(S.jobs){ jt={id:'tmp'+(++SYNC.seq),_saving:true,clientId:est.clientId,client:est.client,serviceId:'',service:'',date:fmtMDfromISO(iso),dateISO:iso,time:tm,status:'Scheduled',recurring:'None'}; S.jobs.push(jt); }
   var c=clientById(est.clientId); if(c&&c.status==='Lead')c.status='Active';   // approval promotes the client
   S.dashboard=null;
   closeModal(); toast('✅ Approving — invoice + job scheduled'); nav('billing'); saveCache();
-  enqueue('apiApproveEstimate',[id,iso,null,{invoiceId:invId}],'Approve estimate',{   // Sheets write runs in the background
+  enqueue('apiApproveEstimate',[id,iso,null,{invoiceId:invId,jobTime:tm}],'Approve estimate',{   // Sheets write runs in the background
     onOk:function(r){
       inv._saving=false;
       if(r&&r.invoiceId&&r.invoiceId!==invId){ reKeyLines('INVOICE',invId,r.invoiceId); remapPending(invId,r.invoiceId); advanceCounter('Invoices',r.invoiceId); inv.id=r.invoiceId; }
@@ -820,6 +822,10 @@ function renderSettings(){
     sfield('Invoice payment instructions','Invoice payment instructions')+sfield('Payment link','Payment link','paypal.me/you')+sfield('Invoice due (days)','Invoice due (days)','14')+
     '<h2 class="sec">Numbering</h2><div class="two"><div>'+sfield('Next estimate #','Estimate starting number','1001')+'</div><div>'+sfield('Next invoice #','Invoice starting number','9001')+'</div></div>'+
     '<h2 class="sec">Follow-up &amp; reviews</h2><div class="two"><div>'+sfield('Follow-up (days)','Default follow-up (days)','2')+'</div><div>'+sfield('Google review link','Google review link')+'</div></div>'+
+    '<h2 class="sec">Scheduling</h2><div class="muted" style="margin-bottom:6px">Add each scheduled job to your own Google Calendar (client address becomes the event location).</div>'+
+    '<div class="two"><div><label>Google Calendar sync</label><select data-k="Sync jobs to Google Calendar">'+
+      ['yes','no'].map(function(v){return '<option value="'+v+'"'+(String(s['Sync jobs to Google Calendar']==null?'yes':s['Sync jobs to Google Calendar']).toLowerCase()===v?' selected':'')+'>'+(v==='yes'?'On':'Off')+'</option>';}).join('')+
+      '</select></div><div>'+sfield('Default job length (hours)','Default job duration (hours)','1')+'</div></div>'+
     '<h2 class="sec">Appearance</h2><div class="muted" style="margin-bottom:6px">Accent color.</div>'+
     '<div class="colorrow"><input type="color" id="set_accent" value="'+esc(hexRGB(s['Accent color'])?s['Accent color']:ACCENT_DEFAULT)+'" oninput="applyAccent(this.value)">'+
     '<span class="swatches">'+SWATCHES.map(function(c){return '<button class="sw" style="background:'+c+'" onclick="pickAccent(\''+c+'\')"></button>';}).join('')+'</span></div>'+
@@ -833,7 +839,7 @@ function renderSettings(){
 }
 function pickAccent(c){ var i=document.getElementById('set_accent'); if(i)i.value=c; applyAccent(c); }
 function saveSettings(){
-  var obj={}; document.querySelectorAll('#settingsBody input[data-k]').forEach(function(el){ obj[el.dataset.k]=el.value.trim(); });
+  var obj={}; document.querySelectorAll('#settingsBody input[data-k],#settingsBody select[data-k]').forEach(function(el){ obj[el.dataset.k]=el.value.trim(); });
   obj['Accent color']=document.getElementById('set_accent').value;
   busy('Saving…');
   api('apiSaveSettings',obj).then(function(){ Object.assign(S.settings,obj); CUR=String(obj['Currency symbol']||'$').trim()||'$'; applyAccent(obj['Accent color']); document.getElementById('bizName').textContent=obj['Business name']||'Service Pro CRM'; saveCache(); toast('✅ Settings saved'); });

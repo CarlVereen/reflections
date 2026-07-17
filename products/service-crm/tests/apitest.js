@@ -41,7 +41,7 @@ class Spreadsheet {
   getId(){ return 'FAKE'; }
 }
 const SS = new Spreadsheet();
-function dvBuilder(){ const dv={_list:null}; const api={ requireValueInList:l=>{dv._list=l; return api;}, setAllowInvalid:()=>api, build:()=>({list:dv._list}) }; return api; }
+function dvBuilder(){ const dv={_list:null}; const api={ requireValueInList:l=>{dv._list=l; return api;}, requireCheckbox:()=>api, setAllowInvalid:()=>api, build:()=>({list:dv._list}) }; return api; }
 const SpreadsheetApp = { getActiveSpreadsheet:()=>SS, newDataValidation:dvBuilder };
 const LockService = { getScriptLock:()=>({ waitLock:()=>true, releaseLock:()=>true, tryLock:()=>true }) };
 const Session = { getScriptTimeZone:()=>'America/New_York' };
@@ -137,8 +137,9 @@ ok(est2.subtotal===150 && est2.tax===12 && est2.total===162, 'tax applied: subto
 const st = call('apiGetSettings');
 ok(st['Estimate starting number']===1003, 'settings expose live next estimate number (1003) — got '+st['Estimate starting number']);
 call('apiSaveSettings', {'Invoice starting number': 9500});
-const appr2 = call('apiApproveEstimate', ce2.id, '2026-08-01');
+const appr2 = call('apiApproveEstimate', ce2.id, '2026-08-01', null, {jobTime:'2pm'});
 ok(appr2.invoiceId==='INV-9500', 'invoice numbering jumped to 9500 from Business Settings — got '+appr2.invoiceId);
+ok(call('apiListJobs').find(j=>j.id===appr2.jobId).time==='2pm', 'approve carries the entered time onto the job ScheduledTime');
 const inv2 = call('apiListBilling').invoices.find(i=>i.id===appr2.invoiceId);
 ok(inv2.total===162 && inv2.tax===12, 'approved invoice carries tax (total 162)');
 call('apiSaveSettings', {'Invoice starting number': 100});

@@ -45,6 +45,7 @@ var SCHEMA = {
     { n: 'Archived',      t: 'bool', default: false },
     { n: 'CreatedAt',     t: 'datetime', auto: 'create' },
     { n: 'UpdatedAt',     t: 'datetime', auto: 'update' },
+    { n: 'CalendarEventID', t: 'text' },   // Google Calendar event id for this job (blank = not synced); lets a reschedule/cancel update the SAME event
   ]},
   Estimates: { sheet: 'Estimates', entity: 'Estimates', cols: [
     { n: 'EstimateID',    t: 'id' },

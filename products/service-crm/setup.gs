@@ -55,6 +55,7 @@ function DB_seedSettings_(ss) {
     ['Google review link', ''], ['Invoice payment instructions', ''], ['Payment link', ''],
     ['Invoice due (days)', 14], ['Estimate starting number', 1001], ['Invoice starting number', 9001],
     ['Company logo (data URL)', ''], ['Accent color', '#8f5f22'],
+    ['Sync jobs to Google Calendar', 'yes'], ['Default job duration (hours)', 1],
   ];
   ss.getSheetByName(SCHEMA.Settings.sheet).getRange(2, 1, rows.length, 2).setValues(rows);
   DB_invalidate_('Settings');
