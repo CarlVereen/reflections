@@ -169,7 +169,13 @@ function DB_writeCell_(t, v) {
   if (t === 'money' || t === 'number') return Number(v) || 0;
   if (t === 'bool') return v === true || v === 'TRUE' || v === 'true';
   if (t === 'date' || t === 'datetime') return (v instanceof Date) ? v : new Date(v);
-  return String(v);
+  var s = String(v);
+  // Formula/CSV-injection guard: text that begins with a formula trigger (=,+,-,@,tab,CR) is
+  // neutralized with a leading apostrophe so it can never execute as a formula in the owner's
+  // sheet (defence-in-depth on top of the plaintext column format). Applies to free-text fields;
+  // phones keep their '+' via the plaintext format instead of being prefixed.
+  if ((t === 'text' || t === 'url') && /^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return s;
 }
 function DB_rowToObj_(table, row) {
   var cols = SCHEMA[table].cols, o = {};

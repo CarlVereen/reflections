@@ -392,10 +392,10 @@ function API_docHtml_(kind, d, client, items) {
   var taxRows = (API_num_(d.Tax) > 0) ? (taxCell('Subtotal', d.Subtotal) + taxCell('Tax', d.Tax)) : '';
   var totalRow = taxRows + '<tr><td colspan="3" style="padding:9px;text-align:right;font-weight:bold">' + (isInv ? 'Total Due' : 'Estimated Total') +
     '</td><td style="padding:9px;text-align:right;font-weight:bold;font-size:18px;color:' + accent + '">' + API_money_(d.Total) + '</td></tr>';
-  var payBtn = (isInv && payLink) ? '<p style="text-align:center;margin:22px 0"><a href="' + payLink + '" style="background:' + accent + ';color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:bold">Pay now</a></p>' : '';
+  var payBtn = (isInv && payLink) ? '<p style="text-align:center;margin:22px 0"><a href="' + API_esc_(payLink) + '" style="background:' + accent + ';color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:bold">Pay now</a></p>' : '';
   return '<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#1a1c1f">' +
     '<table style="width:100%;border-bottom:3px solid ' + accent + ';margin-bottom:22px"><tr>' +
-    '<td style="padding-bottom:14px;vertical-align:top">' + (logo ? '<img src="' + logo + '" style="max-height:64px;max-width:220px;margin-bottom:8px;display:block">' : '') +
+    '<td style="padding-bottom:14px;vertical-align:top">' + (logo ? '<img src="' + API_esc_(logo) + '" style="max-height:64px;max-width:220px;margin-bottom:8px;display:block">' : '') +
     '<div style="font-size:24px;font-weight:bold">' + API_esc_(biz) + '</div>' + (bizPhone ? '<div style="color:#52565c">' + API_esc_(bizPhone) + '</div>' : '') + '</td>' +
     '<td style="padding-bottom:14px;text-align:right;vertical-align:top"><div style="font-size:28px;font-weight:bold;color:' + accent + '">' + (isInv ? 'INVOICE' : 'ESTIMATE') + '</div>' +
     '<div style="color:#52565c">#' + API_esc_(d[API_doc_(kind).pk]) + '</div></td></tr></table>' +
@@ -416,7 +416,7 @@ function API_docEmail_(kind, id, client, pdf, email) {
   var payLink = String(settingGet('Payment link') || '').trim();
   MailApp.sendEmail({ to: email, subject: (isInv ? 'Invoice' : 'Estimate') + ' #' + id + ' from ' + biz,
     htmlBody: 'Hi ' + API_esc_(String(client.Name).split(' ')[0]) + ',<br><br>Please find your ' + (isInv ? 'invoice' : 'estimate') + ' attached. ' +
-      (isInv && payLink ? 'Pay online here: ' + payLink + '<br>' : '') + (isInv && pay ? API_esc_(pay) : '') +
+      (isInv && payLink ? 'Pay online here: ' + API_esc_(payLink) + '<br>' : '') + (isInv && pay ? API_esc_(pay) : '') +
       '<br><br>Thank you!<br>' + API_esc_(biz), attachments: [pdf] });
 }
 
@@ -453,6 +453,7 @@ function apiGetLogo() { return { logo: String(settingGet(LOGO_DATA_KEY) || '') }
 function apiSaveLogo(dataUrl) {
   var v = String(dataUrl || '');
   if (!v) { API_deleteLogoFile_(); settingSet(LOGO_DATA_KEY, ''); settingSet(LOGO_FILE_KEY, ''); return { ok: true }; }
+  if (v.length > 49000) return { ok: false, msg: 'Logo is too large — use a smaller image.' };  // sheet-cell + payload cap
   var m = /^data:(image\/(?:png|jpeg));base64,([A-Za-z0-9+/=]+)$/.exec(v);
   if (!m) return { ok: false, msg: 'Not a PNG or JPEG image' };
   settingSet(LOGO_DATA_KEY, v);

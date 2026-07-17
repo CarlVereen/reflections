@@ -23,7 +23,7 @@ function DB_buildTable_(ss, table) {
   // Format each column whole (A2:A style) so rows added years from now inherit format/validation.
   spec.cols.forEach(function (c, i) {
     var L = DB_colLetter_(i + 1), col = sh.getRange(L + '2:' + L);
-    if (c.t === 'id' || c.t === 'phone') col.setNumberFormat('@');            // plaintext: keep "CL-0001", "(555)…"
+    if (c.t === 'id' || c.t === 'phone' || c.t === 'text' || c.t === 'url') col.setNumberFormat('@'); // plaintext: preserve IDs/phones and stop text from being read as a formula
     else if (c.t === 'date') col.setNumberFormat('yyyy-mm-dd');
     else if (c.t === 'datetime') col.setNumberFormat('yyyy-mm-dd hh:mm:ss');
     else if (c.t === 'money') col.setNumberFormat('$#,##0.00');
