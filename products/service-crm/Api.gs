@@ -1,846 +1,443 @@
-/*************************************************************************
- *  SERVICE PRO CRM — WEB APP API  (Api.gs)
+/**
+ * Api.gs — Service Pro CRM web-app server API (clean rebuild).
  *
- *  Serves a full web-app UI (WebApp.html) backed by the SAME Google Sheet
- *  tabs as the database. Deploy: Deploy ▸ New deployment ▸ Web app ▸
- *  Execute as "Me", Access "Only myself" ▸ Authorize ▸ copy the URL.
- *
- *  All api* functions are UI-free (no SpreadsheetApp.getUi) so they work
- *  from google.script.run in the web app. They return plain objects.
- *************************************************************************/
+ * Every handler goes through db.gs and references IDs, never names. The dashboard is computed
+ * in Script from cached totals (no cell formulas). Line items snapshot price at write time.
+ * This file is self-contained (its own small helpers) so it does not depend on the legacy code.
+ */
 
 function doGet() {
-  // Note: no ALLOWALL X-Frame-Options — the default keeps other sites from framing
-  // the app (clickjacking protection). The app is opened directly, not embedded.
   return HtmlService.createHtmlOutputFromFile('WebApp')
     .setTitle('Service Pro CRM')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1');
 }
 
-/* ----------------------------- helpers ---------------------------- */
+/* ============================ small helpers ============================ */
 
-function ss_() { return SpreadsheetApp.getActiveSpreadsheet(); }
-function tz_() { return Session.getScriptTimeZone(); }
-function fmtd_(d) { return (d instanceof Date) ? Utilities.formatDate(d, tz_(), 'M/d/yyyy') : (d ? String(d) : ''); }
-function isoOrEmpty_(d) { return (d instanceof Date) ? Utilities.formatDate(d, tz_(), 'yyyy-MM-dd') : ''; }
-function num_(x) { const n = Number(x); return isNaN(n) ? 0 : n; }
-
-/** First empty row (by a key column) in a sheet whose lower rows may hold formulas. */
-function firstEmptyRow_(sh, keyCol) {
-  const scan = Math.max(sh.getMaxRows() - 1, 1);
-  const col = sh.getRange(2, keyCol, scan, 1).getValues();
-  for (let i = 0; i < col.length; i++) if (String(col[i][0]).trim() === '') return i + 2;
-  return sh.getLastRow() + 1;
+function API_tz_() { return Session.getScriptTimeZone(); }
+function API_num_(x) { var n = Number(x); return isNaN(n) ? 0 : n; }
+function API_esc_(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function API_today_() { var d = new Date(); d.setHours(0, 0, 0, 0); return d; }
+function API_addDays_(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function API_fmtD_(d) { return (d instanceof Date) ? Utilities.formatDate(d, API_tz_(), 'M/d/yyyy') : ''; }
+function API_iso_(d) { return (d instanceof Date) ? Utilities.formatDate(d, API_tz_(), 'yyyy-MM-dd') : ''; }
+/** Parse 'yyyy-MM-dd' (or 'M/d/yyyy') into a local midnight Date, or null. */
+function API_parseDate_(s) {
+  if (s instanceof Date) return s;
+  var m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  m = String(s || '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if (m) { var y = +m[3]; if (y < 100) y += 2000; return new Date(y, +m[1] - 1, +m[2]); }
+  return null;
+}
+function API_cur_() { return String(settingGet('Currency symbol') || '$').trim() || '$'; }
+function API_money_(n) { return API_cur_() + API_num_(n).toFixed(2); }
+/** Minutes-past-midnight for a free-text time ("2pm","10:30am"); blank sorts last. */
+function API_timeMin_(s) {
+  s = String(s || '').trim().toLowerCase();
+  var m = s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);
+  if (!m) return 1441;
+  var h = +m[1], mi = m[2] ? +m[2] : 0;
+  if (m[3] === 'pm' && h < 12) h += 12;
+  if (m[3] === 'am' && h === 12) h = 0;
+  return h * 60 + mi;
+}
+function API_invoiceTermsDays_() {
+  var s = String(settingGet('Invoice due (days)') || '').trim().toLowerCase();
+  if (s === '') return 14;
+  if (s.indexOf('receipt') >= 0) return 0;
+  var n = parseInt(s.replace(/[^0-9]/g, ''), 10);
+  return isNaN(n) ? 14 : n;
 }
 
-/** Find a row by matching a value in column A. Returns row index or 0. */
-function findRowByNumber_(sh, number) {
-  const last = sh.getLastRow();
-  if (last < 2) return 0;
-  const col = sh.getRange(2, 1, last - 1, 1).getValues();
-  const key = String(number).trim().toLowerCase();
-  for (let i = 0; i < col.length; i++) if (String(col[i][0]).trim().toLowerCase() === key) return i + 2;
-  return 0;
-}
+/* ============================ bootstrap + dashboard ============================ */
 
-/** Split a doc number into its parts: "INV-001" → {prefix:'INV-', num:1, width:3}.
- *  Pure text with no digits → num 1, width 0. Pure number → prefix '' kept as-is. */
-function parseDocNumber_(v) {
-  const s = String(v == null ? '' : v).trim();
-  const m = s.match(/^(.*?)(\d+)\s*$/);
-  if (!m) return { prefix: s, num: 1, width: 0 };
-  return { prefix: m[1], num: Number(m[2]), width: m[2].length };
-}
-
-/** Rebuild a doc number from parts, zero-padding the numeric run to at least `width`. */
-function formatDocNumber_(prefix, num, width) {
-  let s = String(num);
-  while (s.length < width) s = '0' + s;
-  return prefix + s;
-}
-
-/** Next doc number for a sheet, honoring a configurable start that may be a plain
- *  number ("1001"), plain text, or a text+number combo ("INV-001"). Continues the
- *  highest existing doc that shares the same prefix, preserving prefix & zero-pad width;
- *  otherwise begins at the configured start. Falls back to `fallback` if start is blank. */
-function nextDocNumber_(sh, startSetting, fallback) {
-  const raw = (startSetting === '' || startSetting == null) ? fallback : startSetting;
-  const start = parseDocNumber_(raw);
-  let maxNum = start.num - 1;
-  const last = sh.getLastRow();
-  if (last >= 2) {
-    const col = sh.getRange(2, 1, last - 1, 1).getValues();
-    col.forEach(function (r) {
-      const v = String(r[0]).trim();
-      if (!v) return;
-      const p = parseDocNumber_(v);
-      if (p.prefix.toLowerCase() === start.prefix.toLowerCase() && p.num > maxNum) maxNum = p.num;
-    });
-  }
-  return formatDocNumber_(start.prefix, maxNum + 1, start.width);
-}
-
-/** First row of a contiguous block of `count` empty rows in column `keyCol` (default 1),
- *  scanning from row 2. Falls back to getLastRow()+1 when no gap is big enough. */
-function firstEmptyBlock_(sh, count, keyCol) {
-  keyCol = keyCol || 1;
-  const scan = Math.max(sh.getMaxRows() - 1, 1);
-  const col = sh.getRange(2, keyCol, scan, 1).getValues();
-  let run = 0;
-  for (let i = 0; i < col.length; i++) {
-    if (String(col[i][0]).trim() === '') { run++; if (run >= count) return (i - count + 1) + 2; }
-    else run = 0;
-  }
-  return sh.getLastRow() + 1;
-}
-
-/** Write line items (Doc # = number) into the 🧾 Line Items tab. Batched: all rows go into
- *  one contiguous block with a single setValues + a single setFormulas (2 writes total,
- *  not 2 per line). */
-function appendLineItems_(ss, number, lines) {
-  const sh = ss.getSheetByName(TABS.ITEMS);
-  if (!sh) return;
-  const clean = (lines || []).filter(function (l) { return String(l.service || l.desc || '').trim(); });
-  if (!clean.length) return;
-  const start = firstEmptyBlock_(sh, clean.length);
-  const values = clean.map(function (l) { return [number, String(l.service || l.desc).trim(), num_(l.qty) || 1, num_(l.rate)]; });
-  const formulas = clean.map(function (_, i) {
-    const r = start + i;
-    return ['=IF(AND($C' + r + '<>"",$D' + r + '<>""),$C' + r + '*$D' + r + ',"")'];
-  });
-  sh.getRange(start, 1, values.length, 4).setValues(values);        // one write
-  sh.getRange(start, 5, formulas.length, 1).setFormulas(formulas);  // one write
-}
-
-/** Clear all line items rows for a given Doc #. */
-function clearLinesForNumber_(ss, number) {
-  const sh = ss.getSheetByName(TABS.ITEMS);
-  if (!sh) return;
-  const last = sh.getLastRow();
-  if (last < 2) return;
-  const data = sh.getRange(2, 1, last - 1, 1).getValues();
-  const key = String(number).trim().toLowerCase();
-  for (let i = 0; i < data.length; i++) {
-    if (String(data[i][0]).trim().toLowerCase() === key) sh.getRange(i + 2, 1, 1, 4).clearContent();
-  }
-}
-
-/* --------------------- shared doc (PDF) helpers -------------------- */
-
-function niceKind_(kind) { return kind === 'INVOICE' ? 'Invoice' : 'Estimate'; }
-
-function docClientEmail_(ss, name) {
-  const c = ss.getSheetByName(TABS.CLIENTS);
-  if (!c) return '';
-  const d = c.getDataRange().getValues();
-  for (let i = 1; i < d.length; i++) if (String(d[i][0]).trim().toLowerCase() === String(name).trim().toLowerCase()) return String(d[i][2]).trim();
-  return '';
-}
-
-/** vals = [num, client, dateA, dateB, amount, status]. */
-function docComputed_(ss, kind, vals) {
-  const taxPct = num_(getSetting_(ss, 'Sales tax % (0 for none)'));
-  const items = lineItemsFor_(ss, vals[0]);
-  let subtotal = 0, tax = 0;
-  if (items.length) { items.forEach(function (it) { subtotal += it.qty * it.rate; }); tax = subtotal * taxPct / 100; }
-  else { subtotal = num_(vals[4]); }
-  return { items: items, subtotal: subtotal, tax: tax, total: subtotal + tax, taxPct: taxPct };
-}
-
-function docHtml_(ss, kind, vals, comp) {
-  const isInv = (kind === 'INVOICE');
-  const numv = (vals[0] === '' || vals[0] === null) ? 'draft' : vals[0];
-  const biz = getSetting_(ss, 'Business name') || 'Your Business';
-  const bizPhone = getSetting_(ss, 'Business phone') || '';
-  // Prefer the Drive-hosted logo URL (renders reliably in the PDF); fall back to the data URI.
-  const logoId = String(getSetting_(ss, 'Company logo (Drive file id)') || '').trim();
-  const logo = logoId ? ('https://drive.google.com/uc?export=view&id=' + logoId)
-                      : String(getSetting_(ss, 'Company logo (data URL)') || '').trim();
-  const pay = getSetting_(ss, 'Invoice payment instructions') || '';
-  const payLink = String(getSetting_(ss, 'Payment link (Stripe/PayPal/Venmo — optional)') || '').trim();
-  const cur = String(getSetting_(ss, 'Currency symbol') || '$').trim() || '$';
-  const fmtD = function (d) { return (d instanceof Date) ? Utilities.formatDate(d, tz_(), 'MMM d, yyyy') : ''; };
-  const money = function (n) { return cur + num_(n).toFixed(2); };
-  const email = docClientEmail_(ss, vals[1]);
-  let rowsHtml = '';
-  if (comp.items.length) {
-    comp.items.forEach(function (it) {
-      const lt = it.qty * it.rate;
-      rowsHtml += '<tr><td style="padding:9px;border-bottom:1px solid #eee">' + escHtml_(it.desc) + '</td>' +
-        '<td style="padding:9px;border-bottom:1px solid #eee;text-align:center">' + it.qty + '</td>' +
-        '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(it.rate) + '</td>' +
-        '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(lt) + '</td></tr>';
-    });
-  } else {
-    rowsHtml = '<tr><td style="padding:9px;border-bottom:1px solid #eee">Services rendered — ' + biz + '</td>' +
-      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:center">1</td>' +
-      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(comp.subtotal) + '</td>' +
-      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + money(comp.subtotal) + '</td></tr>';
-  }
-  const title = isInv ? 'INVOICE' : 'ESTIMATE';
-  const isReceipt = isInv && invoiceTermsDays_(ss) === 0;   // due same day → wording, not a date
-  const dateBLabel = isInv ? 'Due' : 'Valid until';
-  const dateBValue = isReceipt ? 'Upon receipt' : fmtD(vals[3]);
-  const totalsRows =
-    (comp.tax > 0 ?
-      '<tr><td colspan="3" style="padding:6px 9px;text-align:right">Subtotal</td><td style="padding:6px 9px;text-align:right">' + money(comp.subtotal) + '</td></tr>' +
-      '<tr><td colspan="3" style="padding:6px 9px;text-align:right">Tax (' + comp.taxPct + '%)</td><td style="padding:6px 9px;text-align:right">' + money(comp.tax) + '</td></tr>' : '') +
-    '<tr><td colspan="3" style="padding:9px;text-align:right;font-weight:bold">' + (isInv ? 'Total Due' : 'Estimated Total') + '</td>' +
-    '<td style="padding:9px;text-align:right;font-weight:bold;font-size:18px;color:' + BRAND.accent2 + '">' + money(comp.total) + '</td></tr>';
-  const payBtn = (isInv && payLink) ?
-    '<p style="text-align:center;margin:22px 0"><a href="' + payLink + '" style="background:' + BRAND.accent2 +
-    ';color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:bold">Pay now</a></p>' : '';
-  return '<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#1a1c1f">' +
-    '<table style="width:100%;border-bottom:3px solid ' + BRAND.accent + ';margin-bottom:22px"><tr>' +
-    '<td style="padding-bottom:14px;vertical-align:top">' +
-    (logo ? '<img src="' + logo + '" style="max-height:64px;max-width:220px;margin-bottom:8px;display:block">' : '') +
-    '<div style="font-size:24px;font-weight:bold">' + biz + '</div>' +
-    (bizPhone ? '<div style="color:#52565c">' + bizPhone + '</div>' : '') + '</td>' +
-    '<td style="padding-bottom:14px;text-align:right;vertical-align:top">' +
-    '<div style="font-size:28px;font-weight:bold;color:' + BRAND.accent + '">' + title + '</div>' +
-    '<div style="color:#52565c">#' + numv + '</div></td></tr></table>' +
-    '<table style="width:100%;margin-bottom:20px"><tr>' +
-    '<td><b>' + (isInv ? 'Bill to' : 'Prepared for') + ':</b><br>' + escHtml_(vals[1]) + (email ? '<br>' + escHtml_(email) : '') + '</td>' +
-    '<td style="text-align:right"><b>Issued:</b> ' + fmtD(vals[2]) + '<br><b>' + dateBLabel + ':</b> ' + dateBValue + '</td></tr></table>' +
-    '<table style="width:100%;border-collapse:collapse;margin-bottom:6px">' +
-    '<tr style="background:#1a1c1f;color:#fff"><th style="text-align:left;padding:9px">Description</th>' +
-    '<th style="padding:9px">Qty</th><th style="text-align:right;padding:9px">Rate</th><th style="text-align:right;padding:9px">Amount</th></tr>' +
-    rowsHtml + totalsRows + '</table>' + payBtn +
-    (pay && isInv ? '<div style="background:' + BRAND.soft + ';padding:14px;border-radius:8px"><b>Payment:</b> ' + pay + '</div>' : '') +
-    '<p style="color:#52565c;margin-top:20px">' + (isInv ? 'Thank you for your business!' :
-      'This estimate is for your review — reply to accept and we\'ll get you scheduled.') + '</p></div>';
-}
-
-function docPdfBlob_(kind, vals, html) {
-  const numv = (vals[0] === '' || vals[0] === null) ? 'draft' : vals[0];
-  return Utilities.newBlob(html, 'text/html', 'doc.html').getAs('application/pdf')
-    .setName(niceKind_(kind) + '-' + numv + '-' + String(vals[1]).replace(/\s+/g, '') + '.pdf');
-}
-
-function docEmail_(ss, kind, vals, pdf, email) {
-  const isInv = (kind === 'INVOICE');
-  const biz = getSetting_(ss, 'Business name') || 'Your Business';
-  const pay = getSetting_(ss, 'Invoice payment instructions') || '';
-  const payLink = String(getSetting_(ss, 'Payment link (Stripe/PayPal/Venmo — optional)') || '').trim();
-  const numv = (vals[0] === '' || vals[0] === null) ? '' : vals[0];
-  MailApp.sendEmail({ to: email, subject: niceKind_(kind) + ' #' + numv + ' from ' + biz,
-    htmlBody: 'Hi ' + escHtml_(String(vals[1]).split(' ')[0]) + ',<br><br>Please find your ' + kind.toLowerCase() + ' attached. ' +
-      (isInv && payLink ? 'Pay online here: ' + payLink + '<br>' : '') + (isInv && pay ? pay : '') +
-      '<br><br>Thank you!<br>' + biz, attachments: [pdf] });
-}
-
-/* ============================ BOOTSTRAP =========================== */
-
-function apiBootstrap() {
-  const ss = ss_();
-  if (!ss.getSheetByName(TABS.LEADS)) return { ready: false };
-  ensureLeadsAddressColumn_(ss);   // non-destructive: adds the Address column on older sheets
+function API_enums_() {
   return {
-    ready: true,
-    settings: apiGetSettings(),
-    services: getServices_(ss),
-    dashboard: apiDashboard(),
-    leadStatuses: LEAD_STATUSES,
-    jobStatuses: JOB_STATUSES,
-    invStatuses: INV_STATUSES,
-    estStatuses: EST_STATUSES,
-    repeatOpts: REPEAT_OPTS,
+    clientStatus: SCHEMA.Clients.cols.filter(function (c) { return c.n === 'Status'; })[0].values,
+    jobStatus: SCHEMA.Jobs.cols.filter(function (c) { return c.n === 'Status'; })[0].values,
+    estStatus: SCHEMA.Estimates.cols.filter(function (c) { return c.n === 'Status'; })[0].values,
+    invStatus: SCHEMA.Invoices.cols.filter(function (c) { return c.n === 'Status'; })[0].values,
+    recurring: SCHEMA.Jobs.cols.filter(function (c) { return c.n === 'Recurring'; })[0].values,
   };
 }
 
-/** Parse a free-text scheduled time ("2pm", "10:30am", "14:00") to minutes past midnight,
- *  for sorting. Blank/unparseable sorts after timed jobs on the same day. */
-function jobTimeMin_(s) {
-  s = String(s || '').trim().toLowerCase();
-  const m = s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);
-  if (!m) return 24 * 60 + 1;
-  let h = parseInt(m[1], 10); const min = m[2] ? parseInt(m[2], 10) : 0;
-  if (m[3] === 'pm' && h < 12) h += 12;
-  if (m[3] === 'am' && h === 12) h = 0;
-  return h * 60 + min;
+function apiBootstrap() {
+  if (!SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SCHEMA.Clients.sheet)) return { ready: false };
+  return {
+    ready: true,
+    settings: apiGetSettings(),
+    services: apiListServices(true),
+    enums: API_enums_(),
+    dashboard: apiDashboard(),
+  };
 }
 
 function apiDashboard() {
-  const ss = ss_();
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const wkStart = new Date(today); wkStart.setDate(wkStart.getDate() - wkStart.getDay());
-  const wkEnd = new Date(wkStart); wkEnd.setDate(wkEnd.getDate() + 7);
-  const monStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  var today = API_today_();
+  var wkStart = new Date(today); wkStart.setDate(wkStart.getDate() - wkStart.getDay());
+  var wkEnd = new Date(wkStart); wkEnd.setDate(wkEnd.getDate() + 7);
+  var monStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  var weekAgo = API_addDays_(today, -7);
 
-  const leads = valuesOf_(ss, TABS.LEADS);
-  const jobs = valuesOf_(ss, TABS.JOBS);
-  const invs = valuesOf_(ss, TABS.INVOICES);
+  var clients = getAll('Clients'), jobs = getAll('Jobs'), ests = getAll('Estimates'), invs = getAll('Invoices');
+  var nameOf = API_clientNameMap_(clients);
 
-  const dead = function (s) { return s === 'Won' || s === 'Lost' || s === 'Declined'; };
-  let newLeads = 0, pipeline = 0, lost = 0;
-  const followUps = [];
-  leads.forEach(function (r) {
-    if (!r[1]) return;
-    const added = r[0], status = r[7], follow = r[8];
-    if (added instanceof Date && added >= new Date(today.getTime() - 7 * 864e5)) newLeads++;
-    if (!dead(status) && status !== '') pipeline += num_(r[6]);
-    if (status === 'Lost' || status === 'Declined') lost++;   // said no / don't contact
-    if (!dead(status) && follow instanceof Date) {
-      const f = new Date(follow); f.setHours(0, 0, 0, 0);
-      if (f <= today) followUps.push({ name: r[1], phone: r[2] || '', status: status, due: fmtd_(f) });
-    }
-  });
+  var newLeads = clients.filter(function (c) { return c.Status === 'Lead' && c.CreatedAt instanceof Date && c.CreatedAt >= weekAgo; }).length;
+  var pipeline = ests.filter(function (e) { return e.Status === 'Draft' || e.Status === 'Sent'; }).reduce(function (s, e) { return s + API_num_(e.Total); }, 0);
+  var unpaid = invs.filter(function (i) { return i.Status === 'Sent' || i.Status === 'Overdue'; }).reduce(function (s, i) { return s + API_num_(i.Total); }, 0);
+  var revMonth = invs.filter(function (i) { return i.Status === 'Paid' && i.IssueDate instanceof Date && i.IssueDate >= monStart; }).reduce(function (s, i) { return s + API_num_(i.Total); }, 0);
+  var revLife = invs.filter(function (i) { return i.Status === 'Paid'; }).reduce(function (s, i) { return s + API_num_(i.Total); }, 0);
 
-  // "Won" under the new model = someone who became a client with a logged job.
-  const wonClients = {};
-  const weekJobs = [];
-  jobs.forEach(function (r, i) {
-    if (r[1]) wonClients[String(r[1]).trim().toLowerCase()] = true;
-    if (!(r[0] instanceof Date)) return;
-    const d = new Date(r[0]); d.setHours(0, 0, 0, 0);
-    const st = r[4] || '';
-    // Home shows only ACTIVE jobs this week — completed (Done) and Cancelled are excluded.
-    if (d >= wkStart && d < wkEnd && st !== 'Cancelled' && st !== 'Done') {
-      weekJobs.push({ row: i + 2, date: fmtd_(d), time: r[3] || '', client: r[1], service: r[2] || '', status: st,
-        _d: d.getTime(), _t: jobTimeMin_(r[3]) });
-    }
-  });
-  weekJobs.sort(function (a, b) { return a._d - b._d || a._t - b._t; });   // soonest first, by date then time
-  weekJobs.forEach(function (j) { delete j._d; delete j._t; });
-  const jobsWeek = weekJobs.length;
-  const won = Object.keys(wonClients).length;
+  var won = clients.filter(function (c) { return c.Status === 'Active' || c.Status === 'Inactive'; }).length;
+  var lost = clients.filter(function (c) { return c.Status === 'Lost'; }).length;
 
-  let revMonth = 0, revLife = 0, unpaid = 0;
-  invs.forEach(function (r) {
-    const st = r[5], amt = num_(r[4]);
-    if (st === 'Paid') { revLife += amt; if (r[2] instanceof Date && r[2] >= monStart) revMonth += amt; }
-    if (st === 'Sent' || st === 'Overdue') unpaid += amt;   // billed and still owed to you
-  });
-  revLife += archivedRevenue_();   // include paid invoices that were archived off the live tab
+  var followUps = clients.filter(function (c) {
+    return (c.Status === 'Lead' || c.Status === 'Active') && c.NextFollowUp instanceof Date && c.NextFollowUp <= today;
+  }).sort(function (a, b) { return a.NextFollowUp - b.NextFollowUp; })
+    .map(function (c) { return { id: c.ClientID, name: c.Name, phone: c.Phone, status: c.Status, due: API_fmtD_(c.NextFollowUp) }; });
+
+  var weekJobs = jobs.filter(function (j) {
+    return j.Status === 'Scheduled' && j.JobDate instanceof Date && j.JobDate >= wkStart && j.JobDate < wkEnd;
+  }).map(function (j) { return { id: j.JobID, client: nameOf[j.ClientID] || '', date: API_fmtD_(j.JobDate), time: j.ScheduledTime, service: j.ServiceName, status: j.Status, _d: j.JobDate.getTime(), _t: API_timeMin_(j.ScheduledTime) }; })
+    .sort(function (a, b) { return a._d - b._d || a._t - b._t; })
+    .map(function (j) { delete j._d; delete j._t; return j; });
 
   return {
-    newLeads: newLeads, pipeline: pipeline, unpaid: unpaid, jobsWeek: jobsWeek, revMonth: revMonth,
+    newLeads: newLeads, pipeline: pipeline, unpaid: unpaid, jobsWeek: weekJobs.length, revMonth: revMonth,
     winRate: (won + lost) ? Math.round(won / (won + lost) * 100) : 0, revLife: revLife,
     followUps: followUps, weekJobs: weekJobs,
   };
 }
 
-function valuesOf_(ss, tab) {
-  const sh = ss.getSheetByName(tab);
-  if (!sh || sh.getLastRow() < 2) return [];
-  return sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();
+function API_clientNameMap_(clients) {
+  var m = {}; (clients || getAll('Clients')).forEach(function (c) { m[c.ClientID] = c.Name; }); return m;
 }
 
-/* ========================= CONTACTS (leads + clients) ============= */
+/* ============================ Clients ============================ */
 
-/** One combined list of everyone — leads and clients merged & deduped by name —
- *  each with their lead status, last job date, total spent, and edit rows.
- *  The app shows a status tag (New/Quoted/Declined/Lost) until they have a logged
- *  job, then shows their last job date instead. */
-function apiListContacts() {
-  const ss = ss_();
-  const map = {};
-  const keyOf = function (name) { return String(name || '').trim().toLowerCase(); };
-  const get = function (name) {
-    const k = keyOf(name); if (!k) return null;
-    if (!map[k]) map[k] = { key: k, name: String(name).trim(), phone: '', email: '', address: '', service: '',
-      leadRow: 0, clientRow: 0, leadStatus: '', followUp: '', followUpISO: '',
-      lastJobISO: '', lastJobDate: '', jobCount: 0, totalSpent: 0,
-      nextJobISO: '', nextJobDate: '', nextJobService: '', quotes: [], invoices: [] };
-    return map[k];
+function API_clientView_(c, ctx) {
+  ctx = ctx || {};
+  var jobs = ctx.jobs || query('Jobs', { ClientID: c.ClientID });
+  var ests = ctx.ests || query('Estimates', { ClientID: c.ClientID });
+  var invs = ctx.invs || query('Invoices', { ClientID: c.ClientID });
+  var today = ctx.today || API_today_();
+  var upcoming = jobs.filter(function (j) { return j.Status === 'Scheduled' && j.JobDate instanceof Date && j.JobDate >= today; })
+    .sort(function (a, b) { return a.JobDate - b.JobDate; })[0];
+  var openEst = ests.filter(function (e) { return e.Status === 'Draft' || e.Status === 'Sent'; })
+    .sort(function (a, b) { return API_num_(b.Total) - API_num_(a.Total); })[0];
+  var unpaidInv = invs.filter(function (i) { return i.Status !== 'Paid' && i.Status !== 'Draft'; })
+    .sort(function (a, b) { return API_num_(b.Total) - API_num_(a.Total); })[0];
+  return {
+    id: c.ClientID, name: c.Name, phone: c.Phone, email: c.Email, address: c.Address,
+    status: c.Status, source: c.Source, notes: c.Notes,
+    followUp: API_fmtD_(c.NextFollowUp), followUpISO: API_iso_(c.NextFollowUp),
+    lifetime: API_num_(c.LifetimeSpent),
+    nextJob: upcoming ? { id: upcoming.JobID, date: API_fmtD_(upcoming.JobDate), service: upcoming.ServiceName } : null,
+    openEstimate: openEst ? { id: openEst.EstimateID, total: API_num_(openEst.Total) } : null,
+    unpaidInvoice: unpaidInv ? { id: unpaidInv.InvoiceID, total: API_num_(unpaidInv.Total), status: unpaidInv.Status } : null,
   };
-  const todayISO = isoOrEmpty_(new Date());
-
-  valuesOf_(ss, TABS.LEADS).forEach(function (r, i) {   // [added,name,phone,email,src,svc,val,status,follow,notes,address]
-    if (!r[1]) return;
-    const c = get(r[1]); if (!c) return;
-    c.leadRow = i + 2;
-    if (!c.phone && r[2]) c.phone = String(r[2]);
-    if (!c.email && r[3]) c.email = String(r[3]);
-    if (!c.service && r[5]) c.service = String(r[5]);
-    if (!c.address && r[10]) c.address = String(r[10]);
-    c.leadStatus = r[7] || 'New';
-    c.followUp = fmtd_(r[8]); c.followUpISO = isoOrEmpty_(r[8]);
-  });
-
-  valuesOf_(ss, TABS.CLIENTS).forEach(function (r, i) { // [name,phone,email,address,firstJob,totalSpent,notes]
-    if (!r[0]) return;
-    const c = get(r[0]); if (!c) return;
-    c.clientRow = i + 2;
-    if (r[1]) c.phone = String(r[1]);
-    if (r[2]) c.email = String(r[2]);
-    if (r[3]) c.address = String(r[3]);
-    c.totalSpent = num_(r[5]);
-  });
-
-  valuesOf_(ss, TABS.JOBS).forEach(function (r) {       // last job + next upcoming job per client
-    if (!r[1] || !(r[0] instanceof Date)) return;
-    const c = get(r[1]); if (!c) return;
-    c.jobCount++;
-    const iso = isoOrEmpty_(r[0]), status = r[4];
-    if (iso && iso > c.lastJobISO) { c.lastJobISO = iso; c.lastJobDate = fmtd_(r[0]); }
-    if (iso && iso >= todayISO && status !== 'Done' && status !== 'Cancelled' && (!c.nextJobISO || iso < c.nextJobISO)) {
-      c.nextJobISO = iso; c.nextJobDate = fmtd_(r[0]); c.nextJobService = r[2] || '';
-    }
-  });
-
-  valuesOf_(ss, TABS.ESTIMATES).forEach(function (r) {  // active quotes (Draft/Sent) per client
-    if (!r[1]) return;
-    const c = get(r[1]); if (!c) return;
-    if (r[5] === 'Draft' || r[5] === 'Sent') c.quotes.push({ number: r[0], amount: num_(r[4]), status: r[5] });
-  });
-
-  valuesOf_(ss, TABS.INVOICES).forEach(function (r) {   // active invoices (unpaid) per client
-    if (!r[1]) return;
-    const c = get(r[1]); if (!c) return;
-    if (r[5] && r[5] !== 'Paid') c.invoices.push({ number: r[0], amount: num_(r[4]), status: r[5] });
-  });
-
-  return Object.keys(map).map(function (k) { return map[k]; });
-}
-
-/* ============================== LEADS ============================= */
-
-function apiListLeads() {
-  const ss = ss_();
-  const rows = valuesOf_(ss, TABS.LEADS);
-  const out = [];
-  rows.forEach(function (r, i) {
-    if (!r[1]) return;
-    out.push({ row: i + 2, name: r[1], phone: r[2] || '', email: r[3] || '', service: r[5] || '',
-      value: num_(r[6]), status: r[7] || 'New', followUp: fmtd_(r[8]), followUpISO: isoOrEmpty_(r[8]) });
-  });
-  return out;
-}
-
-function apiAddLead(form) {
-  const ss = ss_();
-  // Warn (don't block) when the email or phone already exists on a lead or client.
-  if (!form.force) {
-    const dupes = findContactDupes_(ss, form.email, form.phone, 0);
-    if (dupes.length) return { ok: false, dup: true, dupes: dupes };
-  }
-  const msg = addLeadCore_(form.name, form.phone, form.email, form.service, form.value, form.address);
-  const sh = ss.getSheetByName(TABS.LEADS);
-  return { ok: msg.indexOf('✅') === 0, msg: msg, row: sh ? sh.getLastRow() : 0 };
-}
-
-/** Digits only; blank unless it looks like a real phone (≥7 digits) to avoid noise matches. */
-function normPhone_(s) { const d = String(s || '').replace(/[^0-9]/g, ''); return d.length >= 7 ? d : ''; }
-
-/** Find existing Leads/Clients that share this email or phone (for a warn-not-block prompt).
- *  Returns [{where:'lead'|'client', name, phone, email}] — empty if nothing matches. */
-function findContactDupes_(ss, email, phone, excludeLeadRow) {
-  const out = [];
-  const em = String(email || '').trim().toLowerCase();
-  const ph = normPhone_(phone);
-  if (!em && !ph) return out;
-  const push = function (where, name, p, e) {
-    const en = String(e || '').trim().toLowerCase(), pn = normPhone_(p);
-    if ((em && en && en === em) || (ph && pn && pn === ph)) {
-      out.push({ where: where, name: String(name).trim(), phone: String(p || '').trim(), email: String(e || '').trim() });
-    }
-  };
-  const leads = ss.getSheetByName(TABS.LEADS);   // [added, name, phone(2), email(3), ...]
-  if (leads && leads.getLastRow() >= 2) {
-    const d = leads.getRange(2, 1, leads.getLastRow() - 1, 4).getValues();
-    for (let i = 0; i < d.length; i++) {
-      if (excludeLeadRow && (i + 2) === excludeLeadRow) continue;
-      if (String(d[i][1]).trim()) push('lead', d[i][1], d[i][2], d[i][3]);
-    }
-  }
-  const clients = ss.getSheetByName(TABS.CLIENTS); // [name, phone(1), email(2), ...]
-  if (clients && clients.getLastRow() >= 2) {
-    const d = clients.getRange(2, 1, clients.getLastRow() - 1, 3).getValues();
-    for (let i = 0; i < d.length; i++) {
-      if (String(d[i][0]).trim()) push('client', d[i][0], d[i][1], d[i][2]);
-    }
-  }
-  return out;
-}
-
-function apiSetLeadStatus(row, status) {
-  const sh = ss_().getSheetByName(TABS.LEADS);
-  sh.getRange(row, 8).setValue(status);
-  return { ok: true };
-}
-
-/** Parse a date from the app: 'yyyy-MM-dd' (interpreted in the script's local time so
- *  the day never shifts) or a typed date. Returns a midnight Date, or null. */
-function toLocalDate_(iso) {
-  const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (m) { const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])); d.setHours(0, 0, 0, 0); return d; }
-  return parseDate_(iso) || null;
-}
-
-/** Set a lead's Next Follow-up date (col 9). Accepts an app date; '' clears it. */
-function apiSetLeadFollowUp(row, iso) {
-  const sh = ss_().getSheetByName(TABS.LEADS);
-  const d = toLocalDate_(iso) || '';
-  sh.getRange(row, 9).setValue(d);
-  return { ok: true, followUp: d ? fmtd_(d) : '', followUpISO: d ? isoOrEmpty_(d) : '' };
-}
-
-/** Edit a lead's core fields (name, phone, email, service, est. value). */
-function apiUpdateLead(row, f) {
-  const sh = ss_().getSheetByName(TABS.LEADS);
-  if (!sh) return { ok: false };
-  if (f.name !== undefined) sh.getRange(row, 2).setValue(f.name);
-  if (f.phone !== undefined) sh.getRange(row, 3).setValue(f.phone);
-  if (f.email !== undefined) sh.getRange(row, 4).setValue(f.email);
-  if (f.service !== undefined) sh.getRange(row, 6).setValue(f.service);
-  if (f.value !== undefined) sh.getRange(row, 7).setValue(f.value === '' ? '' : num_(f.value));
-  if (f.address !== undefined) sh.getRange(row, 11).setValue(f.address);
-  return { ok: true };
-}
-
-/* ============================= CLIENTS =========================== */
-
-/** Edit a client. Renaming cascades to Jobs/Estimates/Invoices/Leads so totals & lookups stay correct. */
-function apiUpdateClient(row, f) {
-  const ss = ss_();
-  const sh = ss.getSheetByName(TABS.CLIENTS);
-  if (!sh) return { ok: false };
-  const oldName = String(sh.getRange(row, 1).getValue()).trim();
-  if (f.name !== undefined) {
-    const newName = String(f.name).trim();
-    if (newName && newName !== oldName) {
-      sh.getRange(row, 1).setValue(newName);
-      renameClientEverywhere_(ss, oldName, newName);
-    }
-  }
-  if (f.phone !== undefined) sh.getRange(row, 2).setValue(f.phone);
-  if (f.email !== undefined) sh.getRange(row, 3).setValue(f.email);
-  if (f.address !== undefined) sh.getRange(row, 4).setValue(f.address);
-  return { ok: true };
-}
-
-/** Rewrite every reference to oldName (client column) across the data tabs to newName. */
-function renameClientEverywhere_(ss, oldName, newName) {
-  const key = String(oldName).trim().toLowerCase();
-  if (!key) return;
-  [[TABS.JOBS, 2], [TABS.ESTIMATES, 2], [TABS.INVOICES, 2], [TABS.LEADS, 2]].forEach(function (t) {
-    const sh = ss.getSheetByName(t[0]);
-    if (!sh || sh.getLastRow() < 2) return;
-    const rng = sh.getRange(2, t[1], sh.getLastRow() - 1, 1);
-    const vals = rng.getValues();
-    let changed = false;
-    for (let i = 0; i < vals.length; i++) {
-      if (String(vals[i][0]).trim().toLowerCase() === key) { vals[i][0] = newName; changed = true; }
-    }
-    if (changed) rng.setValues(vals);
-  });
 }
 
 function apiListClients() {
-  const rows = valuesOf_(ss_(), TABS.CLIENTS);
-  const out = [];
-  rows.forEach(function (r, i) {
-    if (!r[0]) return;
-    out.push({ row: i + 2, name: r[0], phone: r[1] || '', email: r[2] || '', address: r[3] || '',
-      firstJob: fmtd_(r[4]), totalSpent: num_(r[5]) });
+  var today = API_today_();
+  var jobs = getAll('Jobs'), ests = getAll('Estimates'), invs = getAll('Invoices');
+  var byC = function (arr, id, key) { return arr.filter(function (x) { return x.ClientID === id; }); };
+  return getAll('Clients').map(function (c) {
+    return API_clientView_(c, { today: today, jobs: byC(jobs, c.ClientID), ests: byC(ests, c.ClientID), invs: byC(invs, c.ClientID) });
   });
-  return out;
 }
+function apiGetClient(id) { var c = getById('Clients', id); return c ? API_clientView_(c) : null; }
 
-/* ============================== JOBS ============================= */
+function apiCreateClient(form) {
+  // Local (front-end) dup check is preferred; server still guards required fields.
+  if (!form || !String(form.name || '').trim()) return { ok: false, msg: 'A name is required.' };
+  var days = API_num_(settingGet('Default follow-up (days)')) || 2;
+  var c = insert('Clients', {
+    Name: form.name, Phone: form.phone || '', Email: form.email || '', Address: form.address || '',
+    Status: form.status || 'Lead', Source: form.source || '', Notes: form.notes || '',
+    NextFollowUp: API_addDays_(API_today_(), days),
+  });
+  return { ok: true, id: c.ClientID, client: API_clientView_(c) };
+}
+function apiUpdateClient(id, patch) {
+  var allowed = {}; ['Name', 'Phone', 'Email', 'Address', 'Status', 'Source', 'Notes', 'NextFollowUp'].forEach(function (k) {
+    if (patch[k] !== undefined) allowed[k] = (k === 'NextFollowUp') ? API_parseDate_(patch[k]) : patch[k];
+  });
+  update('Clients', id, allowed);
+  return { ok: true };
+}
+function apiSetClientStatus(id, status) { update('Clients', id, { Status: status }); return { ok: true }; }
+function apiSetClientFollowUp(id, iso) { update('Clients', id, { NextFollowUp: iso ? API_parseDate_(iso) : '' }); return { ok: true }; }
+function apiArchiveClient(id) { softDelete('Clients', id); return { ok: true }; }
 
+/* ============================ Services ============================ */
+
+function apiListServices(activeOnly) {
+  return getAll('Services').filter(function (s) { return !activeOnly || s.Active; })
+    .map(function (s) { return { id: s.ServiceID, name: s.ServiceName, rate: API_num_(s.DefaultRate), active: !!s.Active }; });
+}
+function apiCreateService(form) {
+  var s = insert('Services', { ServiceName: form.name, DefaultRate: API_num_(form.rate), Active: form.active !== false });
+  return { ok: true, id: s.ServiceID };
+}
+function apiUpdateService(id, patch) {
+  var a = {}; if (patch.name !== undefined) a.ServiceName = patch.name; if (patch.rate !== undefined) a.DefaultRate = API_num_(patch.rate); if (patch.active !== undefined) a.Active = !!patch.active;
+  update('Services', id, a); return { ok: true };
+}
+function apiArchiveService(id) { softDelete('Services', id); return { ok: true }; }
+
+/* ============================ Jobs ============================ */
+
+function API_jobView_(j, nameOf) {
+  return { id: j.JobID, clientId: j.ClientID, client: (nameOf || API_clientNameMap_())[j.ClientID] || '',
+    serviceId: j.ServiceID, service: j.ServiceName, date: API_fmtD_(j.JobDate), dateISO: API_iso_(j.JobDate),
+    time: j.ScheduledTime, status: j.Status, recurring: j.Recurring, reviewSent: !!j.ReviewSent,
+    reminderSent: !!j.ReminderSent, notes: j.Notes, photosLink: j.PhotosLink };
+}
 function apiListJobs() {
-  const rows = valuesOf_(ss_(), TABS.JOBS);
-  const out = [];
-  rows.forEach(function (r, i) {
-    // Show any row that has a client OR a date (matches what the Home screen counts),
-    // so a job can never appear on Home but be missing here.
-    if (!r[1] && !(r[0] instanceof Date)) return;
-    out.push({ row: i + 2, date: fmtd_(r[0]), dateISO: isoOrEmpty_(r[0]), client: r[1] || '(no name)', service: r[2] || '', time: r[3] || '',
-      status: r[4] || 'Scheduled', price: num_(r[5]), paid: r[6] || 'No', repeat: r[10] || 'None' });
+  var nameOf = API_clientNameMap_();
+  return getAll('Jobs').map(function (j) { return API_jobView_(j, nameOf); });
+}
+function apiCreateJob(form) {
+  if (!form.clientId) return { ok: false, msg: 'Pick a client.' };
+  if (!form.serviceId) return { ok: false, msg: 'Pick a service.' };
+  var j = insert('Jobs', {
+    ClientID: form.clientId, ServiceID: form.serviceId,
+    JobDate: API_parseDate_(form.date) || API_today_(), ScheduledTime: form.time || '',
+    Status: form.status || 'Scheduled', Recurring: form.recurring || 'None', Notes: form.notes || '',
   });
-  return out;
+  return { ok: true, id: j.JobID, job: API_jobView_(j) };
 }
-
-function apiAddJob(form) {
-  const ss = ss_();
-  const sh = ss.getSheetByName(TABS.JOBS);
-  const when = parseDate_(form.date) || new Date();
-  sh.appendRow([when, form.client, form.service || '', form.time || '', 'Scheduled', num_(form.price),
-    'No', 'No', 'No', form.notes || '', form.repeat || 'None', 'No', '']);
-  upsertClient_(ss, form.client, form.phone || '', form.email || '', 'From job');
-  return { ok: true, row: sh.getLastRow() };   // row lets the app reconcile its optimistic entry
-}
-
-function apiSetJob(row, fields) {
-  const sh = ss_().getSheetByName(TABS.JOBS);
-  if (fields.status) sh.getRange(row, 5).setValue(fields.status);
-  if (fields.paid) sh.getRange(row, 7).setValue(fields.paid);
-  let d = null;
-  if (fields.date !== undefined) { d = toLocalDate_(fields.date); if (d) sh.getRange(row, 1).setValue(d); }
-  if (fields.time !== undefined) sh.getRange(row, 4).setValue(fields.time);
-  return { ok: true, date: d ? fmtd_(d) : '', dateISO: d ? isoOrEmpty_(d) : '' };  // no re-read
-}
-
-/* ====================== ESTIMATES & INVOICES ===================== */
-
-function apiListDocs(kind) {
-  const ss = ss_();
-  const isInv = (kind === 'INVOICE');
-  const rows = valuesOf_(ss, isInv ? TABS.INVOICES : TABS.ESTIMATES);
-  const out = [];
-  rows.forEach(function (r, i) {
-    if (r[0] === '' || r[0] === null) return;
-    // NOTE: don't count line items here — that meant re-reading the whole Line Items
-    // sheet once per doc (O(docs × items), quadratic). The list doesn't use the count.
-    out.push({ row: i + 2, number: r[0], client: r[1] || '', dateA: fmtd_(r[2]), dateB: fmtd_(r[3]),
-      amount: num_(r[4]), status: r[5] || 'Draft' });
+function apiUpdateJob(id, patch) {
+  var a = {};
+  if (patch.date !== undefined) a.JobDate = API_parseDate_(patch.date) || '';
+  ['ServiceID', 'ScheduledTime', 'Status', 'Recurring', 'Notes', 'PhotosLink', 'ReviewSent', 'ReminderSent'].forEach(function (k) {
+    if (patch[k] !== undefined) a[k] = patch[k];
   });
-  return out;
+  if (patch.serviceId !== undefined) a.ServiceID = patch.serviceId;
+  if (patch.time !== undefined) a.ScheduledTime = patch.time;
+  var j = update('Jobs', id, a);
+  return { ok: true, job: API_jobView_(j) };
 }
+function apiArchiveJob(id) { softDelete('Jobs', id); return { ok: true }; }
 
-/** Both lists in ONE round-trip — the Billing screen used to make two google.script.run
- *  calls (estimates + invoices); this halves the latency. */
-function apiListBilling() {
-  return { estimates: apiListDocs('ESTIMATE'), invoices: apiListDocs('INVOICE') };
-}
+/* ============================ Estimates / Invoices + line items ============================ */
 
-function apiGetDocLines(number) {
-  return lineItemsFor_(ss_(), number).map(function (it) { return { service: it.desc, qty: it.qty, rate: it.rate }; });
-}
-
-/** Create an estimate from the builder: {client, email, phone, validDays, lines:[{service,qty,rate}]}. */
-function apiCreateEstimate(p) {
-  const ss = ss_();
-  const est = ss.getSheetByName(TABS.ESTIMATES);
-  if (!p.client || !String(p.client).trim()) return { ok: false, msg: 'A client name is required.' };
-  const lines = (p.lines || []).filter(function (l) { return String(l.service || '').trim() && num_(l.rate) > 0; });
-  if (!lines.length) return { ok: false, msg: 'Add at least one line item with a price.' };
-  const number = nextDocNumber_(est, getSetting_(ss, 'Starting quote/estimate number'), '1001');
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const valid = new Date(today); valid.setDate(valid.getDate() + (num_(p.validDays) || 14));
-  const taxPct = num_(getSetting_(ss, 'Sales tax % (0 for none)'));
-  let subtotal = 0; lines.forEach(function (l) { subtotal += (num_(l.qty) || 1) * num_(l.rate); });
-  const total = subtotal + subtotal * taxPct / 100;
-  est.appendRow([number, p.client, today, valid, total, 'Draft']);
-  appendLineItems_(ss, number, lines);
-  upsertClient_(ss, p.client, p.phone || '', p.email || '', 'From estimate ' + number);
-  markLeadQuoted_(ss, p.client);
-  return { ok: true, number: number };
-}
-
-function markLeadQuoted_(ss, client) {
-  const sh = ss.getSheetByName(TABS.LEADS);
-  if (!sh || sh.getLastRow() < 2) return;
-  const names = sh.getRange(2, 2, sh.getLastRow() - 1, 1).getValues();
-  for (let i = 0; i < names.length; i++) {
-    if (String(names[i][0]).trim().toLowerCase() === String(client).trim().toLowerCase()) {
-      const st = sh.getRange(i + 2, 8);
-      if (['New', 'Contacted'].indexOf(String(st.getValue())) > -1) st.setValue('Quoted');
-      return;
-    }
-  }
-}
-
-/** Replace a doc's line items and re-sync its Amount. kind decides which sheet. */
-function apiSetDocLines(kind, number, lines) {
-  const ss = ss_();
-  clearLinesForNumber_(ss, number);
-  const clean = (lines || []).filter(function (l) { return String(l.service || '').trim() && num_(l.rate) > 0; });
-  appendLineItems_(ss, number, clean);
-  const isInv = (kind === 'INVOICE');
-  const sh = ss.getSheetByName(isInv ? TABS.INVOICES : TABS.ESTIMATES);
-  const row = findRowByNumber_(sh, number);
-  if (row) {
-    const vals = sh.getRange(row, 1, 1, 6).getValues()[0];
-    sh.getRange(row, 5).setValue(docComputed_(ss, kind, vals).total);
-  }
-  return { ok: true };
-}
-
-/** Update a doc's editable meta (client, dates, amount, status). */
-function apiUpdateDoc(kind, number, fields) {
-  const ss = ss_();
-  const sh = ss.getSheetByName(kind === 'INVOICE' ? TABS.INVOICES : TABS.ESTIMATES);
-  const row = findRowByNumber_(sh, number);
-  if (!row) return { ok: false };
-  if (fields.client !== undefined) sh.getRange(row, 2).setValue(fields.client);
-  if (fields.dateA !== undefined) sh.getRange(row, 3).setValue(parseDate_(fields.dateA) || '');
-  if (fields.dateB !== undefined) sh.getRange(row, 4).setValue(parseDate_(fields.dateB) || '');
-  if (fields.amount !== undefined) sh.getRange(row, 5).setValue(num_(fields.amount));
-  if (fields.status !== undefined) sh.getRange(row, 6).setValue(fields.status);
-  return { ok: true };
-}
-
-/** Generate + email the PDF for a doc, mark it Sent, save a copy to Drive. */
-function apiSendDoc(kind, number) {
-  const ss = ss_();
-  const sh = ss.getSheetByName(kind === 'INVOICE' ? TABS.INVOICES : TABS.ESTIMATES);
-  const row = findRowByNumber_(sh, number);
-  if (!row) return { ok: false, msg: 'Not found.' };
-  const vals = sh.getRange(row, 1, 1, 6).getValues()[0];
-  if (!vals[1]) return { ok: false, msg: 'This ' + kind.toLowerCase() + ' needs a client.' };
-  // set issue date on send if blank
-  if (!(vals[2] instanceof Date)) { const t = new Date(); t.setHours(0, 0, 0, 0); sh.getRange(row, 3).setValue(t); vals[2] = t; }
-  // Invoices: (re)set the due date from the send/issue date using the configured terms.
-  // 0 days = due upon receipt (same day). Estimates keep their "Valid until" date.
-  if (kind === 'INVOICE') {
-    const terms = invoiceTermsDays_(ss);
-    const due = new Date(vals[2]); due.setHours(0, 0, 0, 0); due.setDate(due.getDate() + Math.max(0, terms));
-    sh.getRange(row, 4).setValue(due); vals[3] = due;
-  }
-  const comp = docComputed_(ss, kind, vals);
-  if (!comp.items.length && !comp.subtotal) return { ok: false, msg: 'Add line items or an amount first.' };
-  const pdf = docPdfBlob_(kind, vals, docHtml_(ss, kind, vals, comp));
-  sh.getRange(row, 5).setValue(comp.total);
-  const email = docClientEmail_(ss, vals[1]);
-  if (email) docEmail_(ss, kind, vals, pdf, email);
-  sh.getRange(row, 6).setValue('Sent');
-  DriveApp.createFile(pdf);
-  return { ok: true, emailed: !!email, email: email, total: comp.total };
-}
-
-/** Approve an estimate: mark Accepted, create an invoice DRAFT (lines copied) + a scheduled Job.
- *  jobDateIso (optional) sets when the job is scheduled — quote today, work it next week. */
-function apiApproveEstimate(number, jobDateIso) {
-  const ss = ss_();
-  const est = ss.getSheetByName(TABS.ESTIMATES);
-  const erow = findRowByNumber_(est, number);
-  if (!erow) return { ok: false, msg: 'Estimate not found.' };
-  const ev = est.getRange(erow, 1, 1, 6).getValues()[0]; // num, client, issue, valid, amount, status
-  est.getRange(erow, 6).setValue('Accepted');
-
-  const inv = ss.getSheetByName(TABS.INVOICES);
-  const invNum = nextDocNumber_(inv, getSetting_(ss, 'Starting invoice number'), '9001');
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  // Issue the invoice now (on approval) so it always has a date — many buyers are never emailed
-  // an invoice. Due date follows from the issue date + terms; a later send keeps this date.
-  const due = new Date(today); due.setDate(due.getDate() + Math.max(0, invoiceTermsDays_(ss)));
-  const items = lineItemsFor_(ss, number).map(function (it) { return { service: it.desc, qty: it.qty, rate: it.rate }; });
-  inv.appendRow([invNum, ev[1], today, due, num_(ev[4]), 'Draft']);
-  appendLineItems_(ss, invNum, items);
-
-  const jobDate = toLocalDate_(jobDateIso) || today;
-  const jobs = ss.getSheetByName(TABS.JOBS);
-  const summary = items.length ? items.slice(0, 2).map(function (i) { return i.service; }).join(', ') + (items.length > 2 ? '…' : '') : '';
-  jobs.appendRow([jobDate, ev[1], summary, '', 'Scheduled', num_(ev[4]), 'No', 'No', 'No', 'From estimate ' + number, 'None', 'No', '']);
-  upsertClient_(ss, ev[1], '', '', 'From estimate ' + number);
-  return { ok: true, invoiceNumber: invNum, jobDate: fmtd_(jobDate) };
-}
-
-function apiMarkInvoicePaid(number) {
-  const sh = ss_().getSheetByName(TABS.INVOICES);
-  const row = findRowByNumber_(sh, number);
-  if (!row) return { ok: false };
-  sh.getRange(row, 6).setValue('Paid');
-  return { ok: true };
-}
-
-/** Delete a stuck/duplicate estimate or invoice: clears its row and its line items.
- *  (Any linked job is left alone.) The row is cleared, not shifted, so numbering and
- *  formatting stay intact. */
-function apiDeleteDoc(kind, number) {
-  const ss = ss_();
-  const sh = ss.getSheetByName(kind === 'INVOICE' ? TABS.INVOICES : TABS.ESTIMATES);
-  const row = findRowByNumber_(sh, number);
-  if (!row) return { ok: false, msg: 'Not found.' };
-  clearLinesForNumber_(ss, number);
-  sh.getRange(row, 1, 1, 6).clearContent();
-  return { ok: true };
-}
-
-/** Archive closed quotes + old paid invoices (and their line items) from the app. */
-function apiArchiveClosed() {
-  const r = archiveClosedDocs_(ss_());
-  return { ok: true, estimates: r.estimates, invoices: r.invoices, lineItems: r.lineItems };
-}
-
-/* ============================= SETTINGS ========================== */
-
-var SETTING_KEYS = {
-  businessName: 'Business name',
-  ownerEmail: 'Owner email (for follow-up digest)',
-  phone: 'Business phone',
-  currency: 'Currency symbol',
-  taxPct: 'Sales tax % (0 for none)',
-  followDays: 'Default follow-up (days after new lead)',
-  reviewLink: 'Google review link (for review requests)',
-  payInstructions: 'Invoice payment instructions',
-  payLink: 'Payment link (Stripe/PayPal/Venmo — optional)',
-  dueDays: 'Invoice due (days to pay; 0 = due upon receipt)',
-  startEstimate: 'Starting quote/estimate number',
-  startInvoice: 'Starting invoice number',
-  accent: 'Accent color',
+var DOC = {
+  ESTIMATE: { table: 'Estimates', pk: 'EstimateID', docType: 'Estimate', dateB: 'ValidUntil' },
+  INVOICE:  { table: 'Invoices',  pk: 'InvoiceID',  docType: 'Invoice',  dateB: 'DueDate' },
 };
+function API_doc_(kind) { return DOC[kind] || DOC.ESTIMATE; }
 
-// The logo (a base64 data URL) can be large, so it is stored/read on its own rather than
-// bundled into every apiBootstrap. The Settings screen fetches it lazily.
-var LOGO_KEY = 'Company logo (data URL)';       // for the in-app preview (instant, no fetch)
-var LOGO_FILE_KEY = 'Company logo (Drive file id)';  // mirrored to Drive for reliable PDF embedding
+function API_docView_(kind, d, nameOf) {
+  var D = API_doc_(kind);
+  return { kind: kind, id: d[D.pk], clientId: d.ClientID, client: (nameOf || API_clientNameMap_())[d.ClientID] || '',
+    jobId: d.JobID || '', total: API_num_(d.Total), status: d.Status,
+    issueDate: API_fmtD_(d.IssueDate), issueISO: API_iso_(d.IssueDate),
+    dateB: API_fmtD_(d[D.dateB]), dateBISO: API_iso_(d[D.dateB]) };
+}
+function apiListBilling() {
+  var nameOf = API_clientNameMap_();
+  return {
+    estimates: getAll('Estimates').map(function (e) { return API_docView_('ESTIMATE', e, nameOf); }),
+    invoices: getAll('Invoices').map(function (i) { return API_docView_('INVOICE', i, nameOf); }),
+  };
+}
+function apiGetDocLines(kind, id) {
+  var D = API_doc_(kind);
+  return query('LineItems', function (li) { return li.DocType === D.docType && String(li.DocID) === String(id); })
+    .map(function (li) { return { id: li.LineItemID, serviceId: li.ServiceID, description: li.Description, qty: API_num_(li.Qty), rate: API_num_(li.Rate), lineTotal: API_num_(li.LineTotal) }; });
+}
 
-function apiGetLogo() { return { logo: String(getSetting_(ss_(), LOGO_KEY) || '') }; }
+// lines: [{serviceId, qty, rate?, description?}] — rate/description snapshot from the Service unless overridden.
+function API_insertLines_(docType, docId, lines) {
+  var rows = (lines || []).filter(function (l) { return l.serviceId; }).map(function (l) {
+    var row = { DocType: docType, DocID: docId, ServiceID: l.serviceId, Qty: API_num_(l.qty) || 1 };
+    if (l.rate !== undefined && l.rate !== '') row.Rate = API_num_(l.rate);
+    if (l.description) row.Description = l.description;
+    return row;
+  });
+  if (rows.length) insertMany('LineItems', rows);
+}
 
-function apiSaveLogo(dataUrl) {
-  const ss = ss_();
-  const v = String(dataUrl || '');
-  if (!v) {                                     // remove: clear both settings + trash the file
-    deleteLogoFile_(ss);
-    setSetting_(ss, LOGO_KEY, '');
-    setSetting_(ss, LOGO_FILE_KEY, '');
-    return { ok: true };
-  }
-  const m = /^data:(image\/(?:png|jpeg));base64,([A-Za-z0-9+/=]+)$/.exec(v);
-  if (!m) return { ok: false, msg: 'Not a PNG or JPEG image' };
-  setSetting_(ss, LOGO_KEY, v);                 // keep the data URL for the app preview
-  // Mirror to Drive so the HTML→PDF renderer can load it by URL (data URIs render unreliably
-  // in Apps Script's PDF conversion; a shared Drive image is the robust path). A logo is public
-  // by nature — it prints on every estimate/invoice — so anyone-with-link view is appropriate.
-  try {
-    const blob = Utilities.newBlob(Utilities.base64Decode(m[2]), m[1], 'logo');
-    setSetting_(ss, LOGO_FILE_KEY, writeLogoFile_(ss, blob));
-  } catch (e) {
-    setSetting_(ss, LOGO_FILE_KEY, '');         // Drive step failed → PDF falls back to data URI
-  }
+function apiCreateEstimate(form) {
+  if (!form.clientId || !getById('Clients', form.clientId)) return { ok: false, msg: 'Pick a valid client.' };
+  var lines = (form.lines || []).filter(function (l) { return l.serviceId; });
+  if (!lines.length) return { ok: false, msg: 'Add at least one line item.' };
+  var today = API_today_();
+  var e = insert('Estimates', {
+    ClientID: form.clientId, IssueDate: today,
+    ValidUntil: API_addDays_(today, API_num_(form.validDays) || 14), Status: 'Draft',
+  });
+  API_insertLines_('Estimate', e.EstimateID, lines);
+  recalcDocTotal('Estimate', e.EstimateID);
+  if (form.markQuoted !== false) { var c = getById('Clients', form.clientId); if (c && c.Status === 'Lead') update('Clients', form.clientId, { Status: 'Active' }); }
+  return { ok: true, id: e.EstimateID };
+}
+
+/** Replace a doc's line items (soft-delete old, insert new) and refresh its cached Total. */
+function apiSetDocLines(kind, id, lines) {
+  var D = API_doc_(kind);
+  query('LineItems', function (li) { return li.DocType === D.docType && String(li.DocID) === String(id); })
+    .forEach(function (li) { softDelete('LineItems', li.LineItemID); });
+  API_insertLines_(D.docType, id, lines);
+  var total = recalcDocTotal(D.docType, id);
+  if (kind === 'INVOICE') { var iv = getById('Invoices', id); if (iv && iv.Status === 'Paid') recalcClientLifetime(iv.ClientID); }
+  return { ok: true, total: total };
+}
+function apiUpdateDoc(kind, id, fields) {
+  var D = API_doc_(kind), a = {};
+  if (fields.status !== undefined) a.Status = fields.status;
+  if (fields.issueDate !== undefined) a.IssueDate = API_parseDate_(fields.issueDate) || '';
+  if (fields.dateB !== undefined) a[D.dateB] = API_parseDate_(fields.dateB) || '';
+  var d = update(D.table, id, a);
+  if (kind === 'INVOICE' && fields.status !== undefined) recalcClientLifetime(d.ClientID);
   return { ok: true };
 }
 
-/** Create (replacing any previous) the single Drive logo file, shared for link-view; return id. */
-function writeLogoFile_(ss, blob) {
-  deleteLogoFile_(ss);
-  const file = DriveApp.createFile(blob).setName('ServiceProCRM-logo-' + ss.getId().slice(0, 10));
+/** Accept an estimate → create a Job + a draft Invoice (dated now), copying the quoted lines. */
+function apiApproveEstimate(estimateId, jobDateIso, jobServiceId) {
+  var est = getById('Estimates', estimateId);
+  if (!est) return { ok: false, msg: 'Estimate not found.' };
+  var estLines = query('LineItems', function (li) { return li.DocType === 'Estimate' && String(li.DocID) === String(estimateId); });
+  if (!estLines.length) return { ok: false, msg: 'This estimate has no line items.' };
+
+  update('Estimates', estimateId, { Status: 'Accepted' });
+  var today = API_today_();
+  var svcForJob = jobServiceId || estLines[0].ServiceID;   // one job for the primary service
+  var job = insert('Jobs', {
+    ClientID: est.ClientID, ServiceID: svcForJob,
+    JobDate: API_parseDate_(jobDateIso) || today, Status: 'Scheduled', Recurring: 'None',
+  });
+  var inv = insert('Invoices', {
+    ClientID: est.ClientID, JobID: job.JobID, IssueDate: today,
+    DueDate: API_addDays_(today, API_invoiceTermsDays_()), Status: 'Draft',
+  });
+  // Copy the QUOTED lines verbatim (preserve snapshot price; don't re-derive from Services).
+  API_insertLines_('Invoice', inv.InvoiceID, estLines.map(function (li) {
+    return { serviceId: li.ServiceID, qty: li.Qty, rate: li.Rate, description: li.Description };
+  }));
+  recalcDocTotal('Invoice', inv.InvoiceID);
+  var c = getById('Clients', est.ClientID); if (c && c.Status === 'Lead') update('Clients', est.ClientID, { Status: 'Active' });
+  return { ok: true, invoiceId: inv.InvoiceID, jobId: job.JobID, jobDate: API_fmtD_(job.JobDate) };
+}
+
+function apiMarkInvoicePaid(id) {
+  var iv = update('Invoices', id, { Status: 'Paid' });
+  var life = recalcClientLifetime(iv.ClientID);
+  return { ok: true, lifetime: life };
+}
+function apiDeleteDoc(kind, id) {
+  var D = API_doc_(kind), d = getById(D.table, id);
+  if (!d) return { ok: false, msg: 'Not found.' };
+  query('LineItems', function (li) { return li.DocType === D.docType && String(li.DocID) === String(id); })
+    .forEach(function (li) { softDelete('LineItems', li.LineItemID); });
+  softDelete(D.table, id);
+  if (kind === 'INVOICE' && d.Status === 'Paid') recalcClientLifetime(d.ClientID);
+  return { ok: true };
+}
+
+/* ============================ Send (PDF + email) ============================ */
+
+function apiSendDoc(kind, id) {
+  var D = API_doc_(kind), d = getById(D.table, id);
+  if (!d) return { ok: false, msg: 'Not found.' };
+  var client = getById('Clients', d.ClientID);
+  if (!client) return { ok: false, msg: 'This document has no valid client.' };
+  var items = apiGetDocLines(kind, id);
+  if (!items.length && !API_num_(d.Total)) return { ok: false, msg: 'Add line items first.' };
+  if (!(d.IssueDate instanceof Date)) update(D.table, id, { IssueDate: API_today_() });
+
+  var html = API_docHtml_(kind, getById(D.table, id), client, items);
+  var pdf = Utilities.newBlob(html, 'text/html', 'doc.html').getAs('application/pdf')
+    .setName((kind === 'INVOICE' ? 'Invoice' : 'Estimate') + '-' + id + '-' + String(client.Name).replace(/\s+/g, '') + '.pdf');
+  var email = String(client.Email || '').trim();
+  if (email) API_docEmail_(kind, id, client, pdf, email); else DriveApp.createFile(pdf);
+  if (d.Status === 'Draft') update(D.table, id, { Status: 'Sent' });
+  return { ok: true, emailed: !!email, email: email };
+}
+
+function API_docHtml_(kind, d, client, items) {
+  var isInv = (kind === 'INVOICE');
+  var biz = settingGet('Business name') || 'Your Business';
+  var bizPhone = settingGet('Business phone') || '';
+  var accent = String(settingGet('Accent color') || '#8f5f22').trim() || '#8f5f22';
+  var logoId = String(settingGet('Company logo (Drive file id)') || '').trim();
+  var logo = logoId ? ('https://drive.google.com/uc?export=view&id=' + logoId) : String(settingGet('Company logo (data URL)') || '').trim();
+  var pay = settingGet('Invoice payment instructions') || '';
+  var payLink = String(settingGet('Payment link') || '').trim();
+  var fmtD = function (d2) { return (d2 instanceof Date) ? Utilities.formatDate(d2, API_tz_(), 'MMM d, yyyy') : ''; };
+  var rows = items.map(function (it) {
+    return '<tr><td style="padding:9px;border-bottom:1px solid #eee">' + API_esc_(it.description) + '</td>' +
+      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:center">' + it.qty + '</td>' +
+      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + API_money_(it.rate) + '</td>' +
+      '<td style="padding:9px;border-bottom:1px solid #eee;text-align:right">' + API_money_(it.lineTotal) + '</td></tr>';
+  }).join('');
+  var isReceipt = isInv && API_invoiceTermsDays_() === 0;
+  var dateBLabel = isInv ? 'Due' : 'Valid until';
+  var dateBVal = isReceipt ? 'Upon receipt' : fmtD(isInv ? d.DueDate : d.ValidUntil);
+  var totalRow = '<tr><td colspan="3" style="padding:9px;text-align:right;font-weight:bold">' + (isInv ? 'Total Due' : 'Estimated Total') +
+    '</td><td style="padding:9px;text-align:right;font-weight:bold;font-size:18px;color:' + accent + '">' + API_money_(d.Total) + '</td></tr>';
+  var payBtn = (isInv && payLink) ? '<p style="text-align:center;margin:22px 0"><a href="' + payLink + '" style="background:' + accent + ';color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:bold">Pay now</a></p>' : '';
+  return '<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#1a1c1f">' +
+    '<table style="width:100%;border-bottom:3px solid ' + accent + ';margin-bottom:22px"><tr>' +
+    '<td style="padding-bottom:14px;vertical-align:top">' + (logo ? '<img src="' + logo + '" style="max-height:64px;max-width:220px;margin-bottom:8px;display:block">' : '') +
+    '<div style="font-size:24px;font-weight:bold">' + API_esc_(biz) + '</div>' + (bizPhone ? '<div style="color:#52565c">' + API_esc_(bizPhone) + '</div>' : '') + '</td>' +
+    '<td style="padding-bottom:14px;text-align:right;vertical-align:top"><div style="font-size:28px;font-weight:bold;color:' + accent + '">' + (isInv ? 'INVOICE' : 'ESTIMATE') + '</div>' +
+    '<div style="color:#52565c">#' + API_esc_(d[API_doc_(kind).pk]) + '</div></td></tr></table>' +
+    '<table style="width:100%;margin-bottom:20px"><tr>' +
+    '<td><b>' + (isInv ? 'Bill to' : 'Prepared for') + ':</b><br>' + API_esc_(client.Name) + (client.Email ? '<br>' + API_esc_(client.Email) : '') + '</td>' +
+    '<td style="text-align:right"><b>Issued:</b> ' + fmtD(d.IssueDate) + '<br><b>' + dateBLabel + ':</b> ' + dateBVal + '</td></tr></table>' +
+    '<table style="width:100%;border-collapse:collapse;margin-bottom:6px"><tr style="background:#1a1c1f;color:#fff">' +
+    '<th style="text-align:left;padding:9px">Description</th><th style="padding:9px">Qty</th><th style="text-align:right;padding:9px">Rate</th><th style="text-align:right;padding:9px">Amount</th></tr>' +
+    rows + totalRow + '</table>' + payBtn +
+    (pay && isInv ? '<div style="background:#f3f0ea;padding:14px;border-radius:8px"><b>Payment:</b> ' + API_esc_(pay) + '</div>' : '') +
+    '<p style="color:#52565c;margin-top:20px">' + (isInv ? 'Thank you for your business!' : 'This estimate is for your review — reply to accept and we\'ll get you scheduled.') + '</p></div>';
+}
+
+function API_docEmail_(kind, id, client, pdf, email) {
+  var isInv = (kind === 'INVOICE');
+  var biz = settingGet('Business name') || 'Your Business';
+  var pay = settingGet('Invoice payment instructions') || '';
+  var payLink = String(settingGet('Payment link') || '').trim();
+  MailApp.sendEmail({ to: email, subject: (isInv ? 'Invoice' : 'Estimate') + ' #' + id + ' from ' + biz,
+    htmlBody: 'Hi ' + API_esc_(String(client.Name).split(' ')[0]) + ',<br><br>Please find your ' + (isInv ? 'invoice' : 'estimate') + ' attached. ' +
+      (isInv && payLink ? 'Pay online here: ' + payLink + '<br>' : '') + (isInv && pay ? API_esc_(pay) : '') +
+      '<br><br>Thank you!<br>' + API_esc_(biz), attachments: [pdf] });
+}
+
+/* ============================ Settings + logo ============================ */
+
+var SETTINGS_KEYS = ['Business name', 'Owner email', 'Business phone', 'Currency symbol', 'Sales tax %',
+  'Default follow-up (days)', 'Google review link', 'Invoice payment instructions', 'Payment link',
+  'Invoice due (days)', 'Accent color'];
+var LOGO_DATA_KEY = 'Company logo (data URL)';
+var LOGO_FILE_KEY = 'Company logo (Drive file id)';
+
+function apiGetSettings() { var o = {}; SETTINGS_KEYS.forEach(function (k) { o[k] = settingGet(k); }); return o; }
+function apiSaveSettings(obj) {
+  SETTINGS_KEYS.forEach(function (k) { if (obj[k] !== undefined) settingSet(k, obj[k]); });
+  return { ok: true };
+}
+function apiGetLogo() { return { logo: String(settingGet(LOGO_DATA_KEY) || '') }; }
+function apiSaveLogo(dataUrl) {
+  var v = String(dataUrl || '');
+  if (!v) { API_deleteLogoFile_(); settingSet(LOGO_DATA_KEY, ''); settingSet(LOGO_FILE_KEY, ''); return { ok: true }; }
+  var m = /^data:(image\/(?:png|jpeg));base64,([A-Za-z0-9+/=]+)$/.exec(v);
+  if (!m) return { ok: false, msg: 'Not a PNG or JPEG image' };
+  settingSet(LOGO_DATA_KEY, v);
+  try { var blob = Utilities.newBlob(Utilities.base64Decode(m[2]), m[1], 'logo'); settingSet(LOGO_FILE_KEY, API_writeLogoFile_(blob)); }
+  catch (e) { settingSet(LOGO_FILE_KEY, ''); }
+  return { ok: true };
+}
+function API_writeLogoFile_(blob) {
+  API_deleteLogoFile_();
+  var file = DriveApp.createFile(blob).setName('ServiceProCRM-logo');
   try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
   return file.getId();
 }
-
-function deleteLogoFile_(ss) {
-  const id = String(getSetting_(ss, LOGO_FILE_KEY) || '').trim();
-  if (!id) return;
-  try { DriveApp.getFileById(id).setTrashed(true); } catch (e) {}
-}
-
-/** Invoice payment terms: number of days to pay after the invoice is sent.
- *  0 means "Due upon receipt" (same day). Accepts a number, "0", or text like
- *  "Due upon receipt". Defaults to 14 when blank. */
-function invoiceTermsDays_(ss) {
-  const s = String(getSetting_(ss, 'Invoice due (days to pay; 0 = due upon receipt)') || '').trim().toLowerCase();
-  if (s === '') return 14;
-  if (s.indexOf('receipt') >= 0 || s.indexOf('upon') >= 0) return 0;
-  const n = parseInt(s.replace(/[^0-9]/g, ''), 10);
-  return isNaN(n) ? 14 : n;
-}
-
-function apiGetSettings() {
-  const ss = ss_();
-  const out = {};
-  Object.keys(SETTING_KEYS).forEach(function (k) { out[k] = getSetting_(ss, SETTING_KEYS[k]); });
-  return out;
-}
-
-function apiSaveSettings(obj) {
-  const ss = ss_();
-  Object.keys(SETTING_KEYS).forEach(function (k) {
-    if (obj[k] !== undefined) setSetting_(ss, SETTING_KEYS[k], obj[k]);
-  });
-  return { ok: true };
-}
-
-function apiSaveServices(arr) {
-  const ss = ss_();
-  const sh = ss.getSheetByName(TABS.SETTINGS);
-  if (!sh) return { ok: false };
-  sh.getRange(3, 5, 30, 1).clearContent();
-  const clean = (arr || []).map(function (s) { return String(s).trim(); }).filter(function (s) { return s; });
-  if (clean.length) sh.getRange(3, 5, clean.length, 1).setValues(clean.map(function (s) { return [s]; }));
-  return { ok: true };
+function API_deleteLogoFile_() {
+  var id = String(settingGet(LOGO_FILE_KEY) || '').trim();
+  if (id) { try { DriveApp.getFileById(id).setTrashed(true); } catch (e) {} }
 }
