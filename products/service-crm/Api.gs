@@ -139,12 +139,16 @@ function API_clientView_(c, ctx) {
   };
 }
 
+// Group a table's rows by ClientID ONCE so the per-client view is an O(1) lookup, not an O(n)
+// re-filter — keeps apiListClients linear instead of O(clients × jobs+estimates+invoices).
+function API_groupByClient_(arr) {
+  var m = {}; arr.forEach(function (x) { (m[x.ClientID] || (m[x.ClientID] = [])).push(x); }); return m;
+}
 function apiListClients() {
   var today = API_today_();
-  var jobs = getAll('Jobs'), ests = getAll('Estimates'), invs = getAll('Invoices');
-  var byC = function (arr, id, key) { return arr.filter(function (x) { return x.ClientID === id; }); };
+  var jobsBy = API_groupByClient_(getAll('Jobs')), estsBy = API_groupByClient_(getAll('Estimates')), invsBy = API_groupByClient_(getAll('Invoices'));
   return getAll('Clients').map(function (c) {
-    return API_clientView_(c, { today: today, jobs: byC(jobs, c.ClientID), ests: byC(ests, c.ClientID), invs: byC(invs, c.ClientID) });
+    return API_clientView_(c, { today: today, jobs: jobsBy[c.ClientID] || [], ests: estsBy[c.ClientID] || [], invs: invsBy[c.ClientID] || [] });
   });
 }
 function apiGetClient(id) { var c = getById('Clients', id); return c ? API_clientView_(c) : null; }

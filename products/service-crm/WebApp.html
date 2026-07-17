@@ -123,18 +123,22 @@ function api(fn){
 }
 /* ---------- optimistic sync engine (writes apply locally, upload in background) ---------- */
 var SYNC={q:[],active:false,seq:0}, STORE='crm2_sync';
-function enqueue(fn,args,label,opts){ opts=opts||{}; SYNC.q.push({id:'op'+(++SYNC.seq),fn:fn,args:args,label:label,tries:0,_onOk:opts.onOk}); syncBadge(); syncPump(); }
+function enqueue(fn,args,label,opts){ opts=opts||{}; SYNC.q.push({id:'op'+(++SYNC.seq),fn:fn,args:args,label:label,tries:0,_onOk:opts.onOk,_onFail:opts.onFail}); syncBadge(); syncPump(); }
 function syncPump(){
   if(SYNC.active)return; var op=SYNC.q[0]; if(!op){ syncBadge(); return; } if(op.failed){ syncBadge(); return; }
   SYNC.active=true; op.tries++; syncBadge();
   api.apply(null,[op.fn].concat(op.args)).then(function(r){
     SYNC.active=false;
-    if(r&&r.ok===false){ return syncFail(op, r.msg||'rejected'); }
+    if(r&&r.ok===false){ return syncFail(op, r.msg||'rejected', true); }   // server said no → terminal, don't retry
     SYNC.q.shift(); if(op._onOk){ try{op._onOk(r);}catch(e){} }
     if(!SYNC.q.length){ S.dashboard=null; } syncBadge(); syncPump();
   }).catch(function(e){ SYNC.active=false; syncFail(op,(e&&e.message)||'no connection'); });
 }
-function syncFail(op,msg){ if(op.tries<4){ syncBadge(); setTimeout(syncPump,1200*op.tries); return; } op.failed=true; syncBadge(); toast('⚠ Couldn’t save "'+op.label+'" ('+msg+')'); }
+function syncFail(op,msg,terminal){
+  if(!terminal && op.tries<4){ syncBadge(); setTimeout(syncPump,1200*op.tries); return; }   // transient → back off + retry
+  if(op._onFail){ try{op._onFail(msg);}catch(e){} SYNC.q.shift(); syncBadge(); toast('⚠ '+op.label+' undone ('+msg+')'); syncPump(); return; }  // roll back + unblock
+  op.failed=true; syncBadge(); toast('⚠ Couldn’t save "'+op.label+'" ('+msg+')');   // keep for manual retry
+}
 function syncRetry(){ var any=false; SYNC.q.forEach(function(o){ if(o.failed){o.failed=false;o.tries=0;any=true;} }); if(any){ toast('Retrying…'); syncPump(); } }
 function syncBadge(){ var el=document.getElementById('syncBadge'); var failed=SYNC.q.filter(function(o){return o.failed;}).length;
   if(failed){ el.className='syncb on fail'; el.textContent='⚠ Retry'; } else if(SYNC.q.length){ el.className='syncb on saving'; el.textContent='⟳ Saving'; }
@@ -256,6 +260,7 @@ function archiveClient(id){ busy('Archiving…'); api('apiArchiveClient',id).the
   if(r&&r.ok){ if(S.clients)S.clients=S.clients.filter(function(c){return c.id!==id;}); closeModal(); toast('🗑️ Archived'); renderClients(); }
   else toast((r&&r.msg)||'Could not archive'); }); }
 function openClientForm(){
+  saveClient._force=false;   // start each new-client form with a clean duplicate-confirm state
   var opts=(S.enums.clientStatus||['Lead']).map(function(s){return '<option'+(s==='Lead'?' selected':'')+'>'+s+'</option>';}).join('');
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New client</h3>'+
     '<label>Name *</label><input id="nc_name" placeholder="Jane Smith">'+
@@ -274,7 +279,9 @@ function saveClient(cb){
   saveClient._force=false;
   var temp={id:'tmp'+(++SYNC.seq),_saving:true,name:name,phone:form.phone,email:form.email,address:form.address,status:form.status,source:form.source,followUp:'',followUpISO:'',lifetime:0,nextJob:null,openEstimate:null,unpaidInvoice:null};
   S.clients=S.clients||[]; S.clients.push(temp); closeModal(); toast('✅ Client added'); if(CUR_SCREEN==='clients')renderClients();
-  enqueue('apiCreateClient',[form],'Client '+name,{onOk:function(r){ if(r&&r.id){ temp.id=r.id; temp._saving=false; if(r.client)Object.assign(temp,r.client); if(CUR_SCREEN==='clients')renderClients(); if(cb)cb(r.id); } }});
+  enqueue('apiCreateClient',[form],'Client '+name,{
+    onOk:function(r){ if(r&&r.id){ temp.id=r.id; temp._saving=false; if(r.client)Object.assign(temp,r.client); if(CUR_SCREEN==='clients')renderClients(); if(cb)cb(r.id); } },
+    onFail:function(){ if(S.clients)S.clients=S.clients.filter(function(x){return x!==temp;}); if(CUR_SCREEN==='clients')renderClients(); }});
 }
 function openClientEdit(id){
   var c=clientById(id); if(!c)return;
@@ -346,7 +353,9 @@ function saveJob(){
   var form={clientId:clientId,serviceId:serviceId,date:val('nj_date'),time:val('nj_time'),recurring:val('nj_recurring')||'None'};
   var temp={id:'tmp'+(++SYNC.seq),_saving:true,clientId:clientId,client:(clientById(clientId)||{}).name||'',serviceId:serviceId,service:svcName(serviceId),date:form.date,dateISO:form.date,time:form.time,status:'Scheduled',recurring:form.recurring};
   S.jobs=S.jobs||[]; S.jobs.push(temp); S.dashboard=null; closeModal(); toast('✅ Job added'); if(CUR_SCREEN==='jobs')renderJobs();
-  enqueue('apiCreateJob',[form],'Job',{onOk:function(r){ if(r&&r.id){ temp.id=r.id; temp._saving=false; if(r.job)Object.assign(temp,r.job); if(CUR_SCREEN==='jobs')renderJobs(); } }});
+  enqueue('apiCreateJob',[form],'Job',{
+    onOk:function(r){ if(r&&r.id){ temp.id=r.id; temp._saving=false; if(r.job)Object.assign(temp,r.job); if(CUR_SCREEN==='jobs')renderJobs(); } },
+    onFail:function(){ if(S.jobs)S.jobs=S.jobs.filter(function(x){return x!==temp;}); S.dashboard=null; if(CUR_SCREEN==='jobs')renderJobs(); }});
 }
 function openJob(id){
   var j=jobById(id); if(!j)return; if(j._saving){ toast('⏳ Still saving…'); return; }
@@ -383,9 +392,12 @@ function renderBilling(){
   var G=g[BILL_TAB]; var list=G.arr.length ? G.arr.map(function(d){return docRow(G.kind,d);}).join('') : '<div class="empty">'+G.empty+'</div>';
   document.getElementById('billingBody').innerHTML=tabs+'<div style="margin-top:12px">'+list+'</div>';
 }
-function openDoc(kind,id){
-  var d=docById(kind,id); if(!d){ // may be on another screen; fetch fresh
-    api('apiListBilling').then(function(r){ S.billing=r; openDoc(kind,id); }); return; }
+function openDoc(kind,id,_retried){
+  var d=docById(kind,id);
+  if(!d){ // may be on another screen — fetch once, but never loop if it's gone (archived/deleted)
+    if(_retried){ toast('That document is no longer available'); return; }
+    api('apiListBilling').then(function(r){ S.billing=r; openDoc(kind,id,true); }).catch(function(){ toast('Couldn\'t load that document'); });
+    return; }
   var itemsId='items_'+String(id).replace(/[^A-Za-z0-9]/g,'');
   var na=jarg(id);
   var btns='';
@@ -414,13 +426,13 @@ function deleteDoc(kind,id){
     '<button class="btn danger" onclick="confirmDelete(\''+kind+'\','+jarg(id)+')">Delete</button><button class="btn sec" onclick="openDoc(\''+kind+'\','+jarg(id)+')">Cancel</button>');
 }
 function confirmDelete(kind,id){ var arr=kind==='INVOICE'?'invoices':'estimates'; if(S.billing&&S.billing[arr])S.billing[arr]=S.billing[arr].filter(function(d){return d.id!==id;}); S.dashboard=null; S.clients=null; closeModal(); toast('🗑️ Deleted'); renderBilling(); enqueue('apiDeleteDoc',[kind,id],'Delete doc'); }
-function sendDoc(kind,id){ busy('Building PDF…'); api('apiSendDoc',kind,id).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive'):(r&&r.msg||'Failed')); invalidate(); loadBilling(); }); }
+function sendDoc(kind,id){ busy('Building PDF…'); api('apiSendDoc',kind,id).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive'):(r&&r.msg||'Failed')); invalidate(); loadBilling(); }).catch(function(e){ toast('⚠ Send failed: '+(e&&e.message||e)); }); }
 function approveEstimate(id){
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Approve &amp; schedule</h3><div class="muted" style="margin-bottom:10px">Accepts the quote, creates a draft invoice (dated today) and schedules a job.</div>'+
     '<label>Job date</label><input type="date" id="ap_date" value="'+isoOf(midnight(new Date()))+'">'+
     '<button class="btn" onclick="doApprove('+jarg(id)+')">Approve → invoice + job</button>');
 }
-function doApprove(id){ var iso=val('ap_date'); busy('Approving…'); api('apiApproveEstimate',id,iso).then(function(r){ closeModal(); if(r&&r.ok){ toast('✅ Invoice '+r.invoiceId+' + job scheduled'); invalidate(); nav('billing'); } else toast(r&&r.msg||'Failed'); }); }
+function doApprove(id){ var iso=val('ap_date'); busy('Approving…'); api('apiApproveEstimate',id,iso).then(function(r){ closeModal(); if(r&&r.ok){ toast('✅ Invoice '+r.invoiceId+' + job scheduled'); invalidate(); nav('billing'); } else toast(r&&r.msg||'Failed'); }).catch(function(e){ closeModal(); toast('⚠ Approve failed: '+(e&&e.message||e)); }); }
 
 /* ---- line-item builder (create estimate + edit lines) ---- */
 var QLINES=[];
@@ -453,7 +465,7 @@ function saveEstimate(clientId){
   var lines=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(function(l){return {serviceId:l.serviceId,qty:Number(l.qty)};});
   if(!lines.length){ toast('Add a line item'); return; }
   busy('Creating…'); closeModal();
-  api('apiCreateEstimate',{clientId:clientId,validDays:14,lines:lines}).then(function(r){ if(r&&r.ok){ toast('✅ Estimate '+r.id+' created'); invalidate(); nav('billing'); } else toast(r&&r.msg||'Failed'); });
+  api('apiCreateEstimate',{clientId:clientId,validDays:14,lines:lines}).then(function(r){ if(r&&r.ok){ toast('✅ Estimate '+r.id+' created'); invalidate(); nav('billing'); } else toast(r&&r.msg||'Failed'); }).catch(function(e){ toast('⚠ Create failed: '+(e&&e.message||e)); });
 }
 function editLines(kind,id){
   busy('Opening…');
@@ -469,7 +481,7 @@ function editLines(kind,id){
 function saveLines(kind,id){
   var lines=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(function(l){return {serviceId:l.serviceId,qty:Number(l.qty)};});
   busy('Saving…'); closeModal();
-  api('apiSetDocLines',kind,id,lines).then(function(){ toast('✅ Line items saved'); invalidate(); loadBilling(); });
+  api('apiSetDocLines',kind,id,lines).then(function(){ toast('✅ Line items saved'); invalidate(); loadBilling(); }).catch(function(e){ toast('⚠ Save failed: '+(e&&e.message||e)); });
 }
 
 /* ================= SETTINGS ================= */
