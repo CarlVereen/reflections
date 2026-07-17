@@ -1,109 +1,71 @@
-<!DOCTYPE html>
-<html>
-<head>
-<base target="_top">
-<meta charset="utf-8">
 <style>
-  :root{
-    --accent:#8f5f22; --accent-lite:#b8823a; --accent-dark:#6e4a1a; --accent-glow:rgba(143,95,34,.25); --dark:#1a1c1f; --ink:#1a1c1f; --soft:#f3f0ea;
-    --line:#e4dccd; --muted:#6b6459; --good:#3f7d55; --warn:#c0492b; --bg:#faf8f4; --card:#fff;
-    --blue:#2a4d80; --radius:14px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  body{font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
-  .app{max-width:640px;margin:0 auto;min-height:100vh;padding-bottom:76px}
-  /* top bar */
-  .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;
-    padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
-  .topbar h1{font-size:17px;font-weight:800;letter-spacing:-.2px}
-  .topbar .sub{font-size:11.5px;opacity:.85}
-  .iconbtn{background:rgba(255,255,255,.18);border:0;color:#fff;width:36px;height:36px;border-radius:10px;font-size:16px;cursor:pointer}
-  /* screens */
-  .screen{display:none;padding:14px}
-  .screen.on{display:block;animation:fade .2s ease}
-  @keyframes fade{from{opacity:.3}to{opacity:1}}
-  h2.sec{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800;margin:18px 4px 10px}
-  /* metric tiles */
-  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .tile{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
-  .tile .l{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
-  .tile .v{font-size:26px;font-weight:800;color:var(--ink);margin-top:4px;letter-spacing:-.5px}
-  .tile.good .v{color:var(--good)}
-  .tile .hint{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.2}
-  /* cards & lists */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:10px}
-  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .list-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
-  .list-item:active{border-color:var(--accent-lite)}
-  .list-item .name{font-weight:700}
-  .list-item .meta{font-size:12.5px;color:var(--muted);margin-top:2px}
-  .pill{font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap}
-  .p-new{background:#e8eef7;color:#2a4d80}.p-contacted{background:#fff3d6;color:#8a6d1a}.p-quoted{background:#ffe4c4;color:#8f5f22}
-  .p-won,.p-accepted,.p-paid,.p-done{background:#d8efdf;color:#2c6b42}.p-lost,.p-declined,.p-overdue,.p-cancelled{background:#f5d9d3;color:#a33}
-  .p-draft{background:#eeeeee;color:#555}.p-sent{background:#fff3d6;color:#8a6d1a}.p-scheduled{background:#e8eef7;color:#2a4d80}.p-inprogress{background:#fff3d6;color:#8a6d1a}
-  .muted{color:var(--muted);font-size:13px}
-  .empty{color:var(--muted);text-align:center;padding:26px 10px;font-style:italic}
-  .warn{background:#fff3d6;border:1px solid #e6cf9a;color:#8a6d1a;border-radius:12px;padding:11px 13px;margin-bottom:10px;font-size:12.5px;line-height:1.35}
-  /* buttons */
-  .btn{display:block;width:100%;border:0;border-radius:999px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;
-    background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:#fff;margin-top:10px;text-align:center;text-decoration:none}
-  .btn:active{filter:brightness(1.1)}
-  .btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line)}
-  .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
-  .btn.danger{background:#fff;color:var(--warn);border:1px solid #e6c3ba}
-  .btn.sm{width:auto;display:inline-block;padding:9px 16px;font-size:13px;margin:0}
-  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .btnrow .btn{flex:1;margin-top:0}
-  /* forms */
-  label{display:block;font-weight:700;font-size:12.5px;margin:12px 0 4px;color:var(--ink)}
-  input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff;font-family:inherit}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
-  .two{display:flex;gap:8px}.two>div{flex:1}
-  /* fixed action button, sits just above the bottom nav */
-  .actionbar{position:fixed;left:0;right:0;bottom:54px;z-index:28;max-width:640px;margin:0 auto;
-    padding:8px 14px 10px;display:none;background:linear-gradient(180deg,rgba(250,248,244,0),var(--bg) 42%)}
-  .actionbar.on{display:block}
-  .actionbar .btn{margin-top:0}
-  /* extra bottom clearance on screens that show the fixed action button */
-  #s-contacts,#s-billing,#s-jobs{padding-bottom:60px}
-  /* bottom nav */
-  .nav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid var(--line);
-    display:flex;max-width:640px;margin:0 auto}
-  .nav button{flex:1;background:none;border:0;padding:9px 0 8px;font-size:10.5px;color:var(--muted);cursor:pointer;font-weight:700}
-  .nav button .i{display:block;font-size:19px;margin-bottom:1px}
-  .nav button.on{color:var(--accent)}
-  /* line item builder */
-  .lirow{display:flex;gap:6px;align-items:center;margin-bottom:6px}
-  .lirow select{flex:2}.lirow input{flex:1;min-width:0}
-  .lirow .x{flex:0 0 auto;width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--warn);font-size:16px;cursor:pointer}
-  .totalbar{display:flex;justify-content:space-between;font-weight:800;font-size:17px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
-  .totalbar .tax{font-weight:600;font-size:13px;color:var(--muted)}
-  /* modal */
-  .overlay{position:fixed;inset:0;z-index:40;background:rgba(20,22,25,.5);display:none;align-items:flex-end;justify-content:center}
-  .overlay.on{display:flex}
-  .sheet{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px 26px}
-  .sheet h3{font-size:18px;font-weight:800;margin-bottom:4px}
-  .sheet .close{float:right;background:none;border:0;font-size:22px;color:var(--muted);cursor:pointer}
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:60;background:var(--dark);color:#fff;
-    padding:11px 18px;border-radius:999px;font-size:13.5px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%}
-  .toast.on{opacity:1}
-  .spin{text-align:center;padding:40px;color:var(--muted)}
-  /* segmented sort control + tabs */
-  .seg{display:flex;gap:6px;margin-top:8px}
-  .segbtn{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 4px;font-weight:700;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
-  .segbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
-  .segbtn .tc{display:inline-block;margin-left:4px;font-size:10.5px;font-weight:800;opacity:.8;vertical-align:top}
-  /* appearance: color picker + swatches */
-  .colorrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
-  .colorrow input[type=color]{width:46px;height:38px;padding:2px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
-  .swatches{display:flex;gap:6px;flex-wrap:wrap}
-  .sw{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
-  /* sync badge (top bar) */
-  .syncb{font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap;display:none}
-  .syncb.on{display:inline-block}
-  .syncb.saving{background:rgba(255,255,255,.22);color:#fff}
-  .syncb.ok{background:#d8efdf;color:#2c6b42}
-  .syncb.fail{background:#f5d9d3;color:#a33;cursor:pointer}
+:root{
+  --accent:#8f5f22; --accent-lite:#b8823a; --accent-dark:#6e4a1a; --accent-glow:rgba(143,95,34,.25);
+  --ink:#1a1c1f; --soft:#f3f0ea; --line:#e4dccd; --muted:#6b6459; --good:#3f7d55; --warn:#c0492b;
+  --bg:#faf8f4; --card:#fff; --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+.app{max-width:640px;margin:0 auto;min-height:100vh;padding-bottom:76px}
+.topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;
+  padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.topbar h1{font-size:17px;font-weight:800}.topbar .sub{font-size:12px;opacity:.85}
+.iconbtn{background:rgba(255,255,255,.18);border:0;color:#fff;width:36px;height:36px;border-radius:10px;font-size:16px;cursor:pointer}
+.screen{display:none;padding:14px}.screen.on{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.tile .l{font-size:12px;color:var(--muted);font-weight:700}.tile .v{font-size:24px;font-weight:800;margin-top:4px;letter-spacing:-.5px}
+.tile .hint{font-size:11px;color:var(--muted);margin-top:2px}.tile.good .v{color:var(--good)}
+h2.sec{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:18px 2px 8px;font-weight:800}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.list-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+.list-item:active{border-color:var(--accent-lite)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.name{font-weight:700}.meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+.pill{font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.p-lead,.p-draft{background:#e8eef7;color:#2a4d80}.p-active,.p-accepted,.p-paid,.p-done{background:#d8efdf;color:#2c6b42}
+.p-inactive{background:#eeeeee;color:#555}.p-lost,.p-declined,.p-overdue,.p-cancelled{background:#f5d9d3;color:#a33}
+.p-sent,.p-scheduled{background:#fff3d6;color:#8a6d1a}.p-pastdue{background:#f5d9d3;color:#a33}
+.muted{color:var(--muted);font-size:13px}.empty{color:var(--muted);text-align:center;padding:26px 10px;font-style:italic}
+.btn{display:block;width:100%;border:0;border-radius:999px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;
+  background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:#fff;margin-top:10px;text-align:center}
+.btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn.danger{background:#fff;color:var(--warn);border:1px solid #eab8ab}
+.btn.sm{width:auto;display:inline-block;padding:9px 16px;font-size:13px;margin:0}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.btnrow .btn{flex:1;margin-top:0}
+label{display:block;font-weight:700;font-size:12.5px;margin:12px 0 4px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.two{display:flex;gap:8px}.two>div{flex:1}
+.seg{display:flex;gap:6px;margin-top:8px}
+.segbtn{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 4px;font-weight:700;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.segbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.segbtn .tc{font-size:10.5px;font-weight:800;opacity:.8;margin-left:4px}
+.lirow{display:flex;gap:6px;align-items:center;margin-bottom:6px}.lirow select{flex:2}.lirow input{flex:1;min-width:0}
+.lirow .x{flex:0 0 auto;width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--warn);cursor:pointer}
+.totalbar{display:flex;justify-content:space-between;font-weight:800;font-size:17px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.subline{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-top:6px}
+.actionbar{position:fixed;left:0;right:0;bottom:54px;z-index:28;max-width:640px;margin:0 auto;padding:8px 14px 10px;display:none;
+  background:linear-gradient(180deg,rgba(250,248,244,0),var(--bg) 42%)}
+.actionbar.on{display:block}.actionbar .btn{margin-top:0}
+#s-clients,#s-jobs,#s-billing{padding-bottom:60px}
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid var(--line);display:flex;max-width:640px;margin:0 auto}
+.nav button{flex:1;background:none;border:0;padding:9px 0 8px;font-size:10.5px;color:var(--muted);cursor:pointer;font-weight:700}
+.nav button .i{display:block;font-size:19px}.nav button.on{color:var(--accent)}
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(20,22,25,.5);display:none;align-items:flex-end;justify-content:center}
+.overlay.on{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px 26px}
+.sheet h3{font-size:18px;font-weight:800;margin-bottom:4px}.sheet .close{float:right;background:none;border:0;font-size:22px;color:var(--muted);cursor:pointer}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:60;background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;font-size:13.5px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%}
+.toast.on{opacity:1}
+.spin{text-align:center;padding:40px;color:var(--muted)}
+.syncb{font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;display:none}.syncb.on{display:inline-block}
+.syncb.saving{background:rgba(255,255,255,.22);color:#fff}.syncb.ok{background:#d8efdf;color:#2c6b42}.syncb.fail{background:#f5d9d3;color:#a33;cursor:pointer}
+.colorrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.colorrow input[type=color]{width:46px;height:38px;padding:2px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.swatches{display:flex;gap:6px;flex-wrap:wrap}.sw{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
 </style>
 </head>
 <body>
@@ -116,48 +78,28 @@
     </div>
   </div>
 
-  <!-- HOME -->
-  <div class="screen on" id="s-home">
-    <div id="homeBody"><div class="spin">Loading…</div></div>
+  <div class="screen on" id="s-home"><div id="homeBody"><div class="spin">Loading…</div></div></div>
+
+  <div class="screen" id="s-clients">
+    <input id="clientSearch" placeholder="Search clients…" oninput="renderClients()">
+    <div id="clientsBody" style="margin-top:10px"></div>
   </div>
 
-  <!-- CONTACTS (leads + clients) -->
-  <div class="screen" id="s-contacts">
-    <input id="contactSearch" placeholder="Search contacts…" oninput="renderContacts()">
-    <div class="seg">
-      <button class="segbtn on" data-sort="name" onclick="setContactSort('name')">Name</button>
-      <button class="segbtn" data-sort="job" onclick="setContactSort('job')">Last job</button>
-    </div>
-    <div id="contactsBody" style="margin-top:10px"></div>
-  </div>
+  <div class="screen" id="s-jobs"><div id="jobsBody"></div></div>
+  <div class="screen" id="s-billing"><div id="billingBody"></div></div>
 
-  <!-- BILLING (quotes + invoices in one place) -->
-  <div class="screen" id="s-billing">
-    <div id="billingBody"></div>
-  </div>
-
-  <!-- MORE -->
   <div class="screen" id="s-more">
     <h2 class="sec">More</h2>
-    <div class="list-item" onclick="nav('settings')"><div class="row"><div><div class="name">⚙️ Settings</div><div class="meta">Business info, services, tax, links</div></div><span>›</span></div></div>
+    <div class="list-item" onclick="nav('settings')"><div class="row"><div><div class="name">⚙️ Business Settings</div><div class="meta">Profile, tax, payment, numbering, brand</div></div><span>›</span></div></div>
   </div>
 
-  <!-- JOBS -->
-  <div class="screen" id="s-jobs">
-    <div id="jobsBody"></div>
-  </div>
-
-  <!-- SETTINGS -->
-  <div class="screen" id="s-settings">
-    <div id="settingsBody"></div>
-  </div>
+  <div class="screen" id="s-settings"><div id="settingsBody"></div></div>
 </div>
 
 <div class="actionbar" id="actionbar"></div>
-
 <div class="nav">
   <button class="on" data-s="home" onclick="nav('home')"><span class="i">🏠</span>Home</button>
-  <button data-s="contacts" onclick="nav('contacts')"><span class="i">👥</span>Contacts</button>
+  <button data-s="clients" onclick="nav('clients')"><span class="i">👥</span>Clients</button>
   <button data-s="jobs" onclick="nav('jobs')"><span class="i">🗓️</span>Jobs</button>
   <button data-s="billing" onclick="nav('billing')"><span class="i">💵</span>Billing</button>
   <button data-s="more" onclick="nav('more')"><span class="i">⋯</span>More</button>
@@ -167,16 +109,10 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ---------------- state + api ---------------- */
-// List caches start null = "not loaded yet". Once fetched they hold an array (even if
-// empty), so revisiting a tab renders instantly with no server round-trip. A mutation
-// calls invalidate() to null them so the next visit refetches. (See loadX + invalidate.)
-var S={settings:{},services:[],dashboard:null,contacts:null,jobs:null,quotes:null,invoices:null,statuses:{}};
+var BUILD='2026-07-17a-rebuild';
+/* ================= state + api ================= */
+var S = { settings:{}, services:[], enums:{}, dashboard:null, clients:null, jobs:null, billing:null, logo:undefined };
 var CUR='$';
-// Bump this whenever you paste new code, so you can confirm a deploy actually took effect:
-// it shows at the bottom of More ▸ Settings. If it doesn't match after deploying, the old
-// version is still being served (Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version).
-var BUILD='2026-07-16i';
 function api(fn){
   var args=[].slice.call(arguments,1);
   return new Promise(function(res,rej){
@@ -185,750 +121,404 @@ function api(fn){
     r[fn].apply(r,args);
   });
 }
-
-/* ================= OPTIMISTIC SYNC ENGINE =================
- * The UI updates local state instantly, then queues the server write and uploads it in the
- * background (sequential FIFO, so create-then-edit stays ordered). Edits are idempotent and
- * persisted to localStorage so they survive a reload; creates are in-session only (replaying
- * a create could duplicate a financial doc) and guarded by an unload warning. A visible badge
- * plus loud toasts report success and failure. Single-team, no-conflict → safe (see the plan). */
-var SYNC={q:[],active:false,seq:0};
-var STORE_KEY='crm_sync_v1';
-function syncLoad(){ try{ var raw=localStorage.getItem(STORE_KEY); var arr=raw?JSON.parse(raw):[]; SYNC.q=arr.map(function(o){o.persist=true;return o;}); }catch(e){ SYNC.q=[]; } }
-function syncPersist(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(SYNC.q.filter(function(o){return o.persist;}).map(function(o){return {id:o.id,fn:o.fn,args:o.args,label:o.label,tries:o.tries||0};}))); }catch(e){} }
-function syncBadge(){
-  var el=document.getElementById('syncBadge'); if(!el) return;
-  var failed=SYNC.q.filter(function(o){return o.failed;}).length;
-  var pending=SYNC.q.length;
-  el.className='syncb on '+(failed?'fail':(pending?'saving':'ok'));
-  if(failed){ el.textContent='⚠ '+failed+' unsynced — retry'; }
-  else if(pending){ el.textContent='⟳ Saving '+pending+'…'; }
-  else { el.textContent='✓ Saved'; setTimeout(function(){ if(!SYNC.q.length){ el.className='syncb'; } }, 1800); }
-}
-/** Apply the change locally (caller already did), then queue the server write.
- *  opts: {persist:bool (default true), onOk:fn(result), resolve:fn(op) to rewrite args at run time}. */
-function enqueue(fn,args,label,opts){
-  opts=opts||{};
-  var op={id:'op'+(++SYNC.seq),fn:fn,args:args,label:label,tries:0,persist:opts.persist!==false,_onOk:opts.onOk,_resolve:opts.resolve};
-  SYNC.q.push(op); syncPersist(); syncBadge(); syncPump();
-}
+/* ---------- optimistic sync engine (writes apply locally, upload in background) ---------- */
+var SYNC={q:[],active:false,seq:0}, STORE='crm2_sync';
+function enqueue(fn,args,label,opts){ opts=opts||{}; SYNC.q.push({id:'op'+(++SYNC.seq),fn:fn,args:args,label:label,tries:0,_onOk:opts.onOk}); syncBadge(); syncPump(); }
 function syncPump(){
-  if(SYNC.active) return;
-  var op=SYNC.q[0]; if(!op){ syncBadge(); return; }
-  if(op.failed) { syncBadge(); return; }   // wait for manual retry
-  SYNC.active=true; op.tries=(op.tries||0)+1; syncBadge();
-  var args=op._resolve?op._resolve(op):op.args;
-  api.apply(null,[op.fn].concat(args)).then(function(r){
+  if(SYNC.active)return; var op=SYNC.q[0]; if(!op){ syncBadge(); return; } if(op.failed){ syncBadge(); return; }
+  SYNC.active=true; op.tries++; syncBadge();
+  api.apply(null,[op.fn].concat(op.args)).then(function(r){
     SYNC.active=false;
-    if(r&&r.ok===false){ return syncFail(op, r.msg||'rejected by server'); }  // server said no
-    SYNC.q.shift(); syncPersist();
-    if(op._onOk){ try{ op._onOk(r); }catch(e){} }
-    if(!SYNC.q.length){ S.dashboard=null; }   // aggregates recompute fresh next Home visit
-    syncBadge();
-    if(!SYNC.q.length) toast('✓ All changes saved');
-    syncPump();
+    if(r&&r.ok===false){ return syncFail(op, r.msg||'rejected'); }
+    SYNC.q.shift(); if(op._onOk){ try{op._onOk(r);}catch(e){} }
+    if(!SYNC.q.length){ S.dashboard=null; } syncBadge(); syncPump();
   }).catch(function(e){ SYNC.active=false; syncFail(op,(e&&e.message)||'no connection'); });
 }
-function syncFail(op,msg){
-  if(op.tries<4){ syncBadge(); setTimeout(syncPump, 1200*op.tries); return; }   // auto-retry w/ backoff
-  op.failed=true; syncPersist(); syncBadge();
-  toast('⚠ Couldn’t save "'+op.label+'" ('+msg+'). Tap the ⚠ badge to retry.');
-}
-function syncRetry(){
-  var any=false; SYNC.q.forEach(function(o){ if(o.failed){ o.failed=false; o.tries=0; any=true; } });
-  if(any){ toast('Retrying…'); syncPersist(); syncPump(); }
-}
+function syncFail(op,msg){ if(op.tries<4){ syncBadge(); setTimeout(syncPump,1200*op.tries); return; } op.failed=true; syncBadge(); toast('⚠ Couldn’t save "'+op.label+'" ('+msg+')'); }
+function syncRetry(){ var any=false; SYNC.q.forEach(function(o){ if(o.failed){o.failed=false;o.tries=0;any=true;} }); if(any){ toast('Retrying…'); syncPump(); } }
+function syncBadge(){ var el=document.getElementById('syncBadge'); var failed=SYNC.q.filter(function(o){return o.failed;}).length;
+  if(failed){ el.className='syncb on fail'; el.textContent='⚠ Retry'; } else if(SYNC.q.length){ el.className='syncb on saving'; el.textContent='⟳ Saving'; }
+  else { el.textContent='✓ Saved'; setTimeout(function(){ if(!SYNC.q.length) el.className='syncb'; },1500); } }
+window.addEventListener('beforeunload', function(e){ if(SYNC.q.length){ e.preventDefault(); e.returnValue=''; } });
+
+/* ================= helpers ================= */
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function jarg(v){ return esc(JSON.stringify(v)); }
 function money(n){ n=Number(n)||0; return CUR+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function money0(n){ n=Number(n)||0; return CUR+Math.round(n).toLocaleString(); }
-function fmtLocal(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); return m?(+m[2])+'/'+(+m[3])+'/'+m[1]:''; }   // yyyy-mm-dd → M/D/YYYY
-function findDoc(kind,number){ var list=kind==='INVOICE'?S.invoices:S.quotes; return (list||[]).filter(function(x){return String(x.number)===String(number);})[0]; }
-function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
-// A JS value safe to drop into a double-quoted on* HTML attribute. JSON.stringify on a STRING
-// arg (e.g. a formatted doc number like "1099") yields embedded double-quotes that would close
-// the attribute early and break the handler; esc() turns them into &quot; so the parser keeps
-// the whole call. (Freshly-created docs return string numbers; sheet reads return numeric ones.)
-function jarg(v){ return esc(JSON.stringify(v)); }
-function pill(status){ var k=String(status||'').toLowerCase().replace(/[^a-z]/g,''); return '<span class="pill p-'+k+'">'+esc(status||'')+'</span>'; }
-function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},2600); }
-function busy(msg){ toast(msg||'Working…'); }
+function pill(s){ var k=String(s||'').toLowerCase().replace(/[^a-z]/g,''); return '<span class="pill p-'+k+'">'+esc(s||'')+'</span>'; }
+function val(id){ var e=document.getElementById(id); return e?String(e.value).trim():''; }
+function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},2600); }
+function busy(m){ toast(m||'Working…'); }
+function openModal(h){ document.getElementById('sheet').innerHTML=h; document.getElementById('overlay').classList.add('on'); }
+function closeModal(){ document.getElementById('overlay').classList.remove('on'); }
+function midnight(d){ var x=new Date(d); x.setHours(0,0,0,0); return x; }
+function addDays(d,n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function isoOf(d){ var m=d.getMonth()+1,day=d.getDate(); return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(day<10?'0':'')+day; }
+function svcName(id){ var s=(S.services||[]).filter(function(x){return x.id===id;})[0]; return s?s.name:''; }
+function svcRate(id){ var s=(S.services||[]).filter(function(x){return x.id===id;})[0]; return s?s.rate:0; }
+function invalidate(){ S.dashboard=null; S.clients=null; S.jobs=null; S.billing=null; }
 
-/* ---------------- nav ---------------- */
+/* ================= theme ================= */
+var ACCENT_DEFAULT='#8f5f22';
+function hexRGB(h){ var m=/^#?([0-9a-f]{6})$/i.exec(String(h||'').trim()); if(!m)return null; var n=parseInt(m[1],16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
+function toHex(c){ return '#'+[c.r,c.g,c.b].map(function(v){v=Math.max(0,Math.min(255,Math.round(v)));var s=v.toString(16);return s.length<2?'0'+s:s;}).join(''); }
+function shade(h,a){ var c=hexRGB(h); if(!c)return h; var t=a<0?0:255,p=Math.abs(a); return toHex({r:c.r+(t-c.r)*p,g:c.g+(t-c.g)*p,b:c.b+(t-c.b)*p}); }
+function hexA(h,a){ var c=hexRGB(h); return c?('rgba('+c.r+','+c.g+','+c.b+','+a+')'):'rgba(143,95,34,'+a+')'; }
+function applyAccent(h){ h=hexRGB(h)?h:ACCENT_DEFAULT; var r=document.documentElement.style;
+  r.setProperty('--accent',h); r.setProperty('--accent-lite',shade(h,.28)); r.setProperty('--accent-dark',shade(h,-.28)); r.setProperty('--accent-glow',hexA(h,.25)); }
+
+/* ================= boot + nav ================= */
+function boot(){
+  api('apiBootstrap').then(function(b){
+    if(!b||!b.ready){ document.getElementById('homeBody').innerHTML='<div class="empty">Run <b>⚡ CRM ▸ Set up / rebuild database</b> in the sheet first, then reload.</div>'; return; }
+    S.settings=b.settings||{}; S.services=b.services||[]; S.enums=b.enums||{}; S.dashboard=b.dashboard;
+    CUR=String(S.settings['Currency symbol']||'$').trim()||'$';
+    applyAccent(S.settings['Accent color']);
+    if(S.settings['Business name']) document.getElementById('bizName').textContent=S.settings['Business name'];
+    renderHome();
+  }).catch(function(e){ document.getElementById('homeBody').innerHTML='<div class="empty">Could not load: '+esc(e&&e.message||e)+'</div>'; });
+}
 var CUR_SCREEN='home';
-var TITLES={home:'Home',contacts:'Contacts',billing:'Billing',more:'More',jobs:'Jobs',settings:'Settings'};
+var TITLES={home:'Home',clients:'Clients',jobs:'Jobs',billing:'Billing',more:'More',settings:'Business Settings'};
 function nav(s){
-  if(s==='quotes'||s==='invoices') s='billing';      // old names → merged Billing screen
-  if(s==='leads'||s==='clients') s='contacts';       // old names → merged Contacts screen
   CUR_SCREEN=s;
   document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('on');});
   document.getElementById('s-'+s).classList.add('on');
   document.querySelectorAll('.nav button').forEach(function(b){ b.classList.toggle('on', b.dataset.s===s); });
   document.getElementById('screenName').textContent=TITLES[s]||'';
-  var ACT={contacts:['+ New contact','openContactForm()'],billing:['+ New estimate','openQuoteBuilder()'],jobs:['+ New job','openJobForm()']};
-  var ab=document.getElementById('actionbar'), a=ACT[s];
-  ab.innerHTML=a?'<button class="btn" onclick="'+a[1]+'">'+a[0]+'</button>':'';
-  ab.classList.toggle('on',!!a);
+  var ACT={clients:['+ New client','openClientForm()'],billing:['+ New estimate','startEstimate()'],jobs:['+ New job','openJobForm()']};
+  var ab=document.getElementById('actionbar'), a=ACT[s]; ab.innerHTML=a?'<button class="btn" onclick="'+a[1]+'">'+a[0]+'</button>':''; ab.classList.toggle('on',!!a);
   window.scrollTo(0,0);
-  if(s==='home')loadHome();
-  if(s==='contacts')loadContacts();
-  if(s==='billing')loadBilling();
-  if(s==='jobs')loadJobs();
-  if(s==='settings')renderSettings();
+  if(s==='home')loadHome(); if(s==='clients')loadClients(); if(s==='jobs')loadJobs(); if(s==='billing')loadBilling(); if(s==='settings')renderSettings();
 }
-
-/* ---------------- modal ---------------- */
-function openModal(html){ document.getElementById('sheet').innerHTML=html; document.getElementById('overlay').classList.add('on'); }
-function closeModal(){ document.getElementById('overlay').classList.remove('on'); }
-
-/* ---------------- boot ---------------- */
-/* ---------------- theme (accent color) ---------------- */
-var ACCENT_DEFAULT='#8f5f22';
-function clamp255(n){ return Math.max(0,Math.min(255,Math.round(n))); }
-function hexRGB(hex){ var m=/^#?([0-9a-f]{6})$/i.exec(String(hex||'').trim()); if(!m)return null;
-  var n=parseInt(m[1],16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
-function toHex(c){ return '#'+[c.r,c.g,c.b].map(function(v){var s=clamp255(v).toString(16);return s.length<2?'0'+s:s;}).join(''); }
-function shade(hex,amt){ var c=hexRGB(hex); if(!c)return hex;   // amt<0 darkens toward black, >0 lightens toward white
-  var t=amt<0?0:255, p=Math.abs(amt); return toHex({r:c.r+(t-c.r)*p,g:c.g+(t-c.g)*p,b:c.b+(t-c.b)*p}); }
-function hexA(hex,a){ var c=hexRGB(hex); return c?('rgba('+c.r+','+c.g+','+c.b+','+a+')'):'rgba(143,95,34,'+a+')'; }
-function applyAccent(hex){
-  hex=(hexRGB(hex)?hex:ACCENT_DEFAULT);
-  var r=document.documentElement.style;
-  r.setProperty('--accent',hex);
-  r.setProperty('--accent-lite',shade(hex,0.28));
-  r.setProperty('--accent-dark',shade(hex,-0.28));
-  r.setProperty('--accent-glow',hexA(hex,0.25));
-}
-function boot(){
-  api('apiBootstrap').then(function(b){
-    if(!b||!b.ready){ document.getElementById('homeBody').innerHTML='<div class="empty">Run <b>⚡ CRM ▸ Set up / rebuild CRM</b> in the sheet first, then reload.</div>'; return; }
-    S.settings=b.settings||{}; S.services=b.services||[]; S.dashboard=b.dashboard;
-    S.statuses={lead:b.leadStatuses,job:b.jobStatuses,inv:b.invStatuses,est:b.estStatuses,repeat:b.repeatOpts};
-    CUR=(S.settings.currency||'$').trim()||'$';
-    applyAccent(S.settings.accent);
-    if(S.settings.businessName) document.getElementById('bizName').textContent=S.settings.businessName;
-    renderHome();
-  }).catch(function(e){ document.getElementById('homeBody').innerHTML='<div class="empty">Could not load: '+esc(e&&e.message||e)+'</div>'; });
-}
-// Drop all cached lists so the next view refetches. Call after any change that writes
-// to the sheet (add/edit/delete/status/approve/pay/reschedule).
-function invalidate(){ S.dashboard=null; S.contacts=null; S.jobs=null; S.quotes=null; S.invoices=null; }
 function refreshAll(){ busy('Refreshing…'); invalidate(); boot(); nav(CUR_SCREEN); }
 
-/* ---------------- HOME ---------------- */
+/* ================= HOME ================= */
 function loadHome(){ if(!S.dashboard){ api('apiDashboard').then(function(d){S.dashboard=d;renderHome();}); } else renderHome(); }
+function tile(l,v,h,g){ return '<div class="tile'+(g?' good':'')+'"><div class="l">'+l+'</div><div class="v">'+v+'</div>'+(h?'<div class="hint">'+esc(h)+'</div>':'')+'</div>'; }
 function renderHome(){
-  var d=S.dashboard; if(!d){ return; }
-  var h='';
-  h+='<div class="tiles">'+
-     tile('New leads · 7d',d.newLeads)+tile('Unpaid',money0(d.unpaid||0),'invoices sent, not paid')+
-     tile('Jobs this week',d.jobsWeek)+tile('Revenue · mo',money0(d.revMonth))+'</div>';
-  h+='<div class="tiles" style="margin-top:10px">'+tileGood('Win rate',d.winRate+'%','of leads marked Won vs Lost')+tileGood('Lifetime',money0(d.revLife))+'</div>';
-  h+='<div class="btnrow"><button class="btn" onclick="openContactForm()">+ Contact</button><button class="btn" onclick="openQuoteBuilder()">+ Estimate</button></div>';
+  var d=S.dashboard; if(!d){ document.getElementById('homeBody').innerHTML='<div class="spin">Loading…</div>'; return; }
+  var h='<div class="tiles">'+tile('New leads · 7d',d.newLeads)+tile('Unpaid',money0(d.unpaid),'billed, not paid')+
+    tile('Jobs this week',d.jobsWeek)+tile('Revenue · mo',money0(d.revMonth))+'</div>'+
+    '<div class="tiles" style="margin-top:10px">'+tile('Win rate',d.winRate+'%','clients won vs lost',1)+tile('Lifetime',money0(d.revLife),'',1)+'</div>';
   h+='<h2 class="sec">🔔 Follow-ups due</h2>';
-  if(d.followUps&&d.followUps.length){ d.followUps.forEach(function(f){
-    h+='<div class="list-item"><div class="row"><div><div class="name">'+esc(f.name)+'</div><div class="meta">'+esc(f.phone||'—')+' · due '+esc(f.due)+'</div></div>'+pill(f.status)+'</div></div>';
-  }); } else h+='<div class="empty">All caught up 🎉</div>';
+  h+= (d.followUps&&d.followUps.length) ? d.followUps.map(function(f){
+    return '<div class="list-item" onclick="openClient('+jarg(f.id)+')"><div class="row"><div><div class="name">'+esc(f.name)+'</div><div class="meta">'+esc(f.phone||'—')+' · due '+esc(f.due)+'</div></div>'+pill(f.status)+'</div></div>';
+  }).join('') : '<div class="empty">All caught up 🎉</div>';
   h+='<h2 class="sec">📅 This week\'s jobs</h2>';
-  // Server already returns active jobs this week, soonest first. Filter again defensively so a
-  // stale deployment can't surface completed/cancelled jobs here.
-  var wj=(d.weekJobs||[]).filter(function(j){ return j.status!=='Done'&&j.status!=='Cancelled'; });
-  if(wj.length){ wj.forEach(function(j){
-    var meta=esc(j.date)+(j.time?' · '+esc(j.time):'')+(j.service?' · '+esc(j.service):'');
-    h+='<div class="list-item" onclick="openJobFromHome('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div><div class="meta">'+meta+'</div></div>'+pill(j.status)+'</div></div>';
-  }); } else h+='<div class="empty">No active jobs this week</div>';
+  var wj=(d.weekJobs||[]);
+  h+= wj.length ? wj.map(function(j){
+    return '<div class="list-item" onclick="openJob('+jarg(j.id)+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div><div class="meta">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+(j.service?' · '+esc(j.service):'')+'</div></div>'+pill(j.status)+'</div></div>';
+  }).join('') : '<div class="empty">No active jobs this week</div>';
   document.getElementById('homeBody').innerHTML=h;
 }
-function tileHint(h){ return h?'<div class="hint">'+esc(h)+'</div>':''; }
-function tile(l,v,h){ return '<div class="tile"><div class="l">'+l+'</div><div class="v">'+v+'</div>'+tileHint(h)+'</div>'; }
-function tileGood(l,v,h){ return '<div class="tile good"><div class="l">'+l+'</div><div class="v">'+v+'</div>'+tileHint(h)+'</div>'; }
-// Surface a server error instead of leaving a screen stuck on "Loading…".
-function loadFail(el,e){ document.getElementById(el).innerHTML='<div class="empty">Couldn\'t load — '+esc(e&&e.message||e||'unknown error')+'.<br>Tap ⟳ to retry. If this persists after a code change, redeploy a new version (Deploy ▸ Manage deployments ▸ ✏️ ▸ New version).</div>'; }
 
-/* ---------------- CONTACTS (leads + clients merged) ---------------- */
-function loadContacts(){ if(S.contacts&&S.contacts.length){renderContacts();return;} document.getElementById('contactsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListContacts').then(function(l){S.contacts=l||[];S.contacts.forEach(function(c,i){c._i=i;});renderContacts();}).catch(function(e){loadFail('contactsBody',e);}); }
-/* ---- date helpers (follow-up + job reschedule) ---- */
-function midnight(d){ var x=new Date(d); x.setHours(0,0,0,0); return x; }
-function addDays(d,n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
-function nextMonday(t){ var diff=(8-t.getDay())%7; if(diff===0)diff=7; return addDays(t,diff); }
-function isoOf(d){ var m=d.getMonth()+1,day=d.getDate(); return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(day<10?'0':'')+day; }
-// "7/22/2026" or "7/22" → "2026-07-22" (for local Today/Upcoming classification). '' if unparseable.
-function parseDateISO(s){ var m=/^(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?$/.exec(String(s||'').trim()); if(!m)return '';
-  var mo=+m[1],da=+m[2],yr=m[3]?+m[3]:(new Date()).getFullYear(); if(yr<100)yr+=2000;
-  return yr+'-'+(mo<10?'0':'')+mo+'-'+(da<10?'0':'')+da; }
-function normPhone(s){ var d=String(s||'').replace(/[^0-9]/g,''); return d.length>=7?d:''; }
-// Duplicate check against the already-loaded contacts — no server round-trip needed.
-function localDupes(email,phone){
-  var em=String(email||'').trim().toLowerCase(), ph=normPhone(phone);
-  if(!em&&!ph)return [];
-  return (S.contacts||[]).filter(function(c){ if(c._saving)return false;
-    var ce=String(c.email||'').trim().toLowerCase(), cp=normPhone(c.phone);
-    return (em&&ce&&ce===em)||(ph&&cp&&cp===ph);
-  }).map(function(c){ return {name:c.name,where:c.clientRow?'client':'lead',phone:c.phone,email:c.email}; });
-}
-function reindexContacts(){ (S.contacts||[]).forEach(function(c,i){c._i=i;}); }
-// Tag rule: once someone has a logged job, show their last job date (green). Otherwise
-// show their lead status (New / Quoted / Declined / Lost).
-function contactTag(c){
-  if(c.lastJobISO) return {label:'Job '+esc(c.lastJobDate),cls:'p-paid'};
-  var s=c.leadStatus||'';
-  if(s==='Contacted') s='New';
-  if(s==='Won') return {label:'Client',cls:'p-paid'};
-  if(!s) return c.clientRow?{label:'Client',cls:'p-paid'}:{label:'New',cls:'p-new'};
-  return {label:esc(s),cls:'p-'+s.toLowerCase().replace(/[^a-z]/g,'')};
-}
-function contactPill(c){ var t=contactTag(c); return '<span class="pill '+t.cls+'">'+t.label+'</span>'; }
-function contactRow(c){
-  return '<div class="list-item" onclick="openContact('+c._i+')"><div class="row"><div><div class="name">'+esc(c.name)+'</div>'+
-     '<div class="meta">'+esc(c.phone||'—')+(c.email?' · '+esc(c.email):'')+'</div></div>'+contactPill(c)+'</div></div>';
-}
-var CONTACT_SORT='name';
-function setContactSort(s){ CONTACT_SORT=s; document.querySelectorAll('#s-contacts .segbtn').forEach(function(b){b.classList.toggle('on',b.dataset.sort===s);}); renderContacts(); }
-function renderContacts(){
-  var q=(document.getElementById('contactSearch').value||'').toLowerCase();
-  var list=(S.contacts||[]).filter(function(c){ return !q || (c.name+' '+c.phone+' '+c.email).toLowerCase().indexOf(q)>-1; });
-  var body=document.getElementById('contactsBody');
-  if(!list.length){ body.innerHTML='<div class="empty">'+(q?'No contacts match that search.':'No contacts yet. Tap + to add one.')+'</div>'; return; }
-  if(CONTACT_SORT==='job') list.sort(function(a,b){ if(a.lastJobISO&&b.lastJobISO) return b.lastJobISO.localeCompare(a.lastJobISO); if(a.lastJobISO) return -1; if(b.lastJobISO) return 1; return a.name.localeCompare(b.name); });
-  else list.sort(function(a,b){ return a.name.localeCompare(b.name); });
-  body.innerHTML=list.map(contactRow).join('');
-}
-function openContactForm(){
-  openModal('<button class="close" onclick="closeModal()">×</button><h3>New contact</h3>'+
-    field('Name *','ld_name','','Jane Smith')+ '<div class="two"><div>'+field('Phone','ld_phone','','(555) 123-4567')+'</div><div>'+field('Est. value','ld_value','','250')+'</div></div>'+
-    field('Email','ld_email','','jane@email.com')+
-    field('Address','ld_address','','123 Main St, City')+
-    serviceSelect('ld_service')+
-    '<button class="btn" onclick="saveLead()">Add contact</button>');
-}
-var PENDING_LEAD=null;
-function saveLead(){
-  var name=val('ld_name'); if(!name){toast('Name is required');return;}
-  PENDING_LEAD={name:name,phone:val('ld_phone'),email:val('ld_email'),address:val('ld_address'),service:val('ld_service'),value:val('ld_value')};
-  submitLead(false);
-}
-function submitLead(force){
-  if(!PENDING_LEAD)return;
-  // If contacts aren't cached yet, fall back to the one-time server flow (keeps the dup check).
-  if(!S.contacts){
-    busy('Adding…');
-    api('apiAddLead',Object.assign({},PENDING_LEAD,{force:!!force})).then(function(r){
-      if(r&&r.dup&&!force){ confirmDupLead(r); return; }
-      PENDING_LEAD=null; closeModal(); toast('✅ Contact added'); S.contacts=null; S.dashboard=null; loadContacts();
-    });
-    return;
-  }
-  if(!force){ var dupes=localDupes(PENDING_LEAD.email,PENDING_LEAD.phone); if(dupes.length){ confirmDupLead({dupes:dupes}); return; } }
-  // Optimistic: add to the local list instantly, sync in the background (force=true — already checked locally).
-  var p=PENDING_LEAD; PENDING_LEAD=null; closeModal(); toast('✅ Contact added');
-  var temp={_saving:true,key:String(p.name||'').trim().toLowerCase(),name:p.name,phone:p.phone||'',email:p.email||'',address:p.address||'',service:p.service||'',
-    leadRow:0,clientRow:0,leadStatus:'New',followUp:'',followUpISO:'',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0,
-    nextJobISO:'',nextJobDate:'',nextJobService:'',quotes:[],invoices:[]};
-  S.contacts.push(temp); reindexContacts(); if(CUR_SCREEN==='contacts')renderContacts();
-  enqueue('apiAddLead',[Object.assign({},p,{force:true})],'Contact '+p.name,{persist:false,onOk:function(r){
-    if(r&&r.row){ temp.leadRow=r.row; temp._saving=false; if(CUR_SCREEN==='contacts')renderContacts(); }
-  }});
-}
-function confirmDupLead(r){
-  var rows=(r.dupes||[]).slice(0,4).map(function(d){
-    return '<div class="list-item"><div class="name">'+esc(d.name)+'</div><div class="meta">'+(d.where==='client'?'Client':'Lead')+
-      (d.phone?' · '+esc(d.phone):'')+(d.email?' · '+esc(d.email):'')+'</div></div>';
+/* ================= CLIENTS ================= */
+function loadClients(){ if(S.clients){ renderClients(); return; } document.getElementById('clientsBody').innerHTML='<div class="spin">Loading…</div>';
+  api('apiListClients').then(function(l){ S.clients=l||[]; renderClients(); }).catch(function(e){ document.getElementById('clientsBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
+function renderClients(){
+  var q=(document.getElementById('clientSearch').value||'').toLowerCase();
+  var list=(S.clients||[]).filter(function(c){ return !q || (c.name+' '+c.phone+' '+c.email).toLowerCase().indexOf(q)>-1; })
+    .sort(function(a,b){ return a.name.localeCompare(b.name); });
+  var body=document.getElementById('clientsBody');
+  if(!list.length){ body.innerHTML='<div class="empty">'+(q?'No matches.':'No clients yet. Tap + to add one.')+'</div>'; return; }
+  body.innerHTML=list.map(function(c){
+    var sub=esc(c.phone||'—')+(c.email?' · '+esc(c.email):'');
+    return '<div class="list-item" onclick="openClient('+jarg(c.id)+')"><div class="row"><div><div class="name">'+esc(c.name)+'</div><div class="meta">'+sub+'</div></div>'+pill(c.status)+'</div></div>';
   }).join('');
-  openModal('<button class="close" onclick="closeModal()">×</button><h3>⚠️ Possible duplicate</h3>'+
-    '<div class="muted" style="margin-bottom:8px">The same email or phone is already in your CRM:</div>'+rows+
-    '<button class="btn" onclick="submitLead(true)">Add anyway</button>'+
-    '<button class="btn sec" onclick="PENDING_LEAD=null;closeModal();">Cancel</button>');
 }
-function openContact(i){
-  var c=S.contacts[i]; if(!c)return;
-  var tel=c.phone?String(c.phone).replace(/[^0-9+]/g,''):'';
-  var info='<div class="muted">'+esc(c.phone||'—')+(c.email?' · '+esc(c.email):'')+'</div>';
-  if(c.address) info+='<div class="muted" style="margin-top:2px">'+esc(c.address)+'</div>';
-  var meta=[];
-  if(c.lastJobDate) meta.push('Last job '+esc(c.lastJobDate));
-  if(c.jobCount) meta.push(c.jobCount+' job'+(c.jobCount>1?'s':''));
-  if(c.totalSpent) meta.push(money0(c.totalSpent)+' spent');
-  if(meta.length) info+='<div class="muted" style="margin-top:2px">'+meta.join(' · ')+'</div>';
-  var h='<button class="close" onclick="closeModal()">×</button><h3>'+esc(c.name)+' '+contactPill(c)+'</h3>'+info+
+function clientById(id){ return (S.clients||[]).filter(function(c){return c.id===id;})[0]; }
+function openClient(id){
+  var c=clientById(id); if(!c)return;
+  var tel=String(c.phone||'').replace(/[^0-9+]/g,'');
+  var info='<div class="muted">'+esc(c.phone||'—')+(c.email?' · '+esc(c.email):'')+'</div>'+(c.address?'<div class="muted">'+esc(c.address)+'</div>':'');
+  var m=[]; if(c.lifetime) m.push(money0(c.lifetime)+' lifetime'); if(c.source) m.push('via '+esc(c.source)); if(c.followUp) m.push('follow-up '+esc(c.followUp));
+  if(m.length) info+='<div class="muted" style="margin-top:2px">'+m.join(' · ')+'</div>';
+  var badges='';
+  if(c.nextJob) badges+='<div class="list-item" onclick="openJob('+jarg(c.nextJob.id)+')"><div class="row"><div><div class="name">📅 Upcoming job</div><div class="meta">'+esc(c.nextJob.date)+(c.nextJob.service?' · '+esc(c.nextJob.service):'')+'</div></div><span>›</span></div></div>';
+  if(c.openEstimate) badges+='<div class="list-item" onclick="openDoc(\'ESTIMATE\','+jarg(c.openEstimate.id)+')"><div class="row"><div><div class="name">📄 Open estimate</div><div class="meta">'+esc(c.openEstimate.id)+' · '+money(c.openEstimate.total)+'</div></div><span>›</span></div></div>';
+  if(c.unpaidInvoice) badges+='<div class="list-item" onclick="openDoc(\'INVOICE\','+jarg(c.unpaidInvoice.id)+')"><div class="row"><div><div class="name">💵 Unpaid invoice</div><div class="meta">'+esc(c.unpaidInvoice.id)+' · '+money(c.unpaidInvoice.total)+' · '+esc(c.unpaidInvoice.status)+'</div></div><span>›</span></div></div>';
+  var statusBtns=(S.enums.clientStatus||[]).map(function(st){ return '<button class="btn sm sec" onclick="setClientStatus('+jarg(id)+',\''+st+'\')">'+st+'</button>'; }).join(' ');
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(c.name)+' '+pill(c.status)+'</h3>'+info+
     (tel?'<div class="btnrow"><a class="btn sec" href="tel:'+tel+'">Call</a><a class="btn sec" href="sms:'+tel+'">Text</a></div>':'')+
-    '<div class="btnrow"><button class="btn" onclick="quoteFromContact('+i+')">Create estimate</button><button class="btn sec" onclick="openContactEdit('+i+')">Edit</button></div>';
-  // Active: upcoming job + open quotes/invoices for this contact
-  var act='';
-  if(c.nextJobDate) act+='<div class="list-item"><div class="row"><div><div class="name">📅 Upcoming job</div><div class="meta">'+esc(c.nextJobDate)+(c.nextJobService?' · '+esc(c.nextJobService):'')+'</div></div><span class="pill p-scheduled">Scheduled</span></div></div>';
-  (c.quotes||[]).forEach(function(q){ act+='<div class="list-item" onclick="openDocFromContact(\'ESTIMATE\','+JSON.stringify(q.number)+')"><div class="row"><div><div class="name">Quote #'+esc(q.number)+'</div><div class="meta">'+money(q.amount)+'</div></div>'+pill(q.status)+'</div></div>'; });
-  (c.invoices||[]).forEach(function(v){ act+='<div class="list-item" onclick="openDocFromContact(\'INVOICE\','+JSON.stringify(v.number)+')"><div class="row"><div><div class="name">Invoice #'+esc(v.number)+'</div><div class="meta">'+money(v.amount)+'</div></div>'+pill(v.status)+'</div></div>'; });
-  if(act) h+='<h2 class="sec">Active</h2>'+act;
-  if(c.leadRow){
-    var base=midnight(new Date());
-    var quick=[['Today',isoOf(base)],['Tomorrow',isoOf(addDays(base,1))],['+3 days',isoOf(addDays(base,3))],['Next Mon',isoOf(nextMonday(base))],['+1 week',isoOf(addDays(base,7))]];
-    var fuBtns=quick.map(function(b){ return '<button class="btn sm sec" onclick="setContactFollowUp('+i+',\''+b[1]+'\')">'+b[0]+'</button>'; }).join(' ');
-    h+='<h2 class="sec">Follow-up</h2>'+
-       '<div class="muted" style="margin-bottom:2px">Next follow-up: <b>'+esc(c.followUp||'not set')+'</b></div>'+
-       '<div class="btnrow" style="flex-wrap:wrap">'+fuBtns+'</div>'+
-       '<div class="two" style="margin-top:8px"><div><input type="date" id="fu_pick" value="'+esc(c.followUpISO||'')+'"></div><div><button class="btn sec" onclick="pickContactFollowUp('+i+')">Set date</button></div></div>'+
-       '<h2 class="sec">Set status</h2><div class="btnrow" style="flex-wrap:wrap">'+
-       (S.statuses.lead||[]).map(function(st){return '<button class="btn sm sec" onclick="setContactStatus('+i+',\''+st+'\')">'+st+'</button>';}).join(' ')+'</div>';
-  }
-  openModal(h);
+    (badges?'<h2 class="sec">Activity</h2>'+badges:'')+
+    '<div class="btnrow"><button class="btn" onclick="startEstimate('+jarg(id)+')">Create estimate</button><button class="btn sec" onclick="openJobForm('+jarg(id)+')">New job</button></div>'+
+    '<h2 class="sec">Follow-up</h2><div class="two"><div><input type="date" id="cf_date" value="'+esc(c.followUpISO||'')+'"></div><div><button class="btn sec" onclick="setClientFollowUp('+jarg(id)+')">Set date</button></div></div>'+
+    '<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+statusBtns+'</div>'+
+    '<div class="btnrow"><button class="btn sec" onclick="openClientEdit('+jarg(id)+')">Edit</button><button class="btn danger" onclick="archiveClient('+jarg(id)+')">Archive</button></div>');
 }
-function setContactStatus(i,st){ var c=S.contacts[i]; if(!c||!c.leadRow)return;
-  c.leadStatus=st; closeModal(); toast('✅ Status → '+st); renderContacts();       // optimistic
-  enqueue('apiSetLeadStatus',[c.leadRow,st],'Status → '+st); }
-function setContactFollowUp(i,iso){ var c=S.contacts[i]; if(!c||!c.leadRow)return;
-  c.followUpISO=iso||''; c.followUp=iso?fmtLocal(iso):''; closeModal(); toast('📅 Follow-up: '+(c.followUp||'cleared')); renderContacts();
-  enqueue('apiSetLeadFollowUp',[c.leadRow,iso],'Follow-up '+(c.followUp||'cleared')); }
-function pickContactFollowUp(i){ var e=document.getElementById('fu_pick'); setContactFollowUp(i,e?e.value:''); }
-function openContactEdit(i){
-  var c=S.contacts[i]; if(!c)return;
-  openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit contact</h3>'+
-    field('Name *','ec_name',c.name,'Jane Smith')+
-    '<div class="two"><div>'+field('Phone','ec_phone',c.phone,'(555) 123-4567')+'</div><div>'+field('Email','ec_email',c.email,'jane@email.com')+'</div></div>'+
-    field('Address','ec_address',c.address,'123 Main St, City')+
-    (c.clientRow?'<div class="muted" style="margin-top:8px">Renaming also updates their jobs, estimates & invoices.</div>':'')+
-    '<button class="btn" onclick="saveContactEdit('+i+')">Save changes</button>'+
-    '<button class="btn sec" onclick="openContact('+i+')">Cancel</button>');
+function setClientStatus(id,st){ var c=clientById(id); if(c)c.status=st; closeModal(); toast('✅ Status → '+st); renderClients();
+  enqueue('apiSetClientStatus',[id,st],'Status '+st); }
+function setClientFollowUp(id){ var iso=val('cf_date'); var c=clientById(id); if(c){ c.followUpISO=iso; c.followUp=iso; } closeModal(); toast('📅 Follow-up set');
+  enqueue('apiSetClientFollowUp',[id,iso],'Follow-up'); }
+function archiveClient(id){ if(S.clients)S.clients=S.clients.filter(function(c){return c.id!==id;}); closeModal(); toast('🗑️ Archived'); renderClients();
+  enqueue('apiArchiveClient',[id],'Archive client'); }
+function openClientForm(){
+  var opts=(S.enums.clientStatus||['Lead']).map(function(s){return '<option'+(s==='Lead'?' selected':'')+'>'+s+'</option>';}).join('');
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>New client</h3>'+
+    '<label>Name *</label><input id="nc_name" placeholder="Jane Smith">'+
+    '<div class="two"><div><label>Phone</label><input id="nc_phone" placeholder="(555) 123-4567"></div><div><label>Email</label><input id="nc_email"></div></div>'+
+    '<label>Address</label><input id="nc_address">'+
+    '<div class="two"><div><label>Status</label><select id="nc_status">'+opts+'</select></div><div><label>Source</label><input id="nc_source" placeholder="Referral"></div></div>'+
+    '<button class="btn" onclick="saveClient()">Add client</button>');
 }
-function saveContactEdit(i){
-  var c=S.contacts[i]; if(!c)return;
-  var name=val('ec_name'); if(!name){toast('Name is required');return;}
-  var phone=val('ec_phone'), email=val('ec_email'), addr=val('ec_address');
-  c.name=name; c.phone=phone; c.email=email; c.address=addr;   // optimistic
-  closeModal(); toast('✅ Contact updated'); renderContacts();
-  var f={name:name,phone:phone,email:email,address:addr};
-  if(c.clientRow){
-    enqueue('apiUpdateClient',[c.clientRow,f],'Edit '+name);
-    if(c.leadRow) enqueue('apiUpdateLead',[c.leadRow,f],'Edit '+name);
-  } else if(c.leadRow){
-    enqueue('apiUpdateLead',[c.leadRow,f],'Edit '+name);
-  }
+function localDupClients(email,phone){ var em=String(email||'').trim().toLowerCase(), ph=String(phone||'').replace(/[^0-9]/g,'');
+  return (S.clients||[]).filter(function(c){ var ce=String(c.email||'').trim().toLowerCase(), cp=String(c.phone||'').replace(/[^0-9]/g,''); return (em&&ce===em)||(ph.length>=7&&cp===ph); }); }
+function saveClient(cb){
+  var name=val('nc_name'); if(!name){ toast('Name is required'); return; }
+  var form={name:name,phone:val('nc_phone'),email:val('nc_email'),address:val('nc_address'),status:val('nc_status')||'Lead',source:val('nc_source')};
+  var dup=localDupClients(form.email,form.phone);
+  if(dup.length && !saveClient._force){ saveClient._force=true; toast('⚠ Possible duplicate: '+dup[0].name+' — tap Add again to confirm'); return; }
+  saveClient._force=false;
+  var temp={id:'tmp'+(++SYNC.seq),_saving:true,name:name,phone:form.phone,email:form.email,address:form.address,status:form.status,source:form.source,followUp:'',followUpISO:'',lifetime:0,nextJob:null,openEstimate:null,unpaidInvoice:null};
+  S.clients=S.clients||[]; S.clients.push(temp); closeModal(); toast('✅ Client added'); if(CUR_SCREEN==='clients')renderClients();
+  enqueue('apiCreateClient',[form],'Client '+name,{onOk:function(r){ if(r&&r.id){ temp.id=r.id; temp._saving=false; if(r.client)Object.assign(temp,r.client); if(CUR_SCREEN==='clients')renderClients(); if(cb)cb(r.id); } }});
 }
-function quoteFromContact(i){ var c=S.contacts[i]; if(!c)return; closeModal(); openQuoteBuilder({name:c.name,email:c.email,phone:c.phone}); }
-function openDocFromContact(kind,number){
-  var go=function(){ nav('billing'); openDoc(kind,number); };
-  if(S.quotes&&S.invoices){ go(); }
-  else { busy('Opening…'); api('apiListBilling').then(function(r){ S.quotes=(r&&r.estimates)||[]; S.invoices=(r&&r.invoices)||[]; go(); }); }
+function openClientEdit(id){
+  var c=clientById(id); if(!c)return;
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit client</h3>'+
+    '<label>Name *</label><input id="ec_name" value="'+esc(c.name)+'">'+
+    '<div class="two"><div><label>Phone</label><input id="ec_phone" value="'+esc(c.phone||'')+'"></div><div><label>Email</label><input id="ec_email" value="'+esc(c.email||'')+'"></div></div>'+
+    '<label>Address</label><input id="ec_address" value="'+esc(c.address||'')+'">'+
+    '<label>Source</label><input id="ec_source" value="'+esc(c.source||'')+'">'+
+    '<button class="btn" onclick="saveClientEdit('+jarg(id)+')">Save</button><button class="btn sec" onclick="openClient('+jarg(id)+')">Cancel</button>');
+}
+function saveClientEdit(id){
+  var c=clientById(id); if(!c)return; var name=val('ec_name'); if(!name){toast('Name required');return;}
+  var patch={Name:name,Phone:val('ec_phone'),Email:val('ec_email'),Address:val('ec_address'),Source:val('ec_source')};
+  c.name=name; c.phone=patch.Phone; c.email=patch.Email; c.address=patch.Address; c.source=patch.Source;
+  closeModal(); toast('✅ Updated'); renderClients(); enqueue('apiUpdateClient',[id,patch],'Edit '+name);
 }
 
-/* ---------------- QUOTE BUILDER ---------------- */
-var QLINES=[];
-function openQuoteBuilder(lead){
-  QLINES=[{service:'',qty:1,rate:''}];
-  var pre=lead||{};
-  openModal('<button class="close" onclick="closeModal()">×</button><h3>New estimate</h3>'+
-    field('Client name *','q_client',pre.name||'','Jane Smith')+
-    '<div class="two"><div>'+field('Email','q_email',pre.email||'','jane@email.com')+'</div><div>'+field('Phone','q_phone',pre.phone||'','(555) 123-4567')+'</div></div>'+
-    '<label>Line items</label><div id="qlines"></div>'+
-    '<button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
-    '<div class="totalbar"><span>Total <span class="tax" id="q_taxnote"></span></span><span id="q_total">'+money(0)+'</span></div>'+
-    '<button class="btn" onclick="createQuote(false)">Create estimate</button>'+
-    '<button class="btn sec" onclick="createQuote(true)">Create & send</button>');
-  renderQLines();
+/* ================= client picker ================= */
+function pickClient(cb){
+  var rows=(S.clients||[]).slice().sort(function(a,b){return a.name.localeCompare(b.name);}).map(function(c){
+    return '<div class="list-item" onclick="_pickChoose('+jarg(c.id)+')"><div class="row"><div><div class="name">'+esc(c.name)+'</div><div class="meta">'+esc(c.phone||c.email||'')+'</div></div>'+pill(c.status)+'</div></div>';
+  }).join('')||'<div class="empty">No clients yet.</div>';
+  pickClient._cb=cb;
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>Pick a client</h3>'+
+    '<input id="pk_search" placeholder="Search…" oninput="_pickFilter()">'+
+    '<button class="btn sec" style="margin-top:8px" onclick="openClientForm()">+ New client</button>'+
+    '<div id="pk_list" style="margin-top:10px">'+rows+'</div>');
 }
-function renderQLines(){
-  var opts=serviceOptions();
-  var h=QLINES.map(function(l,i){
-    return '<div class="lirow">'+
-      '<select onchange="QLINES['+i+'].service=this.value">'+'<option value="">Service…</option>'+opts.map(function(s){return '<option'+(s===l.service?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select>'+
-      '<input type="number" inputmode="decimal" placeholder="Qty" value="'+(l.qty||'')+'" oninput="QLINES['+i+'].qty=this.value;calcQ()">'+
-      '<input type="number" inputmode="decimal" placeholder="Price" value="'+(l.rate||'')+'" oninput="QLINES['+i+'].rate=this.value;calcQ()">'+
-      '<button class="x" onclick="delQLine('+i+')">×</button></div>';
-  }).join('');
-  document.getElementById('qlines').innerHTML=h; calcQ();
-}
-function addQLine(){ QLINES.push({service:'',qty:1,rate:''}); renderQLines(); }
-function delQLine(i){ QLINES.splice(i,1); if(!QLINES.length)QLINES.push({service:'',qty:1,rate:''}); renderQLines(); }
-function calcQ(){
-  var sub=0; QLINES.forEach(function(l){ sub+=(Number(l.qty)||0)*(Number(l.rate)||0); });
-  var taxPct=Number(S.settings.taxPct)||0; var tax=sub*taxPct/100;
-  document.getElementById('q_total').textContent=money(sub+tax);
-  document.getElementById('q_taxnote').textContent=taxPct?('(incl '+taxPct+'% tax)'):'';
-}
-function createQuote(send){
-  var client=val('q_client'); if(!client){toast('Client name required');return;}
-  var lines=QLINES.filter(function(l){return l.service&&Number(l.rate)>0;});
-  if(!lines.length){toast('Add a line item with a price');return;}
-  var sub=0; lines.forEach(function(l){ sub+=(Number(l.qty)||1)*(Number(l.rate)||0); });
-  var tax=Number(S.settings.taxPct)||0; var total=sub+sub*tax/100;
-  var payload={client:client,email:val('q_email'),phone:val('q_phone'),validDays:14,lines:lines};
-  var tempId='t'+(++SYNC.seq);
-  // Optimistic: show a placeholder estimate immediately; the real number arrives on sync.
-  var temp={_tempId:tempId,_saving:true,row:0,number:'',client:client,dateA:fmtLocal(isoOf(midnight(new Date()))),amount:total,status:'Draft',
-    _lines:lines.map(function(l){return {service:l.service,qty:Number(l.qty)||1,rate:Number(l.rate)||0};})};   // cache lines so opening is instant
-  closeModal(); toast(send?'✅ Estimate saved — sending…':'✅ Estimate saved');
-  // Add the placeholder and queue the create together (so the temp exists before it can sync).
-  var go=function(){
-    S.quotes.unshift(temp); nav('billing');
-    enqueue('apiCreateEstimate',[payload],'Estimate for '+client,{persist:false,onOk:function(res){
-      if(!res||!res.ok) return;
-      var d=(S.quotes||[]).filter(function(x){return x._tempId===tempId;})[0];
-      if(d){ d.number=res.number; d._saving=false; d._tempId=null; }
-      if(CUR_SCREEN==='billing')renderBilling();
-      if(send && res.number) sendDoc('ESTIMATE',res.number);   // send once we have the real number
-    }});
-  };
-  if(S.quotes&&S.invoices){ go(); }
-  else { api('apiListBilling').then(function(r){ S.quotes=(r&&r.estimates)||[]; S.invoices=(r&&r.invoices)||[]; go(); }); }
-}
+function _pickFilter(){ var q=(val('pk_search')||'').toLowerCase();
+  document.getElementById('pk_list').innerHTML=(S.clients||[]).filter(function(c){return !q||(c.name+' '+c.phone+' '+c.email).toLowerCase().indexOf(q)>-1;}).sort(function(a,b){return a.name.localeCompare(b.name);}).map(function(c){
+    return '<div class="list-item" onclick="_pickChoose('+jarg(c.id)+')"><div class="row"><div><div class="name">'+esc(c.name)+'</div><div class="meta">'+esc(c.phone||c.email||'')+'</div></div>'+pill(c.status)+'</div></div>';
+  }).join('')||'<div class="empty">No matches.</div>'; }
+function _pickChoose(id){ var cb=pickClient._cb; closeModal(); if(cb)cb(id); }
 
-/* ---------------- QUOTES list + detail ---------------- */
-// Quotes + invoices share one screen. Any refresh from an action reloads the whole view.
-function loadQuotes(){ loadBilling(); }
-function loadInvoices(){ loadBilling(); }
-function loadBilling(){
-  if(S.quotes&&S.invoices&&(S.quotes.length||S.invoices.length)){renderBilling();return;}
-  document.getElementById('billingBody').innerHTML='<div class="spin">Loading…</div>';
-  api('apiListBilling').then(function(r){
-    S.quotes=(r&&r.estimates)||[]; S.invoices=(r&&r.invoices)||[]; renderBilling();
-  }).catch(function(e){loadFail('billingBody',e);});
-}
-function docRow(kind,d){
-  if(d._saving){   // optimistic create still uploading — not openable until it has a real number
-    return '<div class="list-item" onclick="toast(\'⏳ Still saving — one moment\')"><div class="row"><div><div class="name">'+esc(d.client)+'</div>'+
-      '<div class="meta">'+money(d.amount)+' · saving…</div></div><span class="pill p-sent">⏳ Saving</span></div></div>';
-  }
-  // Only append the date when there is one. Drafts (invoices get their issue date on send) have
-  // none — showing the literal "draft" here was redundant with the status pill and looked wrong.
-  return '<div class="list-item" onclick="openDoc(\''+kind+'\','+jarg(d.number)+')"><div class="row"><div><div class="name">#'+esc(d.number)+' · '+esc(d.client)+'</div>'+
-     '<div class="meta">'+money(d.amount)+(d.dateA?' · '+esc(d.dateA):'')+'</div></div>'+pill(d.status)+'</div></div>';
-}
-var BILL_TAB='quotes';
-function setBillTab(k){ BILL_TAB=k; renderBilling(); }
-var BILL_ORDER=['quotes','outstanding','paid','closedq'];
-function renderBilling(){
-  var body=document.getElementById('billingBody');
-  var quotes=S.quotes||[], invs=S.invoices||[];
-  var groups={
-    quotes:      {label:'Quotes',      kind:'ESTIMATE', arr:quotes.filter(function(d){return ['Draft','Sent'].indexOf(d.status)>=0;}),       empty:'No open quotes yet.'},
-    outstanding: {label:'Outstanding', kind:'INVOICE',  arr:invs.filter(function(d){return d.status!=='Paid';}),                              empty:'Nothing awaiting payment 🎉'},
-    paid:        {label:'Paid',        kind:'INVOICE',  arr:invs.filter(function(d){return d.status==='Paid';}),                              empty:'No paid invoices yet.'},
-    closedq:     {label:'Closed',      kind:'ESTIMATE', arr:quotes.filter(function(d){return ['Accepted','Declined'].indexOf(d.status)>=0;}),empty:'No closed quotes.'}
-  };
-  if(!groups[BILL_TAB]) BILL_TAB='quotes';
-  var tabs='<div class="seg">'+BILL_ORDER.map(function(k){
-    var g=groups[k], n=g.arr.length;
-    return '<button class="segbtn'+(k===BILL_TAB?' on':'')+'" onclick="setBillTab(\''+k+'\')">'+g.label+(n?'<span class="tc">'+n+'</span>':'')+'</button>';
-  }).join('')+'</div>';
-  var g=groups[BILL_TAB];
-  var list=g.arr.length ? g.arr.map(function(d){return docRow(g.kind,d);}).join('')
-                        : '<div class="empty">'+g.empty+'</div>';
-  body.innerHTML=tabs+'<div style="margin-top:12px">'+list+'</div>';
-}
-// Line-item rows for the doc detail. `lines===null` → not loaded yet (background fetch pending).
-function docLinesHtml(lines,d){
-  if(lines==null) return '<div class="muted">Loading items…</div>';
-  if(!lines.length) return '<div class="muted">No line items (uses amount '+money(d.amount)+')</div>';
-  return lines.map(function(l){return '<div class="row" style="padding:4px 0"><span>'+esc(l.service)+' ×'+l.qty+'</span><span>'+money((Number(l.qty)||0)*(Number(l.rate)||0))+'</span></div>';}).join('');
-}
-var DOC_OPEN=null;   // token of the doc detail currently on screen (guards async fill-in)
-function openDoc(kind,number){
-  var list=kind==='INVOICE'?S.invoices:S.quotes;
-  var d=list.filter(function(x){return String(x.number)===String(number);})[0]; if(!d)return;
-  // Optimistic open: render instantly from local state; line items come from cache (d._lines)
-  // or fill in from a background fetch — the sheet is only touched when we don't already have them.
-  var token=kind+':'+number; DOC_OPEN=token;
-  var itemsId='docItems_'+String(number).replace(/[^A-Za-z0-9]/g,'');
-  var na=jarg(number);
-  var btns='';
-  if(kind==='ESTIMATE'){
-    btns='<button class="btn" onclick="sendDoc(\'ESTIMATE\','+na+')">Send estimate</button>'+
-         '<button class="btn ghost" onclick="approve('+na+')">Approve → create invoice</button>'+
-         '<h2 class="sec">Close / remove</h2>'+
-         '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Accepted\')">Mark accepted</button>'+
-         '<button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Declined\')">Mark declined</button></div>'+
-         '<button class="btn danger" onclick="deleteDoc(\'ESTIMATE\','+na+')">Delete quote</button>';
-  } else {
-    btns='<button class="btn" onclick="sendDoc(\'INVOICE\','+na+')">Send invoice</button>'+
-         (d.status!=='Paid'?'<button class="btn sec" onclick="markPaid('+na+')">Mark paid</button>':'')+
-         '<button class="btn danger" onclick="deleteDoc(\'INVOICE\','+na+')">Delete invoice</button>';
-  }
-  openModal('<button class="close" onclick="closeModal()">×</button><h3>'+(kind==='INVOICE'?'Invoice':'Estimate')+' #'+esc(number)+'</h3>'+
-    '<div class="muted">'+esc(d.client)+' · '+esc(d.status)+'</div>'+
-    '<div class="card" style="margin-top:12px"><div id="'+itemsId+'">'+docLinesHtml(d._lines==null?null:d._lines,d)+'</div><div class="totalbar"><span>Total</span><span>'+money(d.amount)+'</span></div></div>'+
-    '<button class="btn sec" onclick="editLines(\''+kind+'\','+na+')">Edit line items</button>'+btns);
-  if(d._lines==null){   // not cached yet — fetch in the background and fill in if still on screen
-    api('apiGetDocLines',number).then(function(lines){
-      d._lines=lines||[];
-      if(DOC_OPEN===token){ var el=document.getElementById(itemsId); if(el)el.innerHTML=docLinesHtml(d._lines,d); }
-    });
-  }
-}
-function setDocStatus(kind,number,status){ var d=findDoc(kind,number); if(d)d.status=status;   // optimistic
-  closeModal(); toast('✅ '+(kind==='INVOICE'?'Invoice':'Quote')+' → '+status); renderBilling();
-  enqueue('apiUpdateDoc',[kind,number,{status:status}],(kind==='INVOICE'?'Invoice':'Quote')+' #'+number+' → '+status); }
-function deleteDoc(kind,number){
-  var label=(kind==='INVOICE'?'invoice':'quote')+' #'+number;
-  openModal('<button class="close" onclick="closeModal()">×</button><h3>🗑️ Delete '+esc(label)+'?</h3>'+
-    '<div class="muted" style="margin-bottom:10px">This removes the '+esc(label)+' and its line items from your CRM. It can’t be undone. Any linked job stays.</div>'+
-    '<button class="btn danger" onclick="confirmDeleteDoc(\''+kind+'\','+jarg(number)+')">Delete permanently</button>'+
-    '<button class="btn sec" onclick="openDoc(\''+kind+'\','+jarg(number)+')">Cancel</button>');
-}
-function confirmDeleteDoc(kind,number){
-  // Optimistic: remove from the local list now, delete on the server in the background.
-  var key=kind==='INVOICE'?'invoices':'quotes';
-  if(S[key]) S[key]=S[key].filter(function(x){return String(x.number)!==String(number);});
-  S.dashboard=null; closeModal(); toast('🗑️ Deleted'); if(CUR_SCREEN==='billing')renderBilling();
-  enqueue('apiDeleteDoc',[kind,number],'Delete '+(kind==='INVOICE'?'invoice':'quote')+' #'+number,{persist:false});
-}
-function sendDoc(kind,number){ busy('Building PDF…'); api('apiSendDoc',kind,number).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive (no client email)'):(r&&r.msg||'Failed')); invalidate(); kind==='INVOICE'?loadInvoices():loadQuotes(); }); }
-function approve(number){
-  var base=midnight(new Date());
-  openModal('<button class="close" onclick="closeModal()">×</button><h3>Approve &amp; schedule</h3>'+
-    '<div class="muted" style="margin-bottom:10px">Accepts the quote, creates an invoice draft, and schedules the job. Pick when the job happens — it can be later than today.</div>'+
-    '<label>Job date</label><input type="date" id="ap_date" value="'+isoOf(base)+'">'+
-    '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setApDate(0)">Today</button><button class="btn sm sec" onclick="setApDate(1)">Tomorrow</button><button class="btn sm sec" onclick="setApDate(7)">+1 week</button><button class="btn sm sec" onclick="setApDate(14)">+2 weeks</button></div>'+
-    '<button class="btn" onclick="doApprove('+jarg(number)+')">Approve → invoice + job</button>');
-}
-function setApDate(days){ var e=document.getElementById('ap_date'); if(e)e.value=isoOf(addDays(midnight(new Date()),days)); }
-function doApprove(number){
-  var e=document.getElementById('ap_date'); var iso=e?e.value:'';
-  busy('Approving…');
-  api('apiApproveEstimate',number,iso).then(function(r){ closeModal(); if(r&&r.ok){toast('✅ Invoice #'+r.invoiceNumber+' + job scheduled '+(r.jobDate||'')); invalidate(); nav('billing');} else toast(r&&r.msg||'Failed'); });
-}
-function markPaid(number){ var d=findDoc('INVOICE',number); if(d)d.status='Paid';   // optimistic
-  closeModal(); toast('💰 Payment confirmed'); renderBilling();
-  enqueue('apiMarkInvoicePaid',[number],'Mark paid #'+number); }
-function editLines(kind,number){
-  var d=findDoc(kind,number);
-  var build=function(lines){
-    QLINES=(lines&&lines.length)?lines.map(function(l){return {service:l.service,qty:l.qty,rate:l.rate};}):[{service:'',qty:1,rate:''}];
-    openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit line items · #'+esc(number)+'</h3>'+
-      '<div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
-      '<div class="totalbar"><span>Total <span class="tax" id="q_taxnote"></span></span><span id="q_total"></span></div>'+
-      '<button class="btn" onclick="saveLines(\''+kind+'\','+jarg(number)+')">Save</button>');
-    renderQLines();
-  };
-  if(d&&d._lines!=null){ build(d._lines); return; }                 // use cache — no round-trip
-  busy('Opening line items…');
-  api('apiGetDocLines',number).then(function(lines){ if(d)d._lines=lines||[]; build(lines); });
-}
-function saveLines(kind,number){
-  var lines=QLINES.filter(function(l){return l.service&&Number(l.rate)>0;});
-  var sub=0; lines.forEach(function(l){ sub+=(Number(l.qty)||1)*(Number(l.rate)||0); });
-  var tax=Number(S.settings.taxPct)||0; var d=findDoc(kind,number);
-  if(d){ d.amount=sub+sub*tax/100; d._lines=lines.map(function(l){return {service:l.service,qty:Number(l.qty)||1,rate:Number(l.rate)||0};}); }   // optimistic total + line cache
-  closeModal(); toast('✅ Line items saved'); renderBilling();
-  enqueue('apiSetDocLines',[kind,number,lines],'Line items #'+number);
-}
-
-/* ---------------- JOBS ---------------- */
-function loadJobs(){ if(S.jobs&&S.jobs.length){renderJobs();return;} document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>'; api('apiListJobs').then(function(l){S.jobs=l||[];renderJobs();}).catch(function(e){loadFail('jobsBody',e);}); }
-var JOB_TAB='today';
+/* ================= JOBS ================= */
+var JOB_TAB='today', JOB_ORDER=['today','upcoming','completed'];
 function setJobTab(k){ JOB_TAB=k; renderJobs(); }
-var JOB_ORDER=['today','upcoming','completed'];
-function jobRow(j,pastDue){
-  var tags=(pastDue?'<span class="pill p-overdue" style="margin-right:5px">Past due</span>':'')+pill(j.status);
-  return '<div class="list-item" onclick="openJob('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div>'+
-    '<div class="meta">'+esc(j.date)+(j.service?' · '+esc(j.service):'')+' · '+money0(j.price)+(j.paid==='Yes'?' · paid':'')+'</div></div><div style="display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:2px">'+tags+'</div></div></div>';
-}
+function loadJobs(){ if(S.jobs){ renderJobs(); return; } document.getElementById('jobsBody').innerHTML='<div class="spin">Loading…</div>';
+  api('apiListJobs').then(function(l){ S.jobs=l||[]; renderJobs(); }).catch(function(){ document.getElementById('jobsBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
+function jobById(id){ return (S.jobs||[]).filter(function(j){return j.id===id;})[0]; }
+function jobRow(j,pastDue){ var tags=(pastDue?'<span class="pill p-pastdue" style="margin-right:5px">Past due</span>':'')+pill(j.status);
+  return '<div class="list-item" onclick="openJob('+jarg(j.id)+')"><div class="row"><div><div class="name">'+esc(j.client||'')+'</div><div class="meta">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+(j.service?' · '+esc(j.service):'')+'</div></div><div style="display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end">'+tags+'</div></div></div>'; }
 function renderJobs(){
-  var body=document.getElementById('jobsBody');
-  if(!S.jobs.length){
-    // Self-heal: if the Jobs list came back empty but the dashboard already sees jobs this
-    // week, the two reads disagree — almost always an older deployment still serving stale
-    // code. Don't show a misleading "No jobs yet"; show the jobs we DO have (from the
-    // dashboard) and tell the owner exactly how to fix it.
-    var wk=(S.dashboard&&S.dashboard.weekJobs)||[];
-    if(wk.length){
-      var w='<div class="warn">⚠ Showing this week’s jobs from your dashboard — the full Jobs list didn’t load. This usually means the app is running older code. Fix it once: <b>Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version ▸ Deploy</b>, then tap ⟳.</div>';
-      wk.forEach(function(j){
-        w+='<div class="list-item" onclick="openJobFromHome('+j.row+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div>'+
-           '<div class="meta">'+esc(j.date)+(j.service?' · '+esc(j.service):'')+'</div></div>'+pill(j.status)+'</div></div>';
-      });
-      body.innerHTML=w; return;
-    }
-  }
-  var today=isoOf(midnight(new Date()));
-  var done=function(j){return ['Done','Cancelled'].indexOf(j.status)>=0;};
-  var groups={
-    today:     {label:'Today',     arr:S.jobs.filter(function(j){return !done(j)&&(!j.dateISO||j.dateISO<=today);}).sort(function(a,b){return String(a.dateISO||'').localeCompare(String(b.dateISO||''));})},
-    upcoming:  {label:'Upcoming',  arr:S.jobs.filter(function(j){return !done(j)&&j.dateISO&&j.dateISO>today;}).sort(function(a,b){return String(a.dateISO).localeCompare(String(b.dateISO));})},
-    completed: {label:'Completed', arr:S.jobs.filter(done).sort(function(a,b){return String(b.dateISO||'').localeCompare(String(a.dateISO||''));})}
-  };
-  if(!groups[JOB_TAB]) JOB_TAB='today';
-  var tabs='<div class="seg">'+JOB_ORDER.map(function(k){
-    var g=groups[k], n=g.arr.length;
-    return '<button class="segbtn'+(k===JOB_TAB?' on':'')+'" onclick="setJobTab(\''+k+'\')">'+g.label+(n?'<span class="tc">'+n+'</span>':'')+'</button>';
-  }).join('')+'</div>';
-  var g=groups[JOB_TAB];
+  var body=document.getElementById('jobsBody'); var today=isoOf(midnight(new Date()));
+  var done=function(j){ return j.status==='Done'||j.status==='Cancelled'; };
+  var g={ today:{label:'Today',arr:(S.jobs||[]).filter(function(j){return !done(j)&&(!j.dateISO||j.dateISO<=today);}).sort(function(a,b){return String(a.dateISO).localeCompare(String(b.dateISO));})},
+    upcoming:{label:'Upcoming',arr:(S.jobs||[]).filter(function(j){return !done(j)&&j.dateISO&&j.dateISO>today;}).sort(function(a,b){return String(a.dateISO).localeCompare(String(b.dateISO));})},
+    completed:{label:'Completed',arr:(S.jobs||[]).filter(done).sort(function(a,b){return String(b.dateISO).localeCompare(String(a.dateISO));})} };
+  if(!g[JOB_TAB])JOB_TAB='today';
+  var tabs='<div class="seg">'+JOB_ORDER.map(function(k){ var n=g[k].arr.length; return '<button class="segbtn'+(k===JOB_TAB?' on':'')+'" onclick="setJobTab(\''+k+'\')">'+g[k].label+(n?'<span class="tc">'+n+'</span>':'')+'</button>'; }).join('')+'</div>';
   var empty={today:'Nothing scheduled for today.',upcoming:'No upcoming jobs.',completed:'No completed jobs yet.'}[JOB_TAB];
-  var list=g.arr.length ? g.arr.map(function(j){ return jobRow(j, JOB_TAB==='today' && j.dateISO && j.dateISO<today); }).join('')
-                        : '<div class="empty">'+empty+'</div>';
+  var list=g[JOB_TAB].arr.length ? g[JOB_TAB].arr.map(function(j){ return jobRow(j, JOB_TAB==='today'&&j.dateISO&&j.dateISO<today); }).join('') : '<div class="empty">'+empty+'</div>';
   body.innerHTML=tabs+'<div style="margin-top:12px">'+list+'</div>';
 }
-function openJobForm(){
-  openModal('<button class="close" onclick="closeModal()">×</button><h3>New job</h3>'+
-    field('Client *','j_client','','Jane Smith')+ '<div class="two"><div>'+field('Date (M/D/YYYY)','j_date','','7/22/2026')+'</div><div>'+field('Time (e.g. 2pm)','j_time','','2pm')+'</div></div>'+
-    serviceSelect('j_service')+ field('Price','j_price','','189')+
-    '<label>Repeat</label><select id="j_repeat">'+(S.statuses.repeat||['None']).map(function(r){return '<option>'+r+'</option>';}).join('')+'</select>'+
+function serviceSelect(id,sel){ return '<select id="'+id+'"><option value="">Service…</option>'+(S.services||[]).map(function(s){return '<option value="'+esc(s.id)+'"'+(s.id===sel?' selected':'')+'>'+esc(s.name)+' · '+money(s.rate)+'</option>';}).join('')+'</select>'; }
+function openJobForm(clientId){
+  var rec=(S.enums.recurring||['None']).map(function(r){return '<option>'+r+'</option>';}).join('');
+  var clientField = clientId ? '<div class="muted">Client: <b>'+esc((clientById(clientId)||{}).name||clientId)+'</b></div><input type="hidden" id="nj_client" value="'+esc(clientId)+'">'
+    : '<label>Client *</label><div class="btnrow"><button class="btn sec" id="nj_clientbtn" onclick="pickClient(function(id){document.getElementById(\'nj_client\').value=id;document.getElementById(\'nj_clientbtn\').textContent=(clientById(id)||{}).name||id;})">Pick client…</button></div><input type="hidden" id="nj_client">';
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>New job</h3>'+clientField+
+    '<label>Service *</label>'+serviceSelect('nj_service')+
+    '<div class="two"><div><label>Date</label><input type="date" id="nj_date" value="'+isoOf(midnight(new Date()))+'"></div><div><label>Time</label><input id="nj_time" placeholder="2pm"></div></div>'+
+    '<label>Repeat</label><select id="nj_recurring">'+rec+'</select>'+
     '<button class="btn" onclick="saveJob()">Add job</button>');
 }
 function saveJob(){
-  var client=val('j_client'); if(!client){toast('Client required');return;}
-  var form={client:client,date:val('j_date'),time:val('j_time'),service:val('j_service'),price:val('j_price'),repeat:val('j_repeat')};
-  var iso=parseDateISO(form.date);
-  var temp={row:-(++SYNC.seq),_saving:true,client:client,service:form.service||'',time:form.time||'',status:'Scheduled',
-    price:Number(String(form.price).replace(/[^0-9.]/g,''))||0,paid:'No',repeat:form.repeat||'None',
-    dateISO:iso,date:iso?fmtLocal(iso):String(form.date||'')};
-  closeModal(); toast('✅ Job added');
-  var go=function(){
-    S.jobs=S.jobs||[]; S.jobs.push(temp); S.dashboard=null; if(CUR_SCREEN==='jobs')renderJobs();
-    enqueue('apiAddJob',[form],'Job for '+client,{persist:false,onOk:function(r){
-      if(r&&r.ok&&r.row){ temp.row=r.row; temp._saving=false; if(CUR_SCREEN==='jobs')renderJobs(); }
-    }});
-  };
-  if(S.jobs){ go(); } else { api('apiListJobs').then(function(l){ S.jobs=l||[]; go(); }); }
+  var clientId=val('nj_client'); if(!clientId){toast('Pick a client');return;}
+  var serviceId=val('nj_service'); if(!serviceId){toast('Pick a service');return;}
+  var form={clientId:clientId,serviceId:serviceId,date:val('nj_date'),time:val('nj_time'),recurring:val('nj_recurring')||'None'};
+  var temp={id:'tmp'+(++SYNC.seq),_saving:true,clientId:clientId,client:(clientById(clientId)||{}).name||'',serviceId:serviceId,service:svcName(serviceId),date:form.date,dateISO:form.date,time:form.time,status:'Scheduled',recurring:form.recurring};
+  S.jobs=S.jobs||[]; S.jobs.push(temp); S.dashboard=null; closeModal(); toast('✅ Job added'); if(CUR_SCREEN==='jobs')renderJobs();
+  enqueue('apiCreateJob',[form],'Job',{onOk:function(r){ if(r&&r.id){ temp.id=r.id; temp._saving=false; if(r.job)Object.assign(temp,r.job); if(CUR_SCREEN==='jobs')renderJobs(); } }});
 }
-function openJob(row){
-  var j=S.jobs.filter(function(x){return x.row===row;})[0]; if(!j)return;
-  if(j._saving){ toast('⏳ Still saving — one moment'); return; }   // wait for the real row before editing
-  openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(j.client)+'</h3>'+
-    '<div class="muted">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+' · '+esc(j.service||'')+' · '+money(j.price)+'</div>'+
-    '<h2 class="sec">Reschedule</h2>'+
-    '<div class="two"><div><input type="date" id="jb_date" value="'+esc(j.dateISO||'')+'"></div><div><input id="jb_time" placeholder="Time (e.g. 2pm)" value="'+esc(j.time||'')+'"></div></div>'+
-    '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setJbDate(0)">Today</button><button class="btn sm sec" onclick="setJbDate(1)">Tomorrow</button><button class="btn sm sec" onclick="setJbDate(7)">+1 week</button></div>'+
-    '<button class="btn sec" onclick="rescheduleJob('+row+')">Save new date</button>'+
-    '<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+
-    (S.statuses.job||[]).map(function(st){return '<button class="btn sm sec" onclick="setJob('+row+',{status:\''+st+'\'})">'+st+'</button>';}).join(' ')+'</div>'+
-    '<div class="btnrow"><button class="btn" onclick="setJob('+row+',{paid:\'Yes\'})">Mark paid</button></div>');
+function openJob(id){
+  var j=jobById(id); if(!j)return; if(j._saving){ toast('⏳ Still saving…'); return; }
+  var statusBtns=(S.enums.jobStatus||[]).map(function(st){ return '<button class="btn sm sec" onclick="setJobStatus('+jarg(id)+',\''+st+'\')">'+st+'</button>'; }).join(' ');
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(j.client||'')+'</h3>'+
+    '<div class="muted">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+' · '+esc(j.service||'')+' · '+esc(j.recurring||'None')+'</div>'+
+    '<h2 class="sec">Reschedule</h2><div class="two"><div><input type="date" id="jb_date" value="'+esc(j.dateISO||'')+'"></div><div><input id="jb_time" value="'+esc(j.time||'')+'" placeholder="Time"></div></div>'+
+    '<button class="btn sec" onclick="rescheduleJob('+jarg(id)+')">Save new date</button>'+
+    '<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+statusBtns+'</div>'+
+    '<button class="btn danger" onclick="archiveJob('+jarg(id)+')">Archive job</button>');
 }
-function setJbDate(days){ var e=document.getElementById('jb_date'); if(e)e.value=isoOf(addDays(midnight(new Date()),days)); }
-function jobByRow(row){ return (S.jobs||[]).filter(function(x){return x.row===row;})[0]; }
-function rescheduleJob(row){
-  var d=document.getElementById('jb_date'), t=document.getElementById('jb_time');
-  var iso=d?d.value:''; if(!iso){toast('Pick a date');return;}
-  var j=jobByRow(row); var time=t?t.value:(j?j.time:'');
-  if(j){ j.dateISO=iso; j.date=fmtLocal(iso); j.time=time; }                 // optimistic
-  closeModal(); toast('📅 Rescheduled to '+(j?j.date:iso)); if(CUR_SCREEN==='jobs')renderJobs();
-  enqueue('apiSetJob',[row,{date:iso,time:time}],'Reschedule job');
-}
-function setJob(row,f){
-  var j=jobByRow(row); if(j){ if(f.status)j.status=f.status; if(f.paid)j.paid=f.paid; }   // optimistic
-  closeModal(); toast(f.paid?'💰 Payment confirmed':'✅ Updated'); if(CUR_SCREEN==='jobs')renderJobs();
-  enqueue('apiSetJob',[row,f], f.paid?'Job paid':'Job '+(f.status||'update'));
-}
-/** Open a job's detail from anywhere (Home may not have the jobs list loaded yet). */
-function openJobFromHome(row){
-  if(S.jobs&&S.jobs.some(function(j){return j.row===row;})){ openJob(row); }
-  else { busy('Opening…'); api('apiListJobs').then(function(l){ S.jobs=l||[]; openJob(row); }); }
-}
+function setJobStatus(id,st){ var j=jobById(id); if(j)j.status=st; closeModal(); toast('✅ '+st); S.dashboard=null; renderJobs(); enqueue('apiUpdateJob',[id,{Status:st}],'Job '+st); }
+function rescheduleJob(id){ var iso=val('jb_date'), t=val('jb_time'); var j=jobById(id); if(j){ j.dateISO=iso; j.date=iso; j.time=t; } closeModal(); toast('📅 Rescheduled'); S.dashboard=null; renderJobs();
+  enqueue('apiUpdateJob',[id,{date:iso,time:t}],'Reschedule'); }
+function archiveJob(id){ if(S.jobs)S.jobs=S.jobs.filter(function(j){return j.id!==id;}); closeModal(); toast('🗑️ Archived'); S.dashboard=null; renderJobs(); enqueue('apiArchiveJob',[id],'Archive job'); }
 
-/* ---------------- SETTINGS ---------------- */
-function renderSettings(){
-  var s=S.settings;
-  var h='<h2 class="sec">Business</h2>'+
-    field('Business name','set_businessName',s.businessName,'Your Business LLC')+
-    field('Owner email','set_ownerEmail',s.ownerEmail,'example@gmail.com')+
-    field('Phone','set_phone',s.phone,'(555) 123-4567')+
-    '<div class="two"><div>'+field('Currency','set_currency',s.currency,'$')+'</div><div>'+field('Sales tax %','set_taxPct',s.taxPct,'0')+'</div></div>'+
-    field('Google review link','set_reviewLink',s.reviewLink,'https://g.page/r/…/review')+
-    field('Payment instructions','set_payInstructions',s.payInstructions,'e.g. Zelle to example@gmail.com, or cash/check')+
-    field('Payment link (Pay-now button)','set_payLink',s.payLink,'https://paypal.me/you or your Stripe link')+
-    field('Invoice due (days to pay)','set_dueDays',s.dueDays,'14')+
-    '<div class="muted" style="margin:-4px 4px 4px">Days after you <b>send</b> an invoice. Enter <b>0</b> for “Due upon receipt.”</div>'+
-    '<h2 class="sec">Document numbering</h2>'+
-    '<div class="muted" style="margin-bottom:8px">Sets where new numbers start. Text is allowed — e.g. <b>INV-1001</b> or <b>Q-0001</b> (the number part counts up, leading zeros kept). Changing this only affects <b>new</b> documents.</div>'+
-    '<div class="two"><div>'+field('Next quote/estimate #','set_startEstimate',s.startEstimate,'1001')+'</div><div>'+field('Next invoice #','set_startInvoice',s.startInvoice,'9001')+'</div></div>'+
-    '<h2 class="sec">Appearance</h2>'+
-    '<div class="muted" style="margin-bottom:6px">Accent color for buttons, tabs and the header.</div>'+
-    '<div class="colorrow"><input type="color" id="set_accent" value="'+esc(accentVal(s.accent))+'" oninput="applyAccent(this.value)">'+
-    swatches()+'<button class="btn sec sm" style="width:auto;margin:0" onclick="resetAccent()">Reset</button></div>'+
-    '<h2 class="sec">Company logo</h2>'+
-    '<div class="muted" style="margin-bottom:8px">Shown on your PDF estimates &amp; invoices. PNG or JPG — it’s resized automatically.</div>'+
-    '<div id="logoPreview">'+logoPreviewHtml()+'</div>'+
-    '<label class="btn sec" style="cursor:pointer">Choose logo…<input type="file" id="set_logoFile" accept="image/png,image/jpeg" style="display:none" onchange="onLogoPick(this)"></label>'+
-    '<button class="btn" onclick="saveSettings()">Save settings</button>'+
-    '<h2 class="sec">Your services</h2><div class="muted" style="margin-bottom:8px">One per line — fills the Service dropdowns.</div>'+
-    '<textarea id="set_services" rows="7">'+esc((S.services||[]).join('\n'))+'</textarea>'+
-    '<button class="btn sec" onclick="saveServices()">Save services</button>'+
-    '<h2 class="sec">Maintenance</h2>'+
-    '<div class="muted" style="margin-bottom:8px">Move accepted/declined quotes and paid invoices from before this month (plus their line items) into 📦 Archived tabs — keeps the app fast as you grow. Lifetime revenue is preserved; jobs are left alone.</div>'+
-    '<button class="btn sec" onclick="archiveNow()">📦 Archive old paid &amp; closed docs</button>'+
-    '<div class="muted" style="text-align:center;margin-top:18px;opacity:.7">Build '+esc(BUILD)+'</div>';
-  document.getElementById('settingsBody').innerHTML=h;
-  if(S.logo===undefined) fetchLogo();     // load current logo once, then refresh only its preview
+/* ================= BILLING ================= */
+var BILL_TAB='quotes', BILL_ORDER=['quotes','outstanding','paid','closedq'];
+function setBillTab(k){ BILL_TAB=k; renderBilling(); }
+function loadBilling(){ if(S.billing){ renderBilling(); return; } document.getElementById('billingBody').innerHTML='<div class="spin">Loading…</div>';
+  api('apiListBilling').then(function(r){ S.billing=r||{estimates:[],invoices:[]}; renderBilling(); }).catch(function(){ document.getElementById('billingBody').innerHTML='<div class="empty">Couldn\'t load.</div>'; }); }
+function docById(kind,id){ var arr=kind==='INVOICE'?(S.billing.invoices||[]):(S.billing.estimates||[]); return arr.filter(function(d){return d.id===id;})[0]; }
+function docRow(kind,d){ return '<div class="list-item" onclick="openDoc(\''+kind+'\','+jarg(d.id)+')"><div class="row"><div><div class="name">'+esc(d.id)+' · '+esc(d.client||'')+'</div><div class="meta">'+money(d.total)+(d.issueDate?' · '+esc(d.issueDate):'')+'</div></div>'+pill(d.status)+'</div></div>'; }
+function renderBilling(){
+  var b=S.billing||{estimates:[],invoices:[]}; var q=b.estimates||[], iv=b.invoices||[];
+  var g={ quotes:{label:'Quotes',kind:'ESTIMATE',arr:q.filter(function(d){return d.status==='Draft'||d.status==='Sent';}),empty:'No open quotes.'},
+    outstanding:{label:'Outstanding',kind:'INVOICE',arr:iv.filter(function(d){return d.status!=='Paid';}),empty:'Nothing awaiting payment 🎉'},
+    paid:{label:'Paid',kind:'INVOICE',arr:iv.filter(function(d){return d.status==='Paid';}),empty:'No paid invoices yet.'},
+    closedq:{label:'Closed',kind:'ESTIMATE',arr:q.filter(function(d){return d.status==='Accepted'||d.status==='Declined';}),empty:'No closed quotes.'} };
+  if(!g[BILL_TAB])BILL_TAB='quotes';
+  var tabs='<div class="seg">'+BILL_ORDER.map(function(k){ var n=g[k].arr.length; return '<button class="segbtn'+(k===BILL_TAB?' on':'')+'" onclick="setBillTab(\''+k+'\')">'+g[k].label+(n?'<span class="tc">'+n+'</span>':'')+'</button>'; }).join('')+'</div>';
+  var G=g[BILL_TAB]; var list=G.arr.length ? G.arr.map(function(d){return docRow(G.kind,d);}).join('') : '<div class="empty">'+G.empty+'</div>';
+  document.getElementById('billingBody').innerHTML=tabs+'<div style="margin-top:12px">'+list+'</div>';
 }
-/* ---- appearance + logo helpers ---- */
-var SWATCHES=['#8f5f22','#2a6df4','#0e9f6e','#7c3aed','#e11d48','#0891b2','#c026d3','#374151'];
-function accentVal(a){ return hexRGB(a)?a:ACCENT_DEFAULT; }
-function swatches(){ return '<span class="swatches">'+SWATCHES.map(function(c){return '<button class="sw" style="background:'+c+'" title="'+c+'" onclick="pickAccent(\''+c+'\')"></button>';}).join('')+'</span>'; }
-function pickAccent(c){ var i=document.getElementById('set_accent'); if(i)i.value=c; applyAccent(c); }
-function resetAccent(){ pickAccent(ACCENT_DEFAULT); }
-function logoPreviewHtml(){
-  if(S.logo===undefined) return '<div class="muted">Loading…</div>';
-  if(S.logo) return '<img src="'+S.logo+'" style="max-height:70px;max-width:220px;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff;display:block;margin-bottom:8px">'+
-    '<button class="btn sec" onclick="removeLogo()">Remove logo</button>';
-  return '<div class="muted" style="margin-bottom:6px">No logo uploaded yet.</div>';
+function openDoc(kind,id){
+  var d=docById(kind,id); if(!d){ // may be on another screen; fetch fresh
+    api('apiListBilling').then(function(r){ S.billing=r; openDoc(kind,id); }); return; }
+  var itemsId='items_'+String(id).replace(/[^A-Za-z0-9]/g,'');
+  var na=jarg(id);
+  var btns='';
+  if(kind==='ESTIMATE'){
+    btns='<button class="btn" onclick="sendDoc(\'ESTIMATE\','+na+')">Send estimate</button>'+
+      '<button class="btn ghost" onclick="approveEstimate('+na+')">Approve → invoice + job</button>'+
+      '<div class="btnrow" style="flex-wrap:wrap"><button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Accepted\')">Mark accepted</button><button class="btn sm sec" onclick="setDocStatus(\'ESTIMATE\','+na+',\'Declined\')">Mark declined</button></div>'+
+      '<button class="btn danger" onclick="deleteDoc(\'ESTIMATE\','+na+')">Delete quote</button>';
+  } else {
+    btns='<button class="btn" onclick="sendDoc(\'INVOICE\','+na+')">Send invoice</button>'+
+      (d.status!=='Paid'?'<button class="btn sec" onclick="markPaid('+na+')">Mark paid</button>':'')+
+      '<button class="btn danger" onclick="deleteDoc(\'INVOICE\','+na+')">Delete invoice</button>';
+  }
+  var totals='<div class="subline"><span>Subtotal</span><span>'+money(d.subtotal)+'</span></div>'+(d.tax>0?'<div class="subline"><span>Tax</span><span>'+money(d.tax)+'</span></div>':'')+'<div class="totalbar"><span>Total</span><span>'+money(d.total)+'</span></div>';
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>'+(kind==='INVOICE'?'Invoice':'Estimate')+' '+esc(id)+'</h3>'+
+    '<div class="muted">'+esc(d.client||'')+' · '+esc(d.status)+(d.issueDate?' · '+esc(d.issueDate):'')+'</div>'+
+    '<div class="card" style="margin-top:12px"><div id="'+itemsId+'"><div class="muted">Loading items…</div></div>'+totals+'</div>'+
+    '<button class="btn sec" onclick="editLines(\''+kind+'\','+na+')">Edit line items</button>'+btns);
+  api('apiGetDocLines',kind,id).then(function(items){ var el=document.getElementById(itemsId); if(!el)return;
+    el.innerHTML=(items&&items.length)?items.map(function(it){ return '<div class="row" style="padding:4px 0"><span>'+esc(it.description)+' ×'+it.qty+'</span><span>'+money(it.lineTotal)+'</span></div>'; }).join(''):'<div class="muted">No line items.</div>'; });
 }
-function paintLogoPreview(){ var el=document.getElementById('logoPreview'); if(el)el.innerHTML=logoPreviewHtml(); }
-function fetchLogo(){ api('apiGetLogo').then(function(r){ S.logo=(r&&r.logo)||''; paintLogoPreview(); }); }
-// Downscale the picked image on a canvas so the stored data URL stays small (sheet cell limit).
-function onLogoPick(input){
-  var f=input.files&&input.files[0]; if(!f)return;
-  var img=new Image();
-  img.onload=function(){
-    var max=360, w=img.width, h=img.height, sc=Math.min(1,max/Math.max(w,h));
-    var cw=Math.max(1,Math.round(w*sc)), ch=Math.max(1,Math.round(h*sc));
-    var cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
-    cv.getContext('2d').drawImage(img,0,0,cw,ch);
-    var url=cv.toDataURL('image/png');
-    if(url.length>48000){ url=cv.toDataURL('image/jpeg',0.82); }   // fall back to JPEG if PNG too big
-    if(url.length>48000){ toast('That image is too large — try a smaller/simpler logo'); return; }
-    S.logo=url; paintLogoPreview();
-    busy('Saving logo…'); api('apiSaveLogo',url).then(function(){ toast('✅ Logo saved'); });
-  };
-  img.onerror=function(){ toast('Could not read that image'); };
-  var rd=new FileReader(); rd.onload=function(e){ img.src=e.target.result; }; rd.readAsDataURL(f);
+function setDocStatus(kind,id,st){ var d=docById(kind,id); if(d)d.status=st; closeModal(); toast('✅ '+st); renderBilling(); enqueue('apiUpdateDoc',[kind,id,{status:st}],'Doc '+st); }
+function markPaid(id){ var d=docById('INVOICE',id); if(d)d.status='Paid'; closeModal(); toast('💰 Paid'); S.dashboard=null; S.clients=null; renderBilling(); enqueue('apiMarkInvoicePaid',[id],'Mark paid'); }
+function deleteDoc(kind,id){
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>Delete '+esc(id)+'?</h3><div class="muted" style="margin-bottom:10px">This archives the '+(kind==='INVOICE'?'invoice':'quote')+' and its line items.</div>'+
+    '<button class="btn danger" onclick="confirmDelete(\''+kind+'\','+jarg(id)+')">Delete</button><button class="btn sec" onclick="openDoc(\''+kind+'\','+jarg(id)+')">Cancel</button>');
 }
-function removeLogo(){ S.logo=''; paintLogoPreview(); busy('Removing…'); api('apiSaveLogo','').then(function(){ toast('Logo removed'); }); }
-function archiveNow(){
-  busy('Archiving…');
-  api('apiArchiveClosed').then(function(r){
-    if(!r||!r.ok){toast('Failed');return;}
-    var n=(r.estimates||0)+(r.invoices||0);
-    toast(n?('📦 Archived '+r.estimates+' quotes · '+r.invoices+' invoices · '+r.lineItems+' line items'):'Nothing to archive yet');
-    invalidate(); if(CUR_SCREEN==='billing')loadBilling();
+function confirmDelete(kind,id){ var arr=kind==='INVOICE'?'invoices':'estimates'; if(S.billing&&S.billing[arr])S.billing[arr]=S.billing[arr].filter(function(d){return d.id!==id;}); S.dashboard=null; S.clients=null; closeModal(); toast('🗑️ Deleted'); renderBilling(); enqueue('apiDeleteDoc',[kind,id],'Delete doc'); }
+function sendDoc(kind,id){ busy('Building PDF…'); api('apiSendDoc',kind,id).then(function(r){ closeModal(); toast(r&&r.ok?(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive'):(r&&r.msg||'Failed')); invalidate(); loadBilling(); }); }
+function approveEstimate(id){
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>Approve &amp; schedule</h3><div class="muted" style="margin-bottom:10px">Accepts the quote, creates a draft invoice (dated today) and schedules a job.</div>'+
+    '<label>Job date</label><input type="date" id="ap_date" value="'+isoOf(midnight(new Date()))+'">'+
+    '<button class="btn" onclick="doApprove('+jarg(id)+')">Approve → invoice + job</button>');
+}
+function doApprove(id){ var iso=val('ap_date'); busy('Approving…'); api('apiApproveEstimate',id,iso).then(function(r){ closeModal(); if(r&&r.ok){ toast('✅ Invoice '+r.invoiceId+' + job scheduled'); invalidate(); nav('billing'); } else toast(r&&r.msg||'Failed'); }); }
+
+/* ---- line-item builder (create estimate + edit lines) ---- */
+var QLINES=[];
+function startEstimate(clientId){ if(clientId){ estimateBuilder(clientId); } else { pickClient(function(id){ estimateBuilder(id); }); } }
+function estimateBuilder(clientId){
+  QLINES=[{serviceId:'',qty:1}];
+  openModal('<button class="close" onclick="closeModal()">×</button><h3>New estimate</h3>'+
+    '<div class="muted">Client: <b>'+esc((clientById(clientId)||{}).name||clientId)+'</b></div>'+
+    '<h2 class="sec">Line items</h2><div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
+    '<div class="totalbar"><span>Subtotal</span><span id="q_total"></span></div>'+
+    '<button class="btn" onclick="saveEstimate('+jarg(clientId)+')">Create estimate</button>');
+  renderQLines();
+}
+function lineServiceSelect(i,sel){
+  return '<select onchange="QLINES['+i+'].serviceId=this.value;calcQ()"><option value="">Service…</option>'+
+    (S.services||[]).map(function(s){return '<option value="'+esc(s.id)+'"'+(s.id===sel?' selected':'')+'>'+esc(s.name)+' · '+money(s.rate)+'</option>';}).join('')+'</select>';
+}
+function renderQLines(){
+  document.getElementById('qlines').innerHTML=QLINES.map(function(l,i){
+    return '<div class="lirow">'+lineServiceSelect(i,l.serviceId)+
+      '<input type="number" inputmode="decimal" placeholder="Qty" value="'+(l.qty||'')+'" oninput="QLINES['+i+'].qty=this.value;calcQ()">'+
+      '<button class="x" onclick="delQLine('+i+')">×</button></div>';
+  }).join('');
+  calcQ();
+}
+function addQLine(){ QLINES.push({serviceId:'',qty:1}); renderQLines(); }
+function delQLine(i){ QLINES.splice(i,1); if(!QLINES.length)QLINES.push({serviceId:'',qty:1}); renderQLines(); }
+function calcQ(){ var sub=0; QLINES.forEach(function(l){ sub+=(Number(l.qty)||0)*svcRate(l.serviceId); }); document.getElementById('q_total').textContent=money(sub); }
+function saveEstimate(clientId){
+  var lines=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(function(l){return {serviceId:l.serviceId,qty:Number(l.qty)};});
+  if(!lines.length){ toast('Add a line item'); return; }
+  busy('Creating…'); closeModal();
+  api('apiCreateEstimate',{clientId:clientId,validDays:14,lines:lines}).then(function(r){ if(r&&r.ok){ toast('✅ Estimate '+r.id+' created'); invalidate(); nav('billing'); } else toast(r&&r.msg||'Failed'); });
+}
+function editLines(kind,id){
+  busy('Opening…');
+  api('apiGetDocLines',kind,id).then(function(items){
+    QLINES=(items&&items.length)?items.map(function(it){return {serviceId:it.serviceId,qty:it.qty};}):[{serviceId:'',qty:1}];
+    openModal('<button class="close" onclick="closeModal()">×</button><h3>Edit line items · '+esc(id)+'</h3>'+
+      '<div id="qlines"></div><button class="btn sec sm" style="margin-top:6px" onclick="addQLine()">+ Add line</button>'+
+      '<div class="totalbar"><span>Subtotal</span><span id="q_total"></span></div>'+
+      '<button class="btn" onclick="saveLines(\''+kind+'\','+jarg(id)+')">Save</button>');
+    renderQLines();
   });
 }
+function saveLines(kind,id){
+  var lines=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(function(l){return {serviceId:l.serviceId,qty:Number(l.qty)};});
+  busy('Saving…'); closeModal();
+  api('apiSetDocLines',kind,id,lines).then(function(){ toast('✅ Line items saved'); invalidate(); loadBilling(); });
+}
+
+/* ================= SETTINGS ================= */
+var SWATCHES=['#8f5f22','#2a6df4','#0e9f6e','#7c3aed','#e11d48','#0891b2','#c026d3','#374151'];
+function sfield(label,key,ph){ return '<label>'+label+'</label><input id="set_'+key.replace(/[^a-z]/gi,'')+'" data-k="'+esc(key)+'" value="'+esc(S.settings[key]==null?'':S.settings[key])+'" placeholder="'+esc(ph||'')+'">'; }
+function renderSettings(){
+  var s=S.settings;
+  var h='<h2 class="sec">Business profile</h2>'+sfield('Business name','Business name','Your Business LLC')+sfield('Owner email','Owner email')+sfield('Business phone','Business phone')+sfield('Business address','Business address')+
+    '<h2 class="sec">Money</h2><div class="two"><div>'+sfield('Currency symbol','Currency symbol','$')+'</div><div>'+sfield('Sales tax %','Sales tax %','0')+'</div></div>'+
+    sfield('Invoice payment instructions','Invoice payment instructions')+sfield('Payment link','Payment link','paypal.me/you')+sfield('Invoice due (days)','Invoice due (days)','14')+
+    '<h2 class="sec">Numbering</h2><div class="two"><div>'+sfield('Next estimate #','Estimate starting number','1001')+'</div><div>'+sfield('Next invoice #','Invoice starting number','9001')+'</div></div>'+
+    '<h2 class="sec">Follow-up &amp; reviews</h2><div class="two"><div>'+sfield('Follow-up (days)','Default follow-up (days)','2')+'</div><div>'+sfield('Google review link','Google review link')+'</div></div>'+
+    '<h2 class="sec">Appearance</h2><div class="muted" style="margin-bottom:6px">Accent color.</div>'+
+    '<div class="colorrow"><input type="color" id="set_accent" value="'+esc(hexRGB(s['Accent color'])?s['Accent color']:ACCENT_DEFAULT)+'" oninput="applyAccent(this.value)">'+
+    '<span class="swatches">'+SWATCHES.map(function(c){return '<button class="sw" style="background:'+c+'" onclick="pickAccent(\''+c+'\')"></button>';}).join('')+'</span></div>'+
+    '<h2 class="sec">Company logo</h2><div class="muted" style="margin-bottom:8px">Shown on PDF estimates &amp; invoices.</div><div id="logoPreview">'+logoPreviewHtml()+'</div>'+
+    '<label class="btn sec" style="cursor:pointer">Choose logo…<input type="file" id="set_logoFile" accept="image/png,image/jpeg" style="display:none" onchange="onLogoPick(this)"></label>'+
+    '<button class="btn" onclick="saveSettings()">Save settings</button>'+
+    '<div class="muted" style="text-align:center;margin-top:18px;opacity:.7">Build '+esc(BUILD)+'</div>';
+  document.getElementById('settingsBody').innerHTML=h;
+  if(S.logo===undefined) fetchLogo();
+}
+function pickAccent(c){ var i=document.getElementById('set_accent'); if(i)i.value=c; applyAccent(c); }
 function saveSettings(){
-  var keys=['businessName','ownerEmail','phone','currency','taxPct','reviewLink','payInstructions','payLink','dueDays','startEstimate','startInvoice','accent'];
-  var obj={}; keys.forEach(function(k){obj[k]=val('set_'+k);});
+  var obj={}; document.querySelectorAll('#settingsBody input[data-k]').forEach(function(el){ obj[el.dataset.k]=el.value.trim(); });
+  obj['Accent color']=document.getElementById('set_accent').value;
   busy('Saving…');
-  api('apiSaveSettings',obj).then(function(){ S.settings=Object.assign(S.settings,obj); CUR=(obj.currency||'$').trim()||'$'; applyAccent(obj.accent); document.getElementById('bizName').textContent=obj.businessName||'Service Pro CRM'; toast('✅ Settings saved'); });
+  api('apiSaveSettings',obj).then(function(){ Object.assign(S.settings,obj); CUR=String(obj['Currency symbol']||'$').trim()||'$'; applyAccent(obj['Accent color']); document.getElementById('bizName').textContent=obj['Business name']||'Service Pro CRM'; toast('✅ Settings saved'); });
 }
-function saveServices(){
-  var arr=(val('set_services')||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);
-  busy('Saving services…');
-  api('apiSaveServices',arr).then(function(){ S.services=arr; toast('✅ Services saved'); });
-}
+function logoPreviewHtml(){ if(S.logo===undefined)return '<div class="muted">Loading…</div>'; if(S.logo)return '<img src="'+S.logo+'" style="max-height:70px;max-width:220px;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff;display:block;margin-bottom:8px"><button class="btn sec" onclick="removeLogo()">Remove logo</button>'; return '<div class="muted" style="margin-bottom:6px">No logo yet.</div>'; }
+function paintLogo(){ var el=document.getElementById('logoPreview'); if(el)el.innerHTML=logoPreviewHtml(); }
+function fetchLogo(){ api('apiGetLogo').then(function(r){ S.logo=(r&&r.logo)||''; paintLogo(); }); }
+function onLogoPick(input){ var f=input.files&&input.files[0]; if(!f)return; var img=new Image();
+  img.onload=function(){ var max=360,w=img.width,h=img.height,sc=Math.min(1,max/Math.max(w,h)); var cw=Math.round(w*sc),ch=Math.round(h*sc); var cv=document.createElement('canvas'); cv.width=cw;cv.height=ch; cv.getContext('2d').drawImage(img,0,0,cw,ch); var url=cv.toDataURL('image/png'); if(url.length>48000)url=cv.toDataURL('image/jpeg',.82); if(url.length>48000){toast('Image too large');return;} S.logo=url; paintLogo(); busy('Saving logo…'); api('apiSaveLogo',url).then(function(){toast('✅ Logo saved');}); };
+  img.onerror=function(){toast('Could not read image');}; var rd=new FileReader(); rd.onload=function(e){img.src=e.target.result;}; rd.readAsDataURL(f); }
+function removeLogo(){ S.logo=''; paintLogo(); busy('Removing…'); api('apiSaveLogo','').then(function(){toast('Logo removed');}); }
 
-/* ---------------- form helpers ---------------- */
-function field(label,id,v,ph){ return '<label>'+label+'</label><input id="'+id+'" value="'+esc(v==null?'':v)+'" placeholder="'+esc(ph==null?'':ph)+'">'; }
-function val(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
-function serviceOptions(){ return S.services&&S.services.length?S.services:['Service']; }
-function serviceSelect(id){ return '<label>Service</label><select id="'+id+'"><option value="">— choose —</option>'+serviceOptions().map(function(s){return '<option>'+esc(s)+'</option>';}).join('')+'</select>'; }
-
-/* ---------------- mock (static preview only) ---------------- */
-function mock(fn,args){
-  if(fn==='apiBootstrap')return{ready:true,settings:{businessName:'Meridian Detailing',currency:'$',taxPct:8.25},services:['Full detail','Interior clean','Ceramic coat'],
-    leadStatuses:['New','Quoted','Declined','Lost'],jobStatuses:['Scheduled','In Progress','Done','Cancelled'],invStatuses:['Draft','Sent','Paid','Overdue'],estStatuses:['Draft','Sent','Accepted','Declined'],repeatOpts:['None','Weekly','Biweekly','Monthly'],
-    dashboard:{newLeads:14,pipeline:8450,unpaid:1240,jobsWeek:9,revMonth:6320,winRate:62,revLife:41900,followUps:[{name:'Marcus Bell',phone:'(555) 203-8871',status:'Quoted',due:'7/12'},{name:'Priya Shah',phone:'(555) 661-2049',status:'Contacted',due:'7/14'}],weekJobs:[{row:2,date:'7/16',client:'Dana Ruiz',service:'Full detail',status:'Scheduled'}]}};
-  if(fn==='apiDashboard')return mock('apiBootstrap').dashboard;
-  if(fn==='apiListContacts')return[
-    {key:'marcus bell',name:'Marcus Bell',phone:'(555) 203-8871',email:'',address:'',service:'Full detail',leadRow:2,clientRow:0,leadStatus:'Quoted',followUp:'7/17/2026',followUpISO:'2026-07-17',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0,nextJobDate:'',nextJobService:'',quotes:[{number:'1001',amount:204.62,status:'Sent'}],invoices:[]},
-    {key:'priya shah',name:'Priya Shah',phone:'(555) 661-2049',email:'p@x.com',address:'',service:'Interior clean',leadRow:3,clientRow:0,leadStatus:'New',followUp:'',followUpISO:'',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0,nextJobDate:'',nextJobService:'',quotes:[],invoices:[]},
-    {key:'nils croft',name:'Nils Croft',phone:'(555) 200-1188',email:'',address:'',service:'',leadRow:5,clientRow:0,leadStatus:'Declined',followUp:'',followUpISO:'',lastJobISO:'',lastJobDate:'',jobCount:0,totalSpent:0,nextJobDate:'',nextJobService:'',quotes:[],invoices:[]},
-    {key:'dana ruiz',name:'Dana Ruiz',phone:'(555) 442-9910',email:'dana@x.com',address:'12 Oak St',service:'Full detail',leadRow:0,clientRow:2,leadStatus:'',followUp:'',followUpISO:'',lastJobISO:'2026-07-10',lastJobDate:'7/10/2026',jobCount:3,totalSpent:588,nextJobDate:'7/20/2026',nextJobService:'Full detail',quotes:[],invoices:[{number:'9002',amount:156.60,status:'Sent'}]}];
-  if(fn==='apiListDocs')return args[0]==='INVOICE'?[{row:2,number:9001,client:'Dana Ruiz',dateA:'7/15',dateB:'7/29',amount:431.92,status:'Draft'}]:[{row:2,number:1001,client:'Marcus Bell',dateA:'7/14',dateB:'7/28',amount:204.62,status:'Sent'}];
-  if(fn==='apiListBilling')return{estimates:mock('apiListDocs',['ESTIMATE']),invoices:mock('apiListDocs',['INVOICE'])};
-  if(fn==='apiListJobs')return[{row:2,date:'7/16',dateISO:'2026-07-16',client:'Dana Ruiz',service:'Full detail',time:'2pm',status:'Scheduled',price:189,paid:'No',repeat:'None'}];
-  if(fn==='apiGetDocLines')return[{service:'Full detail',qty:1,rate:189}];
-  if(fn==='apiCreateEstimate')return{ok:true,number:'1099'};
-  if(fn==='apiSendDoc')return{ok:true,emailed:true,email:'client@example.com'};
-  if(fn==='apiApproveEstimate')return{ok:true,invoiceNumber:'9099',jobDate:'7/20/2026'};
+/* ================= preview mock (standalone, no google.script.run) ================= */
+function mock(fn,a){
+  if(fn==='apiBootstrap')return {ready:true,settings:{'Business name':'Meridian Detailing','Currency symbol':'$','Accent color':'#8f5f22','Sales tax %':8},services:[{id:'SVC-01',name:'Consultation',rate:90,active:true},{id:'SVC-02',name:'Standard service',rate:150,active:true}],enums:{clientStatus:['Lead','Active','Inactive','Lost'],jobStatus:['Scheduled','Done','Cancelled'],estStatus:['Draft','Sent','Accepted','Declined'],invStatus:['Draft','Sent','Paid','Overdue'],recurring:['None','Weekly','Monthly','Quarterly','Annual']},dashboard:mock('apiDashboard')};
+  if(fn==='apiDashboard')return {newLeads:2,unpaid:162,jobsWeek:1,revMonth:0,winRate:60,revLife:0,followUps:[{id:'CL-0001',name:'Ada Buyer',phone:'(555) 111',status:'Lead',due:'7/16'}],weekJobs:[{id:'JOB-00001',client:'Ada Buyer',date:'7/17',time:'2pm',service:'Standard service',status:'Scheduled'}]};
+  if(fn==='apiListClients')return [{id:'CL-0001',name:'Ada Buyer',phone:'(555) 111',email:'ada@x.com',address:'',status:'Active',source:'Web',followUp:'',followUpISO:'',lifetime:0,nextJob:{id:'JOB-00001',date:'7/17',service:'Standard service'},openEstimate:{id:'EST-1001',total:390},unpaidInvoice:null}];
+  if(fn==='apiListJobs')return [{id:'JOB-00001',clientId:'CL-0001',client:'Ada Buyer',serviceId:'SVC-02',service:'Standard service',date:'7/17',dateISO:isoOf(midnight(new Date())),time:'2pm',status:'Scheduled',recurring:'None'}];
+  if(fn==='apiListBilling')return {estimates:[{kind:'ESTIMATE',id:'EST-1001',clientId:'CL-0001',client:'Ada Buyer',subtotal:390,tax:31.2,total:421.2,status:'Draft',issueDate:'7/16'}],invoices:[]};
+  if(fn==='apiGetDocLines')return [{id:'LI-000001',serviceId:'SVC-01',description:'Consultation',qty:1,rate:90,lineTotal:90},{id:'LI-000002',serviceId:'SVC-02',description:'Standard service',qty:2,rate:150,lineTotal:300}];
+  if(fn==='apiGetLogo')return {logo:''};
+  if(fn==='apiCreateClient')return {ok:true,id:'CL-0002',client:{id:'CL-0002',name:(a[0]||{}).name,status:(a[0]||{}).status||'Lead'}};
+  if(fn==='apiCreateJob')return {ok:true,id:'JOB-00002'};
+  if(fn==='apiCreateEstimate')return {ok:true,id:'EST-1002'};
+  if(fn==='apiApproveEstimate')return {ok:true,invoiceId:'INV-9001',jobId:'JOB-00003'};
   return {ok:true};
 }
-
-// Warn before leaving if writes are still uploading (so a change is never silently lost).
-window.addEventListener('beforeunload', function(e){ if(SYNC.q.length){ e.preventDefault(); e.returnValue=''; return ''; } });
-syncLoad(); syncBadge(); syncPump();   // resume any writes queued in a previous session
 boot();
 </script>
 </body>

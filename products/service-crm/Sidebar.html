@@ -3,120 +3,70 @@
 <head>
 <base target="_top">
 <style>
-  :root { --accent:#b8823a; --accent2:#8f5f22; --ink:#1a1c1f; --soft:#f3f0ea; --line:#e4dccd; --good:#3f7d55; }
-  * { box-sizing:border-box; }
-  body { font-family:'Segoe UI',Roboto,Arial,sans-serif; margin:0; padding:14px; color:var(--ink); font-size:13px; }
-  .hero { background:linear-gradient(135deg,var(--accent2),#6e4a1a); color:#fff; border-radius:12px; padding:14px 16px; margin-bottom:14px; }
-  .hero h1 { margin:0; font-size:16px; letter-spacing:-.2px; }
-  .hero p { margin:4px 0 0; font-size:11.5px; opacity:.9; }
-  .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:14px; }
-  .card h2 { margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:#52565c; }
-  label { display:block; font-weight:600; margin:8px 0 3px; font-size:12px; }
-  input, select { width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:13px; background:#fff; }
-  input:focus, select:focus { outline:none; border-color:var(--accent2); box-shadow:0 0 0 3px rgba(143,95,34,.30); }
-  button { width:100%; border:0; border-radius:999px; padding:11px; font-weight:700; font-size:13px; cursor:pointer; color:#fff;
-           background:linear-gradient(180deg,var(--accent2),#6e4a1a); margin-top:12px; }
-  button:hover { filter:brightness(1.08); }
-  button:focus-visible { outline:3px solid rgba(143,95,34,.55); outline-offset:2px; }
-  button.sec { background:#fff; color:var(--ink); border:1px solid var(--line); margin-top:8px; }
-  button:disabled { opacity:.55; cursor:default; }
-  .toast { font-size:12px; padding:9px 11px; border-radius:8px; margin-top:10px; display:none; }
-  .toast.ok { background:#d8efdf; color:#2c6b42; display:block; }
-  .toast.err { background:#f5d9d3; color:#a33; display:block; }
-  .toast.working { background:#eef1f7; color:#33415a; display:block; }
-  .fu { border-bottom:1px solid #f0ece3; padding:8px 0; display:flex; justify-content:space-between; align-items:center; }
-  .fu:last-child { border-bottom:0; }
-  .fu b { font-size:12.5px; } .fu .meta { color:#52565c; font-size:11px; }
-  .pill { font-size:10px; font-weight:700; padding:2px 9px; border-radius:999px; background:var(--soft); color:var(--accent2); }
-  .empty { color:#52565c; font-style:italic; padding:6px 0; }
-  .row2 { display:flex; gap:8px; } .row2 > div { flex:1; }
+  :root{--accent:#8f5f22;--dark:#6e4a1a;--ink:#1a1c1f;--soft:#f3f0ea;--line:#e4dccd;--muted:#52565c}
+  *{box-sizing:border-box}
+  body{font-family:'Segoe UI',Roboto,Arial,sans-serif;margin:0;padding:14px;color:var(--ink);font-size:13px}
+  .hero{background:linear-gradient(135deg,var(--accent),var(--dark));color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+  .hero h1{margin:0;font-size:16px}.hero p{margin:4px 0 0;font-size:11.5px;opacity:.9}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+  .card h2{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  label{display:block;font-weight:600;margin:8px 0 3px;font-size:12px}
+  input{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px}
+  input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(143,95,34,.3)}
+  button{width:100%;border:0;border-radius:999px;padding:11px;font-weight:700;font-size:13px;cursor:pointer;color:#fff;background:linear-gradient(180deg,var(--accent),var(--dark));margin-top:12px}
+  button.sec{background:#fff;color:var(--ink);border:1px solid var(--line);margin-top:8px}
+  button:disabled{opacity:.55}
+  .toast{font-size:12px;padding:9px 11px;border-radius:8px;margin-top:10px;display:none}
+  .toast.ok{background:#d8efdf;color:#2c6b42;display:block}.toast.err{background:#f5d9d3;color:#a33;display:block}.toast.working{background:#eef1f7;color:#33415a;display:block}
+  .fu{border-bottom:1px solid #f0ece3;padding:8px 0;display:flex;justify-content:space-between;align-items:center}.fu:last-child{border-bottom:0}
+  .fu b{font-size:12.5px}.fu .meta{color:var(--muted);font-size:11px}
+  .pill{font-size:10px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--accent)}
+  .empty{color:var(--muted);font-style:italic;padding:6px 0}
 </style>
 </head>
 <body>
-  <div class="hero">
-    <h1>⚡ Quick Actions</h1>
-    <p>Run your day without touching the grid.</p>
-  </div>
+  <div class="hero"><h1>⚡ Quick Actions</h1><p>Capture a lead and see who's due for a follow-up.</p></div>
 
   <div class="card">
-    <h2>➕ Add a lead</h2>
-    <label>Name *</label>
-    <input id="name" placeholder="Jane Smith">
-    <div class="row2">
-      <div><label>Phone</label><input id="phone" placeholder="(555) 123-4567"></div>
-      <div><label>Est. value</label><input id="value" placeholder="250"></div>
-    </div>
-    <label>Email</label>
-    <input id="email" placeholder="jane@email.com">
-    <label>Service</label>
-    <select id="service"><option value="">— choose a service —</option></select>
+    <h2>➕ New lead</h2>
+    <label>Name *</label><input id="c_name" placeholder="Jane Smith">
+    <label>Phone</label><input id="c_phone" placeholder="(555) 123-4567">
+    <label>Email</label><input id="c_email" placeholder="jane@email.com">
     <button id="addBtn" onclick="addLead()">Add lead</button>
-    <div id="toast" class="toast"></div>
+    <div id="addToast" class="toast"></div>
   </div>
 
   <div class="card">
     <h2>🔔 Follow-ups due</h2>
     <div id="fuList"><div class="empty">Loading…</div></div>
-    <button class="sec" onclick="loadFollowUps()">↻ Refresh</button>
   </div>
 
-  <div class="card">
-    <h2>✉️ One-click sends</h2>
-    <button class="sec" onclick="run('sendFollowUpDigest')">📧 Email me today's follow-ups</button>
-    <button class="sec" onclick="run('sendReviewRequests')">⭐ Send review requests</button>
-    <div id="toast2" class="toast"></div>
-  </div>
+  <button class="sec" onclick="google.script.run.showWebAppLink()">📲 Open the full app</button>
 
 <script>
-  function showToast(id, msg, ok) {
-    var t = document.getElementById(id);
-    t.textContent = msg; t.className = 'toast ' + (ok ? 'ok' : 'err');
-  }
-  function addLead() {
-    var name = document.getElementById('name').value.trim();
-    if (!name) { showToast('toast', 'A name is required.', false); return; }
-    var btn = document.getElementById('addBtn'); btn.disabled = true; btn.textContent = 'Adding…';
-    var form = {
-      name: name,
-      phone: document.getElementById('phone').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      value: document.getElementById('value').value.trim(),
-      service: document.getElementById('service').value.trim()
-    };
-    google.script.run.withSuccessHandler(function(msg){
-      showToast('toast', msg, true);
-      ['name','phone','email','value','service'].forEach(function(i){ document.getElementById(i).value=''; });
-      btn.disabled=false; btn.textContent='Add lead';
-      loadFollowUps();
-    }).withFailureHandler(function(e){
-      showToast('toast', e.message || 'Something went wrong.', false);
-      btn.disabled=false; btn.textContent='Add lead';
-    }).sidebarAddLead(form);
-  }
-  function loadFollowUps() {
-    var el = document.getElementById('fuList');
-    el.innerHTML = '<div class="empty">Loading…</div>';
-    google.script.run.withSuccessHandler(function(list){
-      if (!list || !list.length) { el.innerHTML = '<div class="empty">All caught up 🎉</div>'; return; }
-      el.innerHTML = list.map(function(f){
-        return '<div class="fu"><div><b>'+f.name+'</b><div class="meta">'+(f.phone||'—')+' · due '+f.due+'</div></div>'+
-               '<span class="pill">'+f.status+'</span></div>';
-      }).join('');
-    }).withFailureHandler(function(){ el.innerHTML='<div class="empty">Could not load.</div>'; }).sidebarFollowUps();
-  }
-  function run(fn) {
-    var t = document.getElementById('toast2'); t.textContent = 'Working…'; t.className = 'toast working';
-    google.script.run.withSuccessHandler(function(res){ showToast('toast2', res || 'Done.', true); })
-      .withFailureHandler(function(e){ showToast('toast2', e.message || 'Something went wrong.', false); })[fn]();
-  }
-  function loadServices() {
-    google.script.run.withSuccessHandler(function(list){
-      var sel = document.getElementById('service');
-      (list || []).forEach(function(s){ var o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
-    }).sidebarServices();
-  }
-  loadServices();
-  loadFollowUps();
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function setToast(el,cls,msg){el.className='toast '+cls;el.textContent=msg;}
+function load(){
+  google.script.run.withSuccessHandler(function(d){
+    var el=document.getElementById('fuList'); var fu=(d&&d.followUps)||[];
+    el.innerHTML = fu.length ? fu.map(function(f){
+      return '<div class="fu"><div><b>'+esc(f.name)+'</b><div class="meta">'+esc(f.phone||'—')+' · due '+esc(f.due)+'</div></div><span class="pill">'+esc(f.status)+'</span></div>';
+    }).join('') : '<div class="empty">All caught up 🎉</div>';
+  }).withFailureHandler(function(e){ document.getElementById('fuList').innerHTML='<div class="empty">Couldn\'t load.</div>'; }).sidebarData();
+}
+function addLead(){
+  var name=document.getElementById('c_name').value.trim();
+  var t=document.getElementById('addToast'), b=document.getElementById('addBtn');
+  if(!name){ setToast(t,'err','Name is required.'); return; }
+  b.disabled=true; setToast(t,'working','Adding…');
+  google.script.run.withSuccessHandler(function(r){
+    b.disabled=false;
+    if(r&&r.ok){ setToast(t,'ok','✅ Added "'+name+'" as a lead.'); ['c_name','c_phone','c_email'].forEach(function(id){document.getElementById(id).value='';}); load(); }
+    else setToast(t,'err',(r&&r.msg)||'Failed.');
+  }).withFailureHandler(function(e){ b.disabled=false; setToast(t,'err',String(e&&e.message||e)); })
+   .sidebarAddClient({ name:name, phone:document.getElementById('c_phone').value.trim(), email:document.getElementById('c_email').value.trim(), status:'Lead', source:'Sidebar' });
+}
+load();
 </script>
 </body>
 </html>
