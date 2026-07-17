@@ -252,8 +252,9 @@ function setClientStatus(id,st){ var c=clientById(id); if(c)c.status=st; closeMo
   enqueue('apiSetClientStatus',[id,st],'Status '+st); }
 function setClientFollowUp(id){ var iso=val('cf_date'); var c=clientById(id); if(c){ c.followUpISO=iso; c.followUp=iso; } closeModal(); toast('📅 Follow-up set');
   enqueue('apiSetClientFollowUp',[id,iso],'Follow-up'); }
-function archiveClient(id){ if(S.clients)S.clients=S.clients.filter(function(c){return c.id!==id;}); closeModal(); toast('🗑️ Archived'); renderClients();
-  enqueue('apiArchiveClient',[id],'Archive client'); }
+function archiveClient(id){ busy('Archiving…'); api('apiArchiveClient',id).then(function(r){
+  if(r&&r.ok){ if(S.clients)S.clients=S.clients.filter(function(c){return c.id!==id;}); closeModal(); toast('🗑️ Archived'); renderClients(); }
+  else toast((r&&r.msg)||'Could not archive'); }); }
 function openClientForm(){
   var opts=(S.enums.clientStatus||['Lead']).map(function(s){return '<option'+(s==='Lead'?' selected':'')+'>'+s+'</option>';}).join('');
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New client</h3>'+
@@ -360,7 +361,9 @@ function openJob(id){
 function setJobStatus(id,st){ var j=jobById(id); if(j)j.status=st; closeModal(); toast('✅ '+st); S.dashboard=null; renderJobs(); enqueue('apiUpdateJob',[id,{Status:st}],'Job '+st); }
 function rescheduleJob(id){ var iso=val('jb_date'), t=val('jb_time'); var j=jobById(id); if(j){ j.dateISO=iso; j.date=iso; j.time=t; } closeModal(); toast('📅 Rescheduled'); S.dashboard=null; renderJobs();
   enqueue('apiUpdateJob',[id,{date:iso,time:t}],'Reschedule'); }
-function archiveJob(id){ if(S.jobs)S.jobs=S.jobs.filter(function(j){return j.id!==id;}); closeModal(); toast('🗑️ Archived'); S.dashboard=null; renderJobs(); enqueue('apiArchiveJob',[id],'Archive job'); }
+function archiveJob(id){ busy('Archiving…'); api('apiArchiveJob',id).then(function(r){
+  if(r&&r.ok){ if(S.jobs)S.jobs=S.jobs.filter(function(j){return j.id!==id;}); closeModal(); toast('🗑️ Archived'); S.dashboard=null; renderJobs(); }
+  else toast((r&&r.msg)||'Could not archive'); }); }
 
 /* ================= BILLING ================= */
 var BILL_TAB='quotes', BILL_ORDER=['quotes','outstanding','paid','closedq'];

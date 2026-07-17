@@ -169,7 +169,11 @@ function apiUpdateClient(id, patch) {
 }
 function apiSetClientStatus(id, status) { update('Clients', id, { Status: status }); return { ok: true }; }
 function apiSetClientFollowUp(id, iso) { update('Clients', id, { NextFollowUp: iso ? API_parseDate_(iso) : '' }); return { ok: true }; }
-function apiArchiveClient(id) { softDelete('Clients', id); return { ok: true }; }
+function apiArchiveClient(id) {
+  var refs = DB_countRefs_('Jobs', 'ClientID', id) + DB_countRefs_('Estimates', 'ClientID', id) + DB_countRefs_('Invoices', 'ClientID', id);
+  if (refs) return { ok: false, msg: 'This client still has ' + refs + ' active job(s)/quote(s)/invoice(s). Archive or close those first.' };
+  softDelete('Clients', id); return { ok: true };
+}
 
 /* ============================ Services ============================ */
 
@@ -220,7 +224,11 @@ function apiUpdateJob(id, patch) {
   var j = update('Jobs', id, a);
   return { ok: true, job: API_jobView_(j) };
 }
-function apiArchiveJob(id) { softDelete('Jobs', id); return { ok: true }; }
+function apiArchiveJob(id) {
+  var refs = DB_countRefs_('Invoices', 'JobID', id);
+  if (refs) return { ok: false, msg: 'This job is linked to ' + refs + ' active invoice(s). Archive the invoice first.' };
+  softDelete('Jobs', id); return { ok: true };
+}
 
 /* ============================ Estimates / Invoices + line items ============================ */
 
@@ -233,7 +241,8 @@ function API_doc_(kind) { return DOC[kind] || DOC.ESTIMATE; }
 function API_docView_(kind, d, nameOf) {
   var D = API_doc_(kind);
   return { kind: kind, id: d[D.pk], clientId: d.ClientID, client: (nameOf || API_clientNameMap_())[d.ClientID] || '',
-    jobId: d.JobID || '', subtotal: API_num_(d.Subtotal), tax: API_num_(d.Tax), total: API_num_(d.Total), status: d.Status,
+    jobId: d.JobID || '', estimateId: d.EstimateID || '', taxRate: API_num_(d.TaxRate),
+    subtotal: API_num_(d.Subtotal), tax: API_num_(d.Tax), total: API_num_(d.Total), status: d.Status,
     issueDate: API_fmtD_(d.IssueDate), issueISO: API_iso_(d.IssueDate),
     dateB: API_fmtD_(d[D.dateB]), dateBISO: API_iso_(d[D.dateB]) };
 }
@@ -269,6 +278,7 @@ function apiCreateEstimate(form) {
   var e = insert('Estimates', {
     ClientID: form.clientId, IssueDate: today,
     ValidUntil: API_addDays_(today, API_num_(form.validDays) || 14), Status: 'Draft',
+    TaxRate: API_num_(settingGet('Sales tax %')),   // snapshot the tax rate at creation
   });
   API_insertLines_('Estimate', e.EstimateID, lines);
   recalcDocTotal('Estimate', e.EstimateID);
@@ -311,8 +321,9 @@ function apiApproveEstimate(estimateId, jobDateIso, jobServiceId) {
     JobDate: API_parseDate_(jobDateIso) || today, Status: 'Scheduled', Recurring: 'None',
   });
   var inv = insert('Invoices', {
-    ClientID: est.ClientID, JobID: job.JobID, IssueDate: today,
+    ClientID: est.ClientID, JobID: job.JobID, EstimateID: estimateId, IssueDate: today,
     DueDate: API_addDays_(today, API_invoiceTermsDays_()), Status: 'Draft',
+    TaxRate: API_num_(est.TaxRate),   // bill at the tax rate that was quoted
   });
   // Copy the QUOTED lines verbatim (preserve snapshot price; don't re-derive from Services).
   API_insertLines_('Invoice', inv.InvoiceID, estLines.map(function (li) {
@@ -416,6 +427,7 @@ var SETTINGS_KEYS = ['Business name', 'Owner email', 'Business phone', 'Business
   'Payment link', 'Invoice due (days)', 'Accent color'];
 // Numbering is owner-facing config, but the live counter lives in _meta (Script-owned, collision-safe).
 var NUMBER_KEYS = { 'Estimate starting number': 'Estimates', 'Invoice starting number': 'Invoices' };
+var NUMERIC_SETTINGS = { 'Sales tax %': 1, 'Invoice due (days)': 1, 'Default follow-up (days)': 1 };
 var LOGO_DATA_KEY = 'Company logo (data URL)';
 var LOGO_FILE_KEY = 'Company logo (Drive file id)';
 
@@ -426,7 +438,12 @@ function apiGetSettings() {
   return o;
 }
 function apiSaveSettings(obj) {
-  SETTINGS_KEYS.forEach(function (k) { if (obj[k] !== undefined) settingSet(k, obj[k]); });
+  SETTINGS_KEYS.forEach(function (k) {
+    if (obj[k] === undefined) return;
+    var v = obj[k];
+    if (NUMERIC_SETTINGS[k]) { var n = Number(String(v).replace(/[^0-9.\-]/g, '')); v = isFinite(n) ? n : 0; }  // sanitize numerics
+    settingSet(k, v);
+  });
   Object.keys(NUMBER_KEYS).forEach(function (k) {
     if (obj[k] !== undefined) { var n = DB_setCounter_(NUMBER_KEYS[k], parseInt(obj[k], 10)); settingSet(k, n); }
   });
