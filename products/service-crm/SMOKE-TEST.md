@@ -102,3 +102,42 @@ own copy** (their own app URL) — the deploy step is theirs, done once.
    "estimate not found" / "pick a valid client". Numbers never change while a screen is open.
 3. From **Home**, mark a week-job Done → it leaves the Home list immediately (no ~30s wait).
 4. Archive a just-created client/job → removes instantly, never "finishing save, try again."
+
+## O. Scheduling time + Google Calendar sync + Maps directions (build j / k) — GOOGLE INTEGRATION
+These touch **real Google Calendar** — the automated Node suites (`tests/*.js`) mock the backend and
+**cannot** cover them, so run these by hand (or run `runIntegrationSmoke` in the editor, see below).
+Make sure a test client has a real **Address** first (so the event gets a location).
+
+- [ ] **O1. Toggle exists + default on.** **More ▸ Business Settings ▸ Scheduling** shows
+  **Google Calendar sync = On** and a **Default job length (hours)** field.
+- [ ] **O2. First job → real event + permission.** With sync On, **Jobs ▸ + New job** for the test
+  client, date = a few days out, **Time = `2pm`** → save. The FIRST time, Google prompts to authorize
+  **Calendar** — approve it. Open your **Google Calendar**: an event appears on that date at **2pm**,
+  titled **"<client> — <service>"**, with the client's **address as the location** (tap it → Maps).
+- [ ] **O3. No time → all-day.** New job with the **Time left blank** → an **all-day** event appears.
+- [ ] **O4. Reschedule updates the SAME event.** Open the O2 job → **Reschedule** to a new date/time →
+  the calendar event **moves** to the new slot. There is **still only one** event (no duplicate).
+- [ ] **O5. Cancel / archive removes it.** Set the O2 job **Status = Cancelled** (or Archive it) → the
+  event **disappears** from Google Calendar.
+- [ ] **O6. Approve carries the time.** **Billing** → open a Draft estimate → **Approve → invoice + job**
+  → the popup asks for **Job date AND Time**; set `10am` → the created job shows `10am`, and (sync on)
+  a **10am** calendar event appears for it.
+- [ ] **O7. Toggle OFF is respected.** Settings ▸ Scheduling → **Calendar sync = Off**, Save. Create a
+  new job → **no** calendar event is created. Turn it back **On**.
+- [ ] **O8. Maps directions.** Open the test client → the **address is a link** and there's a
+  **🧭 Directions** button → tapping either opens **Google Maps directions** to that address (the Maps
+  app on a phone). From a job, tap the client first, then Directions.
+- [ ] **O9. Pick-client job creation (regression).** **Jobs ▸ + New job** with **no client preselected**
+  → tap **Pick client…** → choose a client → the form **comes back with that client set** (it must NOT
+  vanish) → add service + date → **Add job** → the job is created.
+- [ ] **O10. No field overlap.** On a phone-width screen, the **Date** and **Time** inputs on the job
+  form, the reschedule row, and the approve popup **do not overlap** (they sit side by side).
+
+### Automated version of Section O (optional, one click)
+`Tests.gs` ships a `runIntegrationSmoke()` function. In **Extensions ▸ Apps Script**, pick
+`runIntegrationSmoke` from the function dropdown and **Run**. It creates a tagged `__SMOKE__` client +
+job, drives create → verify event → reschedule → cancel against your **real** calendar, then deletes
+the event and hard-deletes its own test rows (leaves no residue). Read the result in the **Execution
+log** (or the popup). This is the closest thing to "run the whole Google integration for me" — the one
+step only you can do is approve the Calendar permission the first time. *(Dev/QA file — you can leave it
+out of the buyer-facing master; it's inert unless explicitly run.)*
