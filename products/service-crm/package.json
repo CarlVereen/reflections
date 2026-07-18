@@ -8,9 +8,17 @@
     "test:api": "node tests/apitest.js",
     "test:code": "node tests/codetest.js",
     "test:web": "node tests/webtest.js",
-    "test": "node tests/dbtest.js && node tests/apitest.js && node tests/codetest.js && node tests/webtest.js"
+    "test": "node tests/dbtest.js && node tests/apitest.js && node tests/codetest.js && node tests/webtest.js",
+    "clasp:login": "clasp login",
+    "clasp:status": "clasp show-file-status",
+    "clasp:push": "clasp push",
+    "clasp:pull": "clasp pull",
+    "clasp:open": "clasp open-script",
+    "clasp:smoke": "clasp run-function runIntegrationSmoke",
+    "clasp:logs": "clasp tail-logs"
   },
   "devDependencies": {
+    "@google/clasp": "^3.3.0",
     "playwright": "^1.48.0"
   }
 }

@@ -6,3 +6,7 @@ tests/webapp-wired.html
 # Test tooling — installed locally, never shipped to buyers
 node_modules/
 package-lock.json
+
+# clasp credentials — NEVER commit (contains OAuth tokens for your Google account)
+.clasprc.json
+.clasp-credentials*

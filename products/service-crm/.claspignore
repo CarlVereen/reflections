@@ -1,0 +1,14 @@
+# clasp push whitelist: ignore EVERYTHING, then allow only the real Apps Script project files.
+# Without this, clasp would try to push the Node test .js files, every .md, and all the other
+# .html templates (delivery/deploy/thumbnail/variants) into the Apps Script project. Verify what
+# will actually push with:  npm run clasp:status
+**/**
+
+!appsscript.json
+!Code.gs
+!Api.gs
+!db.gs
+!setup.gs
+!Tests.gs
+!WebApp.html
+!Sidebar.html
