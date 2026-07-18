@@ -32,7 +32,9 @@ automations.
 5. Open that URL. That's your app. On your phone: browser menu → **Add to Home Screen**.
 6. In the app, open **More ▸ Business Settings** and fill in your business name, phone,
    email, sales tax %, Google review link, and payment link.
-7. Back in the sheet, **⚡ CRM ▸ Automations ▸ Turn ON daily autopilot**.
+7. Open **More ▸ Price book** and add your **services and their prices**. These auto-fill when
+   you build an estimate, so set them once now. (You can still change the price on any line later.)
+8. Back in the sheet, **⚡ CRM ▸ Automations ▸ Turn ON daily autopilot**.
 
 ### ⚠️ Approving the app: read this first (it looks scarier than it is)
 
