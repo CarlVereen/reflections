@@ -8,8 +8,8 @@
 body{font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
 .app{max-width:640px;margin:0 auto;min-height:100vh;padding-bottom:76px}
 .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;
-  padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.topbar h1{font-size:17px;font-weight:800}.topbar .sub{font-size:12px;opacity:.85}
+  padding:9px 16px;display:flex;justify-content:space-between;align-items:center}
+.topbar h1{font-size:16px;font-weight:800}.topbar .sub{font-size:12px;opacity:.85}
 .iconbtn{background:rgba(255,255,255,.18);border:0;color:#fff;width:36px;height:36px;border-radius:10px;font-size:16px;cursor:pointer}
 .screen{display:none;padding:14px}.screen.on{display:block;animation:fade .2s ease}
 @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -26,7 +26,7 @@ h2.sec{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--
 .pill{font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap}
 .p-lead,.p-draft{background:#e8eef7;color:#2a4d80}.p-active,.p-accepted,.p-paid,.p-done{background:#d8efdf;color:#2c6b42}
 .p-inactive{background:#eeeeee;color:#555}.p-lost,.p-declined,.p-overdue,.p-cancelled{background:#f5d9d3;color:#a33}
-.p-sent,.p-scheduled{background:#fff3d6;color:#8a6d1a}.p-pastdue{background:#f5d9d3;color:#a33}
+.p-sent,.p-scheduled{background:#f0d488;color:#5a460b}.p-pastdue{background:#f5d9d3;color:#a33}
 .muted{color:var(--muted);font-size:13px}.empty{color:var(--muted);text-align:center;padding:26px 10px;font-style:italic}
 .btn{display:block;width:100%;border:0;border-radius:999px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;
   background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:#fff;margin-top:10px;text-align:center}
@@ -68,9 +68,39 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
 .colorrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
 .colorrow input[type=color]{width:46px;height:38px;padding:2px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
 .swatches{display:flex;gap:6px;flex-wrap:wrap}.sw{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
+/* line-icon system (replaces the old emoji glyphs) */
+.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-.14em}
+.navico{width:22px;height:22px;display:block;margin:0 auto 2px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* quick-action (Call / Text / Directions) row on the client sheet */
+.qrow{display:flex;gap:8px;margin-top:12px}
+.qbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 4px;font-weight:800;font-size:12px;color:var(--ink);text-decoration:none;cursor:pointer}
+.qbtn .ic{width:20px;height:20px;color:var(--accent)}
+.qbtn:active{border-color:var(--accent-lite)}
+/* labeled fact rows (job detail) */
+.facts{display:flex;flex-direction:column;gap:9px;margin:10px 0 2px}
+.fact{display:flex;gap:10px;align-items:flex-start}
+.fact .ic{width:16px;height:16px;color:var(--accent);margin-top:2px}
+.fact .k{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fact .v{font-size:13.5px;font-weight:600}
+.fact .v a{color:#2f5db3;text-decoration:underline}
 </style>
 </head>
 <body>
+<!-- icon sprite: one consistent monochrome line set, referenced via <use href="#i-…"> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.6 12 3l9 7.6"/><path d="M5.4 9.4V20h13.2V9.4"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.4 19a5.6 5.6 0 0 1 11.2 0"/><path d="M15.2 5.4a3.1 3.1 0 0 1 0 5.5"/><path d="M17 19a5.6 5.6 0 0 0-2.1-4.4"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.4"/><path d="M3.5 9.4h17M8 3.2v3.4M16 3.2v3.4"/></symbol>
+  <symbol id="i-bill" viewBox="0 0 24 24"><path d="M6 3.6h12v16.8l-2.5-1.5-2.5 1.5-2.5-1.5L8 20.4 6 18.9z"/><path d="M9.4 8.4h5.2M9.4 12h5.2"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.2" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="18.8" cy="12" r="1.7" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.3 3.6 9 4.2l1 3.9-2 1.4a11.4 11.4 0 0 0 6.5 6.5l1.4-2 3.9 1 .6 2.7a1.9 1.9 0 0 1-1.9 2.2A15.6 15.6 0 0 1 4 6a1.9 1.9 0 0 1 2.3-2.4z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.4h16v9.8H9.5L5.5 18.6v-3.4H4z"/></symbol>
+  <symbol id="i-dir" viewBox="0 0 24 24"><path d="M13.5 4h6.5v6.5"/><path d="M20 4 11 13"/><path d="M18.5 13.5V19.5H5.5V6.5h6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.2v5l3.4 2"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s6.8-5.4 6.8-10.8A6.8 6.8 0 1 0 5.2 10.2C5.2 15.6 12 21 12 21z"/><circle cx="12" cy="10" r="2.4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-.9 4.5"/><path d="M20 5v6h-6"/></symbol>
+</svg>
 <div class="app">
   <div class="topbar">
     <div><h1 id="bizName">Service Pro CRM</h1><div class="sub" id="screenName">Home</div></div>
@@ -101,11 +131,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
 
 <div class="actionbar" id="actionbar"></div>
 <div class="nav">
-  <button class="on" data-s="home" onclick="nav('home')"><span class="i">🏠</span>Home</button>
-  <button data-s="clients" onclick="nav('clients')"><span class="i">👥</span>Clients</button>
-  <button data-s="jobs" onclick="nav('jobs')"><span class="i">🗓️</span>Jobs</button>
-  <button data-s="billing" onclick="nav('billing')"><span class="i">💵</span>Billing</button>
-  <button data-s="more" onclick="nav('more')"><span class="i">⋯</span>More</button>
+  <button class="on" data-s="home" onclick="nav('home')"><svg class="navico"><use href="#i-home"/></svg>Home</button>
+  <button data-s="clients" onclick="nav('clients')"><svg class="navico"><use href="#i-users"/></svg>Clients</button>
+  <button data-s="jobs" onclick="nav('jobs')"><svg class="navico"><use href="#i-cal"/></svg>Jobs</button>
+  <button data-s="billing" onclick="nav('billing')"><svg class="navico"><use href="#i-bill"/></svg>Billing</button>
+  <button data-s="more" onclick="nav('more')"><svg class="navico"><use href="#i-more"/></svg>More</button>
 </div>
 
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet" id="sheet"></div></div>
@@ -261,6 +291,7 @@ function jarg(v){ return esc(JSON.stringify(v)); }
 function money(n){ n=Number(n)||0; return CUR+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function money0(n){ n=Number(n)||0; return CUR+Math.round(n).toLocaleString(); }
 function pill(s){ var k=String(s||'').toLowerCase().replace(/[^a-z]/g,''); return '<span class="pill p-'+k+'">'+esc(s||'')+'</span>'; }
+function ico(n){ return '<svg class="ic"><use href="#i-'+n+'"/></svg>'; }   // inline line icon by name (see the #i-… sprite)
 function val(id){ var e=document.getElementById(id); return e?String(e.value).trim():''; }
 function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},2600); }
 function busy(m){ toast(m||'Working…'); }
@@ -404,11 +435,11 @@ function renderHome(){
   var h='<div class="tiles">'+tile('New leads · 7d',d.newLeads)+tile('Unpaid',money0(d.unpaid),'billed, not paid')+
     tile('Jobs this week',d.jobsWeek)+tile('Revenue · mo',money0(d.revMonth))+'</div>'+
     '<div class="tiles" style="margin-top:10px">'+tile('Win rate',d.winRate+'%','clients won vs lost',1)+tile('Lifetime',money0(d.revLife),'',1)+'</div>';
-  h+='<h2 class="sec">🔔 Follow-ups due</h2>';
+  h+='<h2 class="sec">Follow-ups due</h2>';
   h+= (d.followUps&&d.followUps.length) ? d.followUps.map(function(f){
     return '<div class="list-item" onclick="openClient('+jarg(f.id)+')"><div class="row"><div><div class="name">'+esc(f.name)+'</div><div class="meta">'+esc(f.phone||'n/a')+' · due '+esc(f.due)+'</div></div>'+pill(f.status)+'</div></div>';
   }).join('') : '<div class="empty">All caught up 🎉</div>';
-  h+='<h2 class="sec">📅 This week\'s jobs</h2>';
+  h+='<h2 class="sec">This week\'s jobs</h2>';
   var wj=(d.weekJobs||[]);
   h+= wj.length ? wj.map(function(j){
     return '<div class="list-item" onclick="openJob('+jarg(j.id)+')"><div class="row"><div><div class="name">'+esc(j.client)+'</div><div class="meta">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+(j.service?' · '+esc(j.service):'')+'</div></div>'+pill(j.status)+'</div></div>';
@@ -442,18 +473,28 @@ function openClient(id){
   var m=[]; if(c.lifetime) m.push(money0(c.lifetime)+' lifetime'); if(c.source) m.push('via '+esc(c.source)); if(c.followUp) m.push('follow-up '+esc(c.followUp));
   if(m.length) info+='<div class="muted" style="margin-top:2px">'+m.join(' · ')+'</div>';
   var badges='';
-  if(c.nextJob) badges+='<div class="list-item" onclick="openJob('+jarg(c.nextJob.id)+')"><div class="row"><div><div class="name">📅 Upcoming job</div><div class="meta">'+esc(c.nextJob.date)+(c.nextJob.service?' · '+esc(c.nextJob.service):'')+'</div></div><span>›</span></div></div>';
-  if(c.openEstimate) badges+='<div class="list-item" onclick="openDoc(\'ESTIMATE\','+jarg(c.openEstimate.id)+')"><div class="row"><div><div class="name">📄 Open estimate</div><div class="meta">'+esc(c.openEstimate.id)+' · '+money(c.openEstimate.total)+'</div></div><span>›</span></div></div>';
-  if(c.unpaidInvoice) badges+='<div class="list-item" onclick="openDoc(\'INVOICE\','+jarg(c.unpaidInvoice.id)+')"><div class="row"><div><div class="name">💵 Unpaid invoice</div><div class="meta">'+esc(c.unpaidInvoice.id)+' · '+money(c.unpaidInvoice.total)+' · '+esc(c.unpaidInvoice.status)+'</div></div><span>›</span></div></div>';
+  if(c.nextJob) badges+='<div class="list-item" onclick="openJob('+jarg(c.nextJob.id)+')"><div class="row"><div><div class="name">'+ico('cal')+' Upcoming job</div><div class="meta">'+esc(c.nextJob.date)+(c.nextJob.service?' · '+esc(c.nextJob.service):'')+'</div></div><span>›</span></div></div>';
+  if(c.openEstimate) badges+='<div class="list-item" onclick="openDoc(\'ESTIMATE\','+jarg(c.openEstimate.id)+')"><div class="row"><div><div class="name">'+ico('bill')+' Open estimate</div><div class="meta">'+esc(c.openEstimate.id)+' · '+money(c.openEstimate.total)+'</div></div><span>›</span></div></div>';
+  if(c.unpaidInvoice) badges+='<div class="list-item" onclick="openDoc(\'INVOICE\','+jarg(c.unpaidInvoice.id)+')"><div class="row"><div><div class="name">'+ico('bill')+' Unpaid invoice</div><div class="meta">'+esc(c.unpaidInvoice.id)+' · '+money(c.unpaidInvoice.total)+' · '+esc(c.unpaidInvoice.status)+'</div></div><span>›</span></div></div>';
   var statusBtns=(S.enums.clientStatus||[]).map(function(st){ return '<button class="btn sm sec" onclick="setClientStatus('+jarg(id)+',\''+st+'\')">'+st+'</button>'; }).join(' ');
+  // Hierarchy: quick-contact icons up top, ONE filled primary (Create estimate), and the rarely-used
+  // controls (status / follow-up / edit / archive) folded behind "More" so the next action is obvious.
+  var quick=(tel||maps)?('<div class="qrow">'+
+    (tel?'<a class="qbtn" href="tel:'+tel+'">'+ico('phone')+'Call</a><a class="qbtn" href="sms:'+tel+'">'+ico('chat')+'Text</a>':'')+
+    (maps?'<a class="qbtn" href="'+esc(maps)+'" target="_blank" rel="noopener">'+ico('dir')+'Directions</a>':'')+'</div>'):'';
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(c.name)+' '+pill(c.status)+'</h3>'+info+
-    ((tel||maps)?'<div class="btnrow">'+(tel?'<a class="btn sec" href="tel:'+tel+'">Call</a><a class="btn sec" href="sms:'+tel+'">Text</a>':'')+(maps?'<a class="btn sec" href="'+esc(maps)+'" target="_blank" rel="noopener">🧭 Directions</a>':'')+'</div>':'')+
+    quick+
     (badges?'<h2 class="sec">Activity</h2>'+badges:'')+
-    '<div class="btnrow"><button class="btn" onclick="startEstimate('+jarg(id)+')">Create estimate</button><button class="btn sec" onclick="openJobForm('+jarg(id)+')">New job</button></div>'+
-    '<h2 class="sec">Follow-up</h2><div class="two"><div><input type="date" id="cf_date" value="'+esc(c.followUpISO||'')+'"></div><div><button class="btn sec" onclick="setClientFollowUp('+jarg(id)+')">Set date</button></div></div>'+
-    '<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+statusBtns+'</div>'+
-    '<div class="btnrow"><button class="btn sec" onclick="openClientEdit('+jarg(id)+')">Edit</button><button class="btn danger" onclick="archiveClient('+jarg(id)+')">Archive</button></div>');
+    '<button class="btn" style="margin-top:12px" onclick="startEstimate('+jarg(id)+')">'+ico('plus')+' Create estimate</button>'+
+    '<div class="btnrow"><button class="btn sec" onclick="openJobForm('+jarg(id)+')">New job</button><button class="btn sec" onclick="toggleClientMore(this)">More</button></div>'+
+    '<div id="clientMore" style="display:none">'+
+      '<h2 class="sec">Follow-up</h2><div class="two"><div><input type="date" id="cf_date" value="'+esc(c.followUpISO||'')+'"></div><div><button class="btn sec" onclick="setClientFollowUp('+jarg(id)+')">Set date</button></div></div>'+
+      '<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+statusBtns+'</div>'+
+      '<div class="btnrow"><button class="btn sec" onclick="openClientEdit('+jarg(id)+')">Edit</button><button class="btn danger" onclick="archiveClient('+jarg(id)+')">Archive</button></div>'+
+    '</div>');
 }
+// Reveal / hide the folded client-sheet controls (status, follow-up, edit, archive).
+function toggleClientMore(btn){ var m=document.getElementById('clientMore'); if(!m)return; var show=(m.style.display==='none'); m.style.display=show?'block':'none'; if(btn)btn.textContent=show?'Less':'More'; }
 function setClientStatus(id,st){ var c=clientById(id); if(c)c.status=st; closeModal(); toast('✅ Status → '+st); S.dashboard=null; rerender();
   enqueue('apiSetClientStatus',[id,st],'Status '+st); }
 function setClientFollowUp(id){ var iso=val('cf_date'); var c=clientById(id); if(c){ c.followUpISO=iso; c.followUp=iso?fmtMDfromISO(iso):''; } closeModal(); toast('📅 Follow-up set'); S.dashboard=null; rerender();
@@ -572,8 +613,17 @@ function saveJob(){
 function openJob(id){
   var j=jobById(id); if(!j)return;   // temps are viewable/editable now: status & reschedule queue and remap
   var statusBtns=(S.enums.jobStatus||[]).map(function(st){ return '<button class="btn sm sec" onclick="setJobStatus('+jarg(id)+',\''+st+'\')">'+st+'</button>'; }).join(' ');
+  // Job facts as labeled, icon-led rows (scan date/time/address at a glance) instead of one run-on line.
+  var jc=clientById(j.clientId), jaddr=(jc&&jc.address)?jc.address:'';
+  var jmaps=jaddr?('https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(jaddr)):'';
+  var facts='<div class="facts">'+
+    (j.date?'<div class="fact">'+ico('cal')+'<div><div class="k">Date</div><div class="v">'+esc(j.date)+'</div></div></div>':'')+
+    (j.time?'<div class="fact">'+ico('clock')+'<div><div class="k">Time</div><div class="v">'+esc(j.time)+'</div></div></div>':'')+
+    (jaddr?'<div class="fact">'+ico('pin')+'<div><div class="k">Address</div><div class="v">'+(jmaps?'<a href="'+esc(jmaps)+'" target="_blank" rel="noopener">'+esc(jaddr)+'</a>':esc(jaddr))+'</div></div></div>':'')+
+    (j.recurring&&j.recurring!=='None'?'<div class="fact">'+ico('refresh')+'<div><div class="k">Repeat</div><div class="v">'+esc(j.recurring)+'</div></div></div>':'')+
+    '</div>';
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(j.client||'')+'</h3>'+
-    '<div class="muted">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+' · '+esc(j.service||'')+' · '+esc(j.recurring||'None')+'</div>'+
+    (j.service?'<div class="muted">'+esc(j.service)+'</div>':'')+facts+
     '<h2 class="sec">Reschedule</h2><div class="two"><div><input type="date" id="jb_date" value="'+esc(j.dateISO||'')+'"></div><div><input id="jb_time" value="'+esc(j.time||'')+'" placeholder="Time"></div></div>'+
     '<button class="btn sec" onclick="rescheduleJob('+jarg(id)+')">Save new date</button>'+
     '<h2 class="sec">Status</h2><div class="btnrow" style="flex-wrap:wrap">'+statusBtns+'</div>'+
