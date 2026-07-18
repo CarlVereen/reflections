@@ -1,5 +1,5 @@
 /**
- * db.gs — Service Pro CRM data-access layer (ORM-lite) over Google Sheets.
+ * db.gs: Service Pro CRM data-access layer (ORM-lite) over Google Sheets.
  *
  * Design rules (see the rebuild spec):
  *  - Join by ID, never by name. FK existence is validated in Script on every write.
@@ -125,7 +125,7 @@ var META_SEED = [
 function DB_ss_() { return SpreadsheetApp.getActiveSpreadsheet(); }
 function DB_sheet_(table) {
   var sh = DB_ss_().getSheetByName(SCHEMA[table].sheet);
-  if (!sh) throw new Error('Missing tab "' + SCHEMA[table].sheet + '" — run setupDatabase() first.');
+  if (!sh) throw new Error('Missing tab "' + SCHEMA[table].sheet + '". Run setupDatabase() first.');
   return sh;
 }
 function DB_colNames_(table) { return SCHEMA[table].cols.map(function (c) { return c.n; }); }
@@ -195,7 +195,7 @@ function DB_objToRow_(table, obj) {
  *  The counter advances before the row is written, which guarantees uniqueness under the lock but
  *  means a mid-write failure permanently BURNS those numbers (small gaps in the sequence). That is
  *  the deliberate trade-off; a strict no-gaps requirement would need a reserve-then-commit scheme.
- *  Padding (see _meta.Padding) is display-only — IDs stay unique and monotonic past the pad width. */
+ *  Padding (see _meta.Padding) is display-only; IDs stay unique and monotonic past the pad width. */
 function DB_reserveIds_(entity, count) {
   return DB_withLock_(function () {
     var sh = DB_sheet_('_meta');
@@ -241,7 +241,7 @@ function DB_setCounter_(entity, n) {
 
 /* ============================ validation ============================ */
 
-// FK targets must EXIST and (unless snapshot-protected) be LIVE — you can't attach a new record to
+// FK targets must EXIST and (unless snapshot-protected) be LIVE: you can't attach a new record to
 // an archived parent. Snapshot-price refs (Service) may point at archived rows for history/approval.
 function DB_assertRef_(table, colName, targetTable, v, allowArchived) {
   var p = getById(targetTable, v);

@@ -40,10 +40,9 @@ This is a Google-platform choice, **not** something this product controls or cha
 | Data | Where it lives |
 |---|---|
 | Name, phone, email, address | Clients tab (the buyer's own Sheet) |
-| Job history, service, schedule | 🗓️ Jobs tab |
-| Amounts owed/paid, line items | 📄 Estimates, 💵 Invoices, 🧾 Line Items tabs |
+| Job history, service, schedule | Jobs tab |
+| Amounts owed/paid, line items | Estimates, Invoices, LineItems tabs |
 | Invoice/estimate **PDFs** | The buyer's Google **Drive** (private) |
-| Job **photos** | A Drive folder shared **anyone-with-link** (see risk #1) |
 | Lead-form **raw submissions** | A "Form Responses" tab in the same Sheet |
 | Job title + client name | The buyer's Google **Calendar** (if they use that feature) |
 
@@ -54,7 +53,6 @@ This is a Google-platform choice, **not** something this product controls or cha
 |---|---|---|
 | **Emails to customers** (invoice/estimate/review/reminder) via the owner's Gmail | Wrong/mistyped email in the Clients tab → PII to the wrong person. Sent one-per-recipient (no CC leakage between customers ✅). | 🟡 Medium |
 | **Follow-up digest email** (customer names/phones) to the "Owner email" setting | If that setting is mistyped, customer PII goes to a stranger. Defaults to the account owner ✅. | 🟡 Medium |
-| **Job photo folder** shared *anyone-with-link* | Anyone with the link can view the photos (property, vehicles, interiors). | 🟠 Notable |
 | **Calendar events** carry the client name | If the buyer's Google Calendar is shared/public, client names + schedule leak. | 🟡 Medium |
 | **The lead Form** (public link) | Input only (can't read data), but collects PII from submitters; a second copy sits in "Form Responses". | 🟡 Medium |
 | **Payment link** (owner's Stripe/PayPal) | Customer pays on that third party, out of this app's scope. | ℹ️ Info |

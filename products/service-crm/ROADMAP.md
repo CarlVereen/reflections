@@ -43,10 +43,9 @@ so we closed only the two highest-leverage feasible gaps and deliberately stoppe
 to avoid bloating the one thing users praise most.
 
 ### ✅ Closed
-- **Google Calendar**: `addJobToCalendar` pushes a Job to the owner's Google Calendar,
-  which IS their phone's schedule/day view (better than a cramped in-sheet calendar).
-- **Before/after photos**: `createJobPhotoFolder` makes a shareable Drive folder per
-  job and links it in the new Jobs "Photos" column. Big for cleaning/lawn niches.
+- **Google Calendar (automatic)**: scheduling/rescheduling/cancelling a job in the app
+  automatically creates/updates/removes its Google Calendar event (client address as the
+  location), which IS the owner's phone schedule. Toggle in Settings.
 
 ### ⏸️ Deliberately deferred (would add tabs/complexity; add only if buyers ask)
 - Deposits / balance-due on invoices (niche to higher-ticket trades).

@@ -46,12 +46,6 @@ added `escHtml_()` and applied it to all user-derived values in every email/PDF 
 `doGet` set `XFrameOptionsMode.ALLOWALL`, letting any site embed the app in an iframe.
 **Fix:** removed it, so the default blocks third-party framing. The app is opened directly.
 
-### 5. 🟡 Job photo folders are shared "anyone with the link": BY DESIGN (documented)
-`createJobPhotoFolder` makes a Drive folder shared **Anyone-with-link (view)** so the owner
-can send before/after photos to a customer. That's intentional, but it means **anyone with
-the link can view those photos.** Guidance: only put job photos there; don't store anything
-sensitive, and don't post the links publicly. *(Left as-is; it's the feature's purpose.)*
-
 ## Residual / accepted risks
 - **Broad OAuth scopes** (Gmail send, Drive, Calendar, Forms, Sheets) are required for the
   features. Trust rests on the code making **zero external calls** (verified above); buyers

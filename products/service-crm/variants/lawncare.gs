@@ -8,9 +8,9 @@ const CONFIG = {
   accent:  '#4f8f3a',   // grass green
   accent2: '#356325',
   services: [
-    'Mowing — one-time',
-    'Mowing — weekly',
-    'Mowing — biweekly',
+    'Mowing: one-time',
+    'Mowing: weekly',
+    'Mowing: biweekly',
     'Fertilization',
     'Weed control',
     'Leaf / debris cleanup',

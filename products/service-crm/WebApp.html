@@ -143,7 +143,7 @@ var CUR='$';
 /* ================= local save (localStorage snapshot of the dataset) =================
    The whole point: reads no longer wait on the network for the app to become usable.
    On boot we hydrate S from this snapshot and paint immediately, THEN refresh from the
-   server in the background. Best-effort only — every access is guarded so private-mode,
+   server in the background. Best-effort only; every access is guarded so private-mode,
    quota, or a corrupt blob can never break the app; the server stays the source of truth. */
 var CACHE_KEY='crm2_cache', CACHE_VER='3';   // bump CACHE_VER whenever the shape of S changes → auto-invalidates old blobs
 var _cacheT=null;
@@ -157,7 +157,7 @@ function saveCache(now){
       v:CACHE_VER, at:Date.now(),
       settings:S.settings, services:S.services, servicesAll:S.servicesAll, enums:S.enums,
       dashboard:S.dashboard, clients:S.clients, jobs:S.jobs, billing:S.billing, lineItems:S.lineItems, counters:S.counters, logo:S.logo
-    })); }catch(e){ /* quota / serialize failure — cache is best-effort, ignore */ }
+    })); }catch(e){ /* quota / serialize failure; cache is best-effort, ignore */ }
   };
   clearTimeout(_cacheT);
   if(now) flush(); else _cacheT=setTimeout(flush, 400);
@@ -196,7 +196,7 @@ function api(fn){
 /* ---------- optimistic sync engine (writes apply locally, upload in background) ---------- */
 var SYNC={q:[],active:false,seq:0}, STORE='crm2_sync', _restoredQueue=false;
 function enqueue(fn,args,label,opts){ opts=opts||{}; SYNC.q.push({id:'op'+(++SYNC.seq),fn:fn,args:args,label:label,tries:0,_onOk:opts.onOk,_onFail:opts.onFail}); persistQueue(); syncBadge(); syncPump(); }
-/* Temp-ID resolution — the fix for "pick a valid client". A record created optimistically carries a
+/* Temp-ID resolution: the fix for "pick a valid client". A record created optimistically carries a
    local temp id (tmp…) until the server assigns the real one. When that real id arrives, rewrite every
    still-queued op's args so a dependent write (estimate→client, invoice→estimate) references the REAL id
    instead of the temp that the server has never heard of. Args are JSON → a scoped string swap is safe
@@ -207,7 +207,7 @@ function remapPending(tempId,realId){
   persistQueue();
 }
 /* Client-side sequential IDs. Single-writer means the app can assign the next real CL/EST/INV number
-   itself (seeded from the boot counters) — no round trip, no "temp" placeholder, invoice numbers stay
+   itself (seeded from the boot counters): no round trip, no "temp" placeholder, invoice numbers stay
    sequential. The server adopts the id if it's free and only hands back a corrected one on a rare
    collision (a lead form / automation grabbed that number), which advanceCounter + remapPending absorb.
    Falls back to a tmp id (server assigns + remaps) if no counter is available. */
@@ -281,7 +281,7 @@ function isTemp(id){ return String(id||'').indexOf('tmp')===0; }
 /* ================= stale-while-revalidate reads =================
    Screens paint from cache instantly, then quietly refresh from the server. Two guardrails keep
    the optimistic write model intact:
-     • never refresh while writes are pending (SYNC.q) — local state is ahead of the server;
+     • never refresh while writes are pending (SYNC.q): local state is ahead of the server;
      • if a write lands mid-fetch, discard the fetched result rather than regress the local edit.
    A short freshness window throttles refetch when tabbing quickly between screens. */
 var FRESH_MS=20000, _fresh={};
@@ -308,7 +308,7 @@ function applyAccent(h){ h=hexRGB(h)?h:ACCENT_DEFAULT; var r=document.documentEl
 
 /* ================= boot + nav ================= */
 function boot(skipCache){
-  // 1) Local-first: hydrate the ENTIRE dataset from the inlined payload — zero server round trips.
+  // 1) Local-first: hydrate the ENTIRE dataset from the inlined payload: zero server round trips.
   if(!skipCache && BOOT && BOOT.ready){
     hydrateFromSnapshot(BOOT);
     if(BOOT_MS==null)BOOT_MS=Math.round(_now()-BOOT_T0);
@@ -371,7 +371,7 @@ function rerender(){
 }
 
 /* ================= HOME ================= */
-// The dashboard is DERIVED from the in-memory dataset (S) — recomputed locally, never fetched. That
+// The dashboard is DERIVED from the in-memory dataset (S): recomputed locally, never fetched. That
 // keeps Home instant and always consistent with the optimistic edits the user just made.
 function loadHome(){ S.dashboard=computeDashboard(); renderHome(); }
 function _isoDate(s){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s||'')); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
@@ -406,7 +406,7 @@ function renderHome(){
     '<div class="tiles" style="margin-top:10px">'+tile('Win rate',d.winRate+'%','clients won vs lost',1)+tile('Lifetime',money0(d.revLife),'',1)+'</div>';
   h+='<h2 class="sec">🔔 Follow-ups due</h2>';
   h+= (d.followUps&&d.followUps.length) ? d.followUps.map(function(f){
-    return '<div class="list-item" onclick="openClient('+jarg(f.id)+')"><div class="row"><div><div class="name">'+esc(f.name)+'</div><div class="meta">'+esc(f.phone||'—')+' · due '+esc(f.due)+'</div></div>'+pill(f.status)+'</div></div>';
+    return '<div class="list-item" onclick="openClient('+jarg(f.id)+')"><div class="row"><div><div class="name">'+esc(f.name)+'</div><div class="meta">'+esc(f.phone||'n/a')+' · due '+esc(f.due)+'</div></div>'+pill(f.status)+'</div></div>';
   }).join('') : '<div class="empty">All caught up 🎉</div>';
   h+='<h2 class="sec">📅 This week\'s jobs</h2>';
   var wj=(d.weekJobs||[]);
@@ -428,7 +428,7 @@ function renderClients(){
   var body=document.getElementById('clientsBody');
   if(!list.length){ body.innerHTML='<div class="empty">'+(q?'No matches.':'No clients yet. Tap + to add one.')+'</div>'; return; }
   body.innerHTML=list.map(function(c){
-    var sub=esc(c.phone||'—')+(c.email?' · '+esc(c.email):'');
+    var sub=esc(c.phone||'n/a')+(c.email?' · '+esc(c.email):'');
     return '<div class="list-item" onclick="openClient('+jarg(c.id)+')"><div class="row"><div><div class="name">'+esc(c.name)+'</div><div class="meta">'+sub+'</div></div>'+pill(c.status)+'</div></div>';
   }).join('');
 }
@@ -437,7 +437,7 @@ function openClient(id){
   var c=clientById(id); if(!c)return;
   var tel=String(c.phone||'').replace(/[^0-9+]/g,'');
   var maps=c.address?('https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(c.address)):'';
-  var info='<div class="muted">'+esc(c.phone||'—')+(c.email?' · '+esc(c.email):'')+'</div>'+
+  var info='<div class="muted">'+esc(c.phone||'n/a')+(c.email?' · '+esc(c.email):'')+'</div>'+
     (c.address?'<div class="muted"><a href="'+esc(maps)+'" target="_blank" rel="noopener">'+esc(c.address)+'</a></div>':'');
   var m=[]; if(c.lifetime) m.push(money0(c.lifetime)+' lifetime'); if(c.source) m.push('via '+esc(c.source)); if(c.followUp) m.push('follow-up '+esc(c.followUp));
   if(m.length) info+='<div class="muted" style="margin-top:2px">'+m.join(' · ')+'</div>';
@@ -460,7 +460,7 @@ function setClientFollowUp(id){ var iso=val('cf_date'); var c=clientById(id); if
   enqueue('apiSetClientFollowUp',[id,iso],'Follow-up'); }
 function archiveClient(id){ var c=clientById(id);
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Archive '+esc((c||{}).name||'this client')+'?</h3>'+
-    '<div class="muted" style="margin-bottom:10px">They\'ll be hidden from your lists (kept in the sheet — restorable).</div>'+
+    '<div class="muted" style="margin-bottom:10px">They\'ll be hidden from your lists (kept in the sheet, restorable).</div>'+
     '<button class="btn danger" onclick="confirmArchiveClient('+jarg(id)+')">Archive</button><button class="btn sec" onclick="openClient('+jarg(id)+')">Cancel</button>'); }
 function confirmArchiveClient(id){ var c=clientById(id); if(!c)return;   // optimistic: remove now, queue the write, roll back on rejection
   if(S.clients)S.clients=S.clients.filter(function(x){return x!==c;}); closeModal(); toast('🗑️ Archived'); S.dashboard=null; rerender();
@@ -481,9 +481,9 @@ function saveClient(cb){
   var name=val('nc_name'); if(!name){ toast('Name is required'); return; }
   var form={name:name,phone:val('nc_phone'),email:val('nc_email'),address:val('nc_address'),status:val('nc_status')||'Lead',source:val('nc_source')};
   var dup=localDupClients(form.email,form.phone);
-  if(dup.length && !saveClient._force){ saveClient._force=true; toast('⚠ Possible duplicate: '+dup[0].name+' — tap Add again to confirm'); return; }
+  if(dup.length && !saveClient._force){ saveClient._force=true; toast('⚠ Possible duplicate: '+dup[0].name+'. Tap Add again to confirm'); return; }
   saveClient._force=false;
-  var id=nextLocalId('Clients'); form.id=id;   // real CL id now — no temp, no waiting on the server
+  var id=nextLocalId('Clients'); form.id=id;   // real CL id now: no temp, no waiting on the server
   var temp={id:id,_saving:true,name:name,phone:form.phone,email:form.email,address:form.address,status:form.status,source:form.source,followUp:'',followUpISO:'',lifetime:0,nextJob:null,openEstimate:null,unpaidInvoice:null};
   S.clients=S.clients||[]; S.clients.push(temp); closeModal(); toast('✅ Client added'); if(CUR_SCREEN==='clients')renderClients(); saveCache();
   enqueue('apiCreateClient',[form],'Client '+name,{
@@ -549,7 +549,7 @@ function renderJobs(){
 function serviceSelect(id,sel){ return '<select id="'+id+'"><option value="">Service…</option>'+(S.services||[]).map(function(s){return '<option value="'+esc(s.id)+'"'+(s.id===sel?' selected':'')+'>'+esc(s.name)+' · '+money(s.rate)+'</option>';}).join('')+'</select>'; }
 function openJobForm(clientId){
   var rec=(S.enums.recurring||['None']).map(function(r){return '<option>'+r+'</option>';}).join('');
-  // Pick-client opens its own modal (single #sheet container), which REPLACES this form — so the
+  // Pick-client opens its own modal (single #sheet container), which REPLACES this form, so the
   // callback re-opens the job form with the chosen client pre-filled instead of poking now-dead fields.
   var clientField = clientId ? '<div class="muted">Client: <b>'+esc((clientById(clientId)||{}).name||clientId)+'</b></div><input type="hidden" id="nj_client" value="'+esc(clientId)+'">'
     : '<label>Client *</label><div class="btnrow"><button class="btn sec" onclick="pickClient(function(id){openJobForm(id);})">Pick client…</button></div><input type="hidden" id="nj_client">';
@@ -570,7 +570,7 @@ function saveJob(){
     onFail:function(){ if(S.jobs)S.jobs=S.jobs.filter(function(x){return x!==temp;}); S.dashboard=null; rerender(); }});
 }
 function openJob(id){
-  var j=jobById(id); if(!j)return;   // temps are viewable/editable now — status & reschedule queue and remap
+  var j=jobById(id); if(!j)return;   // temps are viewable/editable now: status & reschedule queue and remap
   var statusBtns=(S.enums.jobStatus||[]).map(function(st){ return '<button class="btn sm sec" onclick="setJobStatus('+jarg(id)+',\''+st+'\')">'+st+'</button>'; }).join(' ');
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+esc(j.client||'')+'</h3>'+
     '<div class="muted">'+esc(j.date)+(j.time?' · '+esc(j.time):'')+' · '+esc(j.service||'')+' · '+esc(j.recurring||'None')+'</div>'+
@@ -584,7 +584,7 @@ function rescheduleJob(id){ var iso=val('jb_date'), t=val('jb_time'); var j=jobB
   enqueue('apiUpdateJob',[id,{date:iso,time:t}],'Reschedule'); }
 function archiveJob(id){ var j=jobById(id);
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Archive this job?</h3>'+
-    '<div class="muted" style="margin-bottom:10px">'+esc((j||{}).client||'')+' · '+esc((j||{}).date||'')+' — hidden from your lists (kept in the sheet).</div>'+
+    '<div class="muted" style="margin-bottom:10px">'+esc((j||{}).client||'')+' · '+esc((j||{}).date||'')+', hidden from your lists (kept in the sheet).</div>'+
     '<button class="btn danger" onclick="confirmArchiveJob('+jarg(id)+')">Archive</button><button class="btn sec" onclick="openJob('+jarg(id)+')">Cancel</button>'); }
 function confirmArchiveJob(id){ var j=jobById(id); if(!j)return;   // optimistic: remove now, queue the write, roll back on rejection
   if(S.jobs)S.jobs=S.jobs.filter(function(x){return x!==j;}); closeModal(); toast('🗑️ Archived'); S.dashboard=null; rerender();
@@ -605,7 +605,7 @@ function refreshBilling(){ return api('apiListBilling').then(function(fresh){ if
   S.billing=fresh; saveCache(); if(CUR_SCREEN==='billing')renderBilling(); }).catch(function(){}); }
 function docById(kind,id){ var arr=kind==='INVOICE'?(S.billing.invoices||[]):(S.billing.estimates||[]); return arr.filter(function(d){return d.id===id;})[0]; }
 /* Line items live in memory (S.lineItems, keyed "Invoice|ID" / "Estimate|ID"), so opening a document
-   is instant — no per-open round trip. Fall back to the server only on a cache miss. */
+   is instant: no per-open round trip. Fall back to the server only on a cache miss. */
 function docLinesKey(kind,id){ return (kind==='INVOICE'?'Invoice':'Estimate')+'|'+id; }
 function localLines(kind,id){ var a=S.lineItems&&S.lineItems[docLinesKey(kind,id)]; return a?a.slice():null; }
 function setLocalLines(kind,id,items){ if(!S.lineItems)S.lineItems={}; S.lineItems[docLinesKey(kind,id)]=(items||[]).slice(); }
@@ -625,7 +625,7 @@ function renderBilling(){
 }
 function openDoc(kind,id,_retried){
   var d=docById(kind,id);
-  if(!d){ // may be on another screen — fetch once, but never loop if it's gone (archived/deleted)
+  if(!d){ // may be on another screen: fetch once, but never loop if it's gone (archived/deleted)
     if(_retried){ toast('That document is no longer available'); return; }
     api('apiListBilling').then(function(r){ S.billing=r; openDoc(kind,id,true); }).catch(function(){ toast('Couldn\'t load that document'); });
     return; }
@@ -646,7 +646,7 @@ function openDoc(kind,id,_retried){
   }
   var totals='<div class="subline"><span>Subtotal</span><span>'+money(d.subtotal)+'</span></div>'+(d.tax>0?'<div class="subline"><span>Tax</span><span>'+money(d.tax)+'</span></div>':'')+'<div class="totalbar"><span>Total</span><span>'+money(d.total)+'</span></div>';
   var dateBit=d.dateB?' · '+(kind==='INVOICE'?'due ':'valid to ')+esc(d.dateB):'';
-  var items=localLines(kind,id);   // from memory — no round trip
+  var items=localLines(kind,id);   // from memory, no round trip
   openModal('<button class="close" onclick="closeModal()">×</button><h3>'+(kind==='INVOICE'?'Invoice':'Estimate')+' '+esc(id)+'</h3>'+
     '<div class="muted">'+esc(d.client||'')+' · '+esc(d.status)+(d.issueDate?' · '+esc(d.issueDate):'')+dateBit+'</div>'+
     '<div class="card" style="margin-top:12px"><div id="'+itemsId+'">'+(items!=null?lineRowsHtml(items):'<div class="muted">Loading items…</div>')+'</div>'+totals+'</div>'+
@@ -664,7 +664,7 @@ function deleteDoc(kind,id){
 }
 function confirmDelete(kind,id){ var arr=kind==='INVOICE'?'invoices':'estimates'; if(S.billing&&S.billing[arr])S.billing[arr]=S.billing[arr].filter(function(d){return d.id!==id;}); S.dashboard=null; delete (S.lineItems||{})[docLinesKey(kind,id)]; closeModal(); toast('🗑️ Deleted'); rerender(); enqueue('apiDeleteDoc',[kind,id],'Delete doc'); }
 function sendDoc(kind,id){
-  var doc=docById(kind,id); if((doc&&doc._saving)||isTemp(id)){ toast('⏳ Finishing save — try again in a moment'); return; }   // PDF needs the record on the server
+  var doc=docById(kind,id); if((doc&&doc._saving)||isTemp(id)){ toast('⏳ Finishing save. Try again in a moment'); return; }   // PDF needs the record on the server
   busy('Building PDF…');
   api('apiSendDoc',kind,id).then(function(r){ closeModal();
     if(r&&r.ok){ var d=docById(kind,id); if(d&&d.status==='Draft')d.status='Sent'; renderBilling(); toast(r.emailed?'📧 Sent to '+r.email:'PDF saved to Drive'); }
@@ -679,7 +679,7 @@ function doApprove(id){
   var iso=val('ap_date'), tm=val('ap_time'); var est=docById('ESTIMATE',id);
   if(!est){ toast('Estimate not found'); return; }
   var prev=est.status; est.status='Accepted';   // apply locally first
-  var invId=nextLocalId('Invoices');   // real INV number now — shows immediately, never renumbers
+  var invId=nextLocalId('Invoices');   // real INV number now: shows immediately, never renumbers
   var inv={kind:'INVOICE',id:invId,_saving:true,clientId:est.clientId,client:est.client,taxRate:est.taxRate,subtotal:est.subtotal,tax:est.tax,total:est.total,status:'Draft',issueDate:fmtMD()};
   S.billing=S.billing||{estimates:[],invoices:[]}; S.billing.invoices=S.billing.invoices||[]; S.billing.invoices.push(inv);
   var estLines=localLines('ESTIMATE',id); if(estLines) setLocalLines('INVOICE',invId,estLines);   // invoice inherits the quoted lines
@@ -687,7 +687,7 @@ function doApprove(id){
   if(S.jobs){ jt={id:'tmp'+(++SYNC.seq),_saving:true,clientId:est.clientId,client:est.client,serviceId:'',service:'',date:fmtMDfromISO(iso),dateISO:iso,time:tm,status:'Scheduled',recurring:'None'}; S.jobs.push(jt); }
   var c=clientById(est.clientId); if(c&&c.status==='Lead')c.status='Active';   // approval promotes the client
   S.dashboard=null;
-  closeModal(); toast('✅ Approving — invoice + job scheduled'); nav('billing'); saveCache();
+  closeModal(); toast('✅ Approving: invoice + job scheduled'); nav('billing'); saveCache();
   enqueue('apiApproveEstimate',[id,iso,null,{invoiceId:invId,jobTime:tm}],'Approve estimate',{   // Sheets write runs in the background
     onOk:function(r){
       inv._saving=false;
@@ -746,7 +746,7 @@ function saveEstimate(clientId){
   if(!lines.length){ toast('Add a line item'); return; }
   var sub=0; QLINES.forEach(function(l){ if(l.serviceId&&Number(l.qty)>0)sub+=Number(l.qty)*lineRate(l); });
   var trate=Number(S.settings['Sales tax %'])||0, tax=Math.round(sub*trate)/100, total=sub+tax;
-  var id=nextLocalId('Estimates');   // real EST number now — stays fixed, so approving it never says "not found"
+  var id=nextLocalId('Estimates');   // real EST number now: stays fixed, so approving it never says "not found"
   var temp={kind:'ESTIMATE',id:id,_saving:true,clientId:clientId,client:(clientById(clientId)||{}).name||'',taxRate:trate,subtotal:sub,tax:tax,total:total,status:'Draft',issueDate:fmtMD()};
   S.billing=S.billing||{estimates:[],invoices:[]}; S.billing.estimates=S.billing.estimates||[]; S.billing.estimates.push(temp);
   var disp=QLINES.filter(function(l){return l.serviceId&&Number(l.qty)>0;}).map(function(l){ var rate=lineRate(l); return { serviceId:l.serviceId, description:svcName(l.serviceId), qty:Number(l.qty), rate:rate, lineTotal:Math.round(Number(l.qty)*rate*100)/100 }; });
@@ -766,7 +766,7 @@ function editLines(kind,id){
     renderQLines();
   };
   var items=localLines(kind,id);
-  if(items!=null){ open(items); }                                       // from memory — instant
+  if(items!=null){ open(items); }                                       // from memory, instant
   else { busy('Opening…'); api('apiGetDocLines',kind,id).then(open); }  // cache miss only
 }
 // Optimistic: apply the new lines + recomputed totals locally, then upload once in the background.
@@ -784,10 +784,10 @@ function saveLines(kind,id){
 
 /* ================= PRICE BOOK (services) ================= */
 var PB=[];
-function openPriceBook(){   // from memory (S.servicesAll) — no round trip
+function openPriceBook(){   // from memory (S.servicesAll), no round trip
   // servicesAll can be an EMPTY array on the apiBootstrap fallback boot path (it's only fully
   // populated by the __BOOT__ snapshot); an empty [] is truthy, so guard by length before falling
-  // back to the active-services list — otherwise the price book shows empty despite having services.
+  // back to the active-services list; otherwise the price book shows empty despite having services.
   var src=(S.servicesAll&&S.servicesAll.length)?S.servicesAll:(S.services||[]);
   PB=src.map(function(s){ return {id:s.id,name:s.name,rate:s.rate,active:s.active!==false,_orig:s.name+'|'+s.rate}; });
   renderPriceBook(); }
@@ -796,9 +796,9 @@ function renderPriceBook(){
     return '<div class="liwrap"><input placeholder="Service name" value="'+esc(s.name)+'" oninput="PB['+i+'].name=this.value">'+
       '<div class="r2"><div class="fld"><label>Default price</label><input type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="'+(s.rate!=null&&s.rate!==''?esc(s.rate):'')+'" oninput="PB['+i+'].rate=this.value"></div>'+
       '<button class="x" title="Remove" onclick="delPBRow('+i+')">×</button></div></div>';
-  }).join('')||'<div class="muted">No services yet — add one below.</div>';
+  }).join('')||'<div class="muted">No services yet. Add one below.</div>';
   openModal('<button class="close" onclick="closeModal()">×</button><h3>Price book</h3>'+
-    '<div class="muted" style="margin-bottom:8px">Set a default price for each service. These auto-fill when you build an estimate — you can still change the price on any estimate.</div>'+
+    '<div class="muted" style="margin-bottom:8px">Set a default price for each service. These auto-fill when you build an estimate; you can still change the price on any estimate.</div>'+
     '<div id="pbrows">'+rows+'</div>'+
     '<button class="btn sec sm" style="margin-top:6px" onclick="addPBRow()">+ Add service</button>'+
     '<button class="btn" onclick="savePriceBook()">Save price book</button>');

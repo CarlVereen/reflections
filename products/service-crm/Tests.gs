@@ -1,5 +1,5 @@
 /**
- * Tests.gs — in-editor INTEGRATION smoke test (dev/QA only).
+ * Tests.gs: in-editor INTEGRATION smoke test (dev/QA only).
  *
  * Unlike the Node mock suites in tests/*.js (which stub Google), this runs INSIDE Apps Script and
  * exercises the REAL Google Sheet, Calendar, PDF converter, email, and Form-intake code in the
@@ -10,18 +10,18 @@
  *   Extensions ▸ Apps Script ▸ pick `runIntegrationSmoke` in the function dropdown ▸ Run.
  *   Approve permissions (Calendar, Gmail/Send, Drive) the first time. Read the result in the
  *   Execution log (or the popup). It creates tagged __SMOKE__ rows, drives each integration, then
- *   HARD-DELETES its own rows and DELETES its calendar event — it leaves no residue.
+ *   HARD-DELETES its own rows and DELETES its calendar event; it leaves no residue.
  *
  * WHAT IT DOES **NOT** DO (on purpose):
  *   sendReviewRequests() and remindUpcomingJobs() email your REAL clients (they act on ALL matching
- *   jobs, not just test rows), so auto-running them could message real customers. They stay MANUAL —
+ *   jobs, not just test rows), so auto-running them could message real customers. They stay MANUAL;
  *   test them from the ⚡ CRM menu with a single controlled client (SMOKE-TEST G1 / G3).
  *
  * SIDE EFFECTS you should expect from one run:
  *   • one test event briefly appears then is deleted on your default Google Calendar
- *   • ONE real email to the OWNER address (the follow-up digest) — nothing goes to clients
+ *   • ONE real email to the OWNER address (the follow-up digest); nothing goes to clients
  *   • markOverdueInvoices / rollForwardRecurringJobs run their real (idempotent) daily action, which
- *     also processes any genuinely-qualifying real rows — this is the same thing the daily trigger does.
+ *     also processes any genuinely-qualifying real rows; this is the same thing the daily trigger does.
  *
  * This file is inert unless explicitly run and is not wired into any menu. You may leave it out of
  * the buyer-facing master if you prefer a leaner copy.
@@ -30,7 +30,7 @@
 function runIntegrationSmoke() {
   var log = [], pass = 0, fail = 0;
   function check(cond, msg) { if (cond) { pass++; log.push('  ✓ ' + msg); } else { fail++; log.push('  ✗ FAIL ' + msg); } }
-  function head(t) { log.push('— ' + t + ' —'); }
+  function head(t) { log.push('( ' + t + ' )'); }
 
   var made = { Invoices: [], Estimates: [], Jobs: [], Clients: [] };   // hard-deleted in this order at the end
   function track(table, id) { made[table].push(id); return id; }
@@ -42,13 +42,13 @@ function runIntegrationSmoke() {
   var TAG = '__SMOKE__ Test Client';
 
   try {
-    if (typeof CalendarApp === 'undefined') { log.push('Calendar service unavailable — cannot run.'); return log.join('\n'); }
+    if (typeof CalendarApp === 'undefined') { log.push('Calendar service unavailable. Cannot run.'); return log.join('\n'); }
     log.push('Timezone: ' + Session.getScriptTimeZone() + '   Owner: ' + (owner || '(none)'));
     settingSet('Sync jobs to Google Calendar', 'yes');
 
     var svc = getAll('Services')[0];
     check(!!svc, 'a service exists to attach to jobs/invoices');
-    if (!svc) throw new Error('no services seeded — run Set up / rebuild database first');
+    if (!svc) throw new Error('no services seeded; run Set up / rebuild database first');
 
     // one reusable test client (address for the calendar location + PDF; email = owner so any test
     // email lands on YOU, never a stranger; due follow-up so the digest has something to report)
@@ -87,7 +87,7 @@ function runIntegrationSmoke() {
 
     /* ===================== 2) Invoice PDF (HTML → PDF converter) ===================== */
     // In-memory: renders the real invoice HTML and asks Google to convert to PDF. No sheet write,
-    // no Drive file, no email — just proves the environment-sensitive PDF step works.
+    // no Drive file, no email; just proves the environment-sensitive PDF step works.
     head('Invoice PDF');
     var fakeInv = { InvoiceID: 'INV-SMOKE', ClientID: c.ClientID, IssueDate: API_today_(), DueDate: API_addDays_(API_today_(), 14),
       TaxRate: 0, Subtotal: 150, Tax: 0, Total: 150, Status: 'Draft' };
@@ -96,8 +96,8 @@ function runIntegrationSmoke() {
     check(pdf.getContentType() === 'application/pdf', 'invoice HTML converts to a PDF blob');
     check(pdf.getBytes().length > 1000, 'PDF has real content (' + pdf.getBytes().length + ' bytes)');
 
-    /* ===================== 3) Email pipeline — follow-up digest (owner only) ===================== */
-    head('Email — follow-up digest (to owner only)');
+    /* ===================== 3) Email pipeline: follow-up digest (owner only) ===================== */
+    head('Email: follow-up digest (to owner only)');
     var dig = sendFollowUpDigest();
     check(!!dig && dig.ok, 'sendFollowUpDigest ran without error (emailed ' + owner + ')');
     check(dig && dig.count >= 1, 'digest counted the due test client (count=' + (dig ? dig.count : '?') + ')');
@@ -150,14 +150,14 @@ function runIntegrationSmoke() {
   }
 
   var summary = pass + ' passed, ' + fail + ' failed';
-  var out = 'Integration smoke — real Sheet + Calendar + PDF + email + form\n' + log.join('\n') + '\n=== ' + summary + ' ===';
+  var out = 'Integration smoke: real Sheet + Calendar + PDF + email + form\n' + log.join('\n') + '\n=== ' + summary + ' ===';
   Logger.log(out);
   try { SpreadsheetApp.getUi().alert('Integration smoke: ' + summary, out, SpreadsheetApp.getUi().ButtonSet.OK); } catch (e3) {}
   return out;
 }
 
 /** Physically remove a row by its PK so the smoke test leaves no residue (bypasses the soft-delete
- *  ORM on purpose — this is test-only cleanup). Scans bottom-up so the just-appended rows go first. */
+ *  ORM on purpose; this is test-only cleanup). Scans bottom-up so the just-appended rows go first. */
 function TEST_hardDelete_(table, id) {
   try {
     var sh = DB_sheet_(table), vals = sh.getDataRange().getValues();

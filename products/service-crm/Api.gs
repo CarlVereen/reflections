@@ -1,5 +1,5 @@
 /**
- * Api.gs — Service Pro CRM web-app server API (clean rebuild).
+ * Api.gs: Service Pro CRM web-app server API (clean rebuild).
  *
  * Every handler goes through db.gs and references IDs, never names. The dashboard is computed
  * in Script from cached totals (no cell formulas). Line items snapshot price at write time.
@@ -111,7 +111,7 @@ function apiSnapshot_() {
     ready: true,
     settings: apiGetSettings(),
     services: apiListServices(true),      // active-only (pickers)
-    servicesAll: apiListServices(false),  // full list (price book) — removes a round trip
+    servicesAll: apiListServices(false),  // full list (price book), removes a round trip
     enums: API_enums_(),
     dashboard: apiDashboard(),
     clients: apiListClients(),
@@ -229,7 +229,7 @@ function API_clientView_(c, ctx) {
 }
 
 // Group a table's rows by ClientID ONCE so the per-client view is an O(1) lookup, not an O(n)
-// re-filter — keeps apiListClients linear instead of O(clients × jobs+estimates+invoices).
+// re-filter; keeps apiListClients linear instead of O(clients × jobs+estimates+invoices).
 function API_groupByClient_(arr) {
   var m = {}; arr.forEach(function (x) { (m[x.ClientID] || (m[x.ClientID] = [])).push(x); }); return m;
 }
@@ -288,7 +288,7 @@ function apiArchiveService(id) { softDelete('Services', id); return { ok: true }
 /* ============================ Jobs ============================ */
 
 /** Owner toggle: 'yes' (default) syncs jobs to the owner's own Google Calendar. Anything that reads
- *  as off ('no'/'false'/'off'/blank-when-explicitly-set) skips it — a buyer who declined the Calendar
+ *  as off ('no'/'false'/'off'/blank-when-explicitly-set) skips it; a buyer who declined the Calendar
  *  permission just leaves it off and no CalendarApp call is ever made. */
 function API_calSyncOn_() {
   var raw = settingGet('Sync jobs to Google Calendar');
@@ -317,7 +317,7 @@ function API_syncJobCalendar_(jobId) {
     var existing = null;
     if (job.CalendarEventID) { try { existing = cal.getEventById(job.CalendarEventID); } catch (e) { existing = null; } }
 
-    // A cancelled or archived job should NOT hold a calendar slot — remove the event and forget its id.
+    // A cancelled or archived job should NOT hold a calendar slot: remove the event and forget its id.
     if (job.Archived || job.Status === 'Cancelled') {
       if (existing) existing.deleteEvent();
       if (job.CalendarEventID) update('Jobs', jobId, { CalendarEventID: '' });
@@ -326,7 +326,7 @@ function API_syncJobCalendar_(jobId) {
 
     var s = API_jobStart_(job); if (!s) return;
     var client = getById('Clients', job.ClientID) || {};
-    var title = (client.Name || 'Job') + ' — ' + (job.ServiceName || 'Service');
+    var title = (client.Name || 'Job') + ': ' + (job.ServiceName || 'Service');
     var loc = client.Address || '';
     var desc = 'Service Pro CRM · job ' + job.JobID + (job.Notes ? '\n' + job.Notes : '');
     var durH = Number(settingGet('Default job duration (hours)')) || 1;
@@ -341,7 +341,7 @@ function API_syncJobCalendar_(jobId) {
       update('Jobs', jobId, { CalendarEventID: ev.getId() });
     }
   } catch (err) {
-    // Never surface a calendar failure to the caller — the job itself already saved.
+    // Never surface a calendar failure to the caller; the job itself already saved.
     try { console.warn('Calendar sync skipped for ' + jobId + ': ' + err); } catch (e2) {}
   }
 }
@@ -414,7 +414,7 @@ function apiGetDocLines(kind, id) {
     .map(function (li) { return { id: li.LineItemID, serviceId: li.ServiceID, description: li.Description, qty: API_num_(li.Qty), rate: API_num_(li.Rate), lineTotal: API_num_(li.LineTotal) }; });
 }
 
-// lines: [{serviceId, qty, rate?, description?}] — rate/description snapshot from the Service unless overridden.
+// lines: [{serviceId, qty, rate?, description?}]; rate/description snapshot from the Service unless overridden.
 function API_insertLines_(docType, docId, lines) {
   var rows = (lines || []).filter(function (l) { return l.serviceId; }).map(function (l) {
     var row = { DocType: docType, DocID: docId, ServiceID: l.serviceId, Qty: API_num_(l.qty) || 1 };
@@ -568,7 +568,7 @@ function API_docHtml_(kind, d, client, items) {
     '<th style="text-align:left;padding:9px">Description</th><th style="padding:9px">Qty</th><th style="text-align:right;padding:9px">Rate</th><th style="text-align:right;padding:9px">Amount</th></tr>' +
     rows + totalRow + '</table>' + payBtn +
     (pay && isInv ? '<div style="background:#f3f0ea;padding:14px;border-radius:8px"><b>Payment:</b> ' + API_esc_(pay) + '</div>' : '') +
-    '<p style="color:#52565c;margin-top:20px">' + (isInv ? 'Thank you for your business!' : 'This estimate is for your review — reply to accept and we\'ll get you scheduled.') + '</p></div>';
+    '<p style="color:#52565c;margin-top:20px">' + (isInv ? 'Thank you for your business!' : 'This estimate is for your review. Reply to accept and we\'ll get you scheduled.') + '</p></div>';
 }
 
 function API_docEmail_(kind, id, client, pdf, email) {
@@ -616,7 +616,7 @@ function apiGetLogo() { return { logo: String(settingGet(LOGO_DATA_KEY) || '') }
 function apiSaveLogo(dataUrl) {
   var v = String(dataUrl || '');
   if (!v) { API_deleteLogoFile_(); settingSet(LOGO_DATA_KEY, ''); settingSet(LOGO_FILE_KEY, ''); return { ok: true }; }
-  if (v.length > 49000) return { ok: false, msg: 'Logo is too large — use a smaller image.' };  // sheet-cell + payload cap
+  if (v.length > 49000) return { ok: false, msg: 'Logo is too large. Use a smaller image.' };  // sheet-cell + payload cap
   var m = /^data:(image\/(?:png|jpeg));base64,([A-Za-z0-9+/=]+)$/.exec(v);
   if (!m) return { ok: false, msg: 'Not a PNG or JPEG image' };
   settingSet(LOGO_DATA_KEY, v);

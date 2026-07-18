@@ -50,7 +50,7 @@ function load(){
   google.script.run.withSuccessHandler(function(d){
     var el=document.getElementById('fuList'); var fu=(d&&d.followUps)||[];
     el.innerHTML = fu.length ? fu.map(function(f){
-      return '<div class="fu"><div><b>'+esc(f.name)+'</b><div class="meta">'+esc(f.phone||'—')+' · due '+esc(f.due)+'</div></div><span class="pill">'+esc(f.status)+'</span></div>';
+      return '<div class="fu"><div><b>'+esc(f.name)+'</b><div class="meta">'+esc(f.phone||'n/a')+' · due '+esc(f.due)+'</div></div><span class="pill">'+esc(f.status)+'</span></div>';
     }).join('') : '<div class="empty">All caught up 🎉</div>';
   }).withFailureHandler(function(e){ document.getElementById('fuList').innerHTML='<div class="empty">Couldn\'t load.</div>'; }).sidebarData();
 }

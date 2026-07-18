@@ -1,5 +1,5 @@
 /**
- * Code.gs — Service Pro CRM menu, automations, triggers, and Google-Form intake (clean rebuild).
+ * Code.gs: Service Pro CRM menu, automations, triggers, and Google-Form intake (clean rebuild).
  *
  * Everything runs through db.gs and references IDs. Automation "cores" (rollForwardRecurringJobs,
  * markOverdueInvoices, sendFollowUpDigest, remindUpcomingJobs, sendReviewRequests) return plain
@@ -119,18 +119,18 @@ function sendFollowUpDigest() {
   var due = getAll('Clients').filter(function (c) {
     return (c.Status === 'Lead' || c.Status === 'Active') && c.NextFollowUp instanceof Date && c.NextFollowUp <= today;
   }).sort(function (a, b) { return a.NextFollowUp - b.NextFollowUp; });
-  if (!due.length) { MailApp.sendEmail(email, '⚡ ' + biz + ' — no follow-ups due 🎉', 'All caught up. Nice work.'); return { ok: true, count: 0 }; }
+  if (!due.length) { MailApp.sendEmail(email, '⚡ ' + biz + ': no follow-ups due 🎉', 'All caught up. Nice work.'); return { ok: true, count: 0 }; }
   var rows = due.map(function (c, i) {
     var digits = String(c.Phone || '').replace(/[^0-9+]/g, '');
-    var sms = digits ? '<a href="sms:' + digits + '" style="color:' + accent + ';font-weight:bold">Text ›</a>' : '—';
+    var sms = digits ? '<a href="sms:' + digits + '" style="color:' + accent + ';font-weight:bold">Text ›</a>' : 'n/a';
     return '<tr style="background:' + (i % 2 ? '#f3f0ea' : '#fff') + '"><td style="padding:8px">' + API_esc_(c.Name) +
-      '</td><td style="padding:8px">' + (API_esc_(c.Phone) || '—') + '</td><td style="padding:8px">' + API_fmtD_(c.NextFollowUp) +
+      '</td><td style="padding:8px">' + (API_esc_(c.Phone) || 'n/a') + '</td><td style="padding:8px">' + API_fmtD_(c.NextFollowUp) +
       '</td><td style="padding:8px">' + API_esc_(c.Status) + '</td><td style="padding:8px">' + sms + '</td></tr>';
   }).join('');
-  var html = '<div style="font-family:Arial,sans-serif;max-width:600px"><h2>🔔 ' + due.length + ' follow-up' + (due.length > 1 ? 's' : '') + ' due — ' + API_esc_(biz) + '</h2>' +
+  var html = '<div style="font-family:Arial,sans-serif;max-width:600px"><h2>🔔 ' + due.length + ' follow-up' + (due.length > 1 ? 's' : '') + ' due: ' + API_esc_(biz) + '</h2>' +
     '<table style="border-collapse:collapse;width:100%"><tr style="background:#1a1c1f;color:#fff"><th style="padding:8px;text-align:left">Name</th><th style="padding:8px;text-align:left">Phone</th><th style="padding:8px;text-align:left">Due</th><th style="padding:8px;text-align:left">Status</th><th style="padding:8px;text-align:left">Text</th></tr>' +
     rows + '</table></div>';
-  MailApp.sendEmail({ to: email, subject: '🔔 ' + due.length + ' follow-up(s) due — ' + biz, htmlBody: html });
+  MailApp.sendEmail({ to: email, subject: '🔔 ' + due.length + ' follow-up(s) due: ' + biz, htmlBody: html });
   return { ok: true, count: due.length };
 }
 
@@ -175,7 +175,7 @@ function sendReviewRequests() {
 
 /* ============================ menu wrappers (UI) ============================ */
 
-function menuFollowUpDigest() { var r = sendFollowUpDigest(); SpreadsheetApp.getUi().alert(r.ok ? (r.count ? '📧 Emailed you ' + r.count + ' follow-up(s).' : '📧 Emailed you — all caught up 🎉') : r.msg); }
+function menuFollowUpDigest() { var r = sendFollowUpDigest(); SpreadsheetApp.getUi().alert(r.ok ? (r.count ? '📧 Emailed you ' + r.count + ' follow-up(s).' : '📧 Emailed you, all caught up 🎉') : r.msg); }
 function menuReviewRequests() { var r = sendReviewRequests(); SpreadsheetApp.getUi().alert(r.ok ? ('⭐ Sent ' + r.sent + ' review request(s).' + (r.noEmail ? ' ' + r.noEmail + ' skipped (no client email).' : '')) : r.msg); }
 function menuRemindJobs() { SpreadsheetApp.getUi().alert('📅 Sent ' + remindUpcomingJobs() + " reminder(s) for tomorrow's jobs."); }
 function menuMarkOverdue() { SpreadsheetApp.getUi().alert('🚩 Flagged ' + markOverdueInvoices() + ' invoice(s) overdue.'); }
@@ -202,7 +202,7 @@ function removeAutomations_() {
 /** Create a mobile lead-capture Form, wire its submit trigger, and save its URL to Business Settings. */
 function createLeadForm() {
   var ui = SpreadsheetApp.getUi();
-  var form = FormApp.create(CODE_biz_() + ' — Request a quote');
+  var form = FormApp.create(CODE_biz_() + ': Request a quote');
   form.setDescription('Tell us what you need and we\'ll get right back to you.');
   form.addTextItem().setTitle('Name').setRequired(true);
   form.addTextItem().setTitle('Phone');
@@ -230,7 +230,7 @@ function onFormSubmit(e) {
 }
 
 /** Manual sheet edits (NOT the app's own programmatic writes, which never fire this) mark the JSON
- *  stale so the next app open rebuilds it from Sheets. Simple trigger — installs automatically on save. */
+ *  stale so the next app open rebuilds it from Sheets. Simple trigger; installs automatically on save. */
 function onEdit(e) { try { DATA_markStale_(); } catch (err) {} }
 
 /* ============================ sidebar server helpers ============================ */

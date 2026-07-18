@@ -19,7 +19,7 @@ Tick these before you publish. Grouped by priority. Details for each live in the
   - [ ] Review-request, follow-up digest, and appointment-reminder **emails actually send**
   - [ ] Daily automations install (3–4 triggers) and fire
   - [ ] Lead **Form** submission lands in Leads
-  - [ ] Calendar event + photo folder create
+  - [ ] Scheduling a job auto-creates its Google Calendar event
   - [ ] Rebuild guard warns before erasing
 - [ ] **Email deliverability:** send a test invoice/review email to a **non-Google** address;
   confirm it lands in **inbox, not spam**, and looks right.

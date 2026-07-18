@@ -10,16 +10,16 @@ invoices, jobs, clients, automatic Google-review requests. **One-time price, no 
 your data never leaves your Drive.** Works on phone and computer.
 
 ## 2. What the buyer receives
-- A link to **make their own copy** of the master Google Sheet. All four code files
-  (`Code.gs`, `Api.gs`, `Sidebar.html`, `WebApp.html`) and every tab **travel with the copy**;
-  they never paste code.
+- A link to **make their own copy** of the master Google Sheet. All the code files
+  (`Code.gs`, `Api.gs`, `db.gs`, `setup.gs`, `WebApp.html`, `Sidebar.html`) and every tab
+  **travel with the copy**; they never paste code.
 - A 1-page **Start-Here PDF** (the delivery file) with the copy link + setup/deploy steps.
 - The full **user manual** (`TRAINING.md`), included with the delivery.
 - Their own private **web-app URL** they deploy once (~5 min) and add to their phone.
 
 ## 3. One-time seller setup: build the master (~20 min, once)
 Do this a single time; every sale is a copy of it.
-1. Follow `README.md` → "How to build the master": create the sheet, add the four files,
+1. Follow `README.md` → "How to build the master": create the sheet, add the code files,
    run **⚡ CRM ▸ Set up / rebuild database**, approve permissions.
 2. **Deploy the web app** yourself once (`DEPLOY.md`) and run through `SMOKE-TEST.md` so you
    know a fresh copy works end-to-end.
@@ -61,8 +61,9 @@ buyers will happily pay you to do it. High margin; it's just you.
 ## 7. Etsy listing
 - **Type:** Digital download. **Delivered file:** the Start-Here PDF (contains the copy link).
 - **Title / tags / description:** in `LISTINGS.md` (Etsy section).
-- **Images (5–10):** from `assets/`: lead with `webapp-home.png` (the app), then
-  `crm-invoice.png`, `crm-dashboard.png`, `crm-leads.png`, and the niche shots.
+- **Images (5–10):** from `assets/`: lead with `app-home.png` (the app), then
+  `app-client.png` (shows Maps directions), `app-billing.png`, `app-jobs.png`,
+  `app-settings.png`. (Niche-edition shots can be regenerated per edition.)
 - **Fees:** ~$0.20/listing + ~6.5% transaction (~$4.70 on $69).
 - **Keep the "please read before buying" honesty block** in the description; it's the #1
   refund-preventer (Sheets-based app, email not SMS, one-time Google approval + deploy step).
@@ -79,10 +80,10 @@ buyers will happily pay you to do it. High margin; it's just you.
 ## 9. Asset inventory (what's in this folder)
 | File | Use |
 |---|---|
-| `Code.gs`, `Api.gs`, `Sidebar.html`, `WebApp.html` | The product (paste into Apps Script) |
+| `Code.gs`, `Api.gs`, `db.gs`, `setup.gs`, `WebApp.html`, `Sidebar.html` | The product (paste into Apps Script) |
 | `delivery-template.html` | Buyer Start-Here doc → fill copy link → PDF |
 | `deploy-card.html` | "Turn on your app in 6 taps" quick card → PDF (bundle it too) |
-| `assets/webapp-home.png` + other PNGs, `*-SAMPLE.pdf` | Listing images + sample delivery |
+| `assets/app-home.png` + other PNGs, `*-SAMPLE.pdf` | Listing images + sample delivery |
 | `README.md` | Build the master + fulfill |
 | `DEPLOY.md` | Deploy the web app (+ multi-account troubleshooting) |
 | `SMOKE-TEST.md` | Verify a fresh copy end-to-end |

@@ -1,10 +1,10 @@
 /**
- * setup.gs — builds the entire Service Pro CRM schema on a fresh spreadsheet.
+ * setup.gs: builds the entire Service Pro CRM schema on a fresh spreadsheet.
  *
  * setupDatabase() creates the 7 data tabs + hidden _meta from the SCHEMA in db.gs: exact machine
  * headers (frozen row 1), enum dropdowns via Data Validation, real checkbox booleans, currency /
  * date / datetime number formats, plaintext IDs & phones, and seeds _meta counters, Services, and
- * Settings. No cell formulas are ever written — Script owns every value.
+ * Settings. No cell formulas are ever written; Script owns every value.
  */
 
 function DB_colLetter_(n) { var s = ''; while (n > 0) { var m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = (n - m - 1) / 26; } return s; }

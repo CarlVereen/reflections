@@ -26,13 +26,15 @@ Service Pro CRM manages your leads, quotes, invoices, jobs, and clients, and aut
 ★ WHAT'S INSIDE
 • A real mobile web app (add it to your phone's home screen) backed by your own Google Sheet
 • Quote → Approve → Invoice → Paid flow: build an estimate in seconds, one tap turns an approved estimate into an invoice draft + a scheduled job
-• Live dashboard: new leads, pipeline value, revenue, win rate + revenue chart
-• Lead pipeline: color-coded, with follow-up dates that turn red when overdue
+• Live dashboard: new leads, open pipeline, jobs this week, revenue, win rate, and lifetime revenue
+• Jobs auto-sync to your Google Calendar (with the client's address as the location)
+• One-tap Maps directions to any client's address
+• Color-coded client statuses, with follow-up dates that turn red when overdue
 • Branded PDF estimates AND invoices: itemized, with sales tax and a "Pay now" button
-• Recurring jobs: weekly/biweekly/monthly visits roll forward automatically
+• Recurring jobs: weekly/monthly/quarterly/annual visits roll forward automatically
 • Automatic Google-review requests: more 5-star reviews = more jobs
 • Follow-up + appointment reminder emails on autopilot (tap-to-text link included)
-• Mobile lead-capture Google Form → feeds your Leads tab from anywhere
+• Mobile lead-capture Google Form → feeds your client list from anywhere
 • Job scheduler, client book (auto totals), estimate + invoice logs
 
 ★ WHY IT BEATS A $30/MONTH APP
@@ -144,7 +146,7 @@ link) as the product file: buyers download it after paying, then click the copy 
 (Gumroad also has "Redirect after purchase," but the PDF is safer: it carries the setup +
 deploy steps.)
 
-**Cover images:** the same shots from `assets/`, lead with `webapp-home.png`.
+**Cover images:** the same shots from `assets/`, lead with `app-home.png`.
 
 **Fees:** ~10% + card processing, no listing fee. **Traffic:** Gumroad brings none on its
 own; drop your Gumroad link in the community posts below.
@@ -176,6 +178,6 @@ See `PACKAGE.md` for the full playbook. Short version:
 2. **Make the delivery PDF**: put the copy link into `delivery-template.html`, print to PDF.
 3. **Etsy:** open shop → Etsy Payments + ID → new **digital** listing → upload the delivery
    PDF → paste the title/tags/description above → add images from `assets/` (lead with
-   `webapp-home.png`) → publish.
+   `app-home.png`) → publish.
 4. **Gumroad:** new product → price → upload the same delivery PDF → cover images → publish.
 5. Drop your links in the community posts above. Space them out; reply, don't hard-sell.
