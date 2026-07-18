@@ -115,7 +115,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
      round trips. Server-rendered via HtmlService template; a raw '{}' when served statically/in preview. -->
 <script type="application/json" id="__BOOT__"><?!= boot ?></script>
 <script>
-var BUILD='2026-07-17j-schedule-time+calendar+maps';
+var BUILD='2026-07-17k-pickclient-fix';
 var BOOT_T0=(window.performance&&performance.now)?0:Date.now();   // browser paint→script start baseline (perf.now is page-relative)
 var BOOT_MS=null;                                                  // filled once boot() finishes hydrating
 // The inlined dataset (see the #__BOOT__ data block). Parsed once; null if served statically or on a
@@ -549,8 +549,10 @@ function renderJobs(){
 function serviceSelect(id,sel){ return '<select id="'+id+'"><option value="">Service…</option>'+(S.services||[]).map(function(s){return '<option value="'+esc(s.id)+'"'+(s.id===sel?' selected':'')+'>'+esc(s.name)+' · '+money(s.rate)+'</option>';}).join('')+'</select>'; }
 function openJobForm(clientId){
   var rec=(S.enums.recurring||['None']).map(function(r){return '<option>'+r+'</option>';}).join('');
+  // Pick-client opens its own modal (single #sheet container), which REPLACES this form — so the
+  // callback re-opens the job form with the chosen client pre-filled instead of poking now-dead fields.
   var clientField = clientId ? '<div class="muted">Client: <b>'+esc((clientById(clientId)||{}).name||clientId)+'</b></div><input type="hidden" id="nj_client" value="'+esc(clientId)+'">'
-    : '<label>Client *</label><div class="btnrow"><button class="btn sec" id="nj_clientbtn" onclick="pickClient(function(id){document.getElementById(\'nj_client\').value=id;document.getElementById(\'nj_clientbtn\').textContent=(clientById(id)||{}).name||id;})">Pick client…</button></div><input type="hidden" id="nj_client">';
+    : '<label>Client *</label><div class="btnrow"><button class="btn sec" onclick="pickClient(function(id){openJobForm(id);})">Pick client…</button></div><input type="hidden" id="nj_client">';
   openModal('<button class="close" onclick="closeModal()">×</button><h3>New job</h3>'+clientField+
     '<label>Service *</label>'+serviceSelect('nj_service')+
     '<div class="two"><div><label>Date</label><input type="date" id="nj_date" value="'+isoOf(midnight(new Date()))+'"></div><div><label>Time</label><input id="nj_time" placeholder="2pm"></div></div>'+

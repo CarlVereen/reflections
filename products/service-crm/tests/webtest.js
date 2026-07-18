@@ -162,6 +162,27 @@ window.google={script:{run:(function(){function make(){var s=null,f=null;var r={
   ok(midCount===jobsBefore+1, 'B3: temp job appears optimistically');
   ok(afterCount===jobsBefore && ghosts===0, 'B3: temp job rolled back after server rejection (no stuck _saving)');
 
+  // Pick-client regression: New Job with NO client → tap Pick client → choose one → form must SURVIVE
+  // and the job must actually get created (previously the picker replaced the form and the callback
+  // poked now-dead fields, so the modal vanished and nothing was created).
+  await page.evaluate(()=>{ window.SERVER.apiCreateJob=function(f){ var id='JOB-'+String(Q.seq.JOB++).padStart(5,'0'); var j={id:id,clientId:f.clientId,serviceId:f.serviceId,service:'',date:f.date,dateISO:f.date,time:f.time||'',status:'Scheduled',recurring:f.recurring||'None'}; Q.jobs.push(j); return {ok:true,id:id,job:j}; }; });
+  await page.evaluate(()=>nav('jobs')); await page.waitForTimeout(LAT+150);
+  const pcBefore = await page.evaluate(()=> (S.jobs||[]).length);
+  await page.evaluate(()=>openJobForm());            // no client → renders the "Pick client…" button
+  await page.waitForTimeout(60);
+  await page.evaluate(()=>{ document.querySelector('#sheet .btnrow button').click(); });   // open the picker
+  await page.waitForTimeout(60);
+  ok(await page.evaluate(()=>!!document.getElementById('pk_list')), 'pick-client: picker opens from the job form');
+  await page.evaluate(()=>{ document.querySelector('#pk_list .list-item').click(); });      // choose the first client
+  await page.waitForTimeout(60);
+  const pcClientSet = await page.evaluate(()=>{ var el=document.getElementById('nj_client'); return el?el.value:''; });
+  ok(!!pcClientSet, 'pick-client: form reopens with the chosen client set (no longer vanishes)');
+  await page.evaluate(()=>{ document.getElementById('nj_service').value='SVC-02'; document.getElementById('nj_date').value='2026-12-08'; saveJob(); });
+  await page.waitForTimeout(LAT+300);
+  const pcAfter = await page.evaluate(()=> (S.jobs||[]).length);
+  const pcGhosts = await page.evaluate(()=> (S.jobs||[]).filter(j=>j._saving).length);
+  ok(pcAfter===pcBefore+1 && pcGhosts===0, 'pick-client: the job is actually created after picking a client');
+
   console.log('=== line-item price override + optimistic create ===');
   await page.evaluate(()=>{ estimateBuilder('CL-0001'); });
   await page.waitForTimeout(70);
