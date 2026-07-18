@@ -108,6 +108,12 @@ These touch **real Google Calendar** — the automated Node suites (`tests/*.js`
 **cannot** cover them, so run these by hand (or run `runIntegrationSmoke` in the editor, see below).
 Make sure a test client has a real **Address** first (so the event gets a location).
 
+> **⏰ TIMEZONE — check this first.** Calendar event times use the Apps Script project's timezone.
+> The master ships as **America/Phoenix (Arizona)**. If you (or a buyer) are in a different zone, set
+> it in **Extensions ▸ Apps Script ▸ Project Settings ▸ Time zone** to match your Google Calendar —
+> otherwise a "2pm" job lands on the calendar at the wrong hour. Verify: schedule a `2pm` job and
+> confirm the event shows **2pm** on your calendar, not shifted.
+
 - [ ] **O1. Toggle exists + default on.** **More ▸ Business Settings ▸ Scheduling** shows
   **Google Calendar sync = On** and a **Default job length (hours)** field.
 - [ ] **O2. First job → real event + permission.** With sync On, **Jobs ▸ + New job** for the test
