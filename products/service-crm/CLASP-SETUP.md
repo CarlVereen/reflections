@@ -1,4 +1,4 @@
-# clasp — sync code + run the integration test from the command line
+# clasp: sync code + run the integration test from the command line
 
 clasp is Google's Apps Script CLI. It replaces the "copy each file from GitHub and paste into the
 Apps Script editor" dance with a single `npm run clasp:push`, and lets us run the real-backend
@@ -12,7 +12,7 @@ Run all commands from `products/service-crm/`.
 
 ---
 
-## Part 1 — Code sync (the main win, ~5 min)
+## Part 1: Code sync (the main win, ~5 min)
 
 **1. Turn on the Apps Script API for your account (one time).**
 Open <https://script.google.com/home/usersettings> → toggle **Google Apps Script API = ON**.
@@ -26,23 +26,23 @@ In the Apps Script editor (Extensions ▸ Apps Script) → **Project Settings** 
 ```
 npm run clasp:login
 ```
-A browser opens — sign in with **the Google account that owns the CRM sheet/script** (must be the
+A browser opens; sign in with **the Google account that owns the CRM sheet/script** (must be the
 same account, not a different one), and allow the permissions. This stores a token in
-`~/.clasprc.json` (gitignored — never committed).
+`~/.clasprc.json` (gitignored, never committed).
 
 **4. Confirm clasp will push ONLY the 8 project files.**
 ```
 npm run clasp:status
 ```
 You should see exactly: `appsscript.json, Code.gs, Api.gs, db.gs, setup.gs, Tests.gs, WebApp.html,
-Sidebar.html` — and nothing else (no tests, no .md, no other .html). If anything extra shows up,
+Sidebar.html`, and nothing else (no tests, no .md, no other .html). If anything extra shows up,
 stop and tell me.
 
 **5. Push the code.**
 ```
 npm run clasp:push
 ```
-This uploads the current files to your Apps Script project — the same thing you were doing by hand,
+This uploads the current files to your Apps Script project, the same thing you were doing by hand,
 now in one command. From here on, after I make a change: `git pull` (or grab the files) →
 `npm run clasp:push` → done. Re-run **Set up / rebuild database** in the sheet only when the schema
 changed (db.gs / setup.gs).
@@ -51,7 +51,7 @@ changed (db.gs / setup.gs).
 
 ---
 
-## Part 2 — Run the integration test from the CLI (optional, more setup)
+## Part 2: Run the integration test from the CLI (optional, more setup)
 
 `clasp run` executes a function in your project remotely. It needs a bit more wiring:
 
@@ -60,7 +60,7 @@ Apps Script editor ▸ Project Settings ▸ **Google Cloud Platform (GCP) Projec
 paste a **GCP project number**. If you don't have one: <https://console.cloud.google.com/> → create a
 project → copy its number. (On the same project, make sure the **Apps Script API** is enabled.)
 
-**B. Declare the scopes + execution API.** Tell me when Part A is done — I'll add the `oauthScopes`
+**B. Declare the scopes + execution API.** Tell me when Part A is done, and I'll add the `oauthScopes`
 and `executionApi` block to `appsscript.json` and push it (clasp needs the manifest to expose the
 function).
 

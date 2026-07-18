@@ -1,23 +1,23 @@
 # 📦 Packaging & selling Service Pro CRM (Etsy + Gumroad)
 
-Everything you need to list, deliver, and fulfill — turnkey. Read top to bottom once.
+Everything you need to list, deliver, and fulfill, all turnkey. Read top to bottom once.
 
 ---
 
 ## 1. What the product IS (one line)
-A complete CRM **app** that runs in the buyer's **own Google account** — leads, quotes,
-invoices, jobs, clients, automatic Google-review requests — **one-time price, no subscription,
+A complete CRM **app** that runs in the buyer's **own Google account**: leads, quotes,
+invoices, jobs, clients, automatic Google-review requests. **One-time price, no subscription,
 your data never leaves your Drive.** Works on phone and computer.
 
 ## 2. What the buyer receives
 - A link to **make their own copy** of the master Google Sheet. All four code files
-  (`Code.gs`, `Api.gs`, `Sidebar.html`, `WebApp.html`) and every tab **travel with the copy** —
+  (`Code.gs`, `Api.gs`, `Sidebar.html`, `WebApp.html`) and every tab **travel with the copy**;
   they never paste code.
 - A 1-page **Start-Here PDF** (the delivery file) with the copy link + setup/deploy steps.
-- The full **user manual** on the 🚀 Start Here tab inside the CRM.
+- The full **user manual** (`TRAINING.md`), included with the delivery.
 - Their own private **web-app URL** they deploy once (~5 min) and add to their phone.
 
-## 3. One-time seller setup — build the master (~20 min, once)
+## 3. One-time seller setup: build the master (~20 min, once)
 Do this a single time; every sale is a copy of it.
 1. Follow `README.md` → "How to build the master": create the sheet, add the four files,
    run **⚡ CRM ▸ Set up / rebuild database**, approve permissions.
@@ -35,11 +35,11 @@ Do this a single time; every sale is a copy of it.
    edition's copy link.
 2. Print to PDF (Letter). That PDF is what you upload to Etsy/Gumroad.
    (Sample: `assets/Service-Pro-CRM-Delivery-SAMPLE.pdf`.)
-3. Also print **`deploy-card.html`** to PDF and include it — a one-page "Turn on your
-   app — 6 taps" quick card that makes the buyer's only technical moment painless.
+3. Also print **`deploy-card.html`** to PDF and include it, a one-page "Turn on your
+   app in 6 taps" quick card that makes the buyer's only technical moment painless.
    (Sample: `assets/Deploy-Card-SAMPLE.pdf`.) Both platforms let you attach multiple files.
 
-## 5. Fulfillment per sale — ~0 effort
+## 5. Fulfillment per sale: ~0 effort
 Because the copy link is generic and reusable, **you don't customize anything per order.**
 - **Etsy:** the buyer auto-receives your uploaded Start-Here PDF (which contains the copy
   link). Nothing to do per sale.
@@ -56,23 +56,23 @@ Because the copy link is generic and reusable, **you don't customize anything pe
 | **Done-For-You setup + deploy** | **$149** |
 
 The DFY tier matters: deploying the web app is the one technical step, so non-technical
-buyers will happily pay you to do it. High margin — it's just you.
+buyers will happily pay you to do it. High margin; it's just you.
 
 ## 7. Etsy listing
 - **Type:** Digital download. **Delivered file:** the Start-Here PDF (contains the copy link).
 - **Title / tags / description:** in `LISTINGS.md` (Etsy section).
-- **Images (5–10):** from `assets/` — lead with `webapp-home.png` (the app), then
+- **Images (5–10):** from `assets/`: lead with `webapp-home.png` (the app), then
   `crm-invoice.png`, `crm-dashboard.png`, `crm-leads.png`, and the niche shots.
 - **Fees:** ~$0.20/listing + ~6.5% transaction (~$4.70 on $69).
-- **Keep the "please read before buying" honesty block** in the description — it's the #1
+- **Keep the "please read before buying" honesty block** in the description; it's the #1
   refund-preventer (Sheets-based app, email not SMS, one-time Google approval + deploy step).
 
 ## 8. Gumroad listing
 - Create product → **price** → upload the **Start-Here PDF** as the content (safer than a
-  bare redirect — it carries the instructions and the copy link).
+  bare redirect; it carries the instructions and the copy link).
 - **Cover images:** same `assets/` shots; Gumroad shows a gallery.
 - **Fees:** no listing fee; ~10% + card processing. No KYC friction.
-- **Traffic:** Gumroad brings *none* on its own — pair it with the ready-to-post community
+- **Traffic:** Gumroad brings *none* on its own; pair it with the ready-to-post community
   blurbs in `LISTINGS.md` (drop the Gumroad link in the comment).
 - Optional: turn on ratings; leave "generate license keys" off (not needed).
 
@@ -81,7 +81,7 @@ buyers will happily pay you to do it. High margin — it's just you.
 |---|---|
 | `Code.gs`, `Api.gs`, `Sidebar.html`, `WebApp.html` | The product (paste into Apps Script) |
 | `delivery-template.html` | Buyer Start-Here doc → fill copy link → PDF |
-| `deploy-card.html` | "Turn on your app — 6 taps" quick card → PDF (bundle it too) |
+| `deploy-card.html` | "Turn on your app in 6 taps" quick card → PDF (bundle it too) |
 | `assets/webapp-home.png` + other PNGs, `*-SAMPLE.pdf` | Listing images + sample delivery |
 | `README.md` | Build the master + fulfill |
 | `DEPLOY.md` | Deploy the web app (+ multi-account troubleshooting) |
@@ -98,5 +98,5 @@ buyers will happily pay you to do it. High margin — it's just you.
 - [ ] Confirm your master passes `SMOKE-TEST.md` before publishing.
 
 ## 11. Terms (put a short version in the listing + the delivery PDF)
-Digital product — **single-user license**, for the buyer's own business use. **No refunds**
+Digital product: **single-user license**, for the buyer's own business use. **No refunds**
 once the file/link is delivered. Not affiliated with Google; requires a free Google account.

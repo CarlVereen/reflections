@@ -1,4 +1,4 @@
-# ⚡ Performance notes — how this app stays fast (and how experts speed up Apps Script)
+# ⚡ Performance notes: how this app stays fast (and how experts speed up Apps Script)
 
 The #1 rule of Google Apps Script performance: **the slow part is the calls to Google's
 services, not the JavaScript.** Every `getValue()`, `setValue()`, `getRange()`,
@@ -24,11 +24,11 @@ range once with `getValues()` = **1 call**. Same for `setValues()` vs `setValue(
 ## 2. Read each sheet once per request, then work in memory
 Re-reading the same sheet multiple times in one operation is pure waste.
 
-- **Applied — `apiListDocs`:** it *used* to count line items by calling `lineItemsFor_` once
+- **Applied to `apiListDocs`:** it *used* to count line items by calling `lineItemsFor_` once
   **per document**, and each of those re-read the entire Line Items sheet. With N invoices
-  that was N full scans — O(N × items), which is why it got slower as data grew. The count
+  that was N full scans, O(N × items), which is why it got slower as data grew. The count
   wasn't even displayed, so it's gone. Listing quotes/invoices is now a single sheet read.
-- **Applied — settings memo:** `getSetting_` reads the Settings sheet **once per execution**
+- **Applied to the settings memo:** `getSetting_` reads the Settings sheet **once per execution**
   and serves every later lookup from memory (`settingsMap_`). One invoice PDF reads ~8
   settings → was 8 sheet reads, now 1. `setSetting_` clears the memo so writes stay correct.
 
@@ -36,9 +36,9 @@ Re-reading the same sheet multiple times in one operation is pure waste.
 Each `google.script.run` call has real latency (auth + cold-start overhead). Fewer, fatter
 calls beat many small ones.
 
-- **Applied — `apiBootstrap`:** one call returns settings, services, the dashboard, and all
+- **Applied to `apiBootstrap`:** one call returns settings, services, the dashboard, and all
   the status lists, so the app boots from a single round-trip.
-- **Applied — `apiListBilling`:** the Billing screen returns estimates **and** invoices in
+- **Applied to `apiListBilling`:** the Billing screen returns estimates **and** invoices in
   one call (was two).
 
 ## 3b. Optimistic UI + background write queue (why it feels instant)
@@ -47,7 +47,7 @@ local state **immediately** and uploads the write in the **background**:
 - You tap "Won" / reschedule / edit / create an estimate → the screen updates at once.
 - The write goes into a **sequential FIFO queue** (so create-then-edit stays ordered) and
   uploads behind the scenes.
-- A top-bar **sync badge** reports state: `⟳ Saving N…` → `✓ Saved`, or `⚠ N unsynced — retry`
+- A top-bar **sync badge** reports state: `⟳ Saving N…` → `✓ Saved`, or `⚠ N unsynced, retry`
   on failure. Failures auto-retry with backoff, then flag loudly and keep the change queued.
 - Edits are idempotent and **persisted to `localStorage`**, so a queued write survives a
   reload and resumes on next open. A `beforeunload` warning fires if writes are still pending.
@@ -56,8 +56,8 @@ local state **immediately** and uploads the write in the **background**:
   create could duplicate a financial doc), covered by the unload warning.
 
 This is safe here specifically because it's a small team that never edits the same record at
-once — no concurrent edits means no merge conflicts. **Send (email/PDF), Approve, and Delete
-stay synchronous by design** — you want explicit confirmation for money/email actions.
+once. No concurrent edits means no merge conflicts. **Send (email/PDF), Approve, and Delete
+stay synchronous by design**: you want explicit confirmation for money/email actions.
 (Add-contact stays synchronous too: its duplicate check is a required round-trip.)
 
 ## 4. Cache fetched lists in the app; only refetch after a change
@@ -67,12 +67,12 @@ server calls**. Any action that writes to the sheet calls `invalidate()`, which 
 caches so the next view refetches fresh data. The ⟳ Refresh button clears everything.
 
 - **Net effect:** navigating around the app is instant; you only pay for a server call on the
-  first view of a tab and right after you change something — which is unavoidable anyway.
+  first view of a tab and right after you change something, which is unavoidable anyway.
 
 ## 5. Don't interleave reads and writes unnecessarily
 Reading right after a write can force Apps Script to flush pending writes, adding latency.
 
-- **Applied — `apiSetJob`:** after writing the new date it returns the value it just computed
+- **Applied to `apiSetJob`:** after writing the new date it returns the value it just computed
   instead of reading the cell back.
 
 ## 6. Why we do **not** use server-side `CacheService` for the data
@@ -87,7 +87,7 @@ version/invalidation key.
 
 ---
 
-## Archiving (built in) — the main lever for staying fast at volume
+## Archiving (built in): the main lever for staying fast at volume
 Every read scans the live tabs, so the fewer rows they hold, the faster everything is. Use
 **⚙️ Settings ▸ Archive old paid & closed docs** (or the sheet menu **⚡ CRM ▸ Invoices &
 estimates ▸ Archive paid & closed docs**) to move:
@@ -97,10 +97,10 @@ estimates ▸ Archive paid & closed docs**) to move:
 - **all their line items** (usually the biggest tab),
 
 into `📦 Archived…` tabs. The live tabs shrink and reads speed up. Safeguards:
-- **Lifetime revenue is preserved** — archived paid totals are carried in a document
+- **Lifetime revenue is preserved**: archived paid totals are carried in a document
   property and added back into the dashboard's Lifetime figure.
 - **Jobs are left live**, so each client's **Total Spent** stays correct.
-- **Idempotent** — re-running only archives newly-eligible rows; nothing is double-counted.
+- **Idempotent**: re-running only archives newly-eligible rows; nothing is double-counted.
 - The archive is done with batched reads/writes (one `getValues` + one `setValues` per tab),
   and it also compacts out any blank gaps left by deletes.
 
@@ -109,7 +109,7 @@ Run it whenever the app starts to feel heavy (e.g. monthly). Archived rows stay 
 
 ## Capacity note
 The data tabs ship with 500 formatted rows. If a live tab ever approaches that after
-archiving, add rows in the sheet (Insert ▸ Rows) — the app reads by actual content, so more
+archiving, add rows in the sheet (Insert ▸ Rows); the app reads by actual content, so more
 rows just work.
 
 ## Quick checklist if something feels slow
@@ -127,35 +127,35 @@ The web app is now **local-first**. `doGet()` inlines the ENTIRE dataset into th
 `HtmlService` template + a `<script type="application/json" id="__BOOT__">` block), so the app opens
 with **zero `google.script.run` round trips**. After boot, the browser owns the live state: every read
 (navigating, opening a client/invoice, its line items, the price book, the dashboard) is served from
-memory — no server call. The dashboard is recomputed client-side (`computeDashboard()`), never fetched.
+memory, no server call. The dashboard is recomputed client-side (`computeDashboard()`), never fetched.
 
 **Why:** measured on-device latency was ~3.9s **per** `google.script.run` call, independent of data
-size — so the win is eliminating the calls, not speeding them up.
+size, so the win is eliminating the calls, not speeding them up.
 
 **Server JSON hot store.** The boot payload is persisted to a Drive file `crm-data.json` (chosen over
 `CacheService`/`PropertiesService` because 3,000 records exceed the 500 KB Properties cap). `doGet`
 serves that file directly; it is rebuilt from Sheets only when a change the app did *not* make marks it
-stale. Google Sheets remains the durable source of truth — any drift self-heals on the next rebuild.
+stale. Google Sheets remains the durable source of truth; any drift self-heals on the next rebuild.
 
-**Reverse sync (Sheets → JSON) — the deliberate exception to the "no server cache" rule above.** A
+**Reverse sync (Sheets → JSON): the deliberate exception to the "no server cache" rule above.** A
 change made outside the app sets a stale flag, so the next open rebuilds the JSON from Sheets:
-- a manual sheet edit (installable `onEdit` — does NOT fire on the app's own `setValues`);
+- a manual sheet edit (installable `onEdit`, which does NOT fire on the app's own `setValues`);
 - a mobile lead-form submission (`onFormSubmit`);
 - the daily automations (`markOverdueInvoices`, `rollForwardRecurringJobs`, `remindUpcomingJobs`,
   `sendReviewRequests`) call `DATA_markStale_()` when they change data.
-Single-writer is what makes serving a cached snapshot safe — there are no concurrent editors to go stale
+Single-writer is what makes serving a cached snapshot safe: there are no concurrent editors to go stale
 against within a session, and ⟳ / reload force a fresh rebuild on demand.
 
 **Writes stay optimistic.** Edits apply locally instantly and upload in the background (FIFO queue,
 retry, durable across reload). A newly created record carries a temp id until the server assigns the
 real one; `remapPending()` rewrites any queued dependent write (estimate→client, invoice→estimate) to
-the real id the moment it arrives — this is the fix for the "pick a valid client" race where creating an
+the real id the moment it arrives; this is the fix for the "pick a valid client" race where creating an
 estimate right after a client used to fail.
 
 ## Client-assigned sequential IDs (2026-07-17, build g)
 
 Because there is one writer, the app assigns the next real `CL-`/`EST-`/`INV-` number itself (seeded from
-the `_meta` counters carried in the boot payload), so a new record shows its **final** number instantly —
+the `_meta` counters carried in the boot payload), so a new record shows its **final** number instantly, with
 no "temp16" placeholder, and the number never changes out from under an open screen (which previously
 broke Edit / Approve / "pick a valid client" when the server renumbered mid-action). The server
 (`db.gs` `insertMany` / `DB_useProvidedId_`) adopts a provided id if it's free (advancing the counter)

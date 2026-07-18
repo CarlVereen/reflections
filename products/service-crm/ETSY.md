@@ -1,23 +1,23 @@
-# Etsy launch — owner setup + fulfillment (Service Pro CRM)
+# Etsy launch: owner setup + fulfillment (Service Pro CRM)
 
 **Store decision:** Etsy = primary (has buyer search traffic). Gumroad = backup link for community posts.
 
 ---
 
-## Owner actions (one-time, ~15 min total — only you can do these)
+## Owner actions (one-time, ~15 min total; only you can do these)
 
 These need your identity/KYC, so they're the human parts I can't do:
 
 1. **Create the Etsy seller account** → etsy.com/sell. Pick a shop name
    (suggestions: `ServiceProTools`, `OwnItCRM`, `SheetworksCo`). Set currency = USD.
 2. **Connect payments** → Etsy Payments (deposits to your bank) + confirm ID.
-   (You mentioned Square/Stripe — Etsy uses its own Etsy Payments; keep Square for the
+   (You mentioned Square/Stripe. Etsy uses its own Etsy Payments; keep Square for the
    Gumroad/direct backup.)
 3. **Create a Google account** to hold the master sheet (or use your existing one).
-4. **Send me:** the shop name once live. That's it — I handle listings, images, copy, delivery flow.
+4. **Send me:** the shop name once live. That's it. I handle listings, images, copy, delivery flow.
 
 > Etsy requires a physical/digital item + a card on file to open. There's a ~$0.20
-> listing fee per item and ~6.5% transaction fee. On a $69 product that's ~$4.70 —
+> listing fee per item and ~6.5% transaction fee. On a $69 product that's ~$4.70,
 > well worth the built-in traffic.
 
 ## Digital delivery on Etsy (how the buyer gets it)

@@ -1,7 +1,7 @@
 # Niche variants
 
 The engine (`../Code.gs`) is shared. A niche edition is just a different **CONFIG
-block** at the top of the script — so one bug fix covers every variant.
+block** at the top of the script, so one bug fix covers every variant.
 
 ## Current variants
 
@@ -13,7 +13,7 @@ block** at the top of the script — so one bug fix covers every variant.
 
 ## Fulfilling a variant sale (~3 min)
 
-1. Make a copy of the Universal **master** sheet → rename it (e.g. "Cleaning Business CRM — MASTER").
+1. Make a copy of the Universal **master** sheet → rename it (e.g. "Cleaning Business CRM MASTER").
 2. `Extensions ▸ Apps Script`. In `Code.gs`, delete the existing `CONFIG = { … }` block
    and paste the variant's block from the matching file here.
 3. Reload the sheet → `⚡ CRM ▸ Set up / rebuild database`. The whole product re-skins:
