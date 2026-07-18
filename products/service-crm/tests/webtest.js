@@ -1,6 +1,6 @@
 // Drive the rebuilt WebApp.html against an in-memory mock of the NEW (ID-based) API and assert
 // the core buyer flows: boot → add client → build estimate → approve → invoice → mark paid.
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
 const HTML = fs.readFileSync(path.join(__dirname, '..', 'WebApp.html'), 'utf8');
 const LAT = 120;
@@ -73,7 +73,7 @@ window.google={script:{run:(function(){function make(){var s=null,f=null;var r={
 (async () => {
   const wired = HTML.replace('<script>', () => '<script>\n' + STUB + '\n');
   const tmp = path.join(__dirname, 'webapp-wired.html'); fs.writeFileSync(tmp, wired);
-  const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
+  const browser = await chromium.launch();   // uses Playwright's managed browser (npx playwright install chromium)
   const page = await browser.newPage({ viewport: { width: 390, height: 780 } });
   const errs = []; page.on('pageerror', e => errs.push(e.message));
   await page.goto('file://' + tmp, { waitUntil: 'domcontentloaded' });
@@ -109,6 +109,9 @@ window.google={script:{run:(function(){function make(){var s=null,f=null;var r={
   ok(!!est && /"clientId":"CL-0001"/.test(est) && /"serviceId":"SVC-02"/.test(est), 'apiCreateEstimate sent clientId + serviceId (IDs, not names): '+ (est||'—'));
 
   console.log('=== billing: totals + tax on doc detail ===');
+  // Production preloads S.billing from the __BOOT__ snapshot; this harness boots via the apiBootstrap
+  // fallback which doesn't, so clear it to force loadBilling to fetch the authoritative list (incl EST-1001).
+  await page.evaluate(()=>{ S.billing=null; });
   await page.evaluate(()=>nav('billing')); await page.waitForTimeout(LAT+150);
   ok(/EST-1001/.test(await txt('#billingBody')), 'billing lists the estimate by ID');
   await page.evaluate(()=>openDoc('ESTIMATE','EST-1001')); await page.waitForTimeout(LAT+200);
@@ -204,6 +207,47 @@ window.google={script:{run:(function(){function make(){var s=null,f=null;var r={
   await page.evaluate(()=>{ PB[0].rate=175; window.__served=[]; savePriceBook(); });
   await page.waitForTimeout(LAT+250);
   ok((await served()).some(x=>x.indexOf('apiUpdateService')===0 && /175/.test(x)), 'editing a default price calls apiUpdateService with the new rate');
+
+  console.log('=== new-feature coverage (2026-07 build) ===');
+  // Maps directions link on the client modal (address → Google Maps directions)
+  await page.evaluate(()=>nav('clients')); await page.waitForTimeout(LAT+120);
+  await page.evaluate(()=>openClient('CL-0001')); await page.waitForTimeout(80);
+  const cModal = await page.evaluate(()=>document.getElementById('sheet').innerHTML);
+  ok(/maps\/dir/.test(cModal) && /12%20Oak/.test(cModal), 'client modal builds a Google Maps directions link for the address');
+  ok(/Directions/.test(cModal), 'client modal shows a Directions button');
+  await page.evaluate(()=>closeModal());
+
+  // Approval popup has a Time field, and the entered time is threaded to the server
+  await page.evaluate(()=>{ estimateBuilder('CL-0001'); }); await page.waitForTimeout(80);
+  await page.evaluate(()=>{ QLINES=[{serviceId:'SVC-02',qty:1}]; renderQLines(); saveEstimate('CL-0001'); });
+  await page.waitForTimeout(LAT+250);
+  const apEst = await page.evaluate(()=>{ var es=((S.billing&&S.billing.estimates)||[]).filter(e=>!e._saving); return es.length?es[es.length-1].id:''; });
+  await page.evaluate((id)=>approveEstimate(id), apEst); await page.waitForTimeout(80);
+  ok(await page.evaluate(()=>!!document.getElementById('ap_time')), 'approve popup now has a Time field');
+  await page.evaluate((id)=>{ document.getElementById('ap_time').value='9am'; window.__served=[]; doApprove(id); }, apEst);
+  await page.waitForTimeout(LAT+250);
+  ok((await served()).some(x=>x.indexOf('apiApproveEstimate')===0 && /"jobTime":"9am"/.test(x)), 'approve threads the entered job time to apiApproveEstimate');
+
+  // Settings: Scheduling / Google Calendar sync toggle renders + saves
+  await page.evaluate(()=>nav('settings')); await page.waitForTimeout(LAT+200);
+  const setBody = await txt('#settingsBody');
+  ok(/Scheduling/.test(setBody) && /Google Calendar sync/.test(setBody), 'settings shows the Scheduling / Calendar-sync section');
+  await page.evaluate(()=>{ var sel=document.querySelector('select[data-k="Sync jobs to Google Calendar"]'); sel.value='no'; window.__served=[]; saveSettings(); });
+  await page.waitForTimeout(LAT+200);
+  ok((await served()).some(x=>x.indexOf('apiSaveSettings')===0 && /"Sync jobs to Google Calendar":"no"/.test(x)), 'toggling calendar sync off saves the setting');
+
+  // Reschedule keeps the time; job archive calls the server
+  await page.evaluate(()=>nav('jobs')); await page.waitForTimeout(LAT+150);
+  await page.evaluate(()=>openJob('JOB-00001')); await page.waitForTimeout(80);
+  await page.evaluate(()=>{ document.getElementById('jb_date').value='2026-12-20'; document.getElementById('jb_time').value='10:30am'; window.__served=[]; rescheduleJob('JOB-00001'); });
+  await page.waitForTimeout(LAT+150);
+  ok((await served()).some(x=>x.indexOf('apiUpdateJob')===0 && /10:30am/.test(x) && /2026-12-20/.test(x)), 'reschedule sends the new date + time to the server');
+  ok(await page.evaluate(()=>{ var j=(S.jobs||[]).filter(x=>x.id==='JOB-00001')[0]; return !!j && j.time==='10:30am'; }), 'reschedule updates the job time locally');
+  await page.evaluate(()=>openJob('JOB-00001')); await page.waitForTimeout(80);
+  await page.evaluate(()=>archiveJob('JOB-00001')); await page.waitForTimeout(60);
+  await page.evaluate(()=>{ window.__served=[]; confirmArchiveJob('JOB-00001'); });
+  await page.waitForTimeout(LAT+150);
+  ok((await served()).some(x=>x.indexOf('apiArchiveJob')===0 && /JOB-00001/.test(x)), 'archiving a job calls apiArchiveJob');
 
   console.log('\nJS ERRORS: '+(errs.length?JSON.stringify(errs):'none'));
   console.log('=== RESULT: '+pass+' passed, '+fail+' failed'+(errs.length?' (+JS errors!)':'')+' ===');

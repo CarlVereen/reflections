@@ -785,7 +785,11 @@ function saveLines(kind,id){
 /* ================= PRICE BOOK (services) ================= */
 var PB=[];
 function openPriceBook(){   // from memory (S.servicesAll) — no round trip
-  PB=(S.servicesAll||S.services||[]).map(function(s){ return {id:s.id,name:s.name,rate:s.rate,active:s.active!==false,_orig:s.name+'|'+s.rate}; });
+  // servicesAll can be an EMPTY array on the apiBootstrap fallback boot path (it's only fully
+  // populated by the __BOOT__ snapshot); an empty [] is truthy, so guard by length before falling
+  // back to the active-services list — otherwise the price book shows empty despite having services.
+  var src=(S.servicesAll&&S.servicesAll.length)?S.servicesAll:(S.services||[]);
+  PB=src.map(function(s){ return {id:s.id,name:s.name,rate:s.rate,active:s.active!==false,_orig:s.name+'|'+s.rate}; });
   renderPriceBook(); }
 function renderPriceBook(){
   var rows=PB.map(function(s,i){

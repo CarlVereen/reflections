@@ -1,0 +1,16 @@
+{
+  "name": "service-pro-crm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Test harnesses for Service Pro CRM (Apps Script product). Not shipped to buyers.",
+  "scripts": {
+    "test:db": "node tests/dbtest.js",
+    "test:api": "node tests/apitest.js",
+    "test:code": "node tests/codetest.js",
+    "test:web": "node tests/webtest.js",
+    "test": "node tests/dbtest.js && node tests/apitest.js && node tests/codetest.js && node tests/webtest.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

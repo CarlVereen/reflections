@@ -2,3 +2,7 @@
 # Disposable working files (regenerated as needed)
 .tmp/
 tests/webapp-wired.html
+
+# Test tooling — installed locally, never shipped to buyers
+node_modules/
+package-lock.json
