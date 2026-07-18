@@ -63,11 +63,15 @@ function runIntegrationSmoke() {
     var ev2 = cal.getEventById(eventId);
     check(!!ev2 && ev2.getStartTime().getHours() === 9, 'event moved to 9am after reschedule');
 
-    // 5) cancel → event deleted, id cleared
+    // 5) cancel → event deleted, id cleared. NOTE: CalendarApp.getEventById() can return a stale /
+    // cancelled copy within the SAME execution right after deleteEvent(), so verify removal with a
+    // fresh getEvents() window rather than a point read (the point read gives false failures).
     update('Jobs', j.JobID, { Status: 'Cancelled' });
     API_syncJobCalendar_(j.JobID);
     check(!(getById('Jobs', j.JobID) || {}).CalendarEventID, 'cancel cleared the CalendarEventID');
-    check(!cal.getEventById(eventId), 'cancel deleted the calendar event');
+    var wStart = API_addDays_(jd, -1), wEnd = API_addDays_(jd, 4);
+    var stillListed = cal.getEvents(wStart, wEnd).some(function (e) { return e.getTitle().indexOf('__SMOKE__ Test Client') > -1; });
+    check(!stillListed, 'cancel removed the event from the calendar (fresh getEvents check)');
     eventId = null;   // already gone — nothing for finally to clean
 
     // 6) toggle OFF is respected → a new job creates no event
@@ -82,6 +86,10 @@ function runIntegrationSmoke() {
   } finally {
     // cleanup: delete any lingering event + hard-remove the test rows, then restore the toggle
     try { if (eventId) { var lo = CalendarApp.getDefaultCalendar().getEventById(eventId); if (lo) lo.deleteEvent(); } } catch (e2) {}
+    try {  // belt-and-suspenders: sweep any leftover __SMOKE__ events so the test never litters the calendar
+      var cc = CalendarApp.getDefaultCalendar(), sweep = cc.getEvents(API_addDays_(API_today_(), -2), API_addDays_(API_today_(), 10));
+      for (var si = 0; si < sweep.length; si++) { if (sweep[si].getTitle().indexOf('__SMOKE__ Test Client') > -1) sweep[si].deleteEvent(); }
+    } catch (e4) {}
     if (createdJobId) TEST_hardDelete_('Jobs', createdJobId);
     if (createdClientId) TEST_hardDelete_('Clients', createdClientId);
     settingSet('Sync jobs to Google Calendar', prevToggle || 'yes');
