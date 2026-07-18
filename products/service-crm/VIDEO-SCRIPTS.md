@@ -79,6 +79,15 @@ These match the current **app-first** build (Home / Clients / Jobs / Billing / M
 
 ---
 
+## Ready-made walkthrough clip
+`video/walkthrough.webm` is an auto-generated screen recording of the app driving through the key
+screens (home dashboard, a client card with Directions, the new-job form with date + time, billing,
+and the Scheduling settings) on a rich demo dataset. Regenerate it anytime with
+`node tests/screencast.js`. Use it as:
+- **b-roll** you narrate over for Video 2 (record your voice reading the script while it plays), or
+- a **silent listing clip** (Etsy/Gumroad accept short video). It's `.webm`; if a platform needs
+  `.mp4`, convert it (e.g. with an online converter or `ffmpeg -i walkthrough.webm walkthrough.mp4`).
+
 ## Recording tips
 - Record on a **fresh copy** with a little demo data so the dashboard looks alive.
 - Use a **phone-width** window for the app portions (it's a mobile-first app).
