@@ -11,43 +11,50 @@ This is the **product master**. Each sale is a *copy* of the finished sheet.
 
 ## What the buyer gets
 
-| Tab | What it does |
-|-----|--------------|
-| 📊 **Dashboard** | Live KPIs — new leads (7 days), open pipeline value, jobs this week, revenue this month, win rate, lifetime revenue, a **follow-ups-due** list, and a 6-month revenue chart. Auto-updates. |
-| 🎯 **Leads** | Pipeline with color-coded statuses (New → Contacted → Quoted → Won/Lost), estimated value, and follow-up dates that turn **red when overdue**. |
-| 🗓️ **Jobs** | Scheduled work with status, price, paid flag, a **Repeat** column (recurring), and a **Photos** link → add to Google Calendar or create a before/after photo folder in one click. |
-| 👥 **Clients** | Contact book; **Total Spent auto-calculates** from paid jobs. |
-| 📄 **Estimates** | Quote log (Draft/Sent/Accepted/Declined) → one-click branded PDF. |
-| 💵 **Invoices** | Invoice log (Draft/Sent/Paid/Overdue) → one-click branded PDF with tax + Pay-now. |
-| 🧾 **Line Items** | Optional itemization for any estimate/invoice (Description / Qty / Rate). |
-| ⚙️ **Settings** | Business info, currency, sales tax %, review link, payment instructions, payment link, follow-up window. |
+It's an **app** (a private web-app URL) backed by a Google Sheet. Daily work happens in the
+app — **Home / Clients / Jobs / Billing / More**. The sheet holds the data across these tabs:
+
+| Sheet tab | What it stores |
+|-----------|----------------|
+| **Clients** | Contact book; status (Lead/Active/Inactive/Lost), address, follow-up date; **lifetime spend auto-calculates** from paid invoices. |
+| **Jobs** | Scheduled work — date, **time**, service, status, a **Recurring** field, and a `CalendarEventID` linking each job to its Google Calendar event. |
+| **Estimates** | Quotes (Draft/Sent/Accepted/Declined) with snapshotted tax + cached totals. |
+| **Invoices** | Invoices (Draft/Sent/Paid/Overdue) traceable back to their estimate. |
+| **LineItems** | Itemization for any estimate/invoice (snapshot description + rate). |
+| **Services** | Your price book — service names + default rates. |
+| **Business Settings** | Business info, currency, sales tax %, numbering, review link, payment link, **Google Calendar sync** toggle + default job length, accent color, logo. |
 
 **Actions & automations (Apps Script):**
-- **⚡ Quick Actions panel** — add leads, see follow-ups, one-click sends.
-- **Estimates & invoices** — itemized branded PDFs with sales tax and a Pay-now button, emailed to the client.
+- **Local-first web app** — leads, clients, jobs, estimates, invoices, dashboard; instant on phone + desktop.
+- **Estimates → invoices** — itemized branded **PDFs** with sales tax and a Pay-now button, emailed to the client; **Approve → invoice + job** in one tap.
+- **Google Calendar sync** — scheduling/rescheduling/cancelling a job automatically creates/updates/removes its calendar event (client address as location). Toggle in Settings.
+- **Maps directions** — one tap from a client's address opens Google Maps directions.
 - **Recurring jobs** — `rollForwardRecurringJobs` auto-creates the next visit when a recurring job is done.
-- **Google Calendar + photos** — `addJobToCalendar` puts a job on the owner's phone calendar; `createJobPhotoFolder` makes a shareable before/after Drive folder per job.
-- **Review requests, follow-up digest (with tap-to-text links), appointment reminders, overdue-invoice flagging** — all on a daily-trigger autopilot.
-- **Mobile lead-capture Google Form** — `createLeadForm` builds a phone-friendly form that feeds the Leads tab.
+- **Review requests, follow-up digest (tap-to-text), appointment reminders, overdue-invoice flagging** — daily-trigger autopilot.
+- **Mobile lead-capture Google Form** — `createLeadForm` builds a phone-friendly form that feeds Clients as new Leads.
 
-> Container-bound project needs **two files**: `Code.gs` and `Sidebar.html`.
+> Container-bound project: the code files (`Code.gs`, `Api.gs`, `db.gs`, `setup.gs`, `WebApp.html`, `Sidebar.html`, optional `Tests.gs`) all travel with any copy of the sheet.
 
 ---
 
 ## How to build the master (one-time, ~5 min)
 
 1. Create a new Google Sheet named **Service Pro CRM — MASTER**.
-2. `Extensions ▸ Apps Script`. Add **four files**:
-   - `Code.gs` (paste over the stub) — sheet logic, menu, automations
-   - `Api.gs` (new script file) — the web-app server API
+2. `Extensions ▸ Apps Script`. Add these files (or `clasp push` them — see `CLASP-SETUP.md`):
+   - `Code.gs` (paste over the stub) — menu, automations, triggers, Form intake
+   - `Api.gs` (new script file) — the web-app server API + calendar sync
+   - `db.gs` (new script file) — schema + data layer
+   - `setup.gs` (new script file) — builds/rebuilds the tabs
+   - `WebApp` (new **HTML** file) — the app UI
    - `Sidebar` (new **HTML** file) — the desktop Quick Actions panel
-   - `WebApp` (new **HTML** file) — the mobile web-app UI
+   - `Tests.gs` (optional) — in-editor integration test
    Save.
 3. Back in the sheet, reload the tab. A **⚡ CRM** menu appears.
-4. Click **⚡ CRM ▸ Set up / rebuild CRM**. Approve the auth prompt once.
-5. The nine tabs build themselves. That's the sheet/master.
-6. **Deploy the web app** (one time) so the CRM runs as a phone/desktop app — see
-   `DEPLOY.md`. Then run the smoke test in `SMOKE-TEST.md`.
+4. Click **⚡ CRM ▸ Set up / rebuild database**. Approve the auth prompt once.
+5. The 7 data tabs (+ hidden `_meta`) build themselves. That's the sheet/master.
+6. **Set the timezone** (`Apps Script ▸ Project Settings ▸ Time zone`) and **deploy the web
+   app** (one time) so the CRM runs as a phone/desktop app — see `DEPLOY.md`. Then run the
+   smoke test in `SMOKE-TEST.md`.
 
 ## How to fulfill a sale (~60 seconds, repeatable)
 
@@ -65,9 +72,10 @@ This is the **product master**. Each sale is a *copy* of the finished sheet.
 ## Re-skinning for a niche (upsell / variety)
 
 To ship niche editions (e.g. "Lawn Care CRM", "Cleaning Business CRM"):
-- Edit the `BRAND` color object at the top of `Code.gs`.
-- Adjust the `Source` and service dropdowns in `buildLeads_`.
-- Rename the master and re-run setup. New listing, same 10-minute effort.
+- Set the accent color + seed services for the niche (Business Settings + the Services tab / price book).
+- Adjust the seed service list in `setup.gs` (`DB_seedServices_`) if you want niche defaults.
+- Rename the master and re-run **Set up / rebuild database**. New listing, same effort.
+  (See `variants/README.md` for the per-edition specifics.)
 
 ---
 

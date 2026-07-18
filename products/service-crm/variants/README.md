@@ -16,7 +16,7 @@ block** at the top of the script — so one bug fix covers every variant.
 1. Make a copy of the Universal **master** sheet → rename it (e.g. "Cleaning Business CRM — MASTER").
 2. `Extensions ▸ Apps Script`. In `Code.gs`, delete the existing `CONFIG = { … }` block
    and paste the variant's block from the matching file here.
-3. Reload the sheet → `⚡ CRM ▸ Set up / rebuild CRM`. The whole product re-skins:
+3. Reload the sheet → `⚡ CRM ▸ Set up / rebuild database`. The whole product re-skins:
    dashboard title, accent color, and service dropdowns all update.
 4. Fulfill the sale as usual (copy → share link → deliver).
 

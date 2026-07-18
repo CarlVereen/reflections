@@ -20,7 +20,7 @@ your data never leaves your Drive.** Works on phone and computer.
 ## 3. One-time seller setup — build the master (~20 min, once)
 Do this a single time; every sale is a copy of it.
 1. Follow `README.md` → "How to build the master": create the sheet, add the four files,
-   run **⚡ CRM ▸ Set up / rebuild CRM**, approve permissions.
+   run **⚡ CRM ▸ Set up / rebuild database**, approve permissions.
 2. **Deploy the web app** yourself once (`DEPLOY.md`) and run through `SMOKE-TEST.md` so you
    know a fresh copy works end-to-end.
 3. Fill Settings with neutral placeholder values (buyers overwrite them).

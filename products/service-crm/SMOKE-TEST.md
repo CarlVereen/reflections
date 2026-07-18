@@ -11,7 +11,7 @@ and the error and send it over.
 
 ## A. Build the master (sheet + code)
 - [ ] **A1.** New Google Sheet → `Extensions ▸ Apps Script`. Add **four files**: `Code.gs` (paste over the stub), `Api.gs` (new **script** file), `Sidebar` (new **HTML** file), `WebApp` (new **HTML** file). **Save.**
-- [ ] **A2.** Reload the sheet → a **⚡ CRM** menu appears → `⚡ CRM ▸ Set up / rebuild CRM` → approve the Google auth (Advanced → Go to project → Allow).
+- [ ] **A2.** Reload the sheet → a **⚡ CRM** menu appears → `⚡ CRM ▸ Set up / rebuild database` → approve the Google auth (Advanced → Go to project → Allow).
 - [ ] **A3.** Confirm **9 tabs** in order: 🚀 Start Here, 📊 Dashboard, 🎯 Leads, 🗓️ Jobs, 👥 Clients, 📄 Estimates, 💵 Invoices, 🧾 Line Items, ⚙️ Settings — **no leftover "Sheet1."** The 📊 Dashboard shows KPI tiles and a **revenue chart** (present, not a blank box).
 
 ## B. Deploy the app (see `DEPLOY.md`)
@@ -65,7 +65,7 @@ These run server-side / on triggers — not in the app.
 - [ ] **J2.** Submit a test lead via that form (on your phone) → it appears in 🎯 **Leads** (New + follow-up date) **and** in the app's **Leads** list. *(Security: try submitting a name like `=1+1` — it should stay literal text, not become a formula.)*
 
 ## K. Safety guard
-- [ ] **K1.** With data now in the sheet, run `⚡ CRM ▸ Set up / rebuild CRM` again → a **warning** asks before erasing → click **No** → nothing is wiped.
+- [ ] **K1.** With data now in the sheet, run `⚡ CRM ▸ Set up / rebuild database` again → a **warning** asks before erasing → click **No** → nothing is wiped.
 
 ## L. On your phone
 - [ ] **L1.** Open the app URL on your phone → **Add to Home Screen** → run the **lead → quote → approve → invoice → paid** flow again. Everything works and syncs back to the sheet.

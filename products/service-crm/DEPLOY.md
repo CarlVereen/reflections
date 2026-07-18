@@ -5,25 +5,30 @@ phone. It's backed by the same Google Sheet (the tabs are the database). You onl
 deploy once; after that you just open the URL.
 
 ## Files that must be in the Apps Script project
-`Extensions ▸ Apps Script`, make sure all **four** exist:
-- `Code.gs` — sheet setup, menu, automations
+`Extensions ▸ Apps Script`, make sure these exist (they all travel with the copy — nothing to paste):
+- `Code.gs` — menu, automations, triggers, Form intake
 - `Api.gs` — the web-app server API + `doGet`
+- `db.gs` — the database schema + data layer (the CRM won't build without it)
+- `setup.gs` — builds/rebuilds the tabs from the schema
 - `WebApp.html` — the app UI
 - `Sidebar.html` — the desktop Quick Actions panel
+- `Tests.gs` — optional QA (in-editor integration test; safe to leave out)
 
 ## Steps
-1. In the sheet, run **⚡ CRM ▸ Set up / rebuild CRM** once and approve the permissions
+1. In the sheet, run **⚡ CRM ▸ Set up / rebuild database** once and approve the permissions
    (see the "Google hasn't verified this app" note — it's normal).
-2. In the Apps Script editor, click **Deploy ▸ New deployment**.
-3. Click the **gear ⚙️ ▸ Web app**.
-4. Set:
+2. **Set your timezone** (so calendar events land at the right hour): **Apps Script ▸ Project
+   Settings (⚙️) ▸ Time zone** → choose yours. The master defaults to America/Phoenix (Arizona).
+4. In the Apps Script editor, click **Deploy ▸ New deployment**.
+5. Click the **gear ⚙️ ▸ Web app**.
+6. Set:
    - **Description:** `CRM app` (anything)
    - **Execute as:** **Me**
    - **Who has access:** **Only myself** ← ⚠️ **security-critical.** This keeps your CRM
      private to you. Do **not** choose "Anyone" — that would let anyone with the link read
      your customer data and act as you. (See `SECURITY.md`.)
-5. Click **Deploy**, then **Authorize access** and allow (same one-time approval).
-6. Copy the **Web app URL** (ends in `/exec`). That's your app.
+7. Click **Deploy**, then **Authorize access** and allow (same one-time approval).
+8. Copy the **Web app URL** (ends in `/exec`). That's your app.
 
 > Shortcut: after deploying, **⚡ CRM ▸ 📲 Open the app (get link)** shows the URL any time.
 

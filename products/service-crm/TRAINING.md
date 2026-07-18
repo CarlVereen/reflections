@@ -1,155 +1,158 @@
 # ⚡ Service Pro CRM — User Manual
 
-Welcome! This guide gets you from zero to running your whole service business
-from one Google Sheet. No apps to install, no monthly fees, and your data never
-leaves your Google account.
+Welcome! Service Pro CRM is a real **app** for your service business — leads, clients,
+jobs, estimates, invoices, and automatic reminders — that runs entirely in **your own
+Google account**. No monthly fees, and your data never leaves your Drive.
 
-**Total setup time: about 5 minutes.**
+**Total setup time: about 10 minutes, once.**
 
 ---
 
-## 1. What this is (in one sentence)
+## 1. How it works (the one thing to understand)
 
-A Google Sheet with a smart "⚡ CRM" menu that tracks your **leads, jobs,
-clients, and invoices**, and automatically emails **follow-up reminders**,
-**appointment reminders**, and **Google-review requests** for you.
+You do your daily work in the **app** (a link you open on your phone or computer). Behind
+the app is a **Google Sheet** that acts as the database — you rarely need to open it. The
+**⚡ CRM menu** inside that sheet is only for **one-time setup** and turning on the daily
+automations.
 
-## 2. The seven tabs
+- **App = daily use** (add clients, schedule jobs, send invoices).
+- **Sheet + ⚡ CRM menu = setup + automations** (done on a computer, mostly once).
 
-| Tab | Use it to… |
-|-----|-----------|
-| 🚀 **Start Here** | Your one-time setup checklist. |
-| 📊 **Dashboard** | See the numbers — new leads, pipeline, revenue, win rate, a revenue chart, and who to follow up with. Updates by itself. |
-| 🎯 **Leads** | Track every potential customer through New → Contacted → Quoted → Won/Lost. |
-| 🗓️ **Jobs** | Schedule and track work — booked, in progress, done, paid. |
-| 👥 **Clients** | Your customer address book. "Total Spent" adds itself up. |
-| 📄 **Estimates** | Log quotes; generate a branded PDF estimate in one click. |
-| 💵 **Invoices** | Log invoices; generate a PDF (with tax + Pay-now) and email it in one click. |
-| 🧾 **Line Items** | Optional: itemize an estimate/invoice (Description / Qty / Rate). |
-| ⚙️ **Settings** | Business info, currency, sales tax %, review link, payment note & link — plus **"Your services"** (edit that list to control the Service dropdown in the panel and the Leads/Jobs tabs). |
+## 2. First-time setup (do this once, on a computer)
 
-## 3. First-time setup (do this once)
-
-1. **Open ⚙️ Settings** and fill in every row:
-   - Business name, owner email, business phone
-   - **Google review link** — see section 8 for how to find yours
-   - **Invoice payment instructions** — e.g. "Zelle to you@email.com"
-2. **Reload the sheet.** You'll see a **⚡ CRM** menu appear at the top.
-3. Click **⚡ CRM ▸ Set up / rebuild CRM** (only needed once, or after big changes).
-4. Click **⚡ CRM ▸ Open Quick Actions panel** — this is your daily command center.
+1. Open the copy link from your Start-Here PDF → **File ▸ Make a copy**. The whole CRM (all
+   the code) is now yours, private, in your Google Drive — nothing to paste.
+2. Reload the sheet. A **⚡ CRM** menu appears at the top. Click
+   **⚡ CRM ▸ Set up / rebuild database** and approve the permissions (see the box below).
+3. **Set your timezone** so scheduled jobs hit your calendar at the right hour:
+   **Extensions ▸ Apps Script ▸ Project Settings (⚙️) ▸ Time zone** → choose yours.
+4. **Turn on your app:** **Extensions ▸ Apps Script ▸ Deploy ▸ New deployment ▸ (gear ⚙️)
+   Web app** → **Execute as: Me**, **Who has access: Only myself** → **Deploy** → **Authorize**.
+   Copy the **Web app URL** it gives you. (Full detail + troubleshooting in `DEPLOY.md`.)
+5. Open that URL — that's your app. On your phone: browser menu → **Add to Home Screen**.
+6. In the app, open **More ▸ Business Settings** and fill in your business name, phone,
+   email, sales tax %, Google review link, and payment link.
+7. Back in the sheet, **⚡ CRM ▸ Automations ▸ Turn ON daily autopilot**.
 
 ### ⚠️ Approving the app — read this first (it looks scarier than it is)
 
-The first time you run a menu item, Google shows a warning. **This is 100% normal and
-expected** for any tool that runs inside your own Google account — it's not a virus and
-nothing is wrong. Here's the exact path to click:
+The first time you run setup, Google shows a warning. **This is 100% normal** for any tool
+that runs inside your own Google account. The exact path:
 
-1. **"Authorization required"** → click **Continue**.
+1. **"Authorization required"** → **Continue**.
 2. **Choose your Google account** (the one that owns this sheet).
-3. **"Google hasn't verified this app"** — don't stop here. Click the small **Advanced**
-   link (bottom-left).
-4. Click **"Go to Service Pro CRM (unsafe)."** The word *unsafe* is just Google's generic
-   label for any personal script — this is **your own copy**, running only in **your**
-   account. Your data never leaves your Google Drive.
+3. **"Google hasn't verified this app"** → click the small **Advanced** link (bottom-left).
+4. Click **"Go to Service Pro CRM (unsafe)."** *Unsafe* is just Google's generic label for a
+   personal script — it's **your own copy**, running only in **your** account.
 5. Review the permissions and click **Allow**.
 
-**Why it needs permission:** to send your emails (follow-ups, invoices, review requests),
-save invoice PDFs and photo folders to your Drive, add jobs to your Calendar, and build
-your lead form. It only ever acts inside your own account.
+**Why it needs permission:** to add jobs to your **Google Calendar**, send your **emails**
+(follow-ups, invoices, reminders, review requests), save **invoice PDFs** and your **logo**
+to Drive, and build your **lead form**. It only ever acts inside your own account. You may
+see the prompt **once more** the first time a new feature is used (e.g. Calendar) — same steps.
 
-You may see this prompt **once more later** the first time you use a feature that needs a
-new permission (like creating the lead Form or adding a calendar event) — same quick steps.
+> **On a work/school (Google Workspace) account** and don't see **Advanced**? Your admin
+> blocks unverified scripts — just use a **personal @gmail.com account** instead.
 
-> **On a work/school (Google Workspace) account** and don't see the **Advanced** link? Your
-> company admin blocks unverified scripts. Just use a **personal @gmail.com account**
-> instead — everything works the same, with no restrictions.
+## 3. Getting around the app
 
-## 4. Your daily routine (2 minutes)
+Five tabs across the bottom:
 
-Open the **⚡ Quick Actions panel** and you can:
-- **Add a lead** the moment someone calls — name, phone, service, value. A
+| Tab | What it's for |
+|-----|---------------|
+| 🏠 **Home** | Your dashboard — new leads, open pipeline, jobs this week, revenue, win rate, lifetime, plus **Follow-ups due** and **This week's jobs**. Quick **+ Lead** / **+ Estimate** buttons. |
+| 👥 **Clients** | Your address book. Every client is a Lead / Active / Inactive / Lost. Tap one to **Call**, **Text**, get **🧭 Directions**, set a follow-up, or start an estimate/job. |
+| 🗓️ **Jobs** | Scheduled work — **Today / Upcoming / Completed**. Add jobs, set a time, reschedule, mark Done. |
+| 💵 **Billing** | **Quotes** (estimates), **Outstanding** (unpaid invoices), **Paid**, and **Closed**. |
+| ⋯ **More** | Your **Price book** (default service prices) and **Business Settings**. |
+
+## 4. Daily routine (about 2 minutes)
+
+- **New lead calls?** Home → **+ Lead** (or Clients → add). Add name, phone, address — a
   follow-up date is set automatically.
-- See **Follow-ups due** — exactly who to call back today.
-- **Email review requests** and **your follow-up list** with one tap.
+- **Home ▸ Follow-ups due** shows exactly who to call back today. Tap a client to **Call** or
+  **Text** right from the app.
+- Move clients from **Lead → Active** as you win the work.
 
-That's it. Everything feeds the Dashboard automatically.
+## 5. Clients & directions
 
-## 5. Working leads
+- Tap a client to see their card: phone (**Call** / **Text**), **address as a link**, plus a
+  **🧭 Directions** button that opens Google Maps directions to their place.
+- Their card also shows any **upcoming job**, **open estimate**, or **unpaid invoice**, and
+  totals up their **lifetime spend** automatically.
 
-- Add leads from the panel or type straight into the 🎯 **Leads** tab.
-- Change the **Status** dropdown as things progress. Colors update automatically.
-- **Next Follow-up** turns **red** when it's overdue so nothing slips.
-- Won the job? Click the lead's row, then **⚡ CRM ▸ Add & convert ▸ Schedule a
-  job from selected lead** (creates the job) or **Convert selected lead → client**.
+## 6. Scheduling jobs (with Google Calendar sync)
 
-## 6. Jobs & getting paid
+- **Jobs ▸ + New job** (or from a client card ▸ **New job**): pick the client + service, set
+  the **date** and a **time** (e.g. `2pm`), and an optional **Repeat** (Weekly / Monthly /
+  Quarterly / Annual).
+- If **Google Calendar sync** is on (it is by default — **More ▸ Business Settings ▸
+  Scheduling**), each scheduled job **automatically appears on your Google Calendar**, with
+  the **client's address as the event location** (tap it for directions). Reschedule or cancel
+  a job and the calendar event **updates or disappears** to match.
+- Tap a job to **Reschedule** (new date + time), change **Status** (Scheduled / Done /
+  Cancelled), or **Archive** it.
+- **Recurring work:** set **Repeat**, then mark the job **Done** — the CRM creates the next
+  visit for you (once daily autopilot is on, or via **⚡ CRM ▸ Automations ▸ Roll forward
+  finished recurring jobs**).
 
-- Log work in the 🗓️ **Jobs** tab: date, client, service, price.
-- Mark **Status = Done** and **Paid? = Yes** when complete.
-- The client's **Total Spent** (in 👥 Clients) updates automatically.
-- **Recurring work?** Set the **Repeat** column to Weekly / Biweekly / Monthly. When you
-  mark that job **Done**, the CRM automatically creates the next visit for you (once daily
-  automations are on, or via **⚡ CRM ▸ Automations ▸ Roll forward finished recurring jobs**).
-- **See it on your phone's calendar:** click a job row → **⚡ CRM ▸ Jobs ▸ Add selected job
-  to Google Calendar**. (Put a time like `2pm` in Scheduled Time for a timed event.)
-- **Before/after photos:** click a job row → **⚡ CRM ▸ Jobs ▸ Create photo folder for
-  selected job**. A shareable Drive folder is linked in the **Photos** column — upload
-  shots from your phone and send the client the link as proof of work.
+> ⏰ **Timezone matters:** calendar event times use your Apps Script timezone (set in step 3).
+> If a `2pm` job shows at the wrong hour, fix **Project Settings ▸ Time zone**.
 
-## 7. Estimates & invoices in one click
+## 7. Estimates → invoices → paid (all in the app)
 
-Both work the same way and produce a branded PDF, emailed to the client and saved to Drive.
+1. **Create an estimate:** from a client card ▸ **Create estimate**, or **Billing** → new
+   quote. Add line items (each pulls its default price from your **Price book**; you can
+   override the price on any line). Tax comes from your **Sales tax %**.
+2. **Send it:** the estimate goes out as a **branded PDF** emailed to the client.
+3. **Approve → invoice + job:** when the client says yes, open the estimate and tap
+   **Approve → invoice + job**. It asks for a **job date and time**, creates a **draft
+   invoice** (with the quoted lines), and **schedules the job** (which syncs to your calendar).
+4. **Get paid:** send the invoice (branded PDF), then **Mark paid** when the money's in. The
+   client's **lifetime spend** updates automatically. Put your Stripe/PayPal/Venmo link in
+   **Settings ▸ Payment link** to show a **Pay now** button on invoices.
 
-1. **Estimate:** add a row in 📄 **Estimates** (estimate #, client, dates). Click it →
-   **⚡ CRM ▸ Invoices & estimates ▸ Create & email estimate**.
-2. **Invoice:** add a row in 💵 **Invoices** (invoice #, client, dates). Click it →
-   **Create & email invoice**. It's marked **Sent** and can flag **Overdue** later.
-3. **Itemize (optional):** in 🧾 **Line Items**, add rows with the **same number** as the
-   estimate/invoice — Description / Qty / Rate. The PDF then lists each line, adds your
-   **Sales tax %** (from ⚙️ Settings), and totals it. No line items? Just type a single
-   **Amount** on the row instead.
-4. **Get paid online:** put your Stripe/PayPal/Venmo link in ⚙️ **Settings ▸ Payment link**
-   and invoices show a **Pay now** button.
+## 8. Business Settings (More ▸ Business Settings)
 
-## 8. Getting more 5-star reviews (the money-maker)
+- **Business profile** — name, owner email, phone, address (used on PDFs + emails).
+- **Money** — currency, sales tax %, invoice payment instructions, payment link, invoice due days.
+- **Numbering** — your next estimate # and invoice #.
+- **Follow-up & reviews** — default follow-up days, and your **Google review link**.
+- **Scheduling** — **Google Calendar sync** (On/Off) and **default job length (hours)**.
+- **Appearance** — accent color; and upload your **company logo** for PDFs.
 
-More Google reviews = more jobs. The CRM automates the ask:
-1. Find your review link: Google "**Google review link generator**", or in your
-   Google Business Profile: **Ask for reviews ▸ Share review form** and copy the link.
-2. Paste it into ⚙️ **Settings ▸ Google review link**.
-3. After a job is **Done + Paid**, click **⚡ CRM ▸ Automations ▸ Send review
-   requests**. Every eligible client gets a friendly, branded email with your link.
-   (Each client is only asked once.)
+## 9. Getting more 5-star reviews (the money-maker)
 
-## 9. Turn on autopilot
+1. Find your review link: Google "**Google review link generator**", or in your Google
+   Business Profile: **Ask for reviews ▸ Share review form**.
+2. Paste it into **Settings ▸ Google review link**.
+3. After a job is **Done**, run **⚡ CRM ▸ Automations ▸ Send review requests** (in the sheet).
+   Every eligible client with an email gets a friendly, branded ask — **each client only once**.
 
-**⚡ CRM ▸ Automations ▸ Turn ON daily automations.** From then on, every morning:
+## 10. Turn on autopilot (in the sheet)
+
+**⚡ CRM ▸ Automations ▸ Turn ON daily autopilot.** Every morning after that:
 - 🔁 **Recurring jobs** roll forward to their next visit.
 - 🚩 **Overdue invoices** get flagged.
-- 🔔 You get your **follow-up list** by email (8am) — with a **tap-to-text** link per lead.
-- 📅 **Appointment reminders** go to clients scheduled for the next day.
+- 🔔 You get your **follow-up list** emailed (with a tap-to-text link per client).
+- 📅 **Appointment reminders** email clients scheduled for the next day.
 
-**Capture leads from your phone:** run **⚡ CRM ▸ Create mobile lead-capture form** once.
-You'll get a Google Form link — bookmark it on your phone. Anything submitted drops
-straight into your 🎯 Leads tab. (The menu and side panel are computer-only, so this
-Form is the mobile-friendly way to add a lead from a driveway.)
+Turn it off anytime with **Turn OFF daily autopilot**.
 
-Turn it off anytime with **Turn OFF daily automations**.
+**Capture leads from your phone:** run **⚡ CRM ▸ Create mobile lead-capture form** once →
+you get a Google Form link (bookmark it / put it on flyers). Every submission drops straight
+into your **Clients** list as a new Lead.
 
-## 10. Tips & limits
+## 11. Tips & limits
 
-- **Desktop vs phone (important):** the ⚡ CRM menu and Quick Actions panel work on a
-  **computer** (Google Sheets in a browser), *not* in the phone app. Do your setup,
-  data entry, and invoicing on a laptop. On your phone you can still **view and edit
-  the sheet** in the Google Sheets app — and the daily automations (follow-up emails,
-  appointment reminders, review requests, overdue flags) **run on their own**, no menu needed.
-- **Emails, not texts:** reminders and review requests are sent by **email**. Apps Script
-  can't send SMS on its own.
-- **Email limit:** a normal Gmail account can send ~100 automated emails/day
-  (plenty for a small business). Google Workspace accounts get ~1,500.
+- **The ⚡ CRM menu is computer-only** (it lives in Google Sheets in a browser). Do setup and
+  automations there. **Everything else is in the app**, which works great on your phone.
+- **Emails, not texts:** reminders and review requests are sent by **email** — Apps Script
+  can't send SMS. (You can still tap **Text** on a client to text from your own phone.)
+- **Email limit:** a normal Gmail account sends ~100 automated emails/day; Google Workspace ~1,500.
 - **Back up anytime:** File ▸ Make a copy.
-- **Re-brand it:** change the `BRAND` colors at the top of the script and re-run setup.
+- **Timezone:** if calendar times look off, set **Apps Script ▸ Project Settings ▸ Time zone**.
 
-## 11. Help
+## 12. Help
 
-Stuck? Reply to your purchase receipt and we'll help you get running.
+Stuck? Reply to your purchase receipt and we'll help you get running — usually same day.

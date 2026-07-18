@@ -8,7 +8,7 @@ Tick these before you publish. Grouped by priority. Details for each live in the
 
 - [ ] **Build the master sheet** in your Google account (`README.md` → build the master).
   Add all four files: `Code.gs`, `Api.gs`, `Sidebar.html`, `WebApp.html`. Run
-  **⚡ CRM ▸ Set up / rebuild CRM**.
+  **⚡ CRM ▸ Set up / rebuild database**.
 - [ ] **Deploy the web app** once as **Execute as Me · Only myself** (`DEPLOY.md`). Confirm
   the app opens.
 - [ ] **Run the FULL smoke test** on that live account — every section A–L of `SMOKE-TEST.md`.
