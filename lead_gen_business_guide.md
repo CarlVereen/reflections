@@ -268,6 +268,71 @@ matters.
 
 ---
 
+## 13. Real-World Playbook: Lessons from a Live Build
+
+The following distills a behind-the-scenes build of a real lead gen brand
+("Money Saving Scout," by Leadbase). It's useful because it shows the
+*concrete* choices behind the principles above.
+
+**Own the asset, don't rent your time.**
+The whole reason to prefer lead gen over a traditional retainer agency:
+with lead gen you own the **brand, the assets, and the data.** A retainer
+sells your hours; a lead gen brand builds an asset that keeps its value
+even as clients come and go. This is the strategic core of the model.
+
+**Use a general, scalable brand name.**
+Instead of niching the *brand* (e.g. "Ontario Life Insurance Leads"), they
+chose a broad name — "Money Saving Scout." Why it's smart:
+- Navigates ad-platform and industry regulations more easily.
+- Lets you expand into multiple niches (life insurance, roofing, etc.)
+  under **one business entity, one website, and one automation account**.
+- You don't rebuild infrastructure every time you add a vertical.
+
+**Build cheap social proof first.**
+They ran low-cost Facebook "likes" campaigns to make the brand page look
+established and trustworthy *before* running lead campaigns. Cheap
+credibility raises conversion on everything that follows.
+
+**"Ugly" ads often win.**
+Over-polished ads can look like ads and get ignored. Raw, attention-
+grabbing, "ugly" creative frequently outperforms because it stops the
+scroll and feels native. Test ugly against polished — let data decide.
+
+**Filter out "tire kickers" with quizzes/surveys.**
+Rather than a bare contact form, they used **custom quizzes and surveys**
+to qualify. This raises lead quality (the thing that keeps clients) by
+screening out people who'll never buy — exactly the "qualify ruthlessly"
+principle, implemented.
+
+**Morph landing pages and track with UTMs.**
+They built and tested multiple landing-page variants (using Unbounce and
+GoHighLevel) and tagged every ad with **UTM parameters** so they knew
+*which specific ad* drove each conversion. No tracking = no optimization
+and no proof of value.
+
+**Iterate toward what converts.**
+On a life-insurance campaign, switching to **form-based** lead capture and
+refining ad copy turned a mediocre result into a profitable one. The win
+came from *iteration*, not from getting it perfect up front.
+
+**A pragmatic, low-cost starter stack:**
+| Job | Tool used in the build |
+|---|---|
+| Ad copy | ChatGPT (draft, then edit) |
+| Creative / images | Canva |
+| Automation, CRM, funnels | GoHighLevel |
+| Landing page testing | Unbounce / GoHighLevel |
+| Attribution | UTM parameters + tracking |
+
+**The mindset takeaway: don't overthink the tech.**
+The single biggest lesson: builders get stuck perfecting the technical
+setup instead of shipping. The advice is to **stop over-engineering, get
+your first client, gather feedback, and optimize over time.** The tools
+above are enough to launch — momentum and iteration beat a perfect setup
+that never goes live.
+
+---
+
 ## Bottom Line
 
 A lead gen business is simple to understand and hard to do well. Win by:
